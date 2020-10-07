@@ -6,7 +6,7 @@ import by.epam.hospital.connection.DataSourceFactory;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.UserDetails;
-import by.epam.hospital.entity.table.UserDetailsColumnName;
+import by.epam.hospital.entity.table.UsersDetailsColumnName;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -131,16 +131,16 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 userDetailsFromDb = new UserDetails();
-                userDetailsFromDb.setPassportId(resultSet.getString(UserDetailsColumnName.PASSPORT_ID));
-                userDetailsFromDb.setUserId(resultSet.getInt(UserDetailsColumnName.USER_ID));
+                userDetailsFromDb.setPassportId(resultSet.getString(UsersDetailsColumnName.PASSPORT_ID));
+                userDetailsFromDb.setUserId(resultSet.getInt(UsersDetailsColumnName.USER_ID));
                 userDetailsFromDb.setGender(UserDetails.Gender
-                        .valueOf(resultSet.getString(UserDetailsColumnName.GENDER)));
-                userDetailsFromDb.setFirstName(resultSet.getString(UserDetailsColumnName.FIRST_NAME));
-                userDetailsFromDb.setSurname(resultSet.getString(UserDetailsColumnName.SURNAME));
-                userDetailsFromDb.setLastName(resultSet.getString(UserDetailsColumnName.LAST_NAME));
-                userDetailsFromDb.setBirthday(resultSet.getDate(UserDetailsColumnName.BIRTHDAY));
-                userDetailsFromDb.setAddress(resultSet.getString(UserDetailsColumnName.ADDRESS));
-                userDetailsFromDb.setPhone(resultSet.getString(UserDetailsColumnName.PHONE));
+                        .valueOf(resultSet.getString(UsersDetailsColumnName.GENDER)));
+                userDetailsFromDb.setFirstName(resultSet.getString(UsersDetailsColumnName.FIRST_NAME));
+                userDetailsFromDb.setSurname(resultSet.getString(UsersDetailsColumnName.SURNAME));
+                userDetailsFromDb.setLastName(resultSet.getString(UsersDetailsColumnName.LAST_NAME));
+                userDetailsFromDb.setBirthday(resultSet.getDate(UsersDetailsColumnName.BIRTHDAY));
+                userDetailsFromDb.setAddress(resultSet.getString(UsersDetailsColumnName.ADDRESS));
+                userDetailsFromDb.setPhone(resultSet.getString(UsersDetailsColumnName.PHONE));
             } else {
                 throw new DaoException("Can not find row on users_details table");
             }

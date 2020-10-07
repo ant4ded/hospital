@@ -2,6 +2,7 @@ package by.epam.hospital.entity;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 
 public class User {
@@ -9,7 +10,7 @@ public class User {
     private String login;
     private String password;
 
-    private List<Role> roles;
+    private Map<String,Role> roles;
     private UserDetails userDetails;
 
     public User() {
@@ -20,7 +21,7 @@ public class User {
         this.password = password;
     }
 
-    public User(int id, String login, String password, List<Role> roles, UserDetails userDetails) {
+    public User(int id, String login, String password, Map<String,Role> roles, UserDetails userDetails) {
         this.id = id;
         this.login = login;
         this.password = password;
@@ -52,11 +53,11 @@ public class User {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
-        return Collections.unmodifiableList(roles);
+    public Map<String,Role> getRoles() {
+        return Collections.unmodifiableMap(roles);
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Map<String,Role> roles) {
         this.roles = roles;
     }
 

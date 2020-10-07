@@ -1,6 +1,6 @@
 package by.epam.hospital.entity.table;
 
-public class UserDetailsColumnName {
+public class UsersDetailsColumnName {
     public static final String PASSPORT_ID = "passport_id";
     public static final String USER_ID = "user_id";
     public static final String GENDER = "gender";

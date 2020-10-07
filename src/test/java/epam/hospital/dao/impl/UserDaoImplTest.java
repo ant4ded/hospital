@@ -36,7 +36,7 @@ public class UserDaoImplTest {
 
             statement = connection.prepareStatement(SQL_DELETE_USER_ROLES);
 
-            user = userDao.find(user);
+            user = userDao.find(user).orElseThrow(DaoException::new);
             statement.setInt(1, user.getId());
             statement.execute();
             statement.close();
@@ -57,7 +57,7 @@ public class UserDaoImplTest {
     public void createAndFind_correctUser_correctWork(User actual) throws DaoException {
         User expected;
         userDao.create(actual);
-        expected = userDao.find(actual);
+        expected = userDao.find(actual).orElseThrow(DaoException::new);
 
         delete(actual);
 
@@ -73,7 +73,7 @@ public class UserDaoImplTest {
         userDao.create(user);
         userDao.update(user, expected);
 
-        User actual = userDao.find(expected);
+        User actual = userDao.find(expected).orElseThrow(DaoException::new);
         delete(actual);
 
         Assert.assertEquals(actual, expected);
