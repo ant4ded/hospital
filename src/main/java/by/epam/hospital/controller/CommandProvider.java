@@ -1,8 +1,8 @@
-package by.epam.hospital.controller.main;
+package by.epam.hospital.controller;
 
-import by.epam.hospital.controller.Command;
 import by.epam.hospital.controller.command.Authorization;
 import by.epam.hospital.controller.command.FirstVisit;
+import by.epam.hospital.controller.command.RegisterClient;
 import by.epam.hospital.controller.command.SignOut;
 
 import java.util.HashMap;
@@ -15,6 +15,7 @@ public class CommandProvider {
         map.put(CommandName.AUTHORIZATION, new Authorization());
         map.put(CommandName.FIRST_VISIT, new FirstVisit());
         map.put(CommandName.SIGN_OUT, new SignOut());
+        map.put(CommandName.REGISTER_CLIENT, new RegisterClient());
     }
 
     public Command getCommand(String command) {
