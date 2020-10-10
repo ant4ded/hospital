@@ -25,7 +25,6 @@ public class Controller extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         CommandProvider commandHelper = new CommandProvider();
         String commandFromRequest = req.getParameter(ParameterName.COMMAND);
-        System.out.println(commandFromRequest);
         if (commandFromRequest != null && !commandFromRequest.isBlank()) {
             Command command = commandHelper.getCommand(commandFromRequest);
             command.execute(req, resp);
