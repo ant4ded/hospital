@@ -1,14 +1,11 @@
-package epam.hospital.data;
+package epam.hospital.util;
 
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import org.testng.annotations.DataProvider;
-import org.testng.collections.Maps;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
