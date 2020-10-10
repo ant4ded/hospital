@@ -6,18 +6,18 @@ import by.epam.hospital.connection.DataSourceFactory;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.UserDetails;
-import by.epam.hospital.entity.table.UsersDetailsColumnName;
+import by.epam.hospital.entity.table.UsersDetailsFieldName;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class UserDetailsDaoImpl implements UserDetailsDao {
     private static final String SQL_CREATE = "INSERT INTO hospital.users_details " +
             "(passport_id, user_id, gender, first_name, surname, last_name, birthday, address , phone) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_DELETE = "DELETE FROM hospital.users_details WHERE passport_id = ?";
     private static final String SQL_FIND = "SELECT passport_id, user_id, gender, " +
             "first_name, surname, last_name, birthday, address, phone " +
             "FROM hospital.users_details WHERE first_name = ? AND surname = ? AND last_name = ? AND birthday = ?";
@@ -64,7 +64,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
-            userDetailsFromDb = find(oldValue);
+            userDetailsFromDb = find(oldValue).orElseThrow(DaoException::new);
 
             statement.setString(1, newValue.getGender().name());
             statement.setString(2, newValue.getFirstName());
@@ -89,35 +89,11 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
     }
 
     @Override
-    public void delete(UserDetails userDetails) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        UserDetails userDetailsFromDb;
-        try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE);
-
-            userDetailsFromDb = find(userDetails);
-            statement.setString(1, userDetailsFromDb.getPassportId());
-
-            if (statement.executeUpdate() < 0) {
-                throw new DaoException("Can not delete row on users_details table");
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
-        } catch (SQLException e) {
-            throw new DaoException("Can not delete row on users_details table", e);
-        } finally {
-            ConnectionUtil.closeConnection(connection, statement);
-        }
-    }
-
-    @Override
-    public UserDetails find(UserDetails userDetails) throws DaoException {
+    public Optional<UserDetails> find(UserDetails userDetails) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        UserDetails userDetailsFromDb;
+        UserDetails userDetailsFromDb = null;
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_FIND);
@@ -131,18 +107,16 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 userDetailsFromDb = new UserDetails();
-                userDetailsFromDb.setPassportId(resultSet.getString(UsersDetailsColumnName.PASSPORT_ID));
-                userDetailsFromDb.setUserId(resultSet.getInt(UsersDetailsColumnName.USER_ID));
+                userDetailsFromDb.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
+                userDetailsFromDb.setUserId(resultSet.getInt(UsersDetailsFieldName.USER_ID));
                 userDetailsFromDb.setGender(UserDetails.Gender
-                        .valueOf(resultSet.getString(UsersDetailsColumnName.GENDER)));
-                userDetailsFromDb.setFirstName(resultSet.getString(UsersDetailsColumnName.FIRST_NAME));
-                userDetailsFromDb.setSurname(resultSet.getString(UsersDetailsColumnName.SURNAME));
-                userDetailsFromDb.setLastName(resultSet.getString(UsersDetailsColumnName.LAST_NAME));
-                userDetailsFromDb.setBirthday(resultSet.getDate(UsersDetailsColumnName.BIRTHDAY));
-                userDetailsFromDb.setAddress(resultSet.getString(UsersDetailsColumnName.ADDRESS));
-                userDetailsFromDb.setPhone(resultSet.getString(UsersDetailsColumnName.PHONE));
-            } else {
-                throw new DaoException("Can not find row on users_details table");
+                        .valueOf(resultSet.getString(UsersDetailsFieldName.GENDER)));
+                userDetailsFromDb.setFirstName(resultSet.getString(UsersDetailsFieldName.FIRST_NAME));
+                userDetailsFromDb.setSurname(resultSet.getString(UsersDetailsFieldName.SURNAME));
+                userDetailsFromDb.setLastName(resultSet.getString(UsersDetailsFieldName.LAST_NAME));
+                userDetailsFromDb.setBirthday(resultSet.getDate(UsersDetailsFieldName.BIRTHDAY));
+                userDetailsFromDb.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
+                userDetailsFromDb.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
@@ -151,6 +125,6 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         } finally {
             ConnectionUtil.closeConnection(connection, statement, resultSet);
         }
-        return userDetailsFromDb;
+        return Optional.ofNullable(userDetailsFromDb);
     }
 }

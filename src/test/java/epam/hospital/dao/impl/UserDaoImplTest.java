@@ -7,8 +7,8 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.entity.UserDetails;
 import epam.hospital.data.Provider;
+import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -21,11 +21,39 @@ public class UserDaoImplTest {
     private static final String SQL_DELETE_USER_ROLES = "DELETE FROM users_roles WHERE user_id = ?";
     private static final String SQL_DELETE = "DELETE FROM users WHERE id = ?";
 
+    private static final Logger logger = Logger.getLogger(UserDaoImplTest.class);
+
     private UserDao userDao;
 
     @BeforeClass
     private void setUserDao() {
         userDao = new UserDaoImpl();
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void create_find_update(User user) throws DaoException {
+        User newValue = new User();
+        newValue.setUserDetails(user.getUserDetails());
+        newValue.setPassword(user.getPassword());
+        newValue.setRoles(user.getRoles());
+        newValue.setLogin(user.getLogin());
+        newValue.setId(user.getId());
+
+        userDao.create(user);
+        if (userDao.find(user).isEmpty()) {
+            logger.fatal("Create or find work incorrect");
+            Assert.fail("Create or find work incorrect");
+        }
+
+        userDao.update(user, newValue);
+        user = userDao.find(newValue).orElse(new User());
+        Assert.assertEquals(user, newValue);
+
+        delete(user);
+        if (userDao.find(user).isPresent()) {
+            logger.fatal("Delete work incorrect");
+            Assert.fail("Delete or find work incorrect");
+        }
     }
 
     private void delete(User user) throws DaoException {
@@ -51,31 +79,5 @@ public class UserDaoImplTest {
         } finally {
             ConnectionUtil.closeConnection(connection, statement);
         }
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void createAndFind_correctUser_correctWork(User actual) throws DaoException {
-        User expected;
-        userDao.create(actual);
-        expected = userDao.find(actual).orElseThrow(DaoException::new);
-
-        delete(actual);
-
-        Assert.assertEquals(actual, expected);
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void update_correctUser_correctWork(User user) throws DaoException {
-        User expected = new User();
-        expected.setLogin("someLogin");
-        expected.setPassword(user.getPassword());
-
-        userDao.create(user);
-        userDao.update(user, expected);
-
-        User actual = userDao.find(expected).orElseThrow(DaoException::new);
-        delete(actual);
-
-        Assert.assertEquals(actual, expected);
     }
 }

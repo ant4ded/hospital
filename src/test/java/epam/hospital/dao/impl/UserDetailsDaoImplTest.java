@@ -1,16 +1,26 @@
 package epam.hospital.dao.impl;
 
+import by.epam.hospital.connection.ConnectionException;
+import by.epam.hospital.connection.ConnectionUtil;
+import by.epam.hospital.connection.DataSourceFactory;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import epam.hospital.data.Provider;
+import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 public class UserDetailsDaoImplTest {
+    private static final String SQL_DELETE = "DELETE FROM hospital.users_details WHERE passport_id = ?";
+    private final Logger logger = Logger.getLogger(UserDetailsDaoImplTest.class);
     private UserDetailsDao userDetailsDao;
 
     @BeforeClass
@@ -18,35 +28,56 @@ public class UserDetailsDaoImplTest {
         userDetailsDao = new UserDetailsDaoImpl();
     }
 
-    // TODO: 19.09.2020 tests methods
-
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    private void createAndFindAndDelete_correctUserDetails_correctWork(User actual) throws DaoException {
-        UserDetails expected;
-        userDetailsDao.create(actual.getUserDetails());
-        expected = userDetailsDao.find(actual.getUserDetails());
-        userDetailsDao.delete(actual.getUserDetails());
-        Assert.assertEquals(actual.getUserDetails(), expected);
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    private void update_correctUserDetails_updatedRow(User user) throws DaoException {
-        UserDetails expected = new UserDetails();
-        expected.setPassportId(user.getUserDetails().getPassportId());
-        expected.setUserId(user.getUserDetails().getUserId());
-        expected.setGender(UserDetails.Gender.FEMALE);
-        expected.setFirstName(user.getUserDetails().getFirstName());
-        expected.setSurname(user.getUserDetails().getSurname());
-        expected.setLastName(user.getUserDetails().getLastName());
-        expected.setBirthday(user.getUserDetails().getBirthday());
-        expected.setAddress(user.getUserDetails().getAddress());
-        expected.setPhone(user.getUserDetails().getPhone());
+    public void create_find_update(User user) throws DaoException {
+        UserDetails newUserDetails = new UserDetails();
+        newUserDetails.setPassportId(user.getUserDetails().getPassportId());
+        newUserDetails.setUserId(user.getUserDetails().getUserId());
+        newUserDetails.setGender(UserDetails.Gender.FEMALE);
+        newUserDetails.setFirstName(user.getUserDetails().getFirstName());
+        newUserDetails.setSurname(user.getUserDetails().getSurname());
+        newUserDetails.setLastName(user.getUserDetails().getLastName());
+        newUserDetails.setBirthday(user.getUserDetails().getBirthday());
+        newUserDetails.setAddress(user.getUserDetails().getAddress());
+        newUserDetails.setPhone(user.getUserDetails().getPhone());
 
         userDetailsDao.create(user.getUserDetails());
-        userDetailsDao.update(user.getUserDetails(), expected);
-        UserDetails actual = userDetailsDao.find(expected);
-        userDetailsDao.delete(actual);
+        if (userDetailsDao.find(user.getUserDetails()).isEmpty()) {
+            logger.fatal("Create or find work incorrect");
+            Assert.fail("Create or find work incorrect");
+        }
 
-        Assert.assertEquals(actual, expected);
+        userDetailsDao.update(user.getUserDetails(), newUserDetails);
+        user.setUserDetails(userDetailsDao.find(newUserDetails).orElse(new UserDetails()));
+        Assert.assertEquals(user.getUserDetails(), newUserDetails);
+
+        delete(user.getUserDetails());
+        if (userDetailsDao.find(user.getUserDetails()).isPresent()){
+            logger.fatal("Delete work incorrect");
+            Assert.fail("Delete or find work incorrect");
+        }
+    }
+
+    private void delete(UserDetails userDetails) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        UserDetails userDetailsFromDb;
+        try {
+            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            statement = connection.prepareStatement(SQL_DELETE);
+
+            userDetailsFromDb = userDetailsDao.find(userDetails).orElseThrow(DaoException::new);
+            statement.setString(1, userDetailsFromDb.getPassportId());
+
+            if (statement.executeUpdate() < 0) {
+                throw new DaoException("Can not delete row on users_details table");
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source", e);
+        } catch (SQLException e) {
+            throw new DaoException("Can not delete row on users_details table", e);
+        } finally {
+            ConnectionUtil.closeConnection(connection, statement);
+        }
     }
 }

@@ -7,8 +7,8 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.entity.table.RolesColumnName;
-import by.epam.hospital.entity.table.UsersColumnName;
+import by.epam.hospital.entity.table.RolesFieldName;
+import by.epam.hospital.entity.table.UsersFieldName;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -72,13 +72,11 @@ public class UserDaoImpl implements UserDao {
             User userFromDb = find(user).orElseThrow(DaoException::new);
             statement.close();
 
-            for (Role role : user.getRoles().values()) {
-                statement = connection.prepareStatement(SQL_CREATE_USER_ROLES);
-                statement.setInt(1, userFromDb.getId());
-                statement.setInt(2, findRoleId(role));
-                statement.execute();
-                statement.close();
-            }
+            statement = connection.prepareStatement(SQL_CREATE_USER_ROLES);
+            statement.setInt(1, userFromDb.getId());
+            statement.setInt(2, findRoleId(Role.CLIENT));
+            statement.execute();
+            statement.close();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
@@ -128,8 +126,8 @@ public class UserDaoImpl implements UserDao {
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 userFromDb = new User();
-                userFromDb.setId(resultSet.getInt(UsersColumnName.ID));
-                userFromDb.setPassword(resultSet.getString(UsersColumnName.PASSWORD));
+                userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
+                userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
                 userFromDb.setLogin(user.getLogin());
 
                 ConnectionUtil.closeConnection(connection, statement, resultSet);
@@ -140,7 +138,7 @@ public class UserDaoImpl implements UserDao {
                 resultSet = statement.getResultSet();
                 Map<String, Role> map = new HashMap<>();
                 while (resultSet.next()) {
-                    Role role = Role.valueOf(resultSet.getString(RolesColumnName.TITLE));
+                    Role role = Role.valueOf(resultSet.getString(RolesFieldName.TITLE));
                     map.put(role.name(), role);
                 }
                 userFromDb.setRoles(map);

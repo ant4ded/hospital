@@ -1,6 +1,6 @@
 package by.epam.hospital.controller.main;
 
-public class MainParameter {
+public class HospitalParameter {
     public static final String COMMAND = "command";
     public static final String UNSUCCESSFUL_MESSAGE = "unsuccessful_message";
     public static final String LOGIN = "login";
