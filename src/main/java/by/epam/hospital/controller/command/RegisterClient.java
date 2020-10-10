@@ -60,7 +60,7 @@ public class RegisterClient implements Command {
         } catch (ServiceException e) {
             request.setAttribute(ParameterName.MESSAGE, e.getMessage());
         } finally {
-            request.getRequestDispatcher(HospitalUrl.MAIN_URL + HospitalUrl.PAGE_REGISTRY).forward(request, response);
+            request.getRequestDispatcher(HospitalUrl.PAGE_REGISTRY).forward(request, response);
         }
     }
 }

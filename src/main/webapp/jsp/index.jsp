@@ -2,14 +2,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Medino</title>
-    <jsp:include page="component/head.jsp"/>
+<%--    <jsp:include page="component/head.jsp"/>--%>
+    <%@include file="component/head.jsp"%>
 </head>
 <body>
-<jsp:include page="component/navbar.jsp"/>
+<%--<jsp:include page="component/navbar.jsp"/>--%>
+<%@include file="component/navbar.jsp"%>
 
-<!-- Banner Area Starts -->
+
+<%-- Banner Area Starts --%>
 <section class="banner-area">
     <div class="container">
         <div class="row">
@@ -23,9 +25,9 @@
         </div>
     </div>
 </section>
-<!-- Banner Area End -->
+<%-- Banner Area End --%>
 
-<!-- Feature Area Starts -->
+<%-- Feature Area Starts --%>
 <section class="feature-area section-padding">
     <div class="container">
         <div class="row">
@@ -64,9 +66,9 @@
         </div>
     </div>
 </section>
-<!-- Feature Area End -->
+<%-- Feature Area End --%>
 
-<!-- Welcome Area Starts -->
+<%-- Welcome Area Starts --%>
 <section class="welcome-area section-padding3">
     <div class="container">
         <div class="row">
@@ -88,9 +90,9 @@
         </div>
     </div>
 </section>
-<!-- Welcome Area End -->
+<%-- Welcome Area End --%>
 
-<!-- Department Area Starts -->
+<%-- Department Area Starts --%>
 <section class="department-area section-padding4">
     <div class="container">
         <div class="row">
@@ -162,9 +164,9 @@
         </div>
     </div>
 </section>
-<!-- Department Area Starts -->
+<%-- Department Area Starts --%>
 
-<!-- Patient Area Starts -->
+<%-- Patient Area Starts --%>
 <section class="patient-area section-padding">
     <div class="container">
         <div class="row">
@@ -221,9 +223,9 @@
         </div>
     </div>
 </section>
-<!-- Patient Area Starts -->
+<%-- Patient Area Starts --%>
 
-<!-- Specialist Area Starts -->
+<%-- Specialist Area Starts --%>
 <section class="specialist-area section-padding">
     <div class="container">
         <div class="row">
@@ -327,9 +329,9 @@
         </div>
     </div>
 </section>
-<!-- Specialist Area Starts -->
+<%-- Specialist Area Starts --%>
 
-<!-- Hotline Area Starts -->
+<%-- Hotline Area Starts --%>
 <section class="hotline-area text-center section-padding">
     <div class="container">
         <div class="row">
@@ -342,9 +344,9 @@
         </div>
     </div>
 </section>
-<!-- Hotline Area End -->
+<%-- Hotline Area End --%>
 
-<!-- News Area Starts -->
+<%-- News Area Starts --%>
 <section class="news-area section-padding">
     <div class="container">
         <div class="row">
@@ -411,9 +413,9 @@
         </div>
     </div>
 </section>
-<!-- News Area Starts -->
+<%-- News Area Starts --%>
 
-<jsp:include page="component/footer.jsp"/>
-<%--<%@ include file="component/footer.jsp" %>--%>
+<%--<jsp:include page="component/footer.jsp"/>--%>
+<%@include file="component/footer.jsp"%>
 </body>
 </html>

@@ -1,9 +1,11 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
+<%@page import="by.epam.hospital.controller.CommandName"%>
 <%@page import="by.epam.hospital.controller.HospitalUrl"%>
-<%@page import="by.epam.hospital.controller.main.MainCommandName"%>
-<%@page import="by.epam.hospital.controller.main.MainParameter"%>
+<%@page import="by.epam.hospital.controller.ParameterName"%>
 <%@page import="by.epam.hospital.entity.Role"%>
+<%@page import="by.epam.hospital.entity.table.UsersFieldName"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page contentType="text/html;charset=UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,12 +24,12 @@
         <h4>Login</h4>
         <form method="post" action="${HospitalUrl.SERVLET_MAIN}">
             <div class="form-group">
-                <p>${requestScope.unsuccessful_message}</p>
-                <input type="hidden" name="${MainParameter.COMMAND}" value="${MainCommandName.AUTHORIZATION}">
-                <input type="text" name="login" placeholder="Login"
+                <p>${requestScope.message}</p>
+                <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.AUTHORIZATION}">
+                <input type="text" name="${UsersFieldName.LOGIN}" placeholder="Login"
                        onfocus="this.placeholder = ''"
                        onblur="this.placeholder = 'Login'" required class="single-input">
-                <input type="password" name="password" placeholder="Password"
+                <input type="password" name="${UsersFieldName.PASSWORD}" placeholder="Password"
                        onfocus="this.placeholder = ''"
                        onblur="this.placeholder = 'Password'" required class="single-input">
             </div>
@@ -65,7 +67,7 @@
         <div class="container">
             <div class="row align-items-center justify-content-between d-flex">
                 <div id="logo">
-                        <a href="#"><img src="images/logo/logo.png" alt="" title=""/></a>
+                    <a href="#"><img src="images/logo/logo.png" alt="" title=""/></a>
                 </div>
                 <nav id="nav-menu-container">
                     <ul class="nav-menu">
@@ -83,10 +85,10 @@
                             <li class="menu-has-children"><a href="">${sessionScope.loginUsername}</a>
                                 <ul>
                                     <c:if test="${sessionScope.loginRoles.containsValue(Role.RECEPTIONIST)}">
-                                        <li><a href="#">Register new client</a></li>
+                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_REGISTRY}">Register new client</a></li>
                                     </c:if>
                                     <li>
-                                        <a href="${HospitalUrl.MAIN_PAGE}?${MainParameter.COMMAND}=${MainCommandName.SIGN_OUT}">
+                                        <a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.SIGN_OUT}">
                                             sign out
                                         </a>
                                     </li>

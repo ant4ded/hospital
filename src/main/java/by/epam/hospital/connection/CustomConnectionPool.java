@@ -17,7 +17,7 @@ public enum CustomConnectionPool {
     private static final int DEFAULT_POOL_SIZE = 32;
     private BlockingQueue<ProxyConnection> freeConnections;
     private Queue<ProxyConnection> usedConnections;
-    private Logger logger = Logger.getLogger(CustomConnectionPool.class);
+    private final Logger logger = Logger.getLogger(CustomConnectionPool.class);
 
     CustomConnectionPool() {
         try {

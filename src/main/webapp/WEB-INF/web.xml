@@ -11,11 +11,20 @@
   <display-name>Archetype Created Web Application</display-name>
 
   <servlet>
-    <servlet-name>Index</servlet-name>
+    <servlet-name>Main</servlet-name>
     <jsp-file>/jsp/index.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Index</servlet-name>
-    <url-pattern>/index</url-pattern>
+    <servlet-name>Main</servlet-name>
+    <url-pattern>/main</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Registry</servlet-name>
+    <jsp-file>/jsp/registry.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Registry</servlet-name>
+    <url-pattern>/registry</url-pattern>
   </servlet-mapping>
 </web-app>
