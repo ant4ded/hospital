@@ -1,17 +1,18 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
-<%@page import="by.epam.hospital.controller.CommandName"%>
-<%@page import="by.epam.hospital.controller.HospitalUrl"%>
-<%@page import="by.epam.hospital.controller.ParameterName"%>
-<%@page import="by.epam.hospital.entity.Role"%>
-<%@page import="by.epam.hospital.entity.table.UsersFieldName"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page contentType="text/html;charset=UTF-8"%>
+<%@page import="by.epam.hospital.controller.CommandName" %>
+<%@page import="by.epam.hospital.controller.HospitalUrl" %>
+<%@page import="by.epam.hospital.controller.ParameterName" %>
+<%@page import="by.epam.hospital.entity.Role" %>
+<%@page import="by.epam.hospital.entity.table.UsersFieldName" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title></title>
 </head>
 <body>
+
 <!-- Preloader Starts -->
 <div class="preloader">
     <div class="spinner"></div>
@@ -22,7 +23,7 @@
 <div class="login-form-flex">
     <div id="login" class="login-form">
         <h4>Login</h4>
-        <form method="post" action="${HospitalUrl.SERVLET_MAIN}">
+        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
             <div class="form-group">
                 <p>${requestScope.message}</p>
                 <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.AUTHORIZATION}">
@@ -33,7 +34,7 @@
                        onfocus="this.placeholder = ''"
                        onblur="this.placeholder = 'Password'" required class="single-input">
             </div>
-            <button type="submit" class="template-btn">Submit</button>
+            <button type="submit" class="template-btn form-btn">Submit</button>
         </form>
     </div>
 </div>
@@ -84,8 +85,17 @@
                         <c:if test="${sessionScope.loginUsername != null}">
                             <li class="menu-has-children"><a href="">${sessionScope.loginUsername}</a>
                                 <ul>
+                                        <%--Role.RECEPTIONIST--%>
                                     <c:if test="${sessionScope.loginRoles.containsValue(Role.RECEPTIONIST)}">
-                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_REGISTRY}">Register new client</a></li>
+                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_REGISTRY}">
+                                            Register new client
+                                        </a></li>
+                                    </c:if>
+                                        <%--Role.ADMIN_HEAD--%>
+                                    <c:if test="${sessionScope.loginRoles.containsValue(Role.ADMIN_HEAD)}">
+                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_ROLE_CONTROL}">
+                                            Role control
+                                        </a></li>
                                     </c:if>
                                     <li>
                                         <a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.SIGN_OUT}">
