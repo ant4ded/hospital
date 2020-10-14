@@ -139,7 +139,7 @@ public class UserDetails {
                 .toString();
     }
 
-    public static enum Gender {
+    public enum Gender {
         MALE, FEMALE
     }
 }
