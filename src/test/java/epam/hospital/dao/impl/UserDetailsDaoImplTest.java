@@ -1,8 +1,5 @@
 package epam.hospital.dao.impl;
 
-import by.epam.hospital.connection.ConnectionException;
-import by.epam.hospital.connection.ConnectionUtil;
-import by.epam.hospital.connection.DataSourceFactory;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
@@ -13,12 +10,7 @@ import epam.hospital.util.Provider;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 public class UserDetailsDaoImplTest {
     private final Logger logger = Logger.getLogger(UserDetailsDaoImplTest.class);
@@ -56,7 +48,7 @@ public class UserDetailsDaoImplTest {
         Assert.assertEquals(user.getUserDetails(), newUserDetails);
 
         cleaner.delete(user.getUserDetails());
-        if (userDetailsDao.find(user.getUserDetails()).isPresent()){
+        if (userDetailsDao.find(user.getUserDetails()).isPresent()) {
             logger.fatal("Delete work incorrect");
             Assert.fail("Delete or find work incorrect");
         }

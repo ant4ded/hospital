@@ -4,13 +4,11 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.entity.UserDetails;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class UserDaoImplTest {

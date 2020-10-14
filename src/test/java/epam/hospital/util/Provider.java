@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class Provider {
 
     @DataProvider
@@ -22,7 +23,7 @@ public class Provider {
 
     @DataProvider
     public Object[][] getCorrectUser() {
-        Map<String,Role> roles = new HashMap<>();
+        Map<String, Role> roles = new HashMap<>();
         roles.put(Role.CLIENT.name(), Role.CLIENT);
         return new Object[][]{{
                 new User(0, "qwe", "qwe", roles,
