@@ -1,4 +1,4 @@
-package by.epam.hospital.controller.command;
+package by.epam.hospital.controller.command.receptionist;
 
 import by.epam.hospital.controller.Command;
 import by.epam.hospital.controller.HospitalUrl;

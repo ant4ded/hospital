@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+// TODO: 16.10.2020 add urlPatterns for all roles and change action in all forms
+//  (it's necessary for correct work authentication filter)
 @WebServlet(urlPatterns = {"", "/main-servlet"})
 public class Controller extends HttpServlet {
     @Override
@@ -14,7 +16,7 @@ public class Controller extends HttpServlet {
         CommandProvider commandHelper = new CommandProvider();
         String commandFromRequest = req.getParameter(ParameterName.COMMAND);
         if (commandFromRequest != null && !commandFromRequest.isBlank()) {
-            Command command = commandHelper.getCommand(commandFromRequest);
+            Command command = commandHelper.getCommand(CommandName.valueOf(commandFromRequest));
             command.execute(req, resp);
         } else {
             commandHelper.getCommand(CommandName.FIRST_VISIT).execute(req,resp);
@@ -26,7 +28,7 @@ public class Controller extends HttpServlet {
         CommandProvider commandHelper = new CommandProvider();
         String commandFromRequest = req.getParameter(ParameterName.COMMAND);
         if (commandFromRequest != null && !commandFromRequest.isBlank()) {
-            Command command = commandHelper.getCommand(commandFromRequest);
+            Command command = commandHelper.getCommand(CommandName.valueOf(commandFromRequest));
             command.execute(req, resp);
         }
     }
