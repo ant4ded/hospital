@@ -1,9 +1,10 @@
 package by.epam.hospital.entity;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.StringJoiner;
 
-public class UserDetails {
+public class UserDetails implements Serializable {
     private String passportId;
     private int userId;
     private Gender gender;
@@ -129,8 +130,10 @@ public class UserDetails {
     @Override
     public String toString() {
         return new StringJoiner(", ", UserDetails.class.getSimpleName() + "[", "]")
+                .add("passportId='" + passportId + "'")
                 .add("userId=" + userId)
-                .add("name='" + firstName + "'")
+                .add("gender=" + gender)
+                .add("firstName='" + firstName + "'")
                 .add("surname='" + surname + "'")
                 .add("lastName='" + lastName + "'")
                 .add("birthday=" + birthday)
