@@ -31,7 +31,7 @@ public class Cleaner {
 
             statement = connection.prepareStatement(SQL_DELETE_USER_ROLES);
 
-            user = userDao.find(user).orElseThrow(DaoException::new);
+            user = userDao.find(user.getLogin()).orElseThrow(DaoException::new);
             statement.setInt(1, user.getId());
             statement.execute();
             statement.close();

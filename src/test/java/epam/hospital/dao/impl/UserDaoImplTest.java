@@ -35,17 +35,17 @@ public class UserDaoImplTest {
         newValue.setId(user.getId());
 
         userDao.create(user);
-        if (userDao.find(user).isEmpty()) {
+        if (userDao.find(user.getLogin()).isEmpty()) {
             logger.fatal("Create or find work incorrect");
             Assert.fail("Create or find work incorrect");
         }
 
         userDao.update(user, newValue);
-        user = userDao.find(newValue).orElse(new User());
+        user = userDao.find(newValue.getLogin()).orElse(new User());
         Assert.assertEquals(user, newValue);
 
         cleaner.delete(user);
-        if (userDao.find(user).isPresent()) {
+        if (userDao.find(user.getLogin()).isPresent()) {
             logger.fatal("Delete work incorrect");
             Assert.fail("Delete or find work incorrect");
         }

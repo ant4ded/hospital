@@ -36,7 +36,7 @@ public class ReceptionistServiceImplTest {
         User userFromDb;
         receptionistService.registerClient(user);
 
-        userFromDb = userDao.find(user).orElse(new User());
+        userFromDb = userDao.find(user.getLogin()).orElse(new User());
         userFromDb.setUserDetails(userDetailsDao.find(user.getUserDetails()).orElse(new UserDetails()));
 
         cleaner.delete(user.getUserDetails());
