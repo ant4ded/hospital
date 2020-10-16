@@ -10,6 +10,8 @@
 
   <display-name>Archetype Created Web Application</display-name>
 
+
+  <!--Servlets declaration start-->
   <servlet>
     <servlet-name>Main</servlet-name>
     <jsp-file>/jsp/index.jsp</jsp-file>
@@ -18,7 +20,9 @@
     <servlet-name>Main</servlet-name>
     <url-pattern>/main</url-pattern>
   </servlet-mapping>
+  <!--Servlets declaration end-->
 
+  <!--JSP declaration start-->
   <servlet>
     <servlet-name>Registry</servlet-name>
     <jsp-file>/jsp/registry.jsp</jsp-file>
@@ -27,4 +31,76 @@
     <servlet-name>Registry</servlet-name>
     <url-pattern>/registry</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>RoleControl</servlet-name>
+    <jsp-file>/jsp/roleControl.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RoleControl</servlet-name>
+    <url-pattern>/role-control</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>Error</servlet-name>
+    <jsp-file>/jsp/error.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Error</servlet-name>
+    <url-pattern>/error-handler</url-pattern>
+  </servlet-mapping>
+  <!--JSP declaration end-->
+
+  <!--Error codes declaration start-->
+  <error-page>
+    <error-code>401</error-code>
+    <location>/error-handler</location>
+  </error-page>
+
+  <error-page>
+    <error-code>403</error-code>
+    <location>/error-handler</location>
+  </error-page>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error-handler</location>
+  </error-page>
+
+  <error-page>
+    <error-code>500</error-code>
+    <location>/error-handler</location>
+  </error-page>
+  <!--Error codes declaration end-->
+
+  <!--Filters declaration start-->
+  <filter>
+    <filter-name>ReceptionistAuthenticationFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.AuthenticationFilter</filter-class>
+    <init-param>
+      <param-name>role</param-name>
+      <param-value>RECEPTIONIST</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>ReceptionistAuthenticationFilter</filter-name>
+    <url-pattern>/registry</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>AdminHeadAuthenticationFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.AuthenticationFilter</filter-class>
+    <init-param>
+      <param-name>role</param-name>
+      <param-value>ADMIN_HEAD</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>AdminHeadAuthenticationFilter</filter-name>
+    <url-pattern>/role-control</url-pattern>
+  </filter-mapping>
+  <!--Filters declaration end-->
 </web-app>
