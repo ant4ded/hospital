@@ -7,4 +7,9 @@ public class ParameterName {
     public static final String PASSWORD = "password";
     public static final String LOGIN_USERNAME = "loginUsername";
     public static final String LOGIN_ROLES = "loginRoles";
+    public static final String USER_ROLES = "userRoles";
+    public static final String ROLE = "role";
+    public static final String ACTION = "action";
+    public static final String ACTION_REMOVE = "action-remove";
+    public static final String ACTION_ADD = "action-add";
 }

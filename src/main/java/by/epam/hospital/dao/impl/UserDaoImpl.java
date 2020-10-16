@@ -3,6 +3,7 @@ package by.epam.hospital.dao.impl;
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionUtil;
 import by.epam.hospital.connection.DataSourceFactory;
+import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.RoleDao;
 import by.epam.hospital.dao.UserDao;
@@ -16,7 +17,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,6 +28,12 @@ public class UserDaoImpl implements UserDao {
             "INNER JOIN users_roles ON roles.id = users_roles.role_id " +
             "INNER JOIN users ON users_roles.user_id = users.id WHERE users.id = ?";
     private static final String SQL_UPDATE = "UPDATE users SET login = ?, password = ? WHERE id = ?";
+    private static final String SQL_DELETE_USER_ROLE = "DELETE users_roles FROM users_roles " +
+            "INNER JOIN users u ON u.id = users_roles.user_id " +
+            "INNER JOIN roles r ON r.id = users_roles.role_id " +
+            "WHERE u.login = ? AND r.title = ?";
+    private static final String SQL_UPDATE_USER_ROLE = "INSERT INTO users_roles (user_id, role_id) " +
+            "SELECT users.id, roles.id FROM users, roles WHERE login = ? AND title = ?";
 
     private final RoleDao roleDao = new RoleDaoImpl();
 
@@ -125,5 +131,32 @@ public class UserDaoImpl implements UserDao {
             ConnectionUtil.closeConnection(connection, statement, resultSet);
         }
         return Optional.ofNullable(userFromDb);
+    }
+
+    @Override
+    public void updateUserRole(String login, String action, Role role) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+
+            if (!action.equals(ParameterName.ACTION_ADD) && !action.equals(ParameterName.ACTION_REMOVE)){
+                throw new DaoException("Invalid parameter value. Parameter - " + ParameterName.ACTION);
+            }
+
+            statement = connection.prepareStatement(action.equals(ParameterName.ACTION_REMOVE) ?
+                    SQL_DELETE_USER_ROLE : SQL_UPDATE_USER_ROLE);
+
+            statement.setString(1, login);
+            statement.setString(2, role.name());
+
+            statement.execute();
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source", e);
+        } catch (SQLException e) {
+            throw new DaoException("Can not update row on users_details table", e);
+        } finally {
+            ConnectionUtil.closeConnection(connection, statement);
+        }
     }
 }

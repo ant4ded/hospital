@@ -1,5 +1,6 @@
 package by.epam.hospital.dao;
 
+import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 
 import java.util.Optional;
@@ -10,4 +11,6 @@ public interface UserDao {
     void update(User oldValue, User newValue) throws DaoException;
 
     Optional<User> find(String login) throws DaoException;
+
+    void updateUserRole(String login, String action, Role role) throws DaoException;
 }
