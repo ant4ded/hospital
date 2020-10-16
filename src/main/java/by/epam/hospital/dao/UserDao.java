@@ -9,5 +9,5 @@ public interface UserDao {
 
     void update(User oldValue, User newValue) throws DaoException;
 
-    Optional<User> find(User user) throws DaoException;
+    Optional<User> find(String login) throws DaoException;
 }

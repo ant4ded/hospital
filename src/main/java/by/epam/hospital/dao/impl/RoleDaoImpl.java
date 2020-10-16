@@ -41,6 +41,7 @@ public class RoleDaoImpl implements RoleDao {
         return roles;
     }
 
+    @Override
     public int findRoleId(Role role) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;

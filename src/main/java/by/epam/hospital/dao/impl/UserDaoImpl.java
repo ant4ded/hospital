@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(2, user.getPassword());
 
             statement.execute();
-            User userFromDb = find(user).orElseThrow(DaoException::new);
+            User userFromDb = find(user.getLogin()).orElseThrow(DaoException::new);
             statement.close();
 
             statement = connection.prepareStatement(SQL_CREATE_USER_ROLES);
@@ -67,7 +68,7 @@ public class UserDaoImpl implements UserDao {
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
-            userFromDb = find(oldValue).orElseThrow(DaoException::new);
+            userFromDb = find(oldValue.getLogin()).orElseThrow(DaoException::new);
 
             statement.setString(1, newValue.getLogin());
             statement.setString(2, newValue.getPassword());
@@ -84,7 +85,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> find(User user) throws DaoException {
+    public Optional<User> find(String login) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -93,7 +94,7 @@ public class UserDaoImpl implements UserDao {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_FIND);
 
-            statement.setString(1, user.getLogin());
+            statement.setString(1, login);
 
             statement.execute();
             resultSet = statement.getResultSet();
@@ -101,7 +102,7 @@ public class UserDaoImpl implements UserDao {
                 userFromDb = new User();
                 userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-                userFromDb.setLogin(user.getLogin());
+                userFromDb.setLogin(login);
 
                 ConnectionUtil.closeConnection(connection, statement, resultSet);
                 connection = DataSourceFactory.createMysqlDataSource().getConnection();
