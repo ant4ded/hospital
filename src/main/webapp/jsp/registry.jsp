@@ -1,7 +1,6 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
 <%@page import="by.epam.hospital.entity.table.UsersDetailsFieldName" %>
-<%@page import="by.epam.hospital.entity.UserDetails.Gender" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,7 +76,7 @@
                                 <p class="radio-p">Male</p>
                                 <div class="confirm-radio">
                                     <input type="radio" id="confirm-radio" name="${UsersDetailsFieldName.GENDER}"
-                                           value="${Gender.MALE}">
+                                           value="${UsersDetailsFieldName.GENDER_MALE}">
                                     <label for="confirm-radio"></label>
                                 </div>
                             </div>
@@ -85,7 +84,7 @@
                                 <p class="radio-p">Female</p>
                                 <div class="primary-radio">
                                     <input type="radio" id="primary-radio" name="${UsersDetailsFieldName.GENDER}"
-                                           value="${Gender.FEMALE}">
+                                           value="${UsersDetailsFieldName.GENDER_FEMALE}">
                                     <label for="primary-radio"></label>
                                 </div>
                             </div>

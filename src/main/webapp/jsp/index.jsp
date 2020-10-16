@@ -1,13 +1,11 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Medino</title>
-<%--    <jsp:include page="component/head.jsp"/>--%>
     <%@include file="component/head.jsp"%>
 </head>
 <body>
-<%--<jsp:include page="component/navbar.jsp"/>--%>
 <%@include file="component/navbar.jsp"%>
 
 
@@ -415,7 +413,6 @@
 </section>
 <%-- News Area Starts --%>
 
-<%--<jsp:include page="component/footer.jsp"/>--%>
 <%@include file="component/footer.jsp"%>
 </body>
 </html>
