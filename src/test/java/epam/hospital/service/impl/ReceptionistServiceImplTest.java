@@ -24,7 +24,7 @@ public class ReceptionistServiceImplTest {
 
 
     @BeforeClass
-    private void setReceptionistService() {
+    private void setFields() {
         receptionistService = new ReceptionistServiceImpl();
         userDetailsDao = new UserDetailsDaoImpl();
         userDao = new UserDaoImpl();

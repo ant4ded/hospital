@@ -22,7 +22,7 @@ public class ClientServiceImplTest {
     private Cleaner cleaner;
 
     @BeforeClass
-    private void setClientService() {
+    private void setFields() {
         clientService = new ClientServiceImpl();
         userDao = new UserDaoImpl();
         cleaner = new Cleaner();
