@@ -18,7 +18,6 @@
                 <h1>Leading the way in medical excellence</h1>
                 <p>Earth greater grass for good. Place for divide evening yielding them that. Creeping beginning over
                     gathered brought.</p>
-                <a href="" class="template-btn mt-3">take appointment</a>
             </div>
         </div>
     </div>
