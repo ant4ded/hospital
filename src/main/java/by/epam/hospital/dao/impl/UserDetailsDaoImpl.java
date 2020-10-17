@@ -64,6 +64,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
             userDetailsFromDb = find(oldValue.getUserId()).orElseThrow(DaoException::new);
+            newValue.setUserId(userDetailsFromDb.getUserId());
 
             statement.setString(1, newValue.getGender().name());
             statement.setString(2, newValue.getFirstName());
@@ -73,7 +74,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             statement.setString(6, newValue.getAddress());
             statement.setString(7, newValue.getPhone());
             statement.setString(8, userDetailsFromDb.getPassportId());
-            statement.setInt(9, userDetailsFromDb.getUserId());
+            statement.setInt(9, newValue.getUserId());
 
             if (statement.executeUpdate() < 0) {
                 throw new DaoException("Can not update row on users_details table");

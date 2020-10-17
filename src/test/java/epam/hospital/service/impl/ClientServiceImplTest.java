@@ -28,7 +28,7 @@ public class ClientServiceImplTest {
         cleaner = new Cleaner();
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUserAndUserDetails")
     public void authorization_userWithRoles(User user) throws DaoException, ServiceException {
         userDao.create(user);
         Map<String, Role> roles;

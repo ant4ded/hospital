@@ -28,11 +28,11 @@ public class UserDetailsDaoImplTest {
         cleaner = new Cleaner();
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUserAndUserDetails")
     public void create_find_update(User user) throws DaoException {
         UserDetails newUserDetails = new UserDetails();
         newUserDetails.setPassportId(user.getUserDetails().getPassportId());
-        newUserDetails.setGender(UserDetails.Gender.FEMALE);
+        newUserDetails.setGender(UserDetails.Gender.MALE);
         newUserDetails.setFirstName(user.getUserDetails().getFirstName());
         newUserDetails.setSurname(user.getUserDetails().getSurname());
         newUserDetails.setLastName(user.getUserDetails().getLastName());
@@ -42,25 +42,20 @@ public class UserDetailsDaoImplTest {
 
         userDao.create(user);
 
-        user.setId(userDao.find(user.getLogin()).orElse(new User()).getId());
-        user.getUserDetails().setUserId(user.getId());
-        newUserDetails.setUserId(user.getId());
-
-        userDetailsDao.create(user.getUserDetails());
-        if (userDetailsDao.find(user.getUserDetails().getUserId()).isEmpty()) {
+        if (userDao.find(user.getLogin()).orElse(new User()).getUserDetails().getUserId() == 0) {
             logger.fatal("Create or find work incorrect");
             Assert.fail("Create or find work incorrect");
         }
 
         userDetailsDao.update(user.getUserDetails(), newUserDetails);
-        user.setUserDetails(userDetailsDao.find(newUserDetails.getUserId()).orElse(new UserDetails()));
-        Assert.assertEquals(user.getUserDetails(), newUserDetails);
+        user.setUserDetails(userDetailsDao.find(user.getUserDetails().getUserId()).orElse(new UserDetails()));
 
-        cleaner.delete(user.getUserDetails());
         cleaner.delete(user);
         if (userDetailsDao.find(user.getUserDetails().getUserId()).isPresent() || userDao.find(user.getLogin()).isPresent()) {
             logger.fatal("Delete work incorrect");
             Assert.fail("Delete or find work incorrect");
         }
+
+        Assert.assertEquals(user.getUserDetails(), newUserDetails);
     }
 }

@@ -25,7 +25,7 @@ public class UserDaoImplTest {
         userDao = new UserDaoImpl();
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUserAndUserDetails")
     public void create_find_update(User user) throws DaoException {
         user.setLogin("pppp");
 
@@ -53,7 +53,7 @@ public class UserDaoImplTest {
         }
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUserAndUserDetails")
     public void updateUserRoles_userAndRole_userWithNewRole(User user) throws DaoException {
         userDao.create(user);
         userDao.updateUserRoles(user.getLogin(), Action.ADD, Role.MEDICAL_ASSISTANT);

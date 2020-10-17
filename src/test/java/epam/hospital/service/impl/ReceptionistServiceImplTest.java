@@ -31,7 +31,7 @@ public class ReceptionistServiceImplTest {
         cleaner = new Cleaner();
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUserAndUserDetails")
     public void registerClient_user_recordedBDUser(User user) throws ServiceException, DaoException {
         User userFromDb;
         receptionistService.registerClient(user);
@@ -39,7 +39,6 @@ public class ReceptionistServiceImplTest {
         userFromDb = userDao.find(user.getLogin()).orElse(new User());
         userFromDb.setUserDetails(userDetailsDao.find(user.getId()).orElse(new UserDetails()));
 
-        cleaner.delete(user.getUserDetails());
         cleaner.delete(user);
 
         Assert.assertEquals(user, userFromDb);

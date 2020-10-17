@@ -5,10 +5,11 @@ import by.epam.hospital.connection.ConnectionUtil;
 import by.epam.hospital.connection.DataSourceFactory;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.RoleDao;
 import by.epam.hospital.dao.UserDao;
+import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.RolesFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
 import by.epam.hospital.service.util.Action;
@@ -37,7 +38,7 @@ public class UserDaoImpl implements UserDao {
     private static final String SQL_UPDATE_USER_ROLE = "INSERT INTO users_roles (user_id, role_id) " +
             "SELECT users.id, roles.id FROM users, roles WHERE login = ? AND title = ?";
 
-    private final RoleDao roleDao = new RoleDaoImpl();
+    private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
 
     private void setUserRoles(User user) throws DaoException {
         Connection connection = null;
@@ -68,6 +69,9 @@ public class UserDaoImpl implements UserDao {
     public void create(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
+        Map<String, Role> roleMap = new HashMap<>();
+        roleMap.put(Role.CLIENT.name(), Role.CLIENT);
+        UserDetails userDetails = user.getUserDetails();
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
 
@@ -76,14 +80,19 @@ public class UserDaoImpl implements UserDao {
             statement.setString(2, user.getPassword());
 
             statement.execute();
-            User userFromDb = find(user.getLogin()).orElseThrow(DaoException::new);
+            user = find(user.getLogin()).orElseThrow(DaoException::new);
+            userDetails.setUserId(user.getId());
+            user.setUserDetails(userDetails);
+            user.setRoles(roleMap);
             statement.close();
 
             statement = connection.prepareStatement(SQL_CREATE_USER_ROLES);
-            statement.setInt(1, userFromDb.getId());
+            statement.setInt(1, user.getId());
             statement.setInt(2, Role.CLIENT.ID);
             statement.execute();
             statement.close();
+
+            userDetailsDao.create(userDetails);
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
@@ -139,6 +148,7 @@ public class UserDaoImpl implements UserDao {
 
                 ConnectionUtil.closeConnection(connection, statement, resultSet);
                 setUserRoles(userFromDb);
+                userFromDb.setUserDetails(userDetailsDao.find(userFromDb.getId()).orElse(new UserDetails()));
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);

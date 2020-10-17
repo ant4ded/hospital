@@ -26,15 +26,20 @@ public class Cleaner {
     public void delete(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
+        UserDetails userDetails = user.getUserDetails();
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
-
             statement = connection.prepareStatement(SQL_DELETE_USER_ROLES);
 
             user = userDao.find(user.getLogin()).orElseThrow(DaoException::new);
+            user.setUserDetails(userDetails);
             statement.setInt(1, user.getId());
             statement.execute();
             statement.close();
+
+            if (userDetailsDao.find(user.getId()).isPresent()){
+                delete(user.getUserDetails());
+            }
 
             statement = connection.prepareStatement(SQL_DELETE_USER);
             statement.setInt(1, user.getId());
@@ -48,7 +53,7 @@ public class Cleaner {
         }
     }
 
-    public void delete(UserDetails userDetails) throws DaoException {
+    private void delete(UserDetails userDetails) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         UserDetails userDetailsFromDb;

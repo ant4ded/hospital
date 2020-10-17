@@ -30,7 +30,7 @@ public class DepartmentDaoImplTest {
         Assert.assertTrue(departmentDao.findHeadDepartment(Department.INFECTIOUS).isPresent());
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUserAndUserDetails")
     public void updateDepartmentHead(User user) throws DaoException {
         User firstHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElse(new User());
 
