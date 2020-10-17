@@ -12,10 +12,7 @@ import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.table.RolesFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +21,7 @@ public class UserDaoImpl implements UserDao {
     private static final String SQL_CREATE_USER = "INSERT INTO users (login, password) VALUES (?, ?)";
     private static final String SQL_CREATE_USER_ROLES = "INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)";
     private static final String SQL_FIND = "SELECT id, password  FROM users WHERE login = ?";
+    private static final String SQL_FIND_BY_ID = "SELECT login, password  FROM users WHERE id = ?";
     private static final String SQL_FIND_ROLES = "SELECT title FROM hospital.roles " +
             "INNER JOIN users_roles ON roles.id = users_roles.role_id " +
             "INNER JOIN users ON users_roles.user_id = users.id WHERE users.id = ?";
@@ -36,6 +34,31 @@ public class UserDaoImpl implements UserDao {
             "SELECT users.id, roles.id FROM users, roles WHERE login = ? AND title = ?";
 
     private final RoleDao roleDao = new RoleDaoImpl();
+
+    private void setUserRoles(User user) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            statement = connection.prepareStatement(SQL_FIND_ROLES);
+            statement.setInt(1, user.getId());
+            statement.execute();
+            resultSet = statement.getResultSet();
+            Map<String, Role> map = new HashMap<>();
+            while (resultSet.next()) {
+                Role role = Role.valueOf(resultSet.getString(RolesFieldName.TITLE));
+                map.put(role.name(), role);
+            }
+            user.setRoles(map);
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source", e);
+        } catch (SQLException e) {
+            throw new DaoException("Can not find row on users table", e);
+        } finally {
+            ConnectionUtil.closeConnection(connection, statement, resultSet);
+        }
+    }
 
     @Override
     public void create(User user) throws DaoException {
@@ -107,21 +130,11 @@ public class UserDaoImpl implements UserDao {
             if (resultSet.next()) {
                 userFromDb = new User();
                 userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
-                userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
                 userFromDb.setLogin(login);
+                userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
 
                 ConnectionUtil.closeConnection(connection, statement, resultSet);
-                connection = DataSourceFactory.createMysqlDataSource().getConnection();
-                statement = connection.prepareStatement(SQL_FIND_ROLES);
-                statement.setInt(1, userFromDb.getId());
-                statement.execute();
-                resultSet = statement.getResultSet();
-                Map<String, Role> map = new HashMap<>();
-                while (resultSet.next()) {
-                    Role role = Role.valueOf(resultSet.getString(RolesFieldName.TITLE));
-                    map.put(role.name(), role);
-                }
-                userFromDb.setRoles(map);
+                setUserRoles(userFromDb);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
@@ -134,13 +147,46 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateUserRole(String login, String action, Role role) throws DaoException {
+    public Optional<User> findById(int id) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        User userFromDb = null;
+        try {
+            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            statement = connection.prepareStatement(SQL_FIND_BY_ID);
+
+            statement.setInt(1, id);
+
+            statement.execute();
+            resultSet = statement.getResultSet();
+            if (resultSet.next()) {
+                userFromDb = new User();
+                userFromDb.setId(id);
+                userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
+                userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
+
+                ConnectionUtil.closeConnection(connection, statement, resultSet);
+                setUserRoles(userFromDb);
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source", e);
+        } catch (SQLException e) {
+            throw new DaoException("Can not find row on users table", e);
+        } finally {
+            ConnectionUtil.closeConnection(connection, statement, resultSet);
+        }
+        return Optional.ofNullable(userFromDb);
+    }
+
+    @Override
+    public void updateUserRoles(String login, String action, Role role) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
 
-            if (!action.equals(ParameterName.ACTION_ADD) && !action.equals(ParameterName.ACTION_REMOVE)){
+            if (!action.equals(ParameterName.ACTION_ADD) && !action.equals(ParameterName.ACTION_REMOVE)) {
                 throw new DaoException("Invalid parameter value. Parameter - " + ParameterName.ACTION);
             }
 

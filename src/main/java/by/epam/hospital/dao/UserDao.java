@@ -12,5 +12,7 @@ public interface UserDao {
 
     Optional<User> find(String login) throws DaoException;
 
-    void updateUserRole(String login, String action, Role role) throws DaoException;
+    Optional<User> findById(int id) throws DaoException;
+
+    void updateUserRoles(String login, String action, Role role) throws DaoException;
 }

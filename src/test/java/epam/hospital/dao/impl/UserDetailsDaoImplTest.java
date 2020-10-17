@@ -1,7 +1,9 @@
 package epam.hospital.dao.impl;
 
 import by.epam.hospital.dao.DaoException;
+import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.UserDetailsDao;
+import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
@@ -16,11 +18,13 @@ public class UserDetailsDaoImplTest {
     private final Logger logger = Logger.getLogger(UserDetailsDaoImplTest.class);
 
     private UserDetailsDao userDetailsDao;
+    private UserDao userDao;
     private Cleaner cleaner;
 
     @BeforeClass
     private void setUserDetailsDao() {
         userDetailsDao = new UserDetailsDaoImpl();
+        userDao = new UserDaoImpl();
         cleaner = new Cleaner();
     }
 
@@ -28,7 +32,6 @@ public class UserDetailsDaoImplTest {
     public void create_find_update(User user) throws DaoException {
         UserDetails newUserDetails = new UserDetails();
         newUserDetails.setPassportId(user.getUserDetails().getPassportId());
-        newUserDetails.setUserId(user.getUserDetails().getUserId());
         newUserDetails.setGender(UserDetails.Gender.FEMALE);
         newUserDetails.setFirstName(user.getUserDetails().getFirstName());
         newUserDetails.setSurname(user.getUserDetails().getSurname());
@@ -36,6 +39,12 @@ public class UserDetailsDaoImplTest {
         newUserDetails.setBirthday(user.getUserDetails().getBirthday());
         newUserDetails.setAddress(user.getUserDetails().getAddress());
         newUserDetails.setPhone(user.getUserDetails().getPhone());
+
+        userDao.create(user);
+
+        user.setId(userDao.find(user.getLogin()).orElse(new User()).getId());
+        user.getUserDetails().setUserId(user.getId());
+        newUserDetails.setUserId(user.getId());
 
         userDetailsDao.create(user.getUserDetails());
         if (userDetailsDao.find(user.getUserDetails()).isEmpty()) {
@@ -48,7 +57,8 @@ public class UserDetailsDaoImplTest {
         Assert.assertEquals(user.getUserDetails(), newUserDetails);
 
         cleaner.delete(user.getUserDetails());
-        if (userDetailsDao.find(user.getUserDetails()).isPresent()) {
+        cleaner.delete(user);
+        if (userDetailsDao.find(user.getUserDetails()).isPresent() || userDao.find(user.getLogin()).isPresent()) {
             logger.fatal("Delete work incorrect");
             Assert.fail("Delete or find work incorrect");
         }
