@@ -22,7 +22,7 @@ public class UserDaoImpl implements UserDao {
     private static final String SQL_CREATE_USER_ROLES = "INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)";
     private static final String SQL_FIND = "SELECT id, password  FROM users WHERE login = ?";
     private static final String SQL_FIND_BY_ID = "SELECT login, password  FROM users WHERE id = ?";
-    private static final String SQL_FIND_ROLES = "SELECT title FROM hospital.roles " +
+    private static final String SQL_FIND_USER_ROLES = "SELECT title FROM hospital.roles " +
             "INNER JOIN users_roles ON roles.id = users_roles.role_id " +
             "INNER JOIN users ON users_roles.user_id = users.id WHERE users.id = ?";
     private static final String SQL_UPDATE = "UPDATE users SET login = ?, password = ? WHERE id = ?";
@@ -41,7 +41,7 @@ public class UserDaoImpl implements UserDao {
         ResultSet resultSet = null;
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_ROLES);
+            statement = connection.prepareStatement(SQL_FIND_USER_ROLES);
             statement.setInt(1, user.getId());
             statement.execute();
             resultSet = statement.getResultSet();
