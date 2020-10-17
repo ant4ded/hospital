@@ -28,7 +28,7 @@ public class UserDetailsDaoImplTest {
         cleaner = new Cleaner();
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUserAndUserDetails")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void create_find_update(User user) throws DaoException {
         UserDetails newUserDetails = new UserDetails();
         newUserDetails.setPassportId(user.getUserDetails().getPassportId());

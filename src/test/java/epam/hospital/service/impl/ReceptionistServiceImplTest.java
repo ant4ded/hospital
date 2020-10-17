@@ -31,7 +31,7 @@ public class ReceptionistServiceImplTest {
         cleaner = new Cleaner();
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUserAndUserDetails")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void registerClient_user_recordedBDUser(User user) throws ServiceException, DaoException {
         User userFromDb;
         receptionistService.registerClient(user);

@@ -13,7 +13,7 @@ import java.util.Map;
 public class Provider {
 
     @DataProvider
-    public Object[][] getCorrectUserAndUserDetails() {
+    public Object[][] getCorrectUser() {
         Map<String, Role> roles = new HashMap<>();
         roles.put(Role.CLIENT.name(), Role.CLIENT);
         return new Object[][]{{
