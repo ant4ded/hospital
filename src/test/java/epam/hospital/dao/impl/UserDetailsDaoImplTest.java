@@ -22,7 +22,7 @@ public class UserDetailsDaoImplTest {
     private Cleaner cleaner;
 
     @BeforeClass
-    private void setUserDetailsDao() {
+    private void setFields() {
         userDetailsDao = new UserDetailsDaoImpl();
         userDao = new UserDaoImpl();
         cleaner = new Cleaner();

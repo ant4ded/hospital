@@ -13,9 +13,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class UserDaoImplTest {
     private static final Logger logger = Logger.getLogger(UserDaoImplTest.class);
 
@@ -23,7 +20,7 @@ public class UserDaoImplTest {
     private Cleaner cleaner;
 
     @BeforeClass
-    private void setUserDao() {
+    private void setFields() {
         cleaner = new Cleaner();
         userDao = new UserDaoImpl();
     }
@@ -63,14 +60,14 @@ public class UserDaoImplTest {
         User userFromDb = userDao.find(user.getLogin()).orElse(new User());
 
         if (!userFromDb.getRoles().containsValue(Role.MEDICAL_ASSISTANT) ||
-                !userFromDb.getRoles().containsValue(Role.CLIENT)){
+                !userFromDb.getRoles().containsValue(Role.CLIENT)) {
             Assert.fail("Update users_roles work incorrect");
         }
 
         userDao.updateUserRoles(user.getLogin(), ParameterName.ACTION_REMOVE, Role.MEDICAL_ASSISTANT);
         userFromDb = userDao.find(user.getLogin()).orElse(new User());
 
-        if (userFromDb.getRoles().containsValue(Role.MEDICAL_ASSISTANT)){
+        if (userFromDb.getRoles().containsValue(Role.MEDICAL_ASSISTANT)) {
             Assert.fail("Update users_roles work incorrect");
         }
 

@@ -1,13 +1,11 @@
 package epam.hospital.dao.impl;
 
-import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DepartmentDao;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.DepartmentDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
-import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
@@ -21,7 +19,7 @@ public class DepartmentDaoImplTest {
     private Cleaner cleaner;
 
     @BeforeClass
-    private void setDepartmentDao() {
+    private void setFields() {
         departmentDao = new DepartmentDaoImpl();
         userDao = new UserDaoImpl();
         cleaner = new Cleaner();
