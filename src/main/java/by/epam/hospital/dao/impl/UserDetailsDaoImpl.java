@@ -20,11 +20,10 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_FIND = "SELECT passport_id, user_id, gender, " +
             "first_name, surname, last_name, birthday, address, phone " +
-            "FROM hospital.users_details WHERE first_name = ? AND surname = ? AND last_name = ? AND birthday = ?";
+            "FROM hospital.users_details WHERE user_id = ?";
     private static final String SQL_UPDATE = "UPDATE users_details " +
             "SET gender = ?, first_name = ?, surname = ?, last_name = ?, birthday = ?, address = ?, phone = ? " +
             "WHERE passport_id = ? AND user_id = ?";
-
 
     @Override
     public void create(UserDetails userDetails) throws DaoException {
@@ -64,7 +63,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
-            userDetailsFromDb = find(oldValue).orElseThrow(DaoException::new);
+            userDetailsFromDb = find(oldValue.getUserId()).orElseThrow(DaoException::new);
 
             statement.setString(1, newValue.getGender().name());
             statement.setString(2, newValue.getFirstName());
@@ -89,7 +88,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
     }
 
     @Override
-    public Optional<UserDetails> find(UserDetails userDetails) throws DaoException {
+    public Optional<UserDetails> find(int id) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -98,10 +97,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_FIND);
 
-            statement.setString(1, userDetails.getFirstName());
-            statement.setString(2, userDetails.getSurname());
-            statement.setString(3, userDetails.getLastName());
-            statement.setDate(4, userDetails.getBirthday());
+            statement.setInt(1, id);
 
             statement.execute();
             resultSet = statement.getResultSet();

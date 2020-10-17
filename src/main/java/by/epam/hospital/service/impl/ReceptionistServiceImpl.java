@@ -20,7 +20,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 
         try {
             if (userDao.find(user.getLogin()).isPresent() &&
-                    userDetailsDao.find(user.getUserDetails()).isPresent()) {
+                    userDetailsDao.find(user.getId()).isPresent()) {
                 result = false;
             }
             userDao.create(user);

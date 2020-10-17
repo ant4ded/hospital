@@ -47,18 +47,18 @@ public class UserDetailsDaoImplTest {
         newUserDetails.setUserId(user.getId());
 
         userDetailsDao.create(user.getUserDetails());
-        if (userDetailsDao.find(user.getUserDetails()).isEmpty()) {
+        if (userDetailsDao.find(user.getUserDetails().getUserId()).isEmpty()) {
             logger.fatal("Create or find work incorrect");
             Assert.fail("Create or find work incorrect");
         }
 
         userDetailsDao.update(user.getUserDetails(), newUserDetails);
-        user.setUserDetails(userDetailsDao.find(newUserDetails).orElse(new UserDetails()));
+        user.setUserDetails(userDetailsDao.find(newUserDetails.getUserId()).orElse(new UserDetails()));
         Assert.assertEquals(user.getUserDetails(), newUserDetails);
 
         cleaner.delete(user.getUserDetails());
         cleaner.delete(user);
-        if (userDetailsDao.find(user.getUserDetails()).isPresent() || userDao.find(user.getLogin()).isPresent()) {
+        if (userDetailsDao.find(user.getUserDetails().getUserId()).isPresent() || userDao.find(user.getLogin()).isPresent()) {
             logger.fatal("Delete work incorrect");
             Assert.fail("Delete or find work incorrect");
         }

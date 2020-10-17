@@ -12,7 +12,10 @@ import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.table.RolesFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

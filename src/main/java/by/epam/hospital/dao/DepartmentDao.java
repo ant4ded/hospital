@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface DepartmentDao {
     Optional<User> findHeadDepartment(Department department) throws DaoException;
 
-    void updateDepartmentHead(Department department, String login) throws DaoException ;
+    void updateDepartmentHead(Department department, String login) throws DaoException;
 }

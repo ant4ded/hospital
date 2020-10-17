@@ -9,5 +9,5 @@ public interface UserDetailsDao {
 
     void update(UserDetails oldValue, UserDetails newValue) throws DaoException;
 
-    Optional<UserDetails> find(UserDetails userDetails) throws DaoException;
+    Optional<UserDetails> find(int id) throws DaoException;
 }

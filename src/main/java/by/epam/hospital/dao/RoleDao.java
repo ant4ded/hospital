@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface RoleDao {
     List<Role> findAll() throws DaoException;
+
     int findRoleId(Role role) throws DaoException;
 }

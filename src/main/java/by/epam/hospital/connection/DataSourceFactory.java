@@ -17,7 +17,7 @@ public class DataSourceFactory {
         MysqlDataSource dataSource;
         Properties properties = new Properties();
         try (FileInputStream inputStream = new FileInputStream(DataSourceFactory.class.
-                getClassLoader().getResource(FILENAME).getFile());) {
+                getClassLoader().getResource(FILENAME).getFile())) {
             properties.load(inputStream);
             dataSource = new MysqlDataSource();
             dataSource.setURL(properties.getProperty(DbPropName.URL));
