@@ -1,6 +1,7 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
-<%@page import="by.epam.hospital.controller.CommandName" %>
+<%@page import="by.epam.hospital.entity.Department" %>
+<%@page import="by.epam.hospital.service.util.Action" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,11 +59,12 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.ADMIN.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_REMOVE}">
+                                               value="${Action.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -75,6 +77,7 @@
                                         requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD) ||
                                         requestScope.userRoles.containsValue(Role.RECEPTIONIST) ||
                                         requestScope.userRoles.containsValue(Role.DOCTOR)}">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -88,11 +91,12 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.ADMIN.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_ADD}">
+                                               value="${Action.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary">Add</button>
                                         </div>
@@ -114,11 +118,12 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.RECEPTIONIST.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_REMOVE}">
+                                               value="${Action.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -131,6 +136,7 @@
                                         requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD) ||
                                         requestScope.userRoles.containsValue(Role.DOCTOR) ||
                                         requestScope.userRoles.containsValue(Role.ADMIN)}">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -144,11 +150,12 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.RECEPTIONIST.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_ADD}">
+                                               value="${Action.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary">Add</button>
                                         </div>
@@ -170,11 +177,12 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DOCTOR.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_REMOVE}">
+                                               value="${Action.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -187,6 +195,7 @@
                                         requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD) ||
                                         requestScope.userRoles.containsValue(Role.RECEPTIONIST) ||
                                         requestScope.userRoles.containsValue(Role.ADMIN)}">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -200,11 +209,24 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DOCTOR.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_ADD}">
+                                               value="${Action.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <div class="form-group col-lg-3 col-md-3">
+                                            <select name="${ParameterName.DEPARTMENT}">
+                                                <option value="${Department.INFECTIOUS}">Infectious</option>
+                                                <option value="${Department.CARDIOLOGY}">Cardiology</option>
+                                                <option value="${Department.NEUROLOGY}">Neurology</option>
+                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology</option>
+                                                <option value="${Department.PEDIATRIC}">Pediatric</option>
+                                                <option value="${Department.THERAPEUTIC}">Therapeutic</option>
+                                                <option value="${Department.UROLOGY}">Urology</option>
+                                                <option value="${Department.TRAUMATOLOGY}">Traumatology</option>
+                                                <option value="${Department.SURGERY}">Surgery</option>
+                                            </select>
+                                        </div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary">Add</button>
                                         </div>
@@ -226,11 +248,12 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DEPARTMENT_HEAD.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_REMOVE}">
+                                               value="${Action.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -243,6 +266,7 @@
                                         requestScope.userRoles.containsValue(Role.RECEPTIONIST) ||
                                         !requestScope.userRoles.containsValue(Role.DOCTOR) ||
                                         requestScope.userRoles.containsValue(Role.ADMIN)}">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -256,13 +280,26 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DEPARTMENT_HEAD.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_ADD}">
+                                               value="${Action.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary">Add</button>
+                                        </div>
+                                        <div class="form-group col-lg-3 col-md-3">
+                                            <select name="${ParameterName.DEPARTMENT}">
+                                                <option value="${Department.INFECTIOUS}">Infectious</option>
+                                                <option value="${Department.CARDIOLOGY}">Cardiology</option>
+                                                <option value="${Department.NEUROLOGY}">Neurology</option>
+                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology</option>
+                                                <option value="${Department.PEDIATRIC}">Pediatric</option>
+                                                <option value="${Department.THERAPEUTIC}">Therapeutic</option>
+                                                <option value="${Department.UROLOGY}">Urology</option>
+                                                <option value="${Department.TRAUMATOLOGY}">Traumatology</option>
+                                                <option value="${Department.SURGERY}">Surgery</option>
+                                            </select>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn danger disable" disabled>Remove
@@ -282,11 +319,12 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.MEDICAL_ASSISTANT.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_REMOVE}">
+                                               value="${Action.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -299,6 +337,7 @@
                                         requestScope.userRoles.containsValue(Role.RECEPTIONIST) ||
                                         requestScope.userRoles.containsValue(Role.DOCTOR) ||
                                         requestScope.userRoles.containsValue(Role.ADMIN)}">
+                                        <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
@@ -312,11 +351,24 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.MEDICAL_ASSISTANT.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ParameterName.ACTION_ADD}">
+                                               value="${Action.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <div class="form-group col-lg-3 col-md-3">
+                                            <select name="${ParameterName.DEPARTMENT}">
+                                                <option value="${Department.INFECTIOUS}">Infectious</option>
+                                                <option value="${Department.CARDIOLOGY}">Cardiology</option>
+                                                <option value="${Department.NEUROLOGY}">Neurology</option>
+                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology</option>
+                                                <option value="${Department.PEDIATRIC}">Pediatric</option>
+                                                <option value="${Department.THERAPEUTIC}">Therapeutic</option>
+                                                <option value="${Department.UROLOGY}">Urology</option>
+                                                <option value="${Department.TRAUMATOLOGY}">Traumatology</option>
+                                                <option value="${Department.SURGERY}">Surgery</option>
+                                            </select>
+                                        </div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary">Add</button>
                                         </div>

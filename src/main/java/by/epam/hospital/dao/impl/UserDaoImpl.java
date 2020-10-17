@@ -11,6 +11,7 @@ import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.table.RolesFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
+import by.epam.hospital.service.util.Action;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -80,7 +81,7 @@ public class UserDaoImpl implements UserDao {
 
             statement = connection.prepareStatement(SQL_CREATE_USER_ROLES);
             statement.setInt(1, userFromDb.getId());
-            statement.setInt(2, roleDao.findRoleId(Role.CLIENT));
+            statement.setInt(2, Role.CLIENT.ID);
             statement.execute();
             statement.close();
         } catch (ConnectionException e) {
@@ -183,17 +184,17 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateUserRoles(String login, String action, Role role) throws DaoException {
+    public void updateUserRoles(String login, Action action, Role role) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
 
-            if (!action.equals(ParameterName.ACTION_ADD) && !action.equals(ParameterName.ACTION_REMOVE)) {
+            if (!action.equals(Action.ADD) && !action.equals(Action.REMOVE)) {
                 throw new DaoException("Invalid parameter value. Parameter - " + ParameterName.ACTION);
             }
 
-            statement = connection.prepareStatement(action.equals(ParameterName.ACTION_REMOVE) ?
+            statement = connection.prepareStatement(action.equals(Action.REMOVE) ?
                     SQL_DELETE_USER_ROLE : SQL_UPDATE_USER_ROLE);
 
             statement.setString(1, login);
