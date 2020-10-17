@@ -1,18 +1,15 @@
 package by.epam.hospital.entity;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 public class User implements Serializable {
     private int id;
     private String login;
     private String password;
 
-    private Map<String,Role> roles;
-    private UserDetails userDetails;
+    private Map<String,Role> roles = new HashMap<>();
+    private UserDetails userDetails = new UserDetails();
 
     public User() {
     }
