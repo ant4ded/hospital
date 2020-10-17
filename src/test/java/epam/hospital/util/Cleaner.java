@@ -56,7 +56,7 @@ public class Cleaner {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_DELETE_USER_DETAILS);
 
-            userDetailsFromDb = userDetailsDao.find(userDetails).orElseThrow(DaoException::new);
+            userDetailsFromDb = userDetailsDao.find(userDetails.getUserId()).orElseThrow(DaoException::new);
             statement.setString(1, userDetailsFromDb.getPassportId());
 
             if (statement.executeUpdate() < 0) {
