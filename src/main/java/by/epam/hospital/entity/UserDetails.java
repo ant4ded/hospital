@@ -15,22 +15,6 @@ public class UserDetails implements Serializable {
     private String address;
     private String phone;
 
-    public UserDetails() {
-    }
-
-    public UserDetails(String passportId, int userId, Gender gender, String firstName, String surname, String lastName,
-                       Date birthday, String address, String phone) {
-        this.passportId = passportId;
-        this.userId = userId;
-        this.gender = gender;
-        this.firstName = firstName;
-        this.surname = surname;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.address = address;
-        this.phone = phone;
-    }
-
     public String getPassportId() {
         return passportId;
     }
