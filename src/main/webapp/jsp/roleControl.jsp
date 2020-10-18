@@ -57,7 +57,6 @@
                         <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
-                                    <input type="hidden">
                                     <p>Administrator</p>
                                 </div>
                                 <c:choose>
