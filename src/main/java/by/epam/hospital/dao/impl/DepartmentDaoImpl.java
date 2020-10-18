@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class DepartmentDaoImpl implements DepartmentDao {
@@ -105,5 +107,29 @@ public class DepartmentDaoImpl implements DepartmentDao {
             ConnectionUtil.closeConnection(connection, statement, resultSet);
         }
         return department;
+    }
+
+    @Override
+    public Map<Department, String> findDepartmentsHeads() throws DaoException {
+        Map<Department, String> departmentHeadMap = new HashMap<>();
+        departmentHeadMap.put(Department.INFECTIOUS,
+                findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new).getLogin());
+        departmentHeadMap.put(Department.CARDIOLOGY,
+                findHeadDepartment(Department.CARDIOLOGY).orElseThrow(DaoException::new).getLogin());
+        departmentHeadMap.put(Department.NEUROLOGY,
+                findHeadDepartment(Department.NEUROLOGY).orElseThrow(DaoException::new).getLogin());
+        departmentHeadMap.put(Department.OTORHINOLARYNGOLOGY,
+                findHeadDepartment(Department.OTORHINOLARYNGOLOGY).orElseThrow(DaoException::new).getLogin());
+        departmentHeadMap.put(Department.PEDIATRIC,
+                findHeadDepartment(Department.PEDIATRIC).orElseThrow(DaoException::new).getLogin());
+        departmentHeadMap.put(Department.THERAPEUTIC,
+                findHeadDepartment(Department.THERAPEUTIC).orElseThrow(DaoException::new).getLogin());
+        departmentHeadMap.put(Department.UROLOGY,
+                findHeadDepartment(Department.UROLOGY).orElseThrow(DaoException::new).getLogin());
+        departmentHeadMap.put(Department.TRAUMATOLOGY,
+                findHeadDepartment(Department.TRAUMATOLOGY).orElseThrow(DaoException::new).getLogin());
+        departmentHeadMap.put(Department.SURGERY,
+                findHeadDepartment(Department.SURGERY).orElseThrow(DaoException::new).getLogin());
+        return departmentHeadMap;
     }
 }

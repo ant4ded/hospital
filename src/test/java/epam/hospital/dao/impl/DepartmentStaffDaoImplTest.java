@@ -27,7 +27,7 @@ public class DepartmentStaffDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void updateStaffDepartment(User user) throws DaoException {
+    public void updateStaffDepartment_findDepartmentStaff(User user) throws DaoException {
         userDao.create(user);
 
         departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, Action.ADD, user.getLogin());

@@ -5,6 +5,7 @@ import by.epam.hospital.entity.Role;
 import by.epam.hospital.service.util.Action;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public interface AdminHeadService {
     ArrayList<Role> findUserRoles(String login) throws ServiceException;
@@ -16,4 +17,6 @@ public interface AdminHeadService {
     boolean performDepartmentStaffAction(Department department, Action action, String login) throws ServiceException;
 
     Department findDepartmentByUsername(String login) throws ServiceException;
+
+    Map<Department, String> findDepartmentsHeads() throws ServiceException;
 }

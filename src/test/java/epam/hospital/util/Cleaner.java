@@ -49,7 +49,7 @@ public class Cleaner {
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not add row to users table", e);
+            throw new DaoException("Can not delete row on users table", e);
         } finally {
             ConnectionUtil.closeConnection(connection, statement);
         }

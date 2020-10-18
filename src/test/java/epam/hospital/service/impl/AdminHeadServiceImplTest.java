@@ -2,8 +2,10 @@ package epam.hospital.service.impl;
 
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DepartmentDao;
+import by.epam.hospital.dao.DepartmentStaffDao;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.DepartmentDaoImpl;
+import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
@@ -19,9 +21,11 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class AdminHeadServiceImplTest {
     private AdminHeadService adminHeadService;
+    private DepartmentStaffDao departmentStaffDao;
     private DepartmentDao departmentDao;
     private UserDao userDao;
     private Cleaner cleaner;
@@ -29,13 +33,14 @@ public class AdminHeadServiceImplTest {
     @BeforeClass
     private void setFields() {
         adminHeadService = new AdminHeadServiceImpl();
+        departmentStaffDao = new DepartmentStaffDaoImpl();
         departmentDao = new DepartmentDaoImpl();
         userDao = new UserDaoImpl();
         cleaner = new Cleaner();
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findUserRoles_user_roles(User user) throws DaoException, ServiceException {
+    public void findUserRoles_username_roles(User user) throws DaoException, ServiceException {
         userDao.create(user);
         ArrayList<Role> actual = adminHeadService.findUserRoles(user.getLogin());
         cleaner.delete(user);
@@ -44,7 +49,7 @@ public class AdminHeadServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void performUserRolesAction(User user) throws DaoException, ServiceException {
+    public void performUserRolesAction_username_updatedUserRoles(User user) throws DaoException, ServiceException {
         boolean result;
         ArrayList<Role> roles = new ArrayList<>();
 
@@ -68,7 +73,8 @@ public class AdminHeadServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void appointDepartmentHead_user_newDepartmentHead(User user) throws DaoException, ServiceException {
+    public void appointDepartmentHead_departmentAndUsername_newDepartmentHead(User user)
+            throws DaoException, ServiceException {
         boolean result;
         User previousHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
         userDao.create(user);
@@ -93,5 +99,36 @@ public class AdminHeadServiceImplTest {
 
         Assert.assertTrue(result);
         cleaner.delete(user);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void performDepartmentStaffAction_findDepartmentByUsername(User user)
+            throws ServiceException, DaoException {
+        userDao.create(user);
+
+        Department department = Department.INFECTIOUS;
+
+        adminHeadService.performUserRolesAction(user.getLogin(), Action.ADD, Role.DOCTOR);
+        adminHeadService.performDepartmentStaffAction(department, Action.ADD, user.getLogin());
+        if (!adminHeadService.findDepartmentByUsername(user.getLogin()).equals(Department.INFECTIOUS)) {
+            cleaner.delete(user);
+            Assert.fail("performDepartmentStaffAction or findDepartmentByUsername work incorrect");
+        }
+        Map<String, User> departmentStaffMap = departmentStaffDao.findDepartmentStaff(department);
+        if (!departmentStaffMap.containsKey(user.getLogin())) {
+            cleaner.delete(user);
+            Assert.fail("performDepartmentStaffAction work incorrect");
+        }
+
+        adminHeadService.performDepartmentStaffAction(department, Action.REMOVE, user.getLogin());
+        departmentStaffMap = departmentStaffDao.findDepartmentStaff(department);
+
+        cleaner.delete(user);
+        Assert.assertFalse(departmentStaffMap.containsKey(user.getLogin()));
+    }
+
+    @Test
+    public void findDepartmentsHeads() throws ServiceException {
+        Assert.assertEquals(adminHeadService.findDepartmentsHeads().values().size(), 9);
     }
 }

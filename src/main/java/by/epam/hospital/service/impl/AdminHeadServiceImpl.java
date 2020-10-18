@@ -15,6 +15,7 @@ import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.util.Action;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 
 public class AdminHeadServiceImpl implements AdminHeadService {
@@ -38,11 +39,9 @@ public class AdminHeadServiceImpl implements AdminHeadService {
 
     @Override
     public void performUserRolesAction(String login, Action action, Role role) throws ServiceException {
-        boolean result = false;
         try {
             if (userDao.find(login).isPresent()) {
                 userDao.updateUserRoles(login, action, role);
-                result = true;
             }
         } catch (DaoException e) {
             throw new ServiceException("Can not update table users_roles");
@@ -72,7 +71,8 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public boolean performDepartmentStaffAction(Department department, Action action, String login) throws ServiceException {
+    public boolean performDepartmentStaffAction(Department department, Action action, String login)
+            throws ServiceException {
         boolean result = false;
         try {
             Optional<User> userFromDb = userDao.find(login);
@@ -95,5 +95,16 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             throw new ServiceException("Can not find department", e);
         }
         return department;
+    }
+
+    @Override
+    public Map<Department, String> findDepartmentsHeads() throws ServiceException {
+        Map<Department, String> departmentHeadMap;
+        try {
+            departmentHeadMap = departmentDao.findDepartmentsHeads();
+        } catch (DaoException e) {
+            throw new ServiceException("Can not find departments heads", e);
+        }
+        return departmentHeadMap;
     }
 }
