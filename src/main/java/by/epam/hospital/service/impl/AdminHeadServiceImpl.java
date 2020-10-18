@@ -57,14 +57,15 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         try {
             Optional<User> userFromDb = userDao.find(login);
             if (userFromDb.isPresent() &&
-                    userFromDb.get().getRoles().containsValue(Role.DOCTOR) &&
-                    userFromDb.get().getRoles().containsValue(Role.DEPARTMENT_HEAD)) {
+                    userFromDb.get().getRoles().containsValue(Role.DOCTOR)) {
                 Optional<User> previous = departmentDao.findHeadDepartment(department);
-                if (previous.isPresent()) {
-                    performUserRolesAction(previous.get().getLogin(), Action.REMOVE, Role.DEPARTMENT_HEAD);
+                if (!userFromDb.equals(previous)) {
+                    if (previous.isPresent()) {
+                        performUserRolesAction(previous.get().getLogin(), Action.REMOVE, Role.DEPARTMENT_HEAD);
+                    }
+                    departmentDao.updateDepartmentHead(department, login);
+                    result = true;
                 }
-                departmentDao.updateDepartmentHead(department, login);
-                result = true;
             }
         } catch (DaoException e) {
             throw new ServiceException("Can update head of department");
@@ -77,13 +78,24 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         boolean result = false;
         try {
             Optional<User> userFromDb = userDao.find(login);
-            if (userFromDb.isPresent() && userFromDb.get().getRoles().containsValue(Role.DOCTOR)) {
-                departmentStaffDao.updateStaffDepartment(department, Action.ADD, login);
+            if (userFromDb.isPresent() && !userFromDb.get().getRoles().containsValue(Role.DEPARTMENT_HEAD)) {
+                departmentStaffDao.updateStaffDepartment(department, action, login);
                 result = true;
             }
         } catch (DaoException e) {
             throw new ServiceException("Can update head of department");
         }
         return result;
+    }
+
+    @Override
+    public Department findDepartmentByUsername(String login) throws ServiceException {
+        Department department;
+        try {
+            department = departmentDao.findDepartment(login);
+        } catch (DaoException e) {
+            throw new ServiceException("Can not find department", e);
+        }
+        return department;
     }
 }

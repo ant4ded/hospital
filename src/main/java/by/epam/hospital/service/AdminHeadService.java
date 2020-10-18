@@ -14,4 +14,6 @@ public interface AdminHeadService {
     boolean appointDepartmentHead(Department department, String login) throws ServiceException;
 
     boolean performDepartmentStaffAction(Department department, Action action, String login) throws ServiceException;
+
+    Department findDepartmentByUsername(String login) throws ServiceException;
 }

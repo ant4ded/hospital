@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="css/owl-carousel.min.css" type="text/css">
     <link rel="stylesheet" href="css/jquery.datetimepicker.min.css" type="text/css">
     <link rel="stylesheet" href="css/linearicons.css" type="text/css">
+    <link rel="stylesheet" href="css/nice-select.css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 </html>

@@ -9,4 +9,6 @@ public interface DepartmentDao {
     Optional<User> findHeadDepartment(Department department) throws DaoException;
 
     void updateDepartmentHead(Department department, String login) throws DaoException;
+
+    Department findDepartment(String login) throws DaoException;
 }

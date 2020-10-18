@@ -7,10 +7,8 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DepartmentDao;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.Department;
-import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.table.DepartmentsFieldName;
-import by.epam.hospital.service.util.Action;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,6 +19,10 @@ import java.util.Optional;
 public class DepartmentDaoImpl implements DepartmentDao {
     private static final String SQL_FIND_DEPARTMENT_HEAD = "SELECT department_head_id FROM departments WHERE id = ?";
     private static final String SQL_UPDATE_DEPARTMENT_HEAD = "UPDATE departments SET department_head_id = ? WHERE id = ?";
+    private static final String SQL_FIND_DEPARTMENT_BY_USERNAME = "SELECT title FROM departments " +
+            "INNER JOIN departments_staff ds on departments.id = ds.department_id " +
+            "INNER JOIN users u on ds.doctor_id = u.id " +
+            "WHERE u.login = ?";
 
     private final UserDao userDao = new UserDaoImpl();
 
@@ -75,5 +77,33 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } finally {
             ConnectionUtil.closeConnection(connection, statement);
         }
+    }
+
+    @Override
+    public Department findDepartment(String login) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Department department;
+        try {
+            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_BY_USERNAME);
+
+            statement.setString(1, login);
+
+            statement.execute();
+            resultSet = statement.getResultSet();
+            if (!resultSet.next()) {
+                throw new DaoException("Can not find " + DepartmentsFieldName.DEPARTMENT_HEAD_ID + " on departments table");
+            }
+            department = Department.valueOf(resultSet.getString(1));
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source", e);
+        } catch (SQLException e) {
+            throw new DaoException("Can not find " + DepartmentsFieldName.TITLE + " on departments table by login");
+        } finally {
+            ConnectionUtil.closeConnection(connection, statement, resultSet);
+        }
+        return department;
     }
 }

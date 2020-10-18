@@ -32,6 +32,12 @@
                 <div class="comment-form">
                     <h4>Register new client</h4>
                     <p>${requestScope.message}</p>
+                    <c:if test="${requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD)}">
+                        <p>
+                           This user is head of department ${requestScope.department}
+                            please reassign department head to change roles
+                        </p>
+                    </c:if>
                     <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                         <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.FIND_USER_ROLES}">
                         <div class="form-group form-inline">
@@ -173,7 +179,8 @@
                                     <p>Doctor</p>
                                 </div>
                                 <c:choose>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.DOCTOR)}">
+                                    <c:when test="${requestScope.userRoles.containsValue(Role.DOCTOR) &&
+                                         !requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD)}">
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DOCTOR.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
@@ -182,6 +189,8 @@
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${ParameterName.DEPARTMENT}"
+                                               value="${requestScope.department}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
@@ -191,7 +200,9 @@
                                             <button type="submit" class="genric-btn danger">Remove</button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.MEDICAL_ASSISTANT) ||
+                                    <c:when test="${(requestScope.userRoles.containsValue(Role.DOCTOR) &&
+                                        requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD)) ||
+                                        requestScope.userRoles.containsValue(Role.MEDICAL_ASSISTANT) ||
                                         requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD) ||
                                         requestScope.userRoles.containsValue(Role.RECEPTIONIST) ||
                                         requestScope.userRoles.containsValue(Role.ADMIN)}">
@@ -219,7 +230,8 @@
                                                 <option value="${Department.INFECTIOUS}">Infectious</option>
                                                 <option value="${Department.CARDIOLOGY}">Cardiology</option>
                                                 <option value="${Department.NEUROLOGY}">Neurology</option>
-                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology</option>
+                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology
+                                                </option>
                                                 <option value="${Department.PEDIATRIC}">Pediatric</option>
                                                 <option value="${Department.THERAPEUTIC}">Therapeutic</option>
                                                 <option value="${Department.UROLOGY}">Urology</option>
@@ -248,18 +260,20 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DEPARTMENT_HEAD.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.REMOVE}">
+                                               value="${Action.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${ParameterName.DEPARTMENT}"
+                                               value="${requestScope.department}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger">Remove</button>
+                                            <button type="submit" class="genric-btn danger disable">Remove</button>
                                         </div>
                                     </c:when>
                                     <c:when test="${requestScope.userRoles.containsValue(Role.MEDICAL_ASSISTANT) ||
@@ -293,7 +307,8 @@
                                                 <option value="${Department.INFECTIOUS}">Infectious</option>
                                                 <option value="${Department.CARDIOLOGY}">Cardiology</option>
                                                 <option value="${Department.NEUROLOGY}">Neurology</option>
-                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology</option>
+                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology
+                                                </option>
                                                 <option value="${Department.PEDIATRIC}">Pediatric</option>
                                                 <option value="${Department.THERAPEUTIC}">Therapeutic</option>
                                                 <option value="${Department.UROLOGY}">Urology</option>
@@ -324,6 +339,8 @@
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
                                                value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${ParameterName.DEPARTMENT}"
+                                               value="${requestScope.department}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
@@ -361,7 +378,8 @@
                                                 <option value="${Department.INFECTIOUS}">Infectious</option>
                                                 <option value="${Department.CARDIOLOGY}">Cardiology</option>
                                                 <option value="${Department.NEUROLOGY}">Neurology</option>
-                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology</option>
+                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology
+                                                </option>
                                                 <option value="${Department.PEDIATRIC}">Pediatric</option>
                                                 <option value="${Department.THERAPEUTIC}">Therapeutic</option>
                                                 <option value="${Department.UROLOGY}">Urology</option>
