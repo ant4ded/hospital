@@ -36,7 +36,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_HEAD);
 
-            statement.setInt(1, department.ID);
+            statement.setInt(1, department.id);
 
             statement.execute();
             resultSet = statement.getResultSet();
@@ -67,7 +67,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
             statement = connection.prepareStatement(SQL_UPDATE_DEPARTMENT_HEAD);
 
             statement.setInt(1, user.get().getId());
-            statement.setInt(2, department.ID);
+            statement.setInt(2, department.id);
 
             statement.execute();
         } catch (ConnectionException e) {

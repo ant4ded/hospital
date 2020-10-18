@@ -86,13 +86,13 @@
                             <li class="menu-has-children"><a href="">${sessionScope.loginUsername}</a>
                                 <ul>
                                         <%--Role.RECEPTIONIST--%>
-                                    <c:if test="${sessionScope.loginRoles.containsValue(Role.RECEPTIONIST)}">
+                                    <c:if test="${sessionScope.loginRoles.contains(Role.RECEPTIONIST)}">
                                         <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_REGISTRY}">
                                             Register new client
                                         </a></li>
                                     </c:if>
                                         <%--Role.ADMIN_HEAD--%>
-                                    <c:if test="${sessionScope.loginRoles.containsValue(Role.ADMIN_HEAD)}">
+                                    <c:if test="${sessionScope.loginRoles.contains(Role.ADMIN_HEAD)}">
                                         <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_ROLE_CONTROL}">
                                             Role control
                                         </a></li>

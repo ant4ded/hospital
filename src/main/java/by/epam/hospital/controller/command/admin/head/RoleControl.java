@@ -14,7 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class RoleControl implements Command {
     private static final String SUCCESSFUL_MESSAGE_ROLES_UPDATED = "Roles have been updated";
@@ -52,7 +52,7 @@ public class RoleControl implements Command {
                 request.setAttribute(ParameterName.MESSAGE, result ?
                         SUCCESSFUL_MESSAGE_DEPARTMENT_STAFF : UNSUCCESSFUL_DEPARTMENT_HEAD_CHANGE);
             }
-            Map<String, Role> roles = adminHeadService.findUserRoles(login);
+            ArrayList<Role> roles = adminHeadService.findUserRoles(login);
             request.setAttribute(ParameterName.DEPARTMENT, department);
             request.setAttribute(ParameterName.USER_ROLES, roles);
         } catch (ServiceException e) {

@@ -47,7 +47,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
             if (action.equals(Action.ADD)) {
                 statement = connection.prepareStatement(SQL_ADD_DEPARTMENTS_STAFF_ROW);
                 statement.setString(1, login);
-                statement.setInt(2, department.ID);
+                statement.setInt(2, department.id);
             }
             if (action.equals(Action.REMOVE)) {
                 statement = connection.prepareStatement(SQL_DELETE_DEPARTMENTS_STAFF_ROW);
@@ -73,7 +73,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
 
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_STAFF);
-            statement.setInt(1, department.ID);
+            statement.setInt(1, department.id);
             statement.execute();
 
             resultSet = statement.getResultSet();

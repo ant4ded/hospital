@@ -59,15 +59,15 @@ public class UserDaoImplTest {
         userDao.updateUserRoles(user.getLogin(), Action.ADD, Role.MEDICAL_ASSISTANT);
         User userFromDb = userDao.find(user.getLogin()).orElse(new User());
 
-        if (!userFromDb.getRoles().containsValue(Role.MEDICAL_ASSISTANT) ||
-                !userFromDb.getRoles().containsValue(Role.CLIENT)) {
+        if (!userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT) ||
+                !userFromDb.getRoles().contains(Role.CLIENT)) {
             Assert.fail("Update users_roles work incorrect");
         }
 
         userDao.updateUserRoles(user.getLogin(), Action.REMOVE, Role.MEDICAL_ASSISTANT);
         userFromDb = userDao.find(user.getLogin()).orElse(new User());
 
-        if (userFromDb.getRoles().containsValue(Role.MEDICAL_ASSISTANT)) {
+        if (userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT)) {
             Assert.fail("Update users_roles work incorrect");
         }
 

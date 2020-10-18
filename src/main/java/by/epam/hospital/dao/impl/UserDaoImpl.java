@@ -18,8 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
@@ -50,12 +49,12 @@ public class UserDaoImpl implements UserDao {
             statement.setInt(1, user.getId());
             statement.execute();
             resultSet = statement.getResultSet();
-            Map<String, Role> map = new HashMap<>();
+            ArrayList<Role> roles = new ArrayList<>();
             while (resultSet.next()) {
                 Role role = Role.valueOf(resultSet.getString(RolesFieldName.TITLE));
-                map.put(role.name(), role);
+                roles.add(role);
             }
-            user.setRoles(map);
+            user.setRoles(roles);
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
@@ -69,8 +68,8 @@ public class UserDaoImpl implements UserDao {
     public void create(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        Map<String, Role> roleMap = new HashMap<>();
-        roleMap.put(Role.CLIENT.name(), Role.CLIENT);
+        ArrayList<Role> roles = new ArrayList<>();
+        roles.add(Role.CLIENT);
         UserDetails userDetails = user.getUserDetails();
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
@@ -83,12 +82,12 @@ public class UserDaoImpl implements UserDao {
             user = find(user.getLogin()).orElseThrow(DaoException::new);
             userDetails.setUserId(user.getId());
             user.setUserDetails(userDetails);
-            user.setRoles(roleMap);
+            user.setRoles(roles);
             statement.close();
 
             statement = connection.prepareStatement(SQL_CREATE_USER_ROLES);
             statement.setInt(1, user.getId());
-            statement.setInt(2, Role.CLIENT.ID);
+            statement.setInt(2, Role.CLIENT.id);
             statement.execute();
             statement.close();
 

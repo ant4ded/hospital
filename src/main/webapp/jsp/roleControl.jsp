@@ -32,7 +32,7 @@
                 <div class="comment-form">
                     <h4>Register new client</h4>
                     <p>${requestScope.message}</p>
-                    <c:if test="${requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD)}">
+                    <c:if test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
                         <p>
                            This user is head of department ${requestScope.department}
                             please reassign department head to change roles
@@ -61,7 +61,7 @@
                                     <p>Administrator</p>
                                 </div>
                                 <c:choose>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.ADMIN)}">
+                                    <c:when test="${requestScope.userRoles.contains(Role.ADMIN)}">
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.ADMIN.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
@@ -79,10 +79,10 @@
                                             <button type="submit" class="genric-btn danger">Remove</button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.MEDICAL_ASSISTANT) ||
-                                        requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD) ||
-                                        requestScope.userRoles.containsValue(Role.RECEPTIONIST) ||
-                                        requestScope.userRoles.containsValue(Role.DOCTOR)}">
+                                    <c:when test="${requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT) ||
+                                        requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) ||
+                                        requestScope.userRoles.contains(Role.RECEPTIONIST) ||
+                                        requestScope.userRoles.contains(Role.DOCTOR)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
@@ -120,7 +120,7 @@
                                     <p>Receptionist</p>
                                 </div>
                                 <c:choose>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.RECEPTIONIST)}">
+                                    <c:when test="${requestScope.userRoles.contains(Role.RECEPTIONIST)}">
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.RECEPTIONIST.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
@@ -138,10 +138,10 @@
                                             <button type="submit" class="genric-btn danger">Remove</button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.MEDICAL_ASSISTANT) ||
-                                        requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD) ||
-                                        requestScope.userRoles.containsValue(Role.DOCTOR) ||
-                                        requestScope.userRoles.containsValue(Role.ADMIN)}">
+                                    <c:when test="${requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT) ||
+                                        requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) ||
+                                        requestScope.userRoles.contains(Role.DOCTOR) ||
+                                        requestScope.userRoles.contains(Role.ADMIN)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
@@ -179,8 +179,8 @@
                                     <p>Doctor</p>
                                 </div>
                                 <c:choose>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.DOCTOR) &&
-                                         !requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD)}">
+                                    <c:when test="${requestScope.userRoles.contains(Role.DOCTOR) &&
+                                         !requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DOCTOR.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
@@ -200,12 +200,12 @@
                                             <button type="submit" class="genric-btn danger">Remove</button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${(requestScope.userRoles.containsValue(Role.DOCTOR) &&
-                                        requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD)) ||
-                                        requestScope.userRoles.containsValue(Role.MEDICAL_ASSISTANT) ||
-                                        requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD) ||
-                                        requestScope.userRoles.containsValue(Role.RECEPTIONIST) ||
-                                        requestScope.userRoles.containsValue(Role.ADMIN)}">
+                                    <c:when test="${(requestScope.userRoles.contains(Role.DOCTOR) &&
+                                        requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)) ||
+                                        requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT) ||
+                                        requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) ||
+                                        requestScope.userRoles.contains(Role.RECEPTIONIST) ||
+                                        requestScope.userRoles.contains(Role.ADMIN)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
@@ -256,7 +256,7 @@
                                     <p>Head of department</p>
                                 </div>
                                 <c:choose>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD)}">
+                                    <c:when test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DEPARTMENT_HEAD.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
@@ -276,10 +276,10 @@
                                             <button type="submit" class="genric-btn danger disable">Remove</button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.MEDICAL_ASSISTANT) ||
-                                        requestScope.userRoles.containsValue(Role.RECEPTIONIST) ||
-                                        !requestScope.userRoles.containsValue(Role.DOCTOR) ||
-                                        requestScope.userRoles.containsValue(Role.ADMIN)}">
+                                    <c:when test="${requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT) ||
+                                        requestScope.userRoles.contains(Role.RECEPTIONIST) ||
+                                        !requestScope.userRoles.contains(Role.DOCTOR) ||
+                                        requestScope.userRoles.contains(Role.ADMIN)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
@@ -330,7 +330,7 @@
                                     <p>Medical assistant</p>
                                 </div>
                                 <c:choose>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.MEDICAL_ASSISTANT)}">
+                                    <c:when test="${requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT)}">
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.MEDICAL_ASSISTANT.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
@@ -350,10 +350,10 @@
                                             <button type="submit" class="genric-btn danger">Remove</button>
                                         </div>
                                     </c:when>
-                                    <c:when test="${requestScope.userRoles.containsValue(Role.DEPARTMENT_HEAD) ||
-                                        requestScope.userRoles.containsValue(Role.RECEPTIONIST) ||
-                                        requestScope.userRoles.containsValue(Role.DOCTOR) ||
-                                        requestScope.userRoles.containsValue(Role.ADMIN)}">
+                                    <c:when test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) ||
+                                        requestScope.userRoles.contains(Role.RECEPTIONIST) ||
+                                        requestScope.userRoles.contains(Role.DOCTOR) ||
+                                        requestScope.userRoles.contains(Role.ADMIN)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add

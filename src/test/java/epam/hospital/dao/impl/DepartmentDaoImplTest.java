@@ -6,7 +6,6 @@ import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.DepartmentDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
-import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;

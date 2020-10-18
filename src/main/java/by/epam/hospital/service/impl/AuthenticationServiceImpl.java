@@ -26,7 +26,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     throw new ServiceException("Can not find user - " + login);
                 }
                 user = optionalUser.get();
-                result = user.getRoles().containsValue(role);
+                result = user.getRoles().contains(role);
             }
         } catch (DaoException e) {
             throw new ServiceException("Exception with find user - " + login, e);

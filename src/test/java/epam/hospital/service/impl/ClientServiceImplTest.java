@@ -14,7 +14,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 public class ClientServiceImplTest {
     private ClientService clientService;
@@ -31,7 +31,7 @@ public class ClientServiceImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void authorization_userWithRoles(User user) throws DaoException, ServiceException {
         userDao.create(user);
-        Map<String, Role> roles;
+        ArrayList<Role> roles;
 
         roles = clientService.authorization(user.getLogin(), user.getPassword()).getRoles();
         cleaner.delete(user);

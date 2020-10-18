@@ -14,8 +14,7 @@ import by.epam.hospital.service.AdminHeadService;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.util.Action;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class AdminHeadServiceImpl implements AdminHeadService {
@@ -24,8 +23,8 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     private final DepartmentStaffDao departmentStaffDao = new DepartmentStaffDaoImpl();
 
     @Override
-    public Map<String, Role> findUserRoles(String login) throws ServiceException {
-        Map<String, Role> roles = new HashMap<>();
+    public ArrayList<Role> findUserRoles(String login) throws ServiceException {
+        ArrayList<Role> roles = new ArrayList<>();
         try {
             Optional<User> user = userDao.find(login);
             if (user.isPresent()) {
@@ -38,7 +37,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public boolean performUserRolesAction(String login, Action action, Role role) throws ServiceException {
+    public void performUserRolesAction(String login, Action action, Role role) throws ServiceException {
         boolean result = false;
         try {
             if (userDao.find(login).isPresent()) {
@@ -48,7 +47,6 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         } catch (DaoException e) {
             throw new ServiceException("Can not update table users_roles");
         }
-        return result;
     }
 
     @Override
@@ -57,7 +55,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         try {
             Optional<User> userFromDb = userDao.find(login);
             if (userFromDb.isPresent() &&
-                    userFromDb.get().getRoles().containsValue(Role.DOCTOR)) {
+                    userFromDb.get().getRoles().contains(Role.DOCTOR)) {
                 Optional<User> previous = departmentDao.findHeadDepartment(department);
                 if (!userFromDb.equals(previous)) {
                     if (previous.isPresent()) {
@@ -78,7 +76,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         boolean result = false;
         try {
             Optional<User> userFromDb = userDao.find(login);
-            if (userFromDb.isPresent() && !userFromDb.get().getRoles().containsValue(Role.DEPARTMENT_HEAD)) {
+            if (userFromDb.isPresent() && !userFromDb.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
                 departmentStaffDao.updateStaffDepartment(department, action, login);
                 result = true;
             }

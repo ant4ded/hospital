@@ -22,7 +22,6 @@ public class ReceptionistServiceImplTest {
     private UserDao userDao;
     private Cleaner cleaner;
 
-
     @BeforeClass
     private void setFields() {
         receptionistService = new ReceptionistServiceImpl();

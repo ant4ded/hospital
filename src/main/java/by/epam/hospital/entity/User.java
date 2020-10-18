@@ -1,14 +1,15 @@
 package by.epam.hospital.entity;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.StringJoiner;
 
 public class User implements Serializable {
     private int id;
     private String login;
     private String password;
 
-    private Map<String,Role> roles = new HashMap<>();
+    private ArrayList<Role> roles = new ArrayList<>();
     private UserDetails userDetails = new UserDetails();
 
     public User() {
@@ -19,7 +20,7 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public User(int id, String login, String password, Map<String,Role> roles, UserDetails userDetails) {
+    public User(int id, String login, String password, ArrayList<Role> roles, UserDetails userDetails) {
         this.id = id;
         this.login = login;
         this.password = password;
@@ -51,11 +52,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Map<String,Role> getRoles() {
-        return Collections.unmodifiableMap(roles);
+    public ArrayList<Role> getRoles() {
+        return roles;
     }
 
-    public void setRoles(Map<String,Role> roles) {
+    public void setRoles(ArrayList<Role> roles) {
         this.roles = roles;
     }
 

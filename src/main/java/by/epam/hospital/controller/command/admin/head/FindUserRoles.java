@@ -13,7 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class FindUserRoles implements Command {
     private static final String UNSUCCESSFUL_MESSAGE = "Can not find user roles";
@@ -24,12 +24,12 @@ public class FindUserRoles implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter(ParameterName.LOGIN);
         try {
-            Map<String, Role> roles = adminHeadService.findUserRoles(login);
+            ArrayList<Role> roles = adminHeadService.findUserRoles(login);
             if (roles.isEmpty()) {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, UNSUCCESSFUL_MESSAGE);
             }
-            if (roles.containsValue(Role.DEPARTMENT_HEAD) || roles.containsValue(Role.DOCTOR) ||
-                    roles.containsValue(Role.MEDICAL_ASSISTANT)) {
+            if (roles.contains(Role.DEPARTMENT_HEAD) || roles.contains(Role.DOCTOR) ||
+                    roles.contains(Role.MEDICAL_ASSISTANT)) {
                 Department department = adminHeadService.findDepartmentByUsername(login);
                 request.setAttribute(ParameterName.DEPARTMENT, department);
             }
