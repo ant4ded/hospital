@@ -30,7 +30,7 @@
         <div class="row">
             <div class="col-lg-12 posts-list">
                 <div class="comment-form">
-                    <h4>Register new client</h4>
+                    <h4>Role control panel</h4>
                     <p>${requestScope.message}</p>
                     <c:if test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
                         <p>
