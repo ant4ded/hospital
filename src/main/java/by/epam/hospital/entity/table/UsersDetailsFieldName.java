@@ -12,4 +12,7 @@ public class UsersDetailsFieldName {
     public static final String BIRTHDAY = "birthday";
     public static final String ADDRESS = "address";
     public static final String PHONE = "phone";
+
+    private UsersDetailsFieldName() {
+    }
 }

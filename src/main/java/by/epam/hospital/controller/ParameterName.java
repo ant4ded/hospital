@@ -13,4 +13,7 @@ public class ParameterName {
     public static final String ACTION = "action";
 
     public static final String DEPARTMENT = "department";
+
+    private ParameterName() {
+    }
 }

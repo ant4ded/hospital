@@ -8,5 +8,7 @@ public class HospitalUrl {
     public static final String PAGE_ROLE_CONTROL = "/role-control";
     public static final String PAGE_ERROR = "/error-handler";
     public static final String SERVLET_MAIN = "/main-servlet";
-    public static final String JSP_INDEX = "/jsp/index.jsp";
+
+    private HospitalUrl() {
+    }
 }
