@@ -9,9 +9,9 @@ public enum Role {
     CLIENT(6),
     MEDICAL_ASSISTANT(7);
 
-    public int ID;
+    public final int id;
 
-    Role(int ID) {
-        this.ID = ID;
+    Role(int id) {
+        this.id = id;
     }
 }

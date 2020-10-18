@@ -11,9 +11,9 @@ public enum  Department {
     TRAUMATOLOGY(8),
     SURGERY(9);
 
-    public final int ID;
+    public final int id;
 
     Department(int departmentId) {
-        this.ID = departmentId;
+        this.id = departmentId;
     }
 }
