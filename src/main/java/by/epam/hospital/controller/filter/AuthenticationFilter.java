@@ -51,8 +51,4 @@ public class AuthenticationFilter implements Filter {
             logger.error(e);
         }
     }
-
-    @Override
-    public void destroy() {
-    }
 }
