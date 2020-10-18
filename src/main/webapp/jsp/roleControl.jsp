@@ -34,12 +34,13 @@
                     <p>${requestScope.message}</p>
                     <c:if test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
                         <p>
-                           This user is head of department ${requestScope.department}
-                            please reassign department head to change roles
+                           This user is head of department ${requestScope.department}.
+                            Please reassign department head to change roles.
                         </p>
                     </c:if>
                     <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
-                        <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.FIND_USER_ROLES}">
+                        <input type="hidden" name="${ParameterName.COMMAND}"
+                               value="${CommandName.FIND_ROLE_CONTROL_ATTRIBUTES}">
                         <div class="form-group form-inline">
                             <div class="form-group col-lg-10 col-md-10 name">
                                 <input type="text" name="${ParameterName.LOGIN}" required
