@@ -21,6 +21,7 @@ public class RoleControl implements Command {
     private static final String SUCCESSFUL_MESSAGE_DEPARTMENT_HEAD = "Department head was set";
     private static final String SUCCESSFUL_MESSAGE_DEPARTMENT_STAFF = "Department staff have been updated";
     private static final String UNSUCCESSFUL_DEPARTMENT_HEAD_CHANGE = "User not exist or actually head of department";
+
     private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
 
     @Override
