@@ -68,8 +68,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
             statement.setInt(2, department.ID);
 
             statement.execute();
-
-            userDao.updateUserRoles(login, Action.REMOVE, Role.DEPARTMENT_HEAD);
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {

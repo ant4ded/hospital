@@ -39,10 +39,6 @@ public class DepartmentDaoImplTest {
         departmentDao.updateDepartmentHead(Department.INFECTIOUS, user.getLogin());
         firstHead = userDao.find(firstHead.getLogin()).orElseThrow(DaoException::new);
 
-        if (firstHead.getRoles().containsValue(Role.DEPARTMENT_HEAD)){
-            Assert.fail("user have role DEPARTMENT_HEAD but it shouldn't");
-        }
-
         User secondHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElse(new User());
 
         departmentDao.updateDepartmentHead(Department.INFECTIOUS, firstHead.getLogin());

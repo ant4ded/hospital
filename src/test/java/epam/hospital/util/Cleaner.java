@@ -14,6 +14,7 @@ import by.epam.hospital.entity.UserDetails;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class Cleaner {
     private static final String SQL_DELETE_USER_ROLES = "DELETE FROM users_roles WHERE user_id = ?";
@@ -37,8 +38,9 @@ public class Cleaner {
             statement.execute();
             statement.close();
 
-            if (userDetailsDao.find(user.getId()).isPresent()){
-                delete(user.getUserDetails());
+            Optional<UserDetails> optionalUserDetails = userDetailsDao.find(user.getId());
+            if (optionalUserDetails.isPresent()){
+                delete(optionalUserDetails.get());
             }
 
             statement = connection.prepareStatement(SQL_DELETE_USER);
