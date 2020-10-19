@@ -41,6 +41,14 @@
     <url-pattern>/role-control</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>DepartmentControl</servlet-name>
+    <jsp-file>/jsp/departmentControl.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DepartmentControl</servlet-name>
+    <url-pattern>/department-control</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>Error</servlet-name>

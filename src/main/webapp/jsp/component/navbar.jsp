@@ -93,6 +93,9 @@
                                     </c:if>
                                         <%--Role.ADMIN_HEAD--%>
                                     <c:if test="${sessionScope.loginRoles.contains(Role.ADMIN_HEAD)}">
+                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DEPARTMENT_CONTROL}">
+                                            Department control
+                                        </a></li>
                                         <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_ROLE_CONTROL}">
                                             Role control
                                         </a></li>
