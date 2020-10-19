@@ -86,7 +86,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Department department;
+        Department department = null;
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_BY_USERNAME);
@@ -95,10 +95,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
 
             statement.execute();
             resultSet = statement.getResultSet();
-            if (!resultSet.next()) {
-                throw new DaoException("Can not find " + DepartmentsFieldName.DEPARTMENT_HEAD_ID + " on departments table");
+            if (resultSet.next()) {
+                department = Department.valueOf(resultSet.getString(1));
             }
-            department = Department.valueOf(resultSet.getString(1));
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
