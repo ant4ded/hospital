@@ -40,7 +40,6 @@ public class RoleControl implements Command {
             if (role == Role.DEPARTMENT_HEAD) {
                 department = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
                 result = adminHeadService.appointDepartmentHead(department, login);
-                adminHeadService.performUserRolesAction(login, Action.ADD, role);
                 request.setAttribute(ParameterName.MESSAGE, result ?
                         SUCCESSFUL_MESSAGE_DEPARTMENT_HEAD : UNSUCCESSFUL_DEPARTMENT_HEAD_CHANGE);
             }

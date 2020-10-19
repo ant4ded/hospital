@@ -80,7 +80,6 @@ public class AdminHeadServiceImplTest {
         userDao.create(user);
 
         adminHeadService.performUserRolesAction(user.getLogin(), Action.ADD, Role.DOCTOR);
-        adminHeadService.performUserRolesAction(user.getLogin(), Action.ADD, Role.DEPARTMENT_HEAD);
         adminHeadService.appointDepartmentHead(Department.INFECTIOUS, user.getLogin());
         previousHead = userDao.find(previousHead.getLogin()).orElseThrow(DaoException::new);
         user = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
@@ -92,7 +91,6 @@ public class AdminHeadServiceImplTest {
             Assert.fail("can not appointDepartmentHead");
         }
 
-        userDao.updateUserRoles(previousHead.getLogin(), Action.ADD, Role.DEPARTMENT_HEAD);
         adminHeadService.appointDepartmentHead(Department.INFECTIOUS, previousHead.getLogin());
         result = previousHead.getLogin().equals(departmentDao.
                 findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new).getLogin());

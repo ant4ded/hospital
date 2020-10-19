@@ -61,6 +61,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                         performUserRolesAction(previous.get().getLogin(), Action.REMOVE, Role.DEPARTMENT_HEAD);
                     }
                     departmentDao.updateDepartmentHead(department, login);
+                    performUserRolesAction(login, Action.ADD, Role.DEPARTMENT_HEAD);
                     result = true;
                 }
             }
