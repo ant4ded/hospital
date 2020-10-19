@@ -76,10 +76,22 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             throws ServiceException {
         boolean result = false;
         try {
-            Optional<User> userFromDb = userDao.find(login);
-            if (userFromDb.isPresent() && !userFromDb.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
-                departmentStaffDao.updateStaffDepartment(department, action, login);
-                result = true;
+            if ((departmentDao.findDepartment(login) == null && action.equals(Action.ADD)) ||
+                    action.equals(Action.REMOVE)) {
+                Optional<User> userFromDb = userDao.find(login);
+                if (userFromDb.isPresent() && !userFromDb.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
+                    departmentStaffDao.updateStaffDepartment(department, action, login);
+                    result = true;
+                }
+            }
+            if (departmentDao.findDepartment(login) != null && action.equals(Action.ADD)) {
+                Department previous = findDepartmentByUsername(login);
+                Optional<User> userFromDb = userDao.find(login);
+                if (userFromDb.isPresent() && !userFromDb.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
+                    departmentStaffDao.updateStaffDepartment(previous, Action.REMOVE, login);
+                    departmentStaffDao.updateStaffDepartment(department, action, login);
+                    result = true;
+                }
             }
         } catch (DaoException e) {
             throw new ServiceException("Can update head of department");
