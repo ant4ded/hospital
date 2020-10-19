@@ -1,6 +1,6 @@
 package by.epam.hospital.controller.command.admin.head;
 
-import by.epam.hospital.controller.Command;
+import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Department;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ChangeDepartmentHead implements Command {
+public class ChangeDepartmentHead implements HttpCommand {
     private static final String MESSAGE_PART1 = "Head of ";
     private static final String SUCCESSFUL_MESSAGE_PART2 = " department was changed";
     private static final String UNSUCCESSFUL_MESSAGE_PART2 = " department was not changed";

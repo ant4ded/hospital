@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommandProvider {
-    private final Map<CommandName, Command> map = new HashMap<>();
+    private final Map<CommandName, HttpCommand> map = new HashMap<>();
 
     public CommandProvider() {
         map.put(CommandName.AUTHORIZATION, new Authorization());
@@ -24,7 +24,7 @@ public class CommandProvider {
         map.put(CommandName.MOVE_DOCTOR_TO_DEPARTMENT, new MoveDoctorToDepartment());
     }
 
-    public Command getCommand(CommandName command) {
+    public HttpCommand getCommand(CommandName command) {
         return map.get(command);
     }
 }

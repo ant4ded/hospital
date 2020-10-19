@@ -11,9 +11,9 @@ import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.service.AdminHeadService;
+import by.epam.hospital.service.ServiceAction;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.impl.AdminHeadServiceImpl;
-import by.epam.hospital.service.util.Action;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
@@ -56,7 +56,7 @@ public class AdminHeadServiceImplTest {
         roles.add(Role.CLIENT);
         roles.add(Role.MEDICAL_ASSISTANT);
         userDao.create(user);
-        adminHeadService.performUserRolesAction(user.getLogin(), Action.ADD, Role.MEDICAL_ASSISTANT);
+        adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.MEDICAL_ASSISTANT);
         result = adminHeadService.findUserRoles(user.getLogin()).equals(roles);
 
         if (!result) {
@@ -65,7 +65,7 @@ public class AdminHeadServiceImplTest {
         }
 
         roles.remove(Role.MEDICAL_ASSISTANT);
-        adminHeadService.performUserRolesAction(user.getLogin(), Action.REMOVE, Role.MEDICAL_ASSISTANT);
+        adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.REMOVE, Role.MEDICAL_ASSISTANT);
         result = adminHeadService.findUserRoles(user.getLogin()).equals(roles);
 
         cleaner.delete(user);
@@ -79,7 +79,7 @@ public class AdminHeadServiceImplTest {
         User previousHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
         userDao.create(user);
 
-        adminHeadService.performUserRolesAction(user.getLogin(), Action.ADD, Role.DOCTOR);
+        adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR);
         adminHeadService.appointDepartmentHead(Department.INFECTIOUS, user.getLogin());
         previousHead = userDao.find(previousHead.getLogin()).orElseThrow(DaoException::new);
         user = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
@@ -106,8 +106,8 @@ public class AdminHeadServiceImplTest {
 
         Department department = Department.INFECTIOUS;
 
-        adminHeadService.performUserRolesAction(user.getLogin(), Action.ADD, Role.DOCTOR);
-        adminHeadService.performDepartmentStaffAction(department, Action.ADD, user.getLogin());
+        adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR);
+        adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, user.getLogin());
         if (!adminHeadService.findDepartmentByUsername(user.getLogin()).equals(Department.INFECTIOUS)) {
             cleaner.delete(user);
             Assert.fail("performDepartmentStaffAction or findDepartmentByUsername work incorrect");
@@ -118,7 +118,7 @@ public class AdminHeadServiceImplTest {
             Assert.fail("performDepartmentStaffAction work incorrect");
         }
 
-        adminHeadService.performDepartmentStaffAction(department, Action.REMOVE, user.getLogin());
+        adminHeadService.performDepartmentStaffAction(department, ServiceAction.REMOVE, user.getLogin());
         departmentStaffMap = departmentStaffDao.findDepartmentStaff(department);
 
         cleaner.delete(user);

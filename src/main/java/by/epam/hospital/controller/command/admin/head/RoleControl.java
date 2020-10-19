@@ -1,14 +1,14 @@
 package by.epam.hospital.controller.command.admin.head;
 
-import by.epam.hospital.controller.Command;
+import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.service.AdminHeadService;
+import by.epam.hospital.service.ServiceAction;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.impl.AdminHeadServiceImpl;
-import by.epam.hospital.service.util.Action;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class RoleControl implements Command {
+public class RoleControl implements HttpCommand {
     private static final String SUCCESSFUL_MESSAGE_ROLES_UPDATED = "Roles have been updated";
     private static final String SUCCESSFUL_MESSAGE_DEPARTMENT_HEAD = "Department head was set";
     private static final String SUCCESSFUL_MESSAGE_DEPARTMENT_STAFF = "Department staff have been updated";
@@ -29,12 +29,12 @@ public class RoleControl implements Command {
         boolean result;
         Department department = null;
         String login = request.getParameter(ParameterName.LOGIN);
-        Action action = Action.valueOf(request.getParameter(ParameterName.ACTION));
+        ServiceAction serviceAction = ServiceAction.valueOf(request.getParameter(ParameterName.ACTION));
         Role role = Role.valueOf(request.getParameter(ParameterName.ROLE));
 
         try {
             if (role != Role.DOCTOR && role != Role.MEDICAL_ASSISTANT && role != Role.DEPARTMENT_HEAD) {
-                adminHeadService.performUserRolesAction(login, action, role);
+                adminHeadService.performUserRolesAction(login, serviceAction, role);
                 request.setAttribute(ParameterName.MESSAGE, SUCCESSFUL_MESSAGE_ROLES_UPDATED);
             }
             if (role == Role.DEPARTMENT_HEAD) {
@@ -45,9 +45,9 @@ public class RoleControl implements Command {
             }
             if (role == Role.DOCTOR || role == Role.MEDICAL_ASSISTANT) {
                 department = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
-                result = adminHeadService.performDepartmentStaffAction(department, action, login);
+                result = adminHeadService.performDepartmentStaffAction(department, serviceAction, login);
                 if (result) {
-                    adminHeadService.performUserRolesAction(login, action, role);
+                    adminHeadService.performUserRolesAction(login, serviceAction, role);
                 }
                 request.setAttribute(ParameterName.MESSAGE, result ?
                         SUCCESSFUL_MESSAGE_DEPARTMENT_STAFF : UNSUCCESSFUL_DEPARTMENT_HEAD_CHANGE);

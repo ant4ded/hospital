@@ -9,8 +9,7 @@ import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.service.ServiceException;
-import by.epam.hospital.service.util.Action;
+import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
@@ -54,15 +53,15 @@ public class DepartmentDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findDepartment_username_user(User user) throws DaoException {
         userDao.create(user);
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, Action.ADD, user.getLogin());
+        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
 
         if (!departmentDao.findDepartment(user.getLogin()).equals(Department.INFECTIOUS)) {
-            departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, Action.REMOVE, user.getLogin());
+            departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
             cleaner.delete(user);
             Assert.fail("findDepartment work incorrect");
         }
 
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, Action.REMOVE, user.getLogin());
+        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
         cleaner.delete(user);
     }
 

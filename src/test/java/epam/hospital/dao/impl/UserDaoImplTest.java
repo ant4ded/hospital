@@ -5,7 +5,7 @@ import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.service.util.Action;
+import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.apache.log4j.Logger;
@@ -56,7 +56,7 @@ public class UserDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void updateUserRoles_userAndRole_userWithNewRole(User user) throws DaoException {
         userDao.create(user);
-        userDao.updateUserRoles(user.getLogin(), Action.ADD, Role.MEDICAL_ASSISTANT);
+        userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.MEDICAL_ASSISTANT);
         User userFromDb = userDao.find(user.getLogin()).orElse(new User());
 
         if (!userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT) ||
@@ -64,7 +64,7 @@ public class UserDaoImplTest {
             Assert.fail("Update users_roles work incorrect");
         }
 
-        userDao.updateUserRoles(user.getLogin(), Action.REMOVE, Role.MEDICAL_ASSISTANT);
+        userDao.updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.MEDICAL_ASSISTANT);
         userFromDb = userDao.find(user.getLogin()).orElse(new User());
 
         if (userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT)) {

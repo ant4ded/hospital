@@ -14,8 +14,8 @@ public class Controller extends HttpServlet {
         CommandProvider commandHelper = new CommandProvider();
         String commandFromRequest = request.getParameter(ParameterName.COMMAND);
         if (commandFromRequest != null && !commandFromRequest.isBlank()) {
-            Command command = commandHelper.getCommand(CommandName.valueOf(commandFromRequest));
-            command.execute(request, response);
+            HttpCommand httpCommand = commandHelper.getCommand(CommandName.valueOf(commandFromRequest));
+            httpCommand.execute(request, response);
         } else {
             commandHelper.getCommand(CommandName.FIRST_VISIT).execute(request, response);
         }
@@ -26,8 +26,8 @@ public class Controller extends HttpServlet {
         CommandProvider commandHelper = new CommandProvider();
         String commandFromRequest = request.getParameter(ParameterName.COMMAND);
         if (commandFromRequest != null && !commandFromRequest.isBlank()) {
-            Command command = commandHelper.getCommand(CommandName.valueOf(commandFromRequest));
-            command.execute(request, response);
+            HttpCommand httpCommand = commandHelper.getCommand(CommandName.valueOf(commandFromRequest));
+            httpCommand.execute(request, response);
         }
     }
 }

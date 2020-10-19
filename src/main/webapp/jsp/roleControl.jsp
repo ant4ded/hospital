@@ -1,7 +1,7 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
 <%@page import="by.epam.hospital.entity.Department" %>
-<%@page import="by.epam.hospital.service.util.Action" %>
+<%@page import="by.epam.hospital.service.ServiceAction" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +38,7 @@
                             Please reassign department head to change roles.
                         </p>
                     </c:if>
-                    <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                    <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                         <input type="hidden" name="${ParameterName.COMMAND}"
                                value="${CommandName.FIND_ROLE_CONTROL_ATTRIBUTES}">
                         <div class="form-group form-inline">
@@ -55,7 +55,7 @@
                         </div>
                     </form>
                     <c:if test="${requestScope.userRoles != null}">
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Administrator</p>
@@ -114,7 +114,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Receptionist</p>
@@ -173,7 +173,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Doctor</p>
@@ -250,7 +250,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Head of department</p>
@@ -324,7 +324,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Medical assistant</p>

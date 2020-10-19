@@ -1,6 +1,6 @@
 package by.epam.hospital.controller.command.receptionist;
 
-import by.epam.hospital.controller.Command;
+import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.User;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
 
-public class RegisterClient implements Command {
+public class RegisterClient implements HttpCommand {
     private static final String SUCCESSFUL_MESSAGE = "Client registration completed successful";
     private static final String UNSUCCESSFUL_MESSAGE = "Client registration didn't complete";
 

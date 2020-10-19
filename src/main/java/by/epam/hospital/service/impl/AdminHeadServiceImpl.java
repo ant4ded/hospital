@@ -11,8 +11,8 @@ import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.service.AdminHeadService;
+import by.epam.hospital.service.ServiceAction;
 import by.epam.hospital.service.ServiceException;
-import by.epam.hospital.service.util.Action;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -38,10 +38,10 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public void performUserRolesAction(String login, Action action, Role role) throws ServiceException {
+    public void performUserRolesAction(String login, ServiceAction serviceAction, Role role) throws ServiceException {
         try {
             if (userDao.find(login).isPresent()) {
-                userDao.updateUserRoles(login, action, role);
+                userDao.updateUserRoles(login, serviceAction, role);
             }
         } catch (DaoException e) {
             throw new ServiceException("Can not update table users_roles");
@@ -58,10 +58,10 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                 Optional<User> previous = departmentDao.findHeadDepartment(department);
                 if (!userFromDb.equals(previous)) {
                     if (previous.isPresent()) {
-                        performUserRolesAction(previous.get().getLogin(), Action.REMOVE, Role.DEPARTMENT_HEAD);
+                        performUserRolesAction(previous.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD);
                     }
                     departmentDao.updateDepartmentHead(department, login);
-                    performUserRolesAction(login, Action.ADD, Role.DEPARTMENT_HEAD);
+                    performUserRolesAction(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);
                     result = true;
                 }
             }
@@ -72,24 +72,24 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public boolean performDepartmentStaffAction(Department department, Action action, String login)
+    public boolean performDepartmentStaffAction(Department department, ServiceAction serviceAction, String login)
             throws ServiceException {
         boolean result = false;
         try {
-            if ((departmentDao.findDepartment(login) == null && action.equals(Action.ADD)) ||
-                    action.equals(Action.REMOVE)) {
+            if ((departmentDao.findDepartment(login) == null && serviceAction.equals(ServiceAction.ADD)) ||
+                    serviceAction.equals(ServiceAction.REMOVE)) {
                 Optional<User> userFromDb = userDao.find(login);
                 if (userFromDb.isPresent() && !userFromDb.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
-                    departmentStaffDao.updateStaffDepartment(department, action, login);
+                    departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
                     result = true;
                 }
             }
-            if (departmentDao.findDepartment(login) != null && action.equals(Action.ADD)) {
+            if (departmentDao.findDepartment(login) != null && serviceAction.equals(ServiceAction.ADD)) {
                 Department previous = findDepartmentByUsername(login);
                 Optional<User> userFromDb = userDao.find(login);
                 if (userFromDb.isPresent() && !userFromDb.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
-                    departmentStaffDao.updateStaffDepartment(previous, Action.REMOVE, login);
-                    departmentStaffDao.updateStaffDepartment(department, action, login);
+                    departmentStaffDao.updateStaffDepartment(previous, ServiceAction.REMOVE, login);
+                    departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
                     result = true;
                 }
             }

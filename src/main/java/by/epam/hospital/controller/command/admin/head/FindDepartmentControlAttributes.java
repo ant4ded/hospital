@@ -1,6 +1,6 @@
 package by.epam.hospital.controller.command.admin.head;
 
-import by.epam.hospital.controller.Command;
+import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Department;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class FindDepartmentControlAttributes implements Command {
+public class FindDepartmentControlAttributes implements HttpCommand {
     private static final String NOT_DOCTOR = "This user is not a doctor. You can not move him to any department.";
 
     private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();

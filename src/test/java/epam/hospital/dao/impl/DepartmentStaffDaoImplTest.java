@@ -7,7 +7,7 @@ import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.service.util.Action;
+import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
@@ -30,12 +30,12 @@ public class DepartmentStaffDaoImplTest {
     public void updateStaffDepartment_findDepartmentStaff(User user) throws DaoException {
         userDao.create(user);
 
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, Action.ADD, user.getLogin());
+        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
         if (!departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS).containsKey(user.getLogin())) {
             Assert.fail("findDepartmentStaff or updateStaffDepartment work incorrect");
         }
 
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, Action.REMOVE, user.getLogin());
+        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
         if (departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS).containsKey(user.getLogin())) {
             Assert.fail("updateStaffDepartment work incorrect");
         }

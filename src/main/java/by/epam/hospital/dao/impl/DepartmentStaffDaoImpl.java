@@ -11,7 +11,7 @@ import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.table.UsersFieldName;
-import by.epam.hospital.service.util.Action;
+import by.epam.hospital.service.ServiceAction;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,21 +35,21 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
     private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
 
     @Override
-    public void updateStaffDepartment(Department department, Action action, String login) throws DaoException {
+    public void updateStaffDepartment(Department department, ServiceAction serviceAction, String login) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = DataSourceFactory.createMysqlDataSource().getConnection();
 
-            if (!action.equals(Action.ADD) && !action.equals(Action.REMOVE)) {
+            if (!serviceAction.equals(ServiceAction.ADD) && !serviceAction.equals(ServiceAction.REMOVE)) {
                 throw new DaoException("Invalid parameter value. Parameter - " + ParameterName.ACTION);
             }
-            if (action.equals(Action.ADD)) {
+            if (serviceAction.equals(ServiceAction.ADD)) {
                 statement = connection.prepareStatement(SQL_ADD_DEPARTMENTS_STAFF_ROW);
                 statement.setString(1, login);
                 statement.setInt(2, department.id);
             }
-            if (action.equals(Action.REMOVE)) {
+            if (serviceAction.equals(ServiceAction.REMOVE)) {
                 statement = connection.prepareStatement(SQL_DELETE_DEPARTMENTS_STAFF_ROW);
                 statement.setString(1, login);
             }

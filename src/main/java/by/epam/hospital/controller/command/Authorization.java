@@ -1,6 +1,6 @@
 package by.epam.hospital.controller.command;
 
-import by.epam.hospital.controller.Command;
+import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.User;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class Authorization implements Command {
+public class Authorization implements HttpCommand {
     private static final String UNSUCCESSFUL_MESSAGE = "Incorrect login or password";
     private static final ClientService service = new ClientServiceImpl();
 
