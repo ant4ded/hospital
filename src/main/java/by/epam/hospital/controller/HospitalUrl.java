@@ -6,6 +6,7 @@ public class HospitalUrl {
     public static final String PAGE_MAIN = "/main";
     public static final String PAGE_REGISTRY = "/registry";
     public static final String PAGE_ROLE_CONTROL = "/role-control";
+    public static final String PAGE_DEPARTMENT_CONTROL = "/department-control";
     public static final String PAGE_ERROR = "/error-handler";
     public static final String SERVLET_MAIN = "/main-servlet";
 
