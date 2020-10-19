@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class FindUserRoles implements Command {
+public class FindRoleControlAttributes implements Command {
     private static final String UNSUCCESSFUL_MESSAGE = "Can not find user roles";
 
     private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
