@@ -192,7 +192,6 @@ public class UserDaoImpl implements UserDao {
         return Optional.ofNullable(userFromDb);
     }
 
-    // TODO: 20.10.2020 test
     @Override
     public Optional<User> findByRegistrationData(String firstName, String surname, String lastName, Date birthday) throws DaoException {
         User userFromDb = null;
