@@ -29,7 +29,8 @@ public class UserDetailsDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void create_find_update(User user) throws DaoException {
+    public void create_find_update_findByRegistrationData(User user) throws DaoException {
+        UserDetails userDetails = user.getUserDetails();
         UserDetails newUserDetails = new UserDetails();
         newUserDetails.setPassportId(user.getUserDetails().getPassportId());
         newUserDetails.setGender(UserDetails.Gender.MALE);
@@ -42,7 +43,15 @@ public class UserDetailsDaoImplTest {
 
         userDao.create(user);
 
+        if (userDetailsDao.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                userDetails.getLastName(), userDetails.getBirthday()).isEmpty()) {
+            cleaner.delete(user);
+            logger.fatal("Create or findByRegistrationData work incorrect");
+            Assert.fail("Create or findByRegistrationData work incorrect");
+        }
+
         if (userDao.find(user.getLogin()).orElse(new User()).getUserDetails().getUserId() == 0) {
+            cleaner.delete(user);
             logger.fatal("Create or find work incorrect");
             Assert.fail("Create or find work incorrect");
         }

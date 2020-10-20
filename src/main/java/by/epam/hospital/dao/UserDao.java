@@ -4,6 +4,7 @@ import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.service.ServiceAction;
 
+import java.sql.Date;
 import java.util.Optional;
 
 public interface UserDao {
@@ -14,6 +15,9 @@ public interface UserDao {
     Optional<User> find(String login) throws DaoException;
 
     Optional<User> findById(int id) throws DaoException;
+
+    Optional<User> findByRegistrationData(String firstName, String surname, String lastName, Date birthday)
+            throws DaoException;
 
     void updateUserRoles(String login, ServiceAction serviceAction, Role role) throws DaoException;
 }

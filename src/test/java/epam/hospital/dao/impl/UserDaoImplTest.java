@@ -5,6 +5,7 @@ import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
@@ -26,10 +27,11 @@ public class UserDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void create_find_update(User user) throws DaoException {
+    public void create_find_update_findByRegistrationData(User user) throws DaoException {
         user.setLogin("pppp");
 
         User newValue = new User();
+        UserDetails userDetails = user.getUserDetails();
         newValue.setUserDetails(user.getUserDetails());
         newValue.setPassword(user.getPassword());
         newValue.setRoles(user.getRoles());
@@ -37,6 +39,13 @@ public class UserDaoImplTest {
         newValue.setId(user.getId());
 
         userDao.create(user);
+        if (userDao.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                userDetails.getLastName(), userDetails.getBirthday()).isEmpty()) {
+            cleaner.delete(user);
+            logger.fatal("Create or findByRegistrationData work incorrect");
+            Assert.fail("Create or findByRegistrationData work incorrect");
+        }
+
         if (userDao.findById(userDao.find(user.getLogin()).orElse(new User()).getId()).isEmpty()) {
             logger.fatal("Create or find work incorrect");
             Assert.fail("Create or find work incorrect");
