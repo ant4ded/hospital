@@ -16,7 +16,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@Test(groups = "dao")
+@Test(groups = "dao", dependsOnGroups = {"UserDaoImplTest", "DepartmentStaffDaoImplTest"})
 public class DepartmentDaoImplTest {
     private DepartmentStaffDao departmentStaffDao;
     private DepartmentDao departmentDao;

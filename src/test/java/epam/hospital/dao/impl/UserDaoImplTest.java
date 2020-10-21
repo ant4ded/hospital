@@ -14,7 +14,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@Test(groups = "dao")
+@Test(groups = {"dao", "UserDaoImplTest"}, dependsOnGroups = "UserDetailsDaoImplTest")
 public class UserDaoImplTest {
     private static final Logger logger = Logger.getLogger(UserDaoImplTest.class);
 
@@ -29,7 +29,7 @@ public class UserDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void create_find_update_findByRegistrationData(User user) throws DaoException {
-        user.setLogin("pppp");
+        user.setLogin("1111");
 
         User newValue = new User();
         UserDetails userDetails = user.getUserDetails();
