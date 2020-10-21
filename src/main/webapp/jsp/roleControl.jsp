@@ -38,7 +38,7 @@
                             Please reassign department head to change roles.
                         </p>
                     </c:if>
-                    <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                    <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                         <input type="hidden" name="${ParameterName.COMMAND}"
                                value="${CommandName.FIND_ROLE_CONTROL_ATTRIBUTES}">
                         <div class="form-group form-inline">
@@ -50,12 +50,12 @@
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
                             <div class="form-group col-lg-2 col-md-2 name">
-                                <button type="submit" class="template-btn">Submit</button>
+                                <button type="submit" class="template-btn">Find</button>
                             </div>
                         </div>
                     </form>
                     <c:if test="${requestScope.userRoles != null}">
-                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Administrator</p>
@@ -65,7 +65,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.ADMIN.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.REMOVE}">
+                                               value="${ServiceAction.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
@@ -97,7 +97,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.ADMIN.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.ADD}">
+                                               value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
@@ -114,7 +114,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Receptionist</p>
@@ -124,7 +124,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.RECEPTIONIST.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.REMOVE}">
+                                               value="${ServiceAction.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
@@ -156,7 +156,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.RECEPTIONIST.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.ADD}">
+                                               value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
@@ -173,7 +173,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Doctor</p>
@@ -184,7 +184,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DOCTOR.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.REMOVE}">
+                                               value="${ServiceAction.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
@@ -220,7 +220,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DOCTOR.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.ADD}">
+                                               value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
@@ -250,7 +250,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Head of department</p>
@@ -260,7 +260,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DEPARTMENT_HEAD.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.ADD}">
+                                               value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
@@ -294,7 +294,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DEPARTMENT_HEAD.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.ADD}">
+                                               value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
@@ -324,7 +324,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Medical assistant</p>
@@ -334,7 +334,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.MEDICAL_ASSISTANT.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.REMOVE}">
+                                               value="${ServiceAction.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"
@@ -368,7 +368,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.MEDICAL_ASSISTANT.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${Action.ADD}">
+                                               value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${ParameterName.LOGIN}"

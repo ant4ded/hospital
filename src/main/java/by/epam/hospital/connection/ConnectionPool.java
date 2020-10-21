@@ -7,35 +7,48 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayDeque;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public enum CustomConnectionPool {
-    INSTANCE;
+public class CustomConnectionPool {
 
-    private static final int DEFAULT_POOL_SIZE = 32;
-    private BlockingQueue<ProxyConnection> freeConnections;
-    private Queue<ProxyConnection> usedConnections;
+    private static final ConnectionPool instance = new ConnectionPool();
+
+    private BlockingQueue<Connection> freeConnections;
+    private BlockingQueue<Connection> usedConnections;
     private final Logger logger = Logger.getLogger(CustomConnectionPool.class);
 
+    private final int poolSize;
+
     CustomConnectionPool() {
+        DbResourceManager dbResourceManager = DbResourceManager.getInstance();
+        String url = dbResourceManager.getValue(DbConfigParameterName.URL);
+        this.poolSize = Integer.parseInt(dbResourceManager.getValue(DbConfigParameterName.POOL_SIZE));
+
+        Properties properties = new Properties();
+        properties.put("user", dbResourceManager.getValue(DbConfigParameterName.USER));
+        properties.put("password", dbResourceManager.getValue(DbConfigParameterName.PASSWORD));
+        properties.put("serverTimezone", dbResourceManager.getValue(DbConfigParameterName.SERVER_TIMEZONE));
+        properties.put("autoReconnect", dbResourceManager.getValue(DbConfigParameterName.AUTO_RECONNECT));
+        properties.put("characterEncoding", dbResourceManager.getValue(DbConfigParameterName.CHARACTER_ENCODING));
+        properties.put("useSSL", dbResourceManager.getValue(DbConfigParameterName.USE_SSL));
+
         try {
-            DriverManager.registerDriver(new Driver());
-            freeConnections = new LinkedBlockingDeque<>(DEFAULT_POOL_SIZE);
-            usedConnections = new ArrayDeque<>();
-            for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
-                ProxyConnection connection =
-                        new ProxyConnection(DataSourceFactory.createMysqlDataSource().getConnection());
-                freeConnections.add(connection);
+            Class.forName(dbResourceManager.getValue(DbConfigParameterName.DRIVER));
+            freeConnections = new LinkedBlockingDeque<>(poolSize);
+            usedConnections = new ArrayDeque<>(poolSize);
+            for (int i = 0; i < poolSize; i++) {
+                freeConnections.add(new ProxyConnection(DriverManager.getConnection(url, properties)));
             }
-        } catch (SQLException | ConnectionException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             logger.error(e);
         }
     }
 
     public Connection getConnection() throws ConnectionException {
-        ProxyConnection connection;
+        Connection connection;
         try {
             connection = freeConnections.take();
             usedConnections.offer(connection);
@@ -48,16 +61,16 @@ public enum CustomConnectionPool {
     public void releaseConnection(Connection connection) throws ConnectionException {
         if (connection.getClass() == ProxyConnection.class) {
             usedConnections.remove(connection);
-            freeConnections.offer((ProxyConnection) connection);
+            freeConnections.offer(connection);
         } else {
             throw new ConnectionException("Error with release non proxy connection");
         }
     }
 
     public void destroyPool() throws ConnectionException {
-        for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
+        for (int i = 0; i < poolSize; i++) {
             try {
-                freeConnections.take().reallyClose();
+                ((ProxyConnection)freeConnections.take()).reallyClose();
             } catch (SQLException e) {
                 throw new ConnectionException("Error with close connection", e);
             } catch (InterruptedException e) {

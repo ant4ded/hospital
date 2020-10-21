@@ -31,7 +31,7 @@
             <div class="col-lg-12 posts-list">
                 <div class="comment-form">
                     <h4>Register new client</h4>
-                    <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                    <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
                         <p>${requestScope.message}</p>
                         <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.REGISTER_CLIENT}">
                         <div class="form-group form-inline">

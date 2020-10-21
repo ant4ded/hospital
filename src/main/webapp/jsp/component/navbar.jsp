@@ -23,7 +23,7 @@
 <div class="login-form-flex">
     <div id="login" class="login-form">
         <h4>Login</h4>
-        <form method="post" serviceAction="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
             <div class="form-group">
                 <p>${requestScope.message}</p>
                 <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.AUTHORIZATION}">

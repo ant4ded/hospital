@@ -23,7 +23,7 @@
                     <div class="single-widget-home mb-5 mb-lg-0">
                         <h3 class="mb-4">newsletter</h3>
                         <p class="mb-4">You can trust us. we only send promo offers, not a single.</p>
-                        <form serviceAction="#">
+                        <form action="#">
                             <%--suppress HtmlFormInputWithoutLabel --%>
                             <input type="email" placeholder="Your email here" onfocus="this.placeholder = ''"
                                    onblur="this.placeholder = 'Your email here'" required>
