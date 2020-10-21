@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
+@Test(groups = "services", dependsOnGroups = "dao")
 public class ClientServiceImplTest {
     private ClientService clientService;
     private UserDao userDao;

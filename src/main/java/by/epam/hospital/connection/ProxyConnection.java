@@ -8,8 +8,8 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 public class ProxyConnection implements Connection {
-    private Connection connection;
-    private Logger logger = Logger.getLogger(ProxyConnection.class);
+    private static final Logger logger = Logger.getLogger(ProxyConnection.class);
+    private final Connection connection;
 
     public ProxyConnection(Connection connection) {
         this.connection = connection;
@@ -58,7 +58,7 @@ public class ProxyConnection implements Connection {
     @Override
     public void close() {
         try {
-            CustomConnectionPool.INSTANCE.releaseConnection(this);
+            ConnectionPool.getInstance().releaseConnection(this);
         } catch (ConnectionException e) {
             logger.error(e);
         }

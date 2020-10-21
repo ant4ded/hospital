@@ -14,6 +14,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+@Test(groups = "dao")
 public class DepartmentStaffDaoImplTest {
     private DepartmentStaffDao departmentStaffDao;
     private UserDao userDao;

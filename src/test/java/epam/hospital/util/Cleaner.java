@@ -1,8 +1,7 @@
 package epam.hospital.util;
 
 import by.epam.hospital.connection.ConnectionException;
-import by.epam.hospital.connection.ConnectionUtil;
-import by.epam.hospital.connection.DataSourceFactory;
+import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.UserDetailsDao;
@@ -29,7 +28,7 @@ public class Cleaner {
         PreparedStatement statement = null;
         UserDetails userDetails = user.getUserDetails();
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_DELETE_USER_ROLES);
 
             user = userDao.find(user.getLogin()).orElseThrow(DaoException::new);
@@ -39,7 +38,7 @@ public class Cleaner {
             statement.close();
 
             Optional<UserDetails> optionalUserDetails = userDetailsDao.find(user.getId());
-            if (optionalUserDetails.isPresent()){
+            if (optionalUserDetails.isPresent()) {
                 delete(optionalUserDetails.get());
             }
 
@@ -51,7 +50,7 @@ public class Cleaner {
         } catch (SQLException e) {
             throw new DaoException("Can not delete row on users table", e);
         } finally {
-            ConnectionUtil.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement);
         }
     }
 
@@ -60,7 +59,7 @@ public class Cleaner {
         PreparedStatement statement = null;
         UserDetails userDetailsFromDb;
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_DELETE_USER_DETAILS);
 
             userDetailsFromDb = userDetailsDao.find(userDetails.getUserId()).orElseThrow(DaoException::new);
@@ -74,7 +73,7 @@ public class Cleaner {
         } catch (SQLException e) {
             throw new DaoException("Can not delete row on users_details table", e);
         } finally {
-            ConnectionUtil.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement);
         }
     }
 }

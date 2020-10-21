@@ -1,8 +1,7 @@
 package by.epam.hospital.dao.impl;
 
 import by.epam.hospital.connection.ConnectionException;
-import by.epam.hospital.connection.ConnectionUtil;
-import by.epam.hospital.connection.DataSourceFactory;
+import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.IcdDao;
 import by.epam.hospital.entity.Icd;
@@ -24,7 +23,7 @@ public class IcdDaoImpl implements IcdDao {
         ResultSet resultSet = null;
         Icd icd = null;
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_ID);
 
             statement.setString(1, code);
@@ -34,14 +33,14 @@ public class IcdDaoImpl implements IcdDao {
             if (resultSet.next()) {
                 icd = new Icd(resultSet.getInt(IcdFieldName.ID), code, resultSet.getString(IcdFieldName.TITLE));
 
-                ConnectionUtil.closeConnection(connection, statement, resultSet);
+                ConnectionPool.closeConnection(connection, statement, resultSet);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
             throw new DaoException("Can not find row on users table", e);
         } finally {
-            ConnectionUtil.closeConnection(connection, statement, resultSet);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return Optional.ofNullable(icd);
     }

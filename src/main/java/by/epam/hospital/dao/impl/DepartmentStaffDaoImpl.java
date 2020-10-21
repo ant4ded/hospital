@@ -1,8 +1,7 @@
 package by.epam.hospital.dao.impl;
 
 import by.epam.hospital.connection.ConnectionException;
-import by.epam.hospital.connection.ConnectionUtil;
-import by.epam.hospital.connection.DataSourceFactory;
+import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DepartmentStaffDao;
@@ -39,7 +38,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();
 
             if (!serviceAction.equals(ServiceAction.ADD) && !serviceAction.equals(ServiceAction.REMOVE)) {
                 throw new DaoException("Invalid parameter value. Parameter - " + ParameterName.ACTION);
@@ -59,7 +58,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
         } catch (SQLException e) {
             throw new DaoException("Can not update row on users_details table", e);
         } finally {
-            ConnectionUtil.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement);
         }
     }
 
@@ -70,7 +69,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
         ResultSet resultSet = null;
         Map<String, User> userMap = new HashMap<>();
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();
 
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_STAFF);
             statement.setInt(1, department.id);
@@ -94,7 +93,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
         } catch (SQLException e) {
             throw new DaoException("Can not update row on users_details table", e);
         } finally {
-            ConnectionUtil.closeConnection(connection, statement, resultSet);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return userMap;
     }

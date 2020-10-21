@@ -1,8 +1,7 @@
 package by.epam.hospital.dao.impl;
 
 import by.epam.hospital.connection.ConnectionException;
-import by.epam.hospital.connection.ConnectionUtil;
-import by.epam.hospital.connection.DataSourceFactory;
+import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DepartmentDao;
 import by.epam.hospital.dao.UserDao;
@@ -35,7 +34,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         ResultSet resultSet = null;
         Optional<User> departmentHead;
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();;
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_HEAD);
 
             statement.setInt(1, department.id);
@@ -51,7 +50,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } catch (SQLException e) {
             throw new DaoException("Can not find " + DepartmentsFieldName.DEPARTMENT_HEAD_ID + " on departments table");
         } finally {
-            ConnectionUtil.closeConnection(connection, statement, resultSet);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return departmentHead;
     }
@@ -65,7 +64,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
             if (user.isEmpty()) {
                 throw new DaoException("Can not find user on users table");
             }
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();;
             statement = connection.prepareStatement(SQL_UPDATE_DEPARTMENT_HEAD);
 
             statement.setInt(1, user.get().getId());
@@ -77,7 +76,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } catch (SQLException e) {
             throw new DaoException("Can not update " + DepartmentsFieldName.DEPARTMENT_HEAD_ID + " on departments table");
         } finally {
-            ConnectionUtil.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement);
         }
     }
 
@@ -88,7 +87,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         ResultSet resultSet = null;
         Department department = null;
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();;
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_BY_USERNAME);
 
             statement.setString(1, login);
@@ -103,7 +102,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } catch (SQLException e) {
             throw new DaoException("Can not find " + DepartmentsFieldName.TITLE + " on departments table by login");
         } finally {
-            ConnectionUtil.closeConnection(connection, statement, resultSet);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return department;
     }

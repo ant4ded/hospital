@@ -14,6 +14,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+@Test(groups = "dao")
 public class UserDaoImplTest {
     private static final Logger logger = Logger.getLogger(UserDaoImplTest.class);
 

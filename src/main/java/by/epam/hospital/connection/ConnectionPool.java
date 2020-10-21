@@ -1,44 +1,43 @@
 package by.epam.hospital.connection;
 
-import com.mysql.cj.jdbc.Driver;
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.ArrayDeque;
+import java.sql.*;
 import java.util.Properties;
-import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 
-public class CustomConnectionPool {
-
+public class ConnectionPool {
+    private static final Logger logger = Logger.getLogger(ConnectionPool.class);
     private static final ConnectionPool instance = new ConnectionPool();
-
-    private BlockingQueue<Connection> freeConnections;
-    private BlockingQueue<Connection> usedConnections;
-    private final Logger logger = Logger.getLogger(CustomConnectionPool.class);
-
     private final int poolSize;
+    private final BlockingQueue<Connection> freeConnections;
+    private final BlockingQueue<Connection> usedConnections;
 
-    CustomConnectionPool() {
+    private ConnectionPool() {
         DbResourceManager dbResourceManager = DbResourceManager.getInstance();
-        String url = dbResourceManager.getValue(DbConfigParameterName.URL);
-        this.poolSize = Integer.parseInt(dbResourceManager.getValue(DbConfigParameterName.POOL_SIZE));
+        String url = dbResourceManager.getValue(DbParameterName.CONFIG_URL);
+        this.poolSize = Integer.parseInt(dbResourceManager.getValue(DbParameterName.CONFIG_POOL_SIZE));
 
         Properties properties = new Properties();
-        properties.put("user", dbResourceManager.getValue(DbConfigParameterName.USER));
-        properties.put("password", dbResourceManager.getValue(DbConfigParameterName.PASSWORD));
-        properties.put("serverTimezone", dbResourceManager.getValue(DbConfigParameterName.SERVER_TIMEZONE));
-        properties.put("autoReconnect", dbResourceManager.getValue(DbConfigParameterName.AUTO_RECONNECT));
-        properties.put("characterEncoding", dbResourceManager.getValue(DbConfigParameterName.CHARACTER_ENCODING));
-        properties.put("useSSL", dbResourceManager.getValue(DbConfigParameterName.USE_SSL));
+        properties.put(DbParameterName.CONNECTION_USER,
+                dbResourceManager.getValue(DbParameterName.CONFIG_USER));
+        properties.put(DbParameterName.CONNECTION_PASSWORD,
+                dbResourceManager.getValue(DbParameterName.CONFIG_PASSWORD));
+        properties.put(DbParameterName.CONNECTION_SERVER_TIMEZONE,
+                dbResourceManager.getValue(DbParameterName.CONFIG_SERVER_TIMEZONE));
+        properties.put(DbParameterName.CONNECTION_AUTO_RECONNECT,
+                dbResourceManager.getValue(DbParameterName.CONFIG_AUTO_RECONNECT));
+        properties.put(DbParameterName.CONNECTION_CHARACTER_ENCODING,
+                dbResourceManager.getValue(DbParameterName.CONFIG_CHARACTER_ENCODING));
+        properties.put(DbParameterName.CONNECTION_USE_SSL,
+                dbResourceManager.getValue(DbParameterName.CONFIG_USE_SSL));
+
+        freeConnections = new ArrayBlockingQueue<>(poolSize);
+        usedConnections = new ArrayBlockingQueue<>(poolSize);
 
         try {
-            Class.forName(dbResourceManager.getValue(DbConfigParameterName.DRIVER));
-            freeConnections = new LinkedBlockingDeque<>(poolSize);
-            usedConnections = new ArrayDeque<>(poolSize);
+            Class.forName(dbResourceManager.getValue(DbParameterName.CONFIG_DRIVER));
             for (int i = 0; i < poolSize; i++) {
                 freeConnections.add(new ProxyConnection(DriverManager.getConnection(url, properties)));
             }
@@ -47,37 +46,76 @@ public class CustomConnectionPool {
         }
     }
 
+    public static ConnectionPool getInstance() {
+        return instance;
+    }
+
     public Connection getConnection() throws ConnectionException {
-        Connection connection;
+        Connection connection = null;
         try {
             connection = freeConnections.take();
-            usedConnections.offer(connection);
+            if (!usedConnections.offer(connection)) {
+                throw new ConnectionException("Can not add connection to usedConnections. Used queue is full.");
+            }
         } catch (InterruptedException e) {
-            throw new ConnectionException("Error with get connection", e);
+            logger.warn("Interrupted!", e);
+            Thread.currentThread().interrupt();
         }
         return connection;
     }
 
     public void releaseConnection(Connection connection) throws ConnectionException {
         if (connection.getClass() == ProxyConnection.class) {
-            usedConnections.remove(connection);
-            freeConnections.offer(connection);
+            if (!usedConnections.remove(connection)) {
+                throw new ConnectionException("Can not delete connection from usedConnections. Connection not present.");
+            }
+            if (!freeConnections.offer(connection)) {
+                throw new ConnectionException("Can not add connection to freeConnections. Used queue is full.");
+            }
         } else {
             throw new ConnectionException("Error with release non proxy connection");
         }
     }
 
     public void destroyPool() throws ConnectionException {
+        for (Connection usedConnection : usedConnections) {
+            releaseConnection(usedConnection);
+        }
         for (int i = 0; i < poolSize; i++) {
             try {
-                ((ProxyConnection)freeConnections.take()).reallyClose();
+                ((ProxyConnection) freeConnections.take()).reallyClose();
             } catch (SQLException e) {
                 throw new ConnectionException("Error with close connection", e);
             } catch (InterruptedException e) {
-                throw new ConnectionException("Error with get connection", e);
+                logger.warn("Interrupted!", e);
+                Thread.currentThread().interrupt();
             }
         }
         deregisterDriver();
+    }
+
+    public static void closeConnection(Connection connection, Statement statement) {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+    }
+
+    public static void closeConnection(Connection connection, Statement statement, ResultSet resultSet) {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            closeConnection(connection, statement);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
     }
 
     private void deregisterDriver() {

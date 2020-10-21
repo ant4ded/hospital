@@ -14,6 +14,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+@Test(groups = "services", dependsOnGroups = "dao")
 public class AuthenticationServiceImplTest {
     private AuthenticationService authenticationService;
     private UserDao userDao;

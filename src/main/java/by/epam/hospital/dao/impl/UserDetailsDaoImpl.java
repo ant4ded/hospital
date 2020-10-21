@@ -1,8 +1,7 @@
 package by.epam.hospital.dao.impl;
 
 import by.epam.hospital.connection.ConnectionException;
-import by.epam.hospital.connection.ConnectionUtil;
-import by.epam.hospital.connection.DataSourceFactory;
+import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.UserDetails;
@@ -31,7 +30,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_CREATE);
 
             statement.setString(1, userDetails.getPassportId());
@@ -52,7 +51,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         } catch (SQLException e) {
             throw new DaoException("Can not add row to users_details table", e);
         } finally {
-            ConnectionUtil.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement);
         }
     }
 
@@ -62,7 +61,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         PreparedStatement statement = null;
         UserDetails userDetailsFromDb;
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
             userDetailsFromDb = find(oldValue.getUserId()).orElseThrow(DaoException::new);
             newValue.setUserId(userDetailsFromDb.getUserId());
@@ -85,7 +84,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         } catch (SQLException e) {
             throw new DaoException("Can not update row on users_details table", e);
         } finally {
-            ConnectionUtil.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement);
         }
     }
 
@@ -96,7 +95,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         ResultSet resultSet = null;
         UserDetails userDetailsFromDb = null;
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_USER_ID);
 
             statement.setInt(1, id);
@@ -121,7 +120,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         } catch (SQLException e) {
             throw new DaoException("Can not find row on users_details table", e);
         } finally {
-            ConnectionUtil.closeConnection(connection, statement, resultSet);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return Optional.ofNullable(userDetailsFromDb);
     }
@@ -134,7 +133,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         ResultSet resultSet = null;
         UserDetails userDetailsFromDb = null;
         try {
-            connection = DataSourceFactory.createMysqlDataSource().getConnection();
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_REGISTRATION_DATA);
 
             statement.setString(1, firstName);
@@ -164,7 +163,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         } catch (SQLException e) {
             throw new DaoException("Can not find row on users_details table", e);
         } finally {
-            ConnectionUtil.closeConnection(connection, statement, resultSet);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return Optional.ofNullable(userDetailsFromDb);
     }
