@@ -111,4 +111,7 @@
     <url-pattern>/role-control</url-pattern>
   </filter-mapping>
   <!--Filters declaration end-->
+  <listener>
+    <listener-class>by.epam.hospital.controller.listener.ConnectionPoolContentListener</listener-class>
+  </listener>
 </web-app>
