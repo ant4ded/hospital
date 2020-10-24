@@ -83,6 +83,7 @@
   <!--Error codes declaration end-->
 
   <!--Filters declaration start-->
+  <!--Authentication filters declaration start-->
   <filter>
     <filter-name>ReceptionistAuthenticationFilter</filter-name>
     <filter-class>by.epam.hospital.controller.filter.AuthenticationFilter</filter-class>
@@ -110,6 +111,18 @@
     <filter-name>AdminHeadAuthenticationFilter</filter-name>
     <url-pattern>/role-control</url-pattern>
   </filter-mapping>
+  <!--Authentication filters declaration end-->
+  <!--Validation filters declaration start-->
+  <filter>
+    <filter-name>RegisterClientFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RegisterClientFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>RegisterClientFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
+  </filter-mapping>
+  <!--Validation filters declaration end-->
   <!--Filters declaration end-->
   <listener>
     <listener-class>by.epam.hospital.controller.listener.ConnectionPoolContentListener</listener-class>

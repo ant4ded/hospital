@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+// TODO: 22.10.2020 filter sequence and mapping in web.xml on command urls
 public class AuthenticationFilter implements Filter {
-    private static final String EMPTY = "";
     private static final String FORBIDDEN_MESSAGE = "Access denied";
 
     private final Logger logger = Logger.getLogger(AuthenticationFilter.class);
@@ -39,12 +39,10 @@ public class AuthenticationFilter implements Filter {
         loginUsername = loginUsername == null ? FilterInitParameterName.ANONYMOUS_USER : loginUsername;
 
         try {
-            if (loginUsername.isBlank() || !authenticationService.isHasRole(loginUsername, role)){
+            if (loginUsername.isBlank() || !authenticationService.isHasRole(loginUsername, role)) {
                 httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, FORBIDDEN_MESSAGE);
             }
-            httpServletRequest.getRequestDispatcher(httpServletRequest.getRequestURI()
-                    .replace(HospitalUrl.APP_NAME_URL, EMPTY))
-                    .forward(servletRequest, servletResponse);
+            filterChain.doFilter(servletRequest, servletResponse);
         } catch (ServiceException e) {
             servletRequest.setAttribute(ParameterName.MESSAGE, e.getMessage());
             httpServletRequest.getRequestDispatcher(HospitalUrl.PAGE_ERROR).forward(servletRequest, servletResponse);

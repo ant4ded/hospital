@@ -7,7 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"", "/main-servlet"})
+// TODO: 22.10.2020 add url patterns for all commands.
+//      After that add filters with validation for all commands
+@WebServlet(urlPatterns = {HospitalUrl.EMPTY, HospitalUrl.SERVLET_MAIN, HospitalUrl.COMMAND_REGISTER_CLIENT,
+        HospitalUrl.COMMAND_CHANGE_DEPARTMENT_HEAD, HospitalUrl.COMMAND_FIND_DEPARTMENT_CONTROL_ATTRIBUTES,
+        HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES, HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT,
+        HospitalUrl.COMMAND_ROLE_CONTROL})
 public class Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
