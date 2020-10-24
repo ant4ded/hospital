@@ -17,7 +17,8 @@ public class RegisterClientFilter implements Filter {
     private final UserValidator userValidator = new UserValidator();
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
         boolean isHaveInvalidFields = false;
         StringJoiner response = new StringJoiner(DELIMITER, PREFIX, SUFFIX);
 
