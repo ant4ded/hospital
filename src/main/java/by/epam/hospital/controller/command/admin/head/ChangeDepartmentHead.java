@@ -5,6 +5,7 @@ import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
+import by.epam.hospital.entity.table.UsersFieldName;
 import by.epam.hospital.service.AdminHeadService;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.impl.AdminHeadServiceImpl;
@@ -24,7 +25,7 @@ public class ChangeDepartmentHead implements HttpCommand {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String login = request.getParameter(ParameterName.LOGIN);
+        String login = request.getParameter(UsersFieldName.LOGIN);
         Department department = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
 
         try {
@@ -34,7 +35,7 @@ public class ChangeDepartmentHead implements HttpCommand {
                 message = MESSAGE_PART1 + department.name().toLowerCase() + SUCCESSFUL_MESSAGE_PART2;
                 roles = adminHeadService.findUserRoles(login);
             }
-            request.setAttribute(ParameterName.LOGIN, login);
+            request.setAttribute(UsersFieldName.LOGIN, login);
             request.setAttribute(ParameterName.MESSAGE, message);
             request.setAttribute(ParameterName.USER_ROLES, roles);
             request.setAttribute(ParameterName.DEPARTMENT, department);

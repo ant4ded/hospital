@@ -43,10 +43,10 @@
                                value="${CommandName.FIND_ROLE_CONTROL_ATTRIBUTES}">
                         <div class="form-group form-inline">
                             <div class="form-group col-lg-10 col-md-10 name">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
-                                       value="<%=request.getParameter(ParameterName.LOGIN) == null ?
-                                        "" : request.getParameter(ParameterName.LOGIN)%>"
+                                       value="<%=request.getParameter(UsersFieldName.LOGIN) == null ?
+                                        "" : request.getParameter(UsersFieldName.LOGIN)%>"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
                             <div class="form-group col-lg-2 col-md-2 name">
@@ -68,8 +68,8 @@
                                                value="${ServiceAction.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
@@ -100,8 +100,8 @@
                                                value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary">Add</button>
@@ -127,8 +127,8 @@
                                                value="${ServiceAction.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary disable" disabled>Add
@@ -159,8 +159,8 @@
                                                value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary">Add</button>
@@ -187,8 +187,8 @@
                                                value="${ServiceAction.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                                value="${requestScope.department}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
@@ -223,8 +223,8 @@
                                                value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3">
                                             <select name="${ParameterName.DEPARTMENT}">
                                                 <option value="${Department.INFECTIOUS}">Infectious</option>
@@ -263,8 +263,8 @@
                                                value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                                value="${requestScope.department}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
@@ -297,8 +297,8 @@
                                                value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-2 col-md-2">
                                             <button type="submit" class="genric-btn primary">Add</button>
                                         </div>
@@ -337,8 +337,8 @@
                                                value="${ServiceAction.REMOVE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                                value="${requestScope.department}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
@@ -371,8 +371,8 @@
                                                value="${ServiceAction.ADD}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
-                                        <input type="hidden" name="${ParameterName.LOGIN}"
-                                               value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                        <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                               value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3">
                                             <select name="${ParameterName.DEPARTMENT}">
                                                 <option value="${Department.INFECTIOUS}">Infectious</option>

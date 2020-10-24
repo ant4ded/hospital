@@ -5,6 +5,7 @@ import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
+import by.epam.hospital.entity.table.UsersFieldName;
 import by.epam.hospital.service.AdminHeadService;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.impl.AdminHeadServiceImpl;
@@ -22,7 +23,7 @@ public class FindRoleControlAttributes implements HttpCommand {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String login = request.getParameter(ParameterName.LOGIN);
+        String login = request.getParameter(UsersFieldName.LOGIN);
         try {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
             if (roles.isEmpty()) {

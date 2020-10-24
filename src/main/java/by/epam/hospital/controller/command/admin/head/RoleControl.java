@@ -5,6 +5,7 @@ import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
+import by.epam.hospital.entity.table.UsersFieldName;
 import by.epam.hospital.service.AdminHeadService;
 import by.epam.hospital.service.ServiceAction;
 import by.epam.hospital.service.ServiceException;
@@ -28,7 +29,7 @@ public class RoleControl implements HttpCommand {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         boolean result;
         Department department = null;
-        String login = request.getParameter(ParameterName.LOGIN);
+        String login = request.getParameter(UsersFieldName.LOGIN);
         ServiceAction serviceAction = ServiceAction.valueOf(request.getParameter(ParameterName.ACTION));
         Role role = Role.valueOf(request.getParameter(ParameterName.ROLE));
 

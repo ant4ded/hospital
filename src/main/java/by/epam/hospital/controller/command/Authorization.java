@@ -4,6 +4,7 @@ import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.table.UsersFieldName;
 import by.epam.hospital.service.ClientService;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.impl.ClientServiceImpl;
@@ -19,8 +20,8 @@ public class Authorization implements HttpCommand {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String login = request.getParameter(ParameterName.LOGIN);
-        String password = request.getParameter(ParameterName.PASSWORD);
+        String login = request.getParameter(UsersFieldName.LOGIN);
+        String password = request.getParameter(UsersFieldName.PASSWORD);
         User userFromDb;
 
         try {

@@ -32,10 +32,10 @@
                                value="${CommandName.FIND_DEPARTMENT_CONTROL_ATTRIBUTES}">
                         <div class="form-group form-inline">
                             <div class="form-group col-lg-11 col-md-11 name">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
-                                       value="<%=request.getParameter(ParameterName.LOGIN) == null ?
-                                        "" : request.getParameter(ParameterName.LOGIN)%>"
+                                       value="<%=request.getParameter(UsersFieldName.LOGIN) == null ?
+                                        "" : request.getParameter(UsersFieldName.LOGIN)%>"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
                             <div class="form-group col-lg-1 col-md-1 name">
@@ -57,7 +57,7 @@
                                 Infectious
                             </div>
                             <div class="form-group col-lg-4 col-md-4">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
@@ -74,8 +74,8 @@
                                            value="${Department.INFECTIOUS}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
-                                    <input type="hidden" name="${ParameterName.LOGIN}"
-                                           value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                    <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                           value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                     <button type="submit" class="genric-btn primary">
                                         Move found doctor to department
                                     </button>
@@ -105,7 +105,7 @@
                                 Cardiology
                             </div>
                             <div class="form-group col-lg-4 col-md-4">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
@@ -122,8 +122,8 @@
                                            value="${Department.CARDIOLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
-                                    <input type="hidden" name="${ParameterName.LOGIN}"
-                                           value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                    <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                           value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                     <button type="submit" class="genric-btn primary">
                                         Move found doctor to department
                                     </button>
@@ -153,7 +153,7 @@
                                 Neurology
                             </div>
                             <div class="form-group col-lg-4 col-md-4">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
@@ -170,8 +170,8 @@
                                            value="${Department.NEUROLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
-                                    <input type="hidden" name="${ParameterName.LOGIN}"
-                                           value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                    <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                           value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                     <button type="submit" class="genric-btn primary">
                                         Move found doctor to department
                                     </button>
@@ -201,7 +201,7 @@
                                 Otorhinolaryngology
                             </div>
                             <div class="form-group col-lg-4 col-md-4">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
@@ -218,8 +218,8 @@
                                            value="${Department.OTORHINOLARYNGOLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
-                                    <input type="hidden" name="${ParameterName.LOGIN}"
-                                           value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                    <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                           value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                     <button type="submit" class="genric-btn primary">
                                         Move found doctor to department
                                     </button>
@@ -249,7 +249,7 @@
                                 Pediatric
                             </div>
                             <div class="form-group col-lg-4 col-md-4">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
@@ -266,8 +266,8 @@
                                            value="${Department.PEDIATRIC}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
-                                    <input type="hidden" name="${ParameterName.LOGIN}"
-                                           value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                    <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                           value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                     <button type="submit" class="genric-btn primary">
                                         Move found doctor to department
                                     </button>
@@ -297,7 +297,7 @@
                                 Therapeutic
                             </div>
                             <div class="form-group col-lg-4 col-md-4">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
@@ -314,8 +314,8 @@
                                            value="${Department.THERAPEUTIC}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
-                                    <input type="hidden" name="${ParameterName.LOGIN}"
-                                           value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                    <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                           value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                     <button type="submit" class="genric-btn primary">
                                         Move found doctor to department
                                     </button>
@@ -345,7 +345,7 @@
                                 Urology
                             </div>
                             <div class="form-group col-lg-4 col-md-4">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
@@ -362,8 +362,8 @@
                                            value="${Department.UROLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
-                                    <input type="hidden" name="${ParameterName.LOGIN}"
-                                           value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                    <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                           value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                     <button type="submit" class="genric-btn primary">
                                         Move found doctor to department
                                     </button>
@@ -393,7 +393,7 @@
                                 Traumatology
                             </div>
                             <div class="form-group col-lg-4 col-md-4">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
@@ -410,8 +410,8 @@
                                            value="${Department.TRAUMATOLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
-                                    <input type="hidden" name="${ParameterName.LOGIN}"
-                                           value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                    <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                           value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                     <button type="submit" class="genric-btn primary">
                                         Move found doctor to department
                                     </button>
@@ -441,7 +441,7 @@
                                 Surgery
                             </div>
                             <div class="form-group col-lg-4 col-md-4">
-                                <input type="text" name="${ParameterName.LOGIN}" required
+                                <input type="text" name="${UsersFieldName.LOGIN}" required
                                        class="form-control" placeholder="Login"
                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
                             </div>
@@ -458,8 +458,8 @@
                                            value="${Department.SURGERY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
-                                    <input type="hidden" name="${ParameterName.LOGIN}"
-                                           value="<%=request.getParameter(ParameterName.LOGIN)%>">
+                                    <input type="hidden" name="${UsersFieldName.LOGIN}"
+                                           value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                     <button type="submit" class="genric-btn primary">
                                         Move found doctor to department
                                     </button>
