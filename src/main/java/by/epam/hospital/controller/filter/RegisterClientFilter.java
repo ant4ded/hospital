@@ -4,6 +4,7 @@ import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.filter.validator.UserValidator;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
+import by.epam.hospital.entity.table.UsersFieldName;
 
 import javax.servlet.*;
 import java.io.IOException;
@@ -23,6 +24,11 @@ public class RegisterClientFilter implements Filter {
         StringJoiner response = new StringJoiner(DELIMITER, PREFIX, SUFFIX);
 
         // TODO: 24.10.2020 auto generate login and password
+        if (!userValidator.isValidLogin(servletRequest
+                .getParameter(UsersFieldName.LOGIN))) {
+            isHaveInvalidFields = true;
+            response.add(UsersFieldName.LOGIN);
+        }
         if (!userValidator.isValidPassportId(servletRequest
                 .getParameter(UsersDetailsFieldName.PASSPORT_ID))) {
             isHaveInvalidFields = true;
