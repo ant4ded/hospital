@@ -15,7 +15,7 @@ public class HospitalUrl {
     public static final String COMMAND_CHANGE_DEPARTMENT_HEAD = "/c-change-department-head";
     public static final String COMMAND_FIND_DEPARTMENT_CONTROL_ATTRIBUTES = "/c-find-department-control-attributes";
     public static final String COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES = "/c-find-role-control-attributes";
-    public static final String COMMAND_MOVE_DOCTOR_TO_DEPARTMENT = "/c-move-doctor-to department";
+    public static final String COMMAND_MOVE_DOCTOR_TO_DEPARTMENT = "/c-move-doctor-to-department";
     public static final String COMMAND_ROLE_CONTROL = "/c-role-control";
 
     public static final String COMMAND_REGISTER_CLIENT = "/c-register-client";
