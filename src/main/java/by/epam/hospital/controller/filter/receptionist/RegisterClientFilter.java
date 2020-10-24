@@ -2,6 +2,7 @@ package by.epam.hospital.controller.filter.receptionist;
 
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
+import by.epam.hospital.controller.filter.FilterParameterName;
 import by.epam.hospital.controller.filter.validator.UserValidator;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
@@ -11,9 +12,6 @@ import java.io.IOException;
 import java.util.StringJoiner;
 
 public class RegisterClientFilter implements Filter {
-    private static final String PREFIX = "Invalid data. [";
-    private static final String SUFFIX = "]";
-    private static final String DELIMITER = ", ";
 
     private final UserValidator userValidator = new UserValidator();
 
@@ -21,7 +19,8 @@ public class RegisterClientFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         boolean isHaveInvalidFields = false;
-        StringJoiner response = new StringJoiner(DELIMITER, PREFIX, SUFFIX);
+        StringJoiner response = new StringJoiner(FilterParameterName.DELIMITER,
+                FilterParameterName.PREFIX, FilterParameterName.SUFFIX);
 
         // TODO: 24.10.2020 auto generate login and password
         if (!userValidator.isValidLogin(servletRequest
