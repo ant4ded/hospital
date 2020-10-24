@@ -69,7 +69,7 @@
                             <c:when test="${!requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) &&
                                 requestScope.userRoles.contains(Role.DOCTOR)}">
                                 <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                            value="${Department.INFECTIOUS}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
@@ -82,8 +82,7 @@
                                 </form>
                             </c:when>
                             <c:otherwise>
-                                <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                <form method="post" class="col-lg-3 col-md-3" action="#">
                                     <button type="submit" class="genric-btn primary disable" disabled>
                                         Move found doctor to department
                                     </button>
@@ -117,7 +116,7 @@
                             <c:when test="${!requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) &&
                                 requestScope.userRoles.contains(Role.DOCTOR)}">
                                 <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                            value="${Department.CARDIOLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
@@ -130,8 +129,7 @@
                                 </form>
                             </c:when>
                             <c:otherwise>
-                                <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                <form method="post" class="col-lg-3 col-md-3" action="#">
                                     <button type="submit" class="genric-btn primary disable" disabled>
                                         Move found doctor to department
                                     </button>
@@ -165,7 +163,7 @@
                             <c:when test="${!requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) &&
                                 requestScope.userRoles.contains(Role.DOCTOR)}">
                                 <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                            value="${Department.NEUROLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
@@ -178,8 +176,7 @@
                                 </form>
                             </c:when>
                             <c:otherwise>
-                                <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                <form method="post" class="col-lg-3 col-md-3" action="#">
                                     <button type="submit" class="genric-btn primary disable" disabled>
                                         Move found doctor to department
                                     </button>
@@ -213,7 +210,7 @@
                             <c:when test="${!requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) &&
                                 requestScope.userRoles.contains(Role.DOCTOR)}">
                                 <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                            value="${Department.OTORHINOLARYNGOLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
@@ -226,8 +223,7 @@
                                 </form>
                             </c:when>
                             <c:otherwise>
-                                <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                <form method="post" class="col-lg-3 col-md-3" action="#">
                                     <button type="submit" class="genric-btn primary disable" disabled>
                                         Move found doctor to department
                                     </button>
@@ -261,7 +257,7 @@
                             <c:when test="${!requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) &&
                                 requestScope.userRoles.contains(Role.DOCTOR)}">
                                 <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                            value="${Department.PEDIATRIC}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
@@ -274,8 +270,7 @@
                                 </form>
                             </c:when>
                             <c:otherwise>
-                                <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                <form method="post" class="col-lg-3 col-md-3" action="#">
                                     <button type="submit" class="genric-btn primary disable" disabled>
                                         Move found doctor to department
                                     </button>
@@ -309,7 +304,7 @@
                             <c:when test="${!requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) &&
                                 requestScope.userRoles.contains(Role.DOCTOR)}">
                                 <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                            value="${Department.THERAPEUTIC}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
@@ -322,8 +317,7 @@
                                 </form>
                             </c:when>
                             <c:otherwise>
-                                <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                <form method="post" class="col-lg-3 col-md-3" action="#">
                                     <button type="submit" class="genric-btn primary disable" disabled>
                                         Move found doctor to department
                                     </button>
@@ -357,7 +351,7 @@
                             <c:when test="${!requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) &&
                                 requestScope.userRoles.contains(Role.DOCTOR)}">
                                 <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                            value="${Department.UROLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
@@ -370,8 +364,7 @@
                                 </form>
                             </c:when>
                             <c:otherwise>
-                                <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                <form method="post" class="col-lg-3 col-md-3" action="#">
                                     <button type="submit" class="genric-btn primary disable" disabled>
                                         Move found doctor to department
                                     </button>
@@ -405,7 +398,7 @@
                             <c:when test="${!requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) &&
                                 requestScope.userRoles.contains(Role.DOCTOR)}">
                                 <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                            value="${Department.TRAUMATOLOGY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
@@ -418,8 +411,7 @@
                                 </form>
                             </c:when>
                             <c:otherwise>
-                                <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                <form method="post" class="col-lg-3 col-md-3" action="#">
                                     <button type="submit" class="genric-btn primary disable" disabled>
                                         Move found doctor to department
                                     </button>
@@ -453,7 +445,7 @@
                             <c:when test="${!requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) &&
                                 requestScope.userRoles.contains(Role.DOCTOR)}">
                                 <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${ParameterName.DEPARTMENT}"
                                            value="${Department.SURGERY}">
                                     <input type="hidden" name="${ParameterName.COMMAND}"
@@ -466,8 +458,7 @@
                                 </form>
                             </c:when>
                             <c:otherwise>
-                                <form method="post" class="col-lg-3 col-md-3"
-                                      action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                <form method="post" class="col-lg-3 col-md-3" action="#">
                                     <button type="submit" class="genric-btn primary disable" disabled>
                                         Move found doctor to department
                                     </button>

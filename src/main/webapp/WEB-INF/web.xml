@@ -132,6 +132,16 @@
     <filter-name>RoleControlFilter</filter-name>
     <url-pattern>/c-role-control</url-pattern>
   </filter-mapping>
+
+  <filter>
+    <filter-name>MoveDoctorToDepartmentFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.admin.head.MoveDoctorToDepartmentFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>MoveDoctorToDepartmentFilter</filter-name>
+    <url-pattern>/c-move-doctor-to-department</url-pattern>
+  </filter-mapping>
   <!--Validation filters declaration end-->
   <!--Filters declaration end-->
   <listener>
