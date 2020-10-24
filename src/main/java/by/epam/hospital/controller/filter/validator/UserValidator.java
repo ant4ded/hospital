@@ -4,7 +4,7 @@ public class UserValidator {
     private static final String PASSPORT_ID_REGEX = "[\\d\\p{L}]{14}";
     private static final String NAME_REGEX = "\\p{Lu}\\p{Ll}{2,14}";
     private static final String PHONE_REGEX = "\\d{12}";
-    private static final String LOGIN_REGEX = "\\p{Ll}{3,15}-\\p{Ll}-\\p{Ll}{3,15}";
+    private static final String LOGIN_REGEX = "\\p{Ll}{3,15}_\\p{Ll}_\\p{Ll}{3,15}";
 
     public boolean isValidLogin(String login) {
         return login.matches(LOGIN_REGEX);
