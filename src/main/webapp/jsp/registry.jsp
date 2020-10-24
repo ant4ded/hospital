@@ -33,6 +33,8 @@
                     <h4>Register new client</h4>
                     <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_REGISTER_CLIENT}">
                         <p>${requestScope.message}</p>
+                        <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                               value="${HospitalUrl.PAGE_REGISTRY}">
                         <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.REGISTER_CLIENT}">
                         <div class="form-group form-inline">
                             <div class="form-group col-lg-6 col-md-6 name">

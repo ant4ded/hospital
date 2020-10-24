@@ -3,6 +3,7 @@ package by.epam.hospital.controller;
 public class ParameterName {
     public static final String COMMAND = "command";
     public static final String MESSAGE = "message";
+    public static final String PAGE_OF_DEPARTURE = "page_of_departure";
 
     public static final String ANONYMOUS_USER = "*anonymous_user*";
     public static final String LOGIN_USERNAME = "loginUsername";

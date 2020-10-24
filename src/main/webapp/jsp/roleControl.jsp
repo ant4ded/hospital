@@ -39,6 +39,8 @@
                         </p>
                     </c:if>
                     <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES}">
+                        <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                               value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                         <input type="hidden" name="${ParameterName.COMMAND}"
                                value="${CommandName.FIND_ROLE_CONTROL_ATTRIBUTES}">
                         <div class="form-group form-inline">
@@ -56,6 +58,8 @@
                     </form>
                     <c:if test="${requestScope.userRoles != null}">
                         <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
+                            <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                                   value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Administrator</p>
@@ -115,6 +119,8 @@
                             </div>
                         </form>
                         <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
+                            <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                                   value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Receptionist</p>
@@ -174,6 +180,8 @@
                             </div>
                         </form>
                         <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
+                            <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                                   value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Doctor</p>
@@ -251,6 +259,8 @@
                             </div>
                         </form>
                         <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
+                            <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                                   value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Head of department</p>
@@ -325,6 +335,8 @@
                             </div>
                         </form>
                         <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
+                            <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                                   value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Medical assistant</p>
