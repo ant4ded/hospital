@@ -27,7 +27,7 @@
                     <c:if test="${requestScope.login == null}">
                         <p>Find doctor if you want move him to any department.</p>
                     </c:if>
-                    <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                    <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_FIND_DEPARTMENT_CONTROL_ATTRIBUTES}">
                         <input type="hidden" name="${ParameterName.COMMAND}"
                                value="${CommandName.FIND_DEPARTMENT_CONTROL_ATTRIBUTES}">
                         <div class="form-group form-inline">

@@ -38,7 +38,7 @@
                             Please reassign department head to change roles.
                         </p>
                     </c:if>
-                    <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                    <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES}">
                         <input type="hidden" name="${ParameterName.COMMAND}"
                                value="${CommandName.FIND_ROLE_CONTROL_ATTRIBUTES}">
                         <div class="form-group form-inline">

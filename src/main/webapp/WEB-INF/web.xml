@@ -142,6 +142,26 @@
     <filter-name>MoveDoctorToDepartmentFilter</filter-name>
     <url-pattern>/c-move-doctor-to-department</url-pattern>
   </filter-mapping>
+
+  <filter>
+    <filter-name>FindRoleControlAttributesFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.CorrectLoginFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>FindRoleControlAttributesFilter</filter-name>
+    <url-pattern>/c-find-role-control-attributes</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>FindDepartmentControlAttributesFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.CorrectLoginFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>FindDepartmentControlAttributesFilter</filter-name>
+    <url-pattern>/c-find-department-control-attributes</url-pattern>
+  </filter-mapping>
   <!--Validation filters declaration end-->
   <!--Filters declaration end-->
   <listener>
