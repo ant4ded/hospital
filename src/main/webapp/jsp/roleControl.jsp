@@ -55,7 +55,7 @@
                         </div>
                     </form>
                     <c:if test="${requestScope.userRoles != null}">
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Administrator</p>
@@ -114,7 +114,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Receptionist</p>
@@ -173,7 +173,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Doctor</p>
@@ -250,7 +250,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Head of department</p>
@@ -324,7 +324,7 @@
                                 </c:choose>
                             </div>
                         </form>
-                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                        <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
                                     <p>Medical assistant</p>

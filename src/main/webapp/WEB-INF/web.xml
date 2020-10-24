@@ -122,6 +122,16 @@
     <filter-name>RegisterClientFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
+
+  <filter>
+    <filter-name>RoleControlFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.admin.head.RoleControlFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>RoleControlFilter</filter-name>
+    <url-pattern>/c-role-control</url-pattern>
+  </filter-mapping>
   <!--Validation filters declaration end-->
   <!--Filters declaration end-->
   <listener>
