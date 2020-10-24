@@ -115,7 +115,7 @@
   <!--Validation filters declaration start-->
   <filter>
     <filter-name>RegisterClientFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.RegisterClientFilter</filter-class>
+    <filter-class>by.epam.hospital.controller.filter.receptionist.RegisterClientFilter</filter-class>
   </filter>
 
   <filter-mapping>
@@ -125,6 +125,6 @@
   <!--Validation filters declaration end-->
   <!--Filters declaration end-->
   <listener>
-    <listener-class>by.epam.hospital.controller.listener.ConnectionPoolContentListener</listener-class>
+    <listener-class>by.epam.hospital.connection.listener.ConnectionPoolContextListener</listener-class>
   </listener>
 </web-app>
