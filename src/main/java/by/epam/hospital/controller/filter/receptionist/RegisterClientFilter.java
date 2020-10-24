@@ -2,7 +2,7 @@ package by.epam.hospital.controller.filter.receptionist;
 
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
-import by.epam.hospital.controller.filter.FilterParameterName;
+import by.epam.hospital.controller.filter.FilterMessageParameter;
 import by.epam.hospital.controller.filter.validator.UserValidator;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
@@ -19,8 +19,8 @@ public class RegisterClientFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         boolean isHaveInvalidFields = false;
-        StringJoiner response = new StringJoiner(FilterParameterName.DELIMITER,
-                FilterParameterName.PREFIX, FilterParameterName.SUFFIX);
+        StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
+                FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
 
         // TODO: 24.10.2020 auto generate login and password
         if (!userValidator.isValidLogin(servletRequest

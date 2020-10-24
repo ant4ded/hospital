@@ -25,7 +25,7 @@ public class AuthenticationFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        role = Role.valueOf(filterConfig.getInitParameter(FilterParameterName.ROLE));
+        role = Role.valueOf(filterConfig.getInitParameter(ParameterName.ROLE));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class AuthenticationFilter implements Filter {
         HttpSession session = httpServletRequest.getSession();
 
         String loginUsername = (String) session.getAttribute(ParameterName.LOGIN_USERNAME);
-        loginUsername = loginUsername == null ? FilterParameterName.ANONYMOUS_USER : loginUsername;
+        loginUsername = loginUsername == null ? ParameterName.ANONYMOUS_USER : loginUsername;
 
         try {
             if (loginUsername.isBlank() || !authenticationService.isHasRole(loginUsername, role)) {

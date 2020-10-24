@@ -1,6 +1,6 @@
 package by.epam.hospital.service.impl;
 
-import by.epam.hospital.controller.filter.FilterParameterName;
+import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.UserDaoImpl;
@@ -20,7 +20,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user;
         Optional<User> optionalUser;
         try {
-            if (!login.equalsIgnoreCase(FilterParameterName.ANONYMOUS_USER)) {
+            if (!login.equalsIgnoreCase(ParameterName.ANONYMOUS_USER)) {
                 optionalUser = userDao.find(login);
                 if (optionalUser.isEmpty()) {
                     throw new ServiceException("Can not find user - " + login);
