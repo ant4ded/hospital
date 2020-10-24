@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class Authorization implements HttpCommand {
     private static final String UNSUCCESSFUL_MESSAGE = "Incorrect login or password";
-    private static final ClientService service = new ClientServiceImpl();
+    private final ClientService clientService = new ClientServiceImpl();
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -24,7 +24,7 @@ public class Authorization implements HttpCommand {
         User userFromDb;
 
         try {
-            userFromDb = service.authorization(login, password);
+            userFromDb = clientService.authorization(login, password);
 
             request.getSession().setAttribute(ParameterName.LOGIN_USERNAME, userFromDb.getLogin());
             request.getSession().setAttribute(ParameterName.LOGIN_ROLES, userFromDb.getRoles());
