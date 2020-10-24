@@ -134,33 +134,43 @@
   </filter-mapping>
 
   <filter>
-    <filter-name>MoveDoctorToDepartmentFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.admin.head.MoveDoctorToDepartmentFilter</filter-class>
+    <filter-name>CorrectDepartmentFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.admin.head.CorrectDepartmentFilter</filter-class>
   </filter>
 
   <filter-mapping>
-    <filter-name>MoveDoctorToDepartmentFilter</filter-name>
+    <filter-name>CorrectDepartmentFilter</filter-name>
     <url-pattern>/c-move-doctor-to-department</url-pattern>
   </filter-mapping>
 
-  <filter>
-    <filter-name>FindRoleControlAttributesFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectLoginFilter</filter-class>
-  </filter>
-
   <filter-mapping>
-    <filter-name>FindRoleControlAttributesFilter</filter-name>
-    <url-pattern>/c-find-role-control-attributes</url-pattern>
+    <filter-name>CorrectDepartmentFilter</filter-name>
+    <url-pattern>/c-change-department-head</url-pattern>
   </filter-mapping>
 
   <filter>
-    <filter-name>FindDepartmentControlAttributesFilter</filter-name>
+    <filter-name>CorrectLoginFilter</filter-name>
     <filter-class>by.epam.hospital.controller.filter.CorrectLoginFilter</filter-class>
   </filter>
 
   <filter-mapping>
-    <filter-name>FindDepartmentControlAttributesFilter</filter-name>
+    <filter-name>CorrectLoginFilter</filter-name>
+    <url-pattern>/c-find-role-control-attributes</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CorrectLoginFilter</filter-name>
     <url-pattern>/c-find-department-control-attributes</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CorrectLoginFilter</filter-name>
+    <url-pattern>/c-move-doctor-to-department</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CorrectLoginFilter</filter-name>
+    <url-pattern>/c-change-department-head</url-pattern>
   </filter-mapping>
   <!--Validation filters declaration end-->
   <!--Filters declaration end-->
