@@ -1,4 +1,4 @@
-package by.epam.hospital.controller.filter;
+package by.epam.hospital.controller.filter.receptionist;
 
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
