@@ -92,10 +92,13 @@
       <param-value>RECEPTIONIST</param-value>
     </init-param>
   </filter>
-
   <filter-mapping>
     <filter-name>ReceptionistAuthenticationFilter</filter-name>
     <url-pattern>/registry</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ReceptionistAuthenticationFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
 
   <filter>
@@ -106,10 +109,33 @@
       <param-value>ADMIN_HEAD</param-value>
     </init-param>
   </filter>
-
   <filter-mapping>
     <filter-name>AdminHeadAuthenticationFilter</filter-name>
     <url-pattern>/role-control</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AdminHeadAuthenticationFilter</filter-name>
+    <url-pattern>/department-control</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AdminHeadAuthenticationFilter</filter-name>
+    <url-pattern>/c-change-department-head</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AdminHeadAuthenticationFilter</filter-name>
+    <url-pattern>/c-find-department-control-attributes</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AdminHeadAuthenticationFilter</filter-name>
+    <url-pattern>/c-find-role-control-attributes</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AdminHeadAuthenticationFilter</filter-name>
+    <url-pattern>/c-move-doctor-to-department</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AdminHeadAuthenticationFilter</filter-name>
+    <url-pattern>/c-role-control</url-pattern>
   </filter-mapping>
   <!--Authentication filters declaration end-->
   <!--Validation filters declaration start-->
@@ -117,7 +143,6 @@
     <filter-name>RegisterClientFilter</filter-name>
     <filter-class>by.epam.hospital.controller.filter.receptionist.RegisterClientFilter</filter-class>
   </filter>
-
   <filter-mapping>
     <filter-name>RegisterClientFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
@@ -127,7 +152,6 @@
     <filter-name>RoleControlFilter</filter-name>
     <filter-class>by.epam.hospital.controller.filter.admin.head.RoleControlFilter</filter-class>
   </filter>
-
   <filter-mapping>
     <filter-name>RoleControlFilter</filter-name>
     <url-pattern>/c-role-control</url-pattern>
@@ -137,12 +161,10 @@
     <filter-name>CorrectDepartmentFilter</filter-name>
     <filter-class>by.epam.hospital.controller.filter.admin.head.CorrectDepartmentFilter</filter-class>
   </filter>
-
   <filter-mapping>
     <filter-name>CorrectDepartmentFilter</filter-name>
     <url-pattern>/c-move-doctor-to-department</url-pattern>
   </filter-mapping>
-
   <filter-mapping>
     <filter-name>CorrectDepartmentFilter</filter-name>
     <url-pattern>/c-change-department-head</url-pattern>
@@ -152,22 +174,18 @@
     <filter-name>CorrectLoginFilter</filter-name>
     <filter-class>by.epam.hospital.controller.filter.CorrectLoginFilter</filter-class>
   </filter>
-
   <filter-mapping>
     <filter-name>CorrectLoginFilter</filter-name>
     <url-pattern>/c-find-role-control-attributes</url-pattern>
   </filter-mapping>
-
   <filter-mapping>
     <filter-name>CorrectLoginFilter</filter-name>
     <url-pattern>/c-find-department-control-attributes</url-pattern>
   </filter-mapping>
-
   <filter-mapping>
     <filter-name>CorrectLoginFilter</filter-name>
     <url-pattern>/c-move-doctor-to-department</url-pattern>
   </filter-mapping>
-
   <filter-mapping>
     <filter-name>CorrectLoginFilter</filter-name>
     <url-pattern>/c-change-department-head</url-pattern>
