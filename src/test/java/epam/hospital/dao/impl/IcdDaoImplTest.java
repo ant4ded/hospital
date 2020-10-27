@@ -20,4 +20,9 @@ public class IcdDaoImplTest {
     public void findByCode() throws DaoException {
         Assert.assertTrue(icdDao.findByCode("XW0DXJ5").isPresent());
     }
+
+    @Test
+    public void findById() throws DaoException{
+        Assert.assertNotNull(icdDao.findById(1));
+    }
 }
