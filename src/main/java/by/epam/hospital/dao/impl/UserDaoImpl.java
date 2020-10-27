@@ -57,7 +57,7 @@ public class UserDaoImpl implements UserDao {
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on users table", e);
+            throw new DaoException("Can not find row on roles table", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }

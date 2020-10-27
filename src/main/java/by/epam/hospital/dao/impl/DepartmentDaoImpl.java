@@ -42,13 +42,13 @@ public class DepartmentDaoImpl implements DepartmentDao {
             statement.execute();
             resultSet = statement.getResultSet();
             if (!resultSet.next()) {
-                throw new DaoException("Can not find " + DepartmentsFieldName.DEPARTMENT_HEAD_ID + " on departments table");
+                throw new DaoException("Can not find row on departments table");
             }
             departmentHead = userDao.findById(resultSet.getInt(1));
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find " + DepartmentsFieldName.DEPARTMENT_HEAD_ID + " on departments table");
+            throw new DaoException("Can not find row on departments table");
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -64,7 +64,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
             if (user.isEmpty()) {
                 throw new DaoException("Can not find user on users table");
             }
-            connection = ConnectionPool.getInstance().getConnection();;
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE_DEPARTMENT_HEAD);
 
             statement.setInt(1, user.get().getId());
@@ -74,7 +74,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not update " + DepartmentsFieldName.DEPARTMENT_HEAD_ID + " on departments table");
+            throw new DaoException("Can not update row on departments table");
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
@@ -100,7 +100,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find " + DepartmentsFieldName.TITLE + " on departments table by login");
+            throw new DaoException("Can not find row on departments table");
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }

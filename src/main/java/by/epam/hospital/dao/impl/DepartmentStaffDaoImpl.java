@@ -56,7 +56,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not update row on users_details table", e);
+            throw new DaoException("Can not update row on departments_staff table", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
@@ -86,12 +86,11 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
                 user.setRoles(userDao.find(user.getLogin()).orElseThrow(DaoException::new).getRoles());
 
                 userMap.put(user.getLogin(), user);
-
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not update row on users_details table", e);
+            throw new DaoException("Can not find row on departments_staff table", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
