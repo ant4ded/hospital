@@ -9,10 +9,12 @@ public class User implements Serializable {
     private String login;
     private String password;
 
-    private ArrayList<Role> roles = new ArrayList<>();
-    private UserDetails userDetails = new UserDetails();
+    private ArrayList<Role> roles;
+    private UserDetails userDetails;
 
     public User() {
+        roles = new ArrayList<>();
+        userDetails = new UserDetails();
     }
 
     public User(String login, String password) {
