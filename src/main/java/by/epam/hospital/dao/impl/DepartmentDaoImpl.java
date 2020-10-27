@@ -18,9 +18,12 @@ import java.util.Map;
 import java.util.Optional;
 
 public class DepartmentDaoImpl implements DepartmentDao {
-    private static final String SQL_FIND_DEPARTMENT_HEAD = "SELECT department_head_id FROM departments WHERE id = ?";
-    private static final String SQL_UPDATE_DEPARTMENT_HEAD = "UPDATE departments SET department_head_id = ? WHERE id = ?";
-    private static final String SQL_FIND_DEPARTMENT_BY_USERNAME = "SELECT title FROM departments " +
+    private static final String SQL_FIND_DEPARTMENT_HEAD =
+            "SELECT department_head_id FROM departments WHERE id = ?";
+    private static final String SQL_UPDATE_DEPARTMENT_HEAD =
+            "UPDATE departments SET department_head_id = ? WHERE id = ?";
+    private static final String SQL_FIND_DEPARTMENT_BY_USERNAME =
+            "SELECT title FROM departments " +
             "INNER JOIN departments_staff ds on departments.id = ds.department_id " +
             "INNER JOIN users u on ds.doctor_id = u.id " +
             "WHERE u.login = ?";

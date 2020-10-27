@@ -18,20 +18,25 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
-    private static final String SQL_CREATE_USER = "INSERT INTO users (login, password) VALUES (?, ?)";
-    private static final String SQL_CREATE_USER_ROLES = "INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)";
-
-    private static final String SQL_FIND_BY_LOGIN = "SELECT id, password  FROM users WHERE login = ?";
-    private static final String SQL_FIND_BY_ID = "SELECT login, password  FROM users WHERE id = ?";
-    private static final String SQL_FIND_USER_ROLES = "SELECT title FROM hospital.roles " +
+    private static final String SQL_CREATE_USER =
+            "INSERT INTO users (login, password) VALUES (?, ?)";
+    private static final String SQL_CREATE_USER_ROLES =
+            "INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)";
+    private static final String SQL_FIND_BY_LOGIN =
+            "SELECT id, password  FROM users WHERE login = ?";
+    private static final String SQL_FIND_BY_ID =
+            "SELECT login, password  FROM users WHERE id = ?";
+    private static final String SQL_FIND_USER_ROLES =
+            "SELECT title FROM hospital.roles " +
             "INNER JOIN users_roles ON roles.id = users_roles.role_id " +
             "INNER JOIN users ON users_roles.user_id = users.id WHERE users.id = ?";
-
-    private static final String SQL_UPDATE = "UPDATE users SET login = ?, password = ? WHERE id = ?";
-    private static final String SQL_UPDATE_USER_ROLE = "INSERT INTO users_roles (user_id, role_id) " +
+    private static final String SQL_UPDATE =
+            "UPDATE users SET login = ?, password = ? WHERE id = ?";
+    private static final String SQL_UPDATE_USER_ROLE =
+            "INSERT INTO users_roles (user_id, role_id) " +
             "SELECT users.id, roles.id FROM users, roles WHERE login = ? AND title = ?";
-
-    private static final String SQL_DELETE_USER_ROLE = "DELETE users_roles FROM users_roles " +
+    private static final String SQL_DELETE_USER_ROLE =
+            "DELETE users_roles FROM users_roles " +
             "INNER JOIN users u ON u.id = users_roles.user_id " +
             "INNER JOIN roles r ON r.id = users_roles.role_id " +
             "WHERE u.login = ? AND r.title = ?";

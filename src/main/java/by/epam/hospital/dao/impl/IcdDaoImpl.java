@@ -14,8 +14,10 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class IcdDaoImpl implements IcdDao {
-    private static final String SQL_FIND_BY_ID = "SELECT code, title FROM icd WHERE id = ?";
-    private static final String SQL_FIND_BY_CODE = "SELECT id, title  FROM icd WHERE code = ?";
+    private static final String SQL_FIND_BY_ID =
+            "SELECT code, title FROM icd WHERE id = ?";
+    private static final String SQL_FIND_BY_CODE =
+            "SELECT id, title  FROM icd WHERE code = ?";
 
     @Override
     public Optional<Icd> findByCode(String code) throws DaoException {

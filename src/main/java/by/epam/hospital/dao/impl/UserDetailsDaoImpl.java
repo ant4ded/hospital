@@ -11,17 +11,18 @@ import java.sql.*;
 import java.util.Optional;
 
 public class UserDetailsDaoImpl implements UserDetailsDao {
-    private static final String SQL_CREATE = "INSERT INTO hospital.users_details " +
+    private static final String SQL_CREATE =
+            "INSERT INTO hospital.users_details " +
             "(passport_id, user_id, gender, first_name, surname, last_name, birthday, address , phone) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-    private static final String SQL_FIND_BY_USER_ID = "SELECT passport_id, user_id, gender, " +
-            "first_name, surname, last_name, birthday, address, phone " +
+    private static final String SQL_FIND_BY_USER_ID =
+            "SELECT passport_id, user_id, gender, first_name, surname, last_name, birthday, address, phone " +
             "FROM hospital.users_details WHERE user_id = ?";
-    private static final String SQL_FIND_BY_REGISTRATION_DATA = "SELECT passport_id, user_id, gender, address, phone " +
-            "FROM users_details WHERE first_name = ? AND surname = ? AND last_name = ? AND birthday = ?";
-
-    private static final String SQL_UPDATE = "UPDATE users_details " +
+    private static final String SQL_FIND_BY_REGISTRATION_DATA =
+            "SELECT passport_id, user_id, gender, address, phone FROM users_details " +
+            "WHERE first_name = ? AND surname = ? AND last_name = ? AND birthday = ?";
+    private static final String SQL_UPDATE =
+            "UPDATE users_details " +
             "SET gender = ?, first_name = ?, surname = ?, last_name = ?, birthday = ?, address = ?, phone = ? " +
             "WHERE passport_id = ? AND user_id = ?";
 
@@ -124,7 +125,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         }
         return Optional.ofNullable(userDetailsFromDb);
     }
-    
+
     @Override
     public Optional<UserDetails> findByRegistrationData
             (String firstName, String surname, String lastName, Date birthday) throws DaoException {

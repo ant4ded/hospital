@@ -20,13 +20,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
-    private static final String SQL_DELETE_DEPARTMENTS_STAFF_ROW = "DELETE departments_staff FROM departments_staff " +
+    private static final String SQL_DELETE_DEPARTMENTS_STAFF_ROW =
+            "DELETE departments_staff FROM departments_staff " +
             "INNER JOIN users u ON u.id = departments_staff.doctor_id " +
             "WHERE u.login = ?";
-    private static final String SQL_ADD_DEPARTMENTS_STAFF_ROW = "INSERT INTO departments_staff (department_id, doctor_id) " +
+    private static final String SQL_ADD_DEPARTMENTS_STAFF_ROW =
+            "INSERT INTO departments_staff (department_id, doctor_id) " +
             "SELECT departments.id, users.id FROM departments, users WHERE login = ? AND departments.id = ?";
-    private static final String SQL_FIND_DEPARTMENT_STAFF = "SELECT users.id, users.login, users.password " +
-            "FROM users " +
+    private static final String SQL_FIND_DEPARTMENT_STAFF =
+            "SELECT users.id, users.login, users.password FROM users " +
             "INNER JOIN departments_staff ds on users.id = ds.doctor_id " +
             "WHERE department_id = ?";
 
