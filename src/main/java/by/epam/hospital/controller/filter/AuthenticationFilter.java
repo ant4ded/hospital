@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-// TODO: 22.10.2020 filter sequence and mapping in web.xml on command urls
 public class AuthenticationFilter implements Filter {
     private static final String FORBIDDEN_MESSAGE = "Access denied";
 
