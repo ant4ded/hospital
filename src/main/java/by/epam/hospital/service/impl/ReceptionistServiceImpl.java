@@ -15,9 +15,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 
     @Override
     public boolean registerClient(User user) throws ServiceException {
-        // TODO: 09.10.2020 validation
         boolean result = true;
-
         try {
             if (userDao.find(user.getLogin()).isPresent() &&
                     userDetailsDao.find(user.getId()).isPresent()) {
