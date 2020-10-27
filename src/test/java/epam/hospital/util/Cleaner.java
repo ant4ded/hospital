@@ -16,9 +16,12 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class Cleaner {
-    private static final String SQL_DELETE_USER_ROLES = "DELETE FROM users_roles WHERE user_id = ?";
-    private static final String SQL_DELETE_USER = "DELETE FROM users WHERE id = ?";
-    private static final String SQL_DELETE_USER_DETAILS = "DELETE FROM users_details WHERE passport_id = ?";
+    private static final String SQL_DELETE_USER_ROLES =
+            "DELETE FROM users_roles WHERE user_id = ?";
+    private static final String SQL_DELETE_USER =
+            "DELETE FROM users WHERE id = ?";
+    private static final String SQL_DELETE_USER_DETAILS =
+            "DELETE FROM users_details WHERE passport_id = ?";
 
     private final UserDao userDao = new UserDaoImpl();
     private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
