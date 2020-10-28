@@ -28,15 +28,15 @@ public class IcdDaoImpl implements IcdDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_CODE);
-
             statement.setString(1, code);
-
             statement.execute();
+
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                icd = new Icd(resultSet.getInt(IcdFieldName.ID), code, resultSet.getString(IcdFieldName.TITLE));
-
-                ConnectionPool.closeConnection(connection, statement, resultSet);
+                icd = new Icd();
+                icd.setId(resultSet.getInt(IcdFieldName.ID));
+                icd.setCode(code);
+                icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
@@ -57,15 +57,15 @@ public class IcdDaoImpl implements IcdDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_ID);
-
             statement.setInt(1, id);
-
             statement.execute();
+
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                icd = new Icd(id, resultSet.getString(IcdFieldName.CODE), resultSet.getString(IcdFieldName.TITLE));
-
-                ConnectionPool.closeConnection(connection, statement, resultSet);
+                icd = new Icd();
+                icd.setId(id);
+                icd.setCode(resultSet.getString(IcdFieldName.CODE));
+                icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
             } else {
                 throw new DaoException("Can not find row on icd table");
             }

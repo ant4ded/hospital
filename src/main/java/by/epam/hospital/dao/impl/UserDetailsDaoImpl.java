@@ -33,7 +33,6 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_CREATE);
-
             statement.setString(1, userDetails.getPassportId());
             statement.setInt(2, userDetails.getUserId());
             statement.setString(3, userDetails.getGender().name());
@@ -43,10 +42,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             statement.setDate(7, userDetails.getBirthday());
             statement.setString(8, userDetails.getAddress());
             statement.setString(9, userDetails.getPhone());
-
-            if (statement.executeUpdate() < 0) {
-                throw new DaoException("Can not add row to users_details table");
-            }
+            statement.execute();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
@@ -62,11 +58,11 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         PreparedStatement statement = null;
         UserDetails userDetailsFromDb;
         try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_UPDATE);
             userDetailsFromDb = find(oldValue.getUserId()).orElseThrow(DaoException::new);
             newValue.setUserId(userDetailsFromDb.getUserId());
 
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SQL_UPDATE);
             statement.setString(1, newValue.getGender().name());
             statement.setString(2, newValue.getFirstName());
             statement.setString(3, newValue.getSurname());
@@ -76,10 +72,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             statement.setString(7, newValue.getPhone());
             statement.setString(8, userDetailsFromDb.getPassportId());
             statement.setInt(9, newValue.getUserId());
-
-            if (statement.executeUpdate() < 0) {
-                throw new DaoException("Can not update row on users_details table");
-            }
+            statement.execute();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
@@ -98,10 +91,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_USER_ID);
-
             statement.setInt(1, id);
-
             statement.execute();
+
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 userDetailsFromDb = new UserDetails();
@@ -136,13 +128,12 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_REGISTRATION_DATA);
-
             statement.setString(1, firstName);
             statement.setString(2, surname);
             statement.setString(3, lastName);
             statement.setDate(4, birthday);
-
             statement.execute();
+
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 userDetailsFromDb = new UserDetails();
@@ -150,12 +141,10 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
                 userDetailsFromDb.setUserId(resultSet.getInt(UsersDetailsFieldName.USER_ID));
                 userDetailsFromDb.setGender(UserDetails.Gender
                         .valueOf(resultSet.getString(UsersDetailsFieldName.GENDER)));
-
                 userDetailsFromDb.setFirstName(firstName);
                 userDetailsFromDb.setSurname(surname);
                 userDetailsFromDb.setLastName(lastName);
                 userDetailsFromDb.setBirthday(birthday);
-
                 userDetailsFromDb.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
                 userDetailsFromDb.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
             }

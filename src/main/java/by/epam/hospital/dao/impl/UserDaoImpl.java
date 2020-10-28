@@ -47,13 +47,14 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
+        ArrayList<Role> roles = new ArrayList<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_USER_ROLES);
             statement.setInt(1, user.getId());
             statement.execute();
+
             resultSet = statement.getResultSet();
-            ArrayList<Role> roles = new ArrayList<>();
             while (resultSet.next()) {
                 Role role = Role.valueOf(resultSet.getString(RolesFieldName.TITLE));
                 roles.add(role);
@@ -77,12 +78,11 @@ public class UserDaoImpl implements UserDao {
         UserDetails userDetails = user.getUserDetails();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-
             statement = connection.prepareStatement(SQL_CREATE_USER);
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
-
             statement.execute();
+
             user = find(user.getLogin()).orElseThrow(DaoException::new);
             userDetails.setUserId(user.getId());
             user.setUserDetails(userDetails);
@@ -93,7 +93,6 @@ public class UserDaoImpl implements UserDao {
             statement.setInt(1, user.getId());
             statement.setInt(2, Role.CLIENT.id);
             statement.execute();
-            statement.close();
 
             userDetailsDao.create(userDetails);
         } catch (ConnectionException e) {
@@ -111,15 +110,14 @@ public class UserDaoImpl implements UserDao {
         PreparedStatement statement = null;
         User userFromDb;
         try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_UPDATE);
             userFromDb = find(oldValue.getLogin()).orElseThrow(DaoException::new);
 
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SQL_UPDATE);
             statement.setString(1, newValue.getLogin());
             statement.setString(2, newValue.getPassword());
             statement.setInt(3, userFromDb.getId());
             statement.execute();
-
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
@@ -138,18 +136,15 @@ public class UserDaoImpl implements UserDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_LOGIN);
-
             statement.setString(1, login);
-
             statement.execute();
+
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 userFromDb = new User();
                 userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
                 userFromDb.setLogin(login);
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-
-                ConnectionPool.closeConnection(connection, statement, resultSet);
                 setUserRoles(userFromDb);
                 userFromDb.setUserDetails(userDetailsDao.find(userFromDb.getId()).orElse(new UserDetails()));
             }
@@ -172,19 +167,17 @@ public class UserDaoImpl implements UserDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_ID);
-
             statement.setInt(1, id);
-
             statement.execute();
+
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 userFromDb = new User();
                 userFromDb.setId(id);
                 userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-
-                ConnectionPool.closeConnection(connection, statement, resultSet);
                 setUserRoles(userFromDb);
+                userFromDb.setUserDetails(userDetailsDao.find(userFromDb.getId()).orElse(new UserDetails()));
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);
@@ -197,7 +190,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> findByRegistrationData(String firstName, String surname, String lastName, Date birthday) throws DaoException {
+    public Optional<User> findByRegistrationData(String firstName, String surname, String lastName, Date birthday)
+            throws DaoException {
         User userFromDb = null;
         Optional<UserDetails> optionalUserDetails =
                 userDetailsDao.findByRegistrationData(firstName, surname, lastName, birthday);
@@ -213,18 +207,15 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = ConnectionPool.getInstance().getConnection();
-
             if (!serviceAction.equals(ServiceAction.ADD) && !serviceAction.equals(ServiceAction.REMOVE)) {
                 throw new DaoException("Invalid parameter value. Parameter - " + ParameterName.ACTION);
             }
 
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(serviceAction.equals(ServiceAction.REMOVE) ?
                     SQL_DELETE_USER_ROLE : SQL_UPDATE_USER_ROLE);
-
             statement.setString(1, login);
             statement.setString(2, role.name());
-
             statement.execute();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source", e);

@@ -72,7 +72,6 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
         Map<String, User> userMap = new HashMap<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_STAFF);
             statement.setInt(1, department.id);
             statement.execute();
@@ -83,10 +82,8 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
                 user.setId(resultSet.getInt(UsersFieldName.ID));
                 user.setLogin(resultSet.getString(UsersFieldName.LOGIN));
                 user.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-
                 user.setUserDetails(userDetailsDao.find(user.getId()).orElseThrow(DaoException::new));
                 user.setRoles(userDao.find(user.getLogin()).orElseThrow(DaoException::new).getRoles());
-
                 userMap.put(user.getLogin(), user);
             }
         } catch (ConnectionException e) {
