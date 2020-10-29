@@ -23,7 +23,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (!login.equalsIgnoreCase(ParameterName.ANONYMOUS_USER)) {
                 optionalUser = userDao.findByLogin(login);
                 if (optionalUser.isEmpty()) {
-                    throw new ServiceException("Authentication failed. Can not find user - " + login + ".");
+                    throw new ServiceException("Authentication failed. User not existing");
                 }
                 user = optionalUser.get();
                 result = user.getRoles().contains(role);
