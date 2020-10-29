@@ -490,7 +490,9 @@
                                            value="${CommandName.MOVE_DOCTOR_TO_DEPARTMENT}">
                                     <input type="hidden" name="${UsersFieldName.LOGIN}"
                                            value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
-                                    Move found doctor to department
+                                    <button type="submit" class="genric-btn primary">
+                                        Move found doctor to department
+                                    </button>
                                 </form>
                             </c:when>
                             <c:otherwise>
