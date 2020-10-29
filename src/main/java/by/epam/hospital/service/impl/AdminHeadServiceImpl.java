@@ -78,9 +78,8 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public boolean performDepartmentStaffAction(Department department, ServiceAction serviceAction, String login)
+    public void performDepartmentStaffAction(Department department, ServiceAction serviceAction, String login)
             throws ServiceException {
-        boolean result = false;
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
             if (optionalUser.isEmpty()) {
@@ -89,23 +88,19 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             if (!optionalUser.get().getRoles().contains(Role.DOCTOR)) {
                 throw new ServiceException("PerformDepartmentStaff failed. User is not a doctor.");
             }
-            if (!optionalUser.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
-                if ((departmentDao.findDepartment(login) == null && serviceAction.equals(ServiceAction.ADD)) ||
-                        serviceAction.equals(ServiceAction.REMOVE)) {
-                    departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
-                    result = true;
-                }
-                if (departmentDao.findDepartment(login) != null && serviceAction.equals(ServiceAction.ADD)) {
-                    Department previous = findDepartmentByUsername(login);
-                    departmentStaffDao.updateStaffDepartment(previous, ServiceAction.REMOVE, login);
-                    departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
-                    result = true;
-                }
+            if (optionalUser.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
+                throw new ServiceException("PerformDepartmentStaff failed. Try to appoint " +
+                        "the head of another department as the head of a department.");
             }
+            if ((departmentDao.findDepartment(login) != null || !serviceAction.equals(ServiceAction.ADD)) &&
+                    !serviceAction.equals(ServiceAction.REMOVE)) {
+                Department previous = findDepartmentByUsername(login);
+                departmentStaffDao.updateStaffDepartment(previous, ServiceAction.REMOVE, login);
+            }
+            departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
         } catch (DaoException e) {
             throw new ServiceException("PerformDepartmentStaff failed.", e);
         }
-        return result;
     }
 
     @Override
@@ -116,10 +111,12 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             if (optionalUser.isEmpty()) {
                 throw new ServiceException("FindDepartmentByUsername failed. User not existing.");
             }
-            if (!optionalUser.get().getRoles().contains(Role.DOCTOR)) {
+            if (optionalUser.get().getRoles().contains(Role.DOCTOR) ||
+                    optionalUser.get().getRoles().contains(Role.MEDICAL_ASSISTANT)) {
+                department = departmentDao.findDepartment(login);
+            } else {
                 throw new ServiceException("FindDepartmentByUsername failed. User is not a doctor.");
             }
-            department = departmentDao.findDepartment(login);
         } catch (DaoException e) {
             throw new ServiceException("FindDepartmentByUsername failed.", e);
         }
