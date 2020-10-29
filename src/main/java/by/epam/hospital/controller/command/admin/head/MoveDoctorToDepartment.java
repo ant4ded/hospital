@@ -18,10 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MoveDoctorToDepartment implements HttpCommand {
-    private static final String SUCCESSFUL_MESSAGE_PART1 = "Doctor was moved to ";
-    private static final String UNSUCCESSFUL_MESSAGE_PART1 = "Doctor was not moved to ";
-    private static final String MESSAGE_PART2 = " department";
-
     private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
 
     @Override
@@ -31,13 +27,9 @@ public class MoveDoctorToDepartment implements HttpCommand {
 
         try {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
-            String message = UNSUCCESSFUL_MESSAGE_PART1 + department.name().toLowerCase() + MESSAGE_PART2;
-            if (adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, login)) {
-                message = SUCCESSFUL_MESSAGE_PART1 + department.name().toLowerCase() + MESSAGE_PART2;
-            }
+            adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, login);
             department = adminHeadService.findDepartmentByUsername(login);
             request.setAttribute(UsersFieldName.LOGIN, login);
-            request.setAttribute(ParameterName.MESSAGE, message);
             request.setAttribute(ParameterName.USER_ROLES, roles);
             request.setAttribute(ParameterName.DEPARTMENT, department);
         } catch (ServiceException e) {

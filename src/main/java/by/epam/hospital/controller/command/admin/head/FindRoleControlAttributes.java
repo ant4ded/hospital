@@ -1,7 +1,7 @@
 package by.epam.hospital.controller.command.admin.head;
 
-import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
+import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class FindRoleControlAttributes implements HttpCommand {
-    private static final String UNSUCCESSFUL_MESSAGE = "Can not find user roles";
-
     private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
 
     @Override
@@ -26,14 +24,8 @@ public class FindRoleControlAttributes implements HttpCommand {
         String login = request.getParameter(UsersFieldName.LOGIN);
         try {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
-            if (roles.isEmpty()) {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, UNSUCCESSFUL_MESSAGE);
-            }
-            if (roles.contains(Role.DEPARTMENT_HEAD) || roles.contains(Role.DOCTOR) ||
-                    roles.contains(Role.MEDICAL_ASSISTANT)) {
-                Department department = adminHeadService.findDepartmentByUsername(login);
-                request.setAttribute(ParameterName.DEPARTMENT, department);
-            }
+            Department department = adminHeadService.findDepartmentByUsername(login);
+            request.setAttribute(ParameterName.DEPARTMENT, department);
             request.setAttribute(ParameterName.USER_ROLES, roles);
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

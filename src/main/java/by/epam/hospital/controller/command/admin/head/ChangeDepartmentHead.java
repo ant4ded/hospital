@@ -17,9 +17,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ChangeDepartmentHead implements HttpCommand {
-    private static final String MESSAGE_PART1 = "Head of ";
-    private static final String SUCCESSFUL_MESSAGE_PART2 = " department was changed";
-    private static final String UNSUCCESSFUL_MESSAGE_PART2 = " department was not changed";
+    private static final String SUCCESSFUL_MESSAGE_PART1 = "Head of ";
+    private static final String SUCCESSFUL_MESSAGE_PART2 = " department was changed.";
+    private static final String UNSUCCESSFUL_MESSAGE = "It is not possible to appoint " +
+            "the head of another department as the head of a department.";
 
     private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
 
@@ -30,13 +31,13 @@ public class ChangeDepartmentHead implements HttpCommand {
 
         try {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
-            String message = MESSAGE_PART1 + department.name().toLowerCase() + UNSUCCESSFUL_MESSAGE_PART2;
+            request.setAttribute(ParameterName.MESSAGE, UNSUCCESSFUL_MESSAGE);
             if (adminHeadService.appointDepartmentHead(department, login)) {
-                message = MESSAGE_PART1 + department.name().toLowerCase() + SUCCESSFUL_MESSAGE_PART2;
+                request.setAttribute(ParameterName.MESSAGE,
+                        SUCCESSFUL_MESSAGE_PART1 + department.name().toLowerCase() + SUCCESSFUL_MESSAGE_PART2);
                 roles = adminHeadService.findUserRoles(login);
             }
             request.setAttribute(UsersFieldName.LOGIN, login);
-            request.setAttribute(ParameterName.MESSAGE, message);
             request.setAttribute(ParameterName.USER_ROLES, roles);
             request.setAttribute(ParameterName.DEPARTMENT, department);
         } catch (ServiceException e) {

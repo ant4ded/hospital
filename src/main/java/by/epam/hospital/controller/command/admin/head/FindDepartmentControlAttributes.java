@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class FindDepartmentControlAttributes implements HttpCommand {
-    private static final String NOT_DOCTOR = "This user is not a doctor. You can not move him to any department.";
-
     private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
 
     @Override
@@ -30,9 +28,6 @@ public class FindDepartmentControlAttributes implements HttpCommand {
             request.setAttribute(UsersFieldName.LOGIN, login);
             request.setAttribute(ParameterName.USER_ROLES, roles);
             request.setAttribute(ParameterName.DEPARTMENT, department);
-            if (!roles.contains(Role.DOCTOR)) {
-                request.setAttribute(ParameterName.MESSAGE, NOT_DOCTOR);
-            }
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
