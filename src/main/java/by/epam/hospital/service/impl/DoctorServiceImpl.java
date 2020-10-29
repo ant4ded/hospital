@@ -1,24 +1,19 @@
 package by.epam.hospital.service.impl;
 
-import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.IcdDao;
-import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.dao.UserDetailsDao;
-import by.epam.hospital.dao.impl.IcdDaoImpl;
-import by.epam.hospital.dao.impl.UserDaoImpl;
-import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
-import by.epam.hospital.entity.User;
-import by.epam.hospital.entity.UserDetails;
+import by.epam.hospital.dao.*;
+import by.epam.hospital.dao.impl.*;
+import by.epam.hospital.entity.*;
 import by.epam.hospital.service.DoctorService;
 import by.epam.hospital.service.ServiceException;
 
 import java.sql.Date;
 import java.util.Optional;
 
-// TODO: 20.10.2020 diagnose disease
 public class DoctorServiceImpl implements DoctorService {
     private final UserDao userDao = new UserDaoImpl();
     private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
+    private final TherapyDao therapyDao = new TherapyDaoImpl();
+    private final DiagnosisDao diagnosisDao = new DiagnosisDaoImpl();
     private final IcdDao icdDao = new IcdDaoImpl();
 
     @Override
@@ -37,7 +32,30 @@ public class DoctorServiceImpl implements DoctorService {
         return optionalUser;
     }
 
-    public boolean diagnoseDisease(String doctorLogin, String patientLogin, String icdCode, String reason) {
-        return false;
+    // TODO: 29.10.2020 test
+    @Override
+    public boolean diagnoseDisease(Diagnosis diagnosis, String patientLogin, CardType cardType)
+            throws ServiceException {
+        boolean result = false;
+        try {
+            Optional<User> optionalDoctor = userDao.findByLogin(diagnosis.getDoctor().getLogin());
+            Optional<User> optionalPatient = userDao.findByLogin(patientLogin);
+            Optional<Icd> optionalIcd = icdDao.findByCode(diagnosis.getIcd().getCode());
+
+            if (optionalDoctor.isPresent() && optionalPatient.isPresent() && optionalIcd.isPresent()) {
+                diagnosis.setIcd(optionalIcd.get());
+                diagnosis.setDoctor(optionalDoctor.get());
+
+                therapyDao.create(diagnosis.getDoctor().getLogin(), patientLogin, cardType);
+                Therapy therapy = therapyDao.find(diagnosis.getDoctor().getLogin(), patientLogin, cardType)
+                        .orElseThrow(ServiceException::new);
+                diagnosisDao.create(diagnosis, patientLogin, therapy.getId());
+
+                result = true;
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("Diagnose disease failed.", e);
+        }
+        return result;
     }
 }
