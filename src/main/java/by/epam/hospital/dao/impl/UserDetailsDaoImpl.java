@@ -42,11 +42,15 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             statement.setDate(7, userDetails.getBirthday());
             statement.setString(8, userDetails.getAddress());
             statement.setString(9, userDetails.getPhone());
-            statement.execute();
+            
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DaoException("Creating user details failed, no rows affected.");
+            }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not add row to users_details table", e);
+            throw new DaoException("Creating user details failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
@@ -56,11 +60,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
     public void update(UserDetails oldValue, UserDetails newValue) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        UserDetails userDetailsFromDb;
+        UserDetails userDetailsFromDb = find(oldValue.getUserId()).orElseThrow(DaoException::new);
+        newValue.setUserId(userDetailsFromDb.getUserId());
         try {
-            userDetailsFromDb = find(oldValue.getUserId()).orElseThrow(DaoException::new);
-            newValue.setUserId(userDetailsFromDb.getUserId());
-
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
             statement.setString(1, newValue.getGender().name());
@@ -72,11 +74,15 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             statement.setString(7, newValue.getPhone());
             statement.setString(8, userDetailsFromDb.getPassportId());
             statement.setInt(9, newValue.getUserId());
-            statement.execute();
+            
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DaoException("Updating user details failed, no rows affected.");
+            }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not update row on users_details table", e);
+            throw new DaoException("Updating user details failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
@@ -109,9 +115,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
                 userDetailsFromDb.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on users_details table", e);
+            throw new DaoException("Find user details failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -149,9 +155,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
                 userDetailsFromDb.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on users_details table", e);
+            throw new DaoException("Find user details failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }

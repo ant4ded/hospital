@@ -87,13 +87,11 @@ public class TherapyDaoImpl implements TherapyDao {
                 throw new DaoException("Adding therapy to " + (cardType.equals(CardType.AMBULATORY)
                         ? "ambulatory_cards" : "stationary_cards") + " failed, no rows affected.");
             }
-
-            connection.commit();
             connection.setAutoCommit(true);
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not add row to therapy table", e);
+            throw new DaoException("Creating therapy failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
@@ -125,9 +123,9 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(therapy.getId()));
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on therapy table", e);
+            throw new DaoException("Find therapy failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -165,9 +163,9 @@ public class TherapyDaoImpl implements TherapyDao {
                 }
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on therapy table", e);
+            throw new DaoException("Find therapy failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }

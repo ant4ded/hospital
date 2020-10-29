@@ -7,7 +7,6 @@ import by.epam.hospital.dao.DepartmentDao;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.entity.table.DepartmentsFieldName;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,9 +23,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
             "UPDATE departments SET department_head_id = ? WHERE id = ?";
     private static final String SQL_FIND_DEPARTMENT_BY_USERNAME =
             "SELECT title FROM departments " +
-            "INNER JOIN departments_staff ds on departments.id = ds.department_id " +
-            "INNER JOIN users u on ds.doctor_id = u.id " +
-            "WHERE u.login = ?";
+                    "INNER JOIN departments_staff ds on departments.id = ds.department_id " +
+                    "INNER JOIN users u on ds.doctor_id = u.id " +
+                    "WHERE u.login = ?";
 
     private final UserDao userDao = new UserDaoImpl();
 
@@ -37,20 +36,20 @@ public class DepartmentDaoImpl implements DepartmentDao {
         ResultSet resultSet = null;
         Optional<User> departmentHead;
         try {
-            connection = ConnectionPool.getInstance().getConnection();;
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_HEAD);
             statement.setInt(1, department.id);
             statement.execute();
 
             resultSet = statement.getResultSet();
             if (!resultSet.next()) {
-                throw new DaoException("Can not find row on departments table");
+                throw new DaoException("Find department failed.");
             }
             departmentHead = userDao.findById(resultSet.getInt(1));
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on departments table");
+            throw new DaoException("Find department head failed.");
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -64,17 +63,21 @@ public class DepartmentDaoImpl implements DepartmentDao {
         Optional<User> user = userDao.find(login);
         try {
             if (user.isEmpty()) {
-                throw new DaoException("Can not find user on users table");
+                throw new DaoException("Can not find user on users table.");
             }
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE_DEPARTMENT_HEAD);
             statement.setInt(1, user.get().getId());
             statement.setInt(2, department.id);
-            statement.execute();
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DaoException("Update department failed, no rows affected.");
+            }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not update row on departments table");
+            throw new DaoException("Update department failed.");
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
@@ -87,7 +90,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         ResultSet resultSet = null;
         Department department = null;
         try {
-            connection = ConnectionPool.getInstance().getConnection();;
+            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_BY_USERNAME);
             statement.setString(1, login);
             statement.execute();
@@ -96,9 +99,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 department = Department.valueOf(resultSet.getString(1));
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on departments table");
+            throw new DaoException("Find department failed.");
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }

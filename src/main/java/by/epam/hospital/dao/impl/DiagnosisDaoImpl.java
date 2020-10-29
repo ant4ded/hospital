@@ -65,9 +65,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
 
             addDiagnosisToTherapy(therapyId, diagnosis.getId());
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not add row to diagnoses table", e);
+            throw new DaoException("Creating diagnosis failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, generatedKeys);
         }
@@ -92,9 +92,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
                 diagnoses.add(diagnosis);
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on diagnoses table", e);
+            throw new DaoException("Find diagnoses failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -119,9 +119,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
                 setDiagnosis(diagnosis, resultSet);
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on diagnoses table", e);
+            throw new DaoException("Find diagnosis failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -151,9 +151,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
                 throw new DaoException("Adding diagnosis to therapy failed, no rows affected.");
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not add row to therapy table", e);
+            throw new DaoException("Adding diagnosis to therapy failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }

@@ -39,9 +39,9 @@ public class IcdDaoImpl implements IcdDao {
                 icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on icd table", e);
+            throw new DaoException("Find icd failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -67,12 +67,12 @@ public class IcdDaoImpl implements IcdDao {
                 icd.setCode(resultSet.getString(IcdFieldName.CODE));
                 icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
             } else {
-                throw new DaoException("Can not find row on icd table");
+                throw new DaoException("Find icd failed.");
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not find row on icd table", e);
+            throw new DaoException("Find icd failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
