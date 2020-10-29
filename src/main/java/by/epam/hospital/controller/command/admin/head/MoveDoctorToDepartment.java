@@ -26,7 +26,6 @@ public class MoveDoctorToDepartment implements HttpCommand {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter(UsersFieldName.LOGIN);
         Department department = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
-
         try {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
             Role currentRole = roles.contains(Role.DOCTOR) ? Role.DOCTOR : Role.MEDICAL_ASSISTANT;

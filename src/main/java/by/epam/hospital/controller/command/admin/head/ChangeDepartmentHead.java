@@ -25,7 +25,6 @@ public class ChangeDepartmentHead implements HttpCommand {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter(UsersFieldName.LOGIN);
         Department department = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
-
         try {
             adminHeadService.appointDepartmentHead(department, login);
             List<Role> roles = adminHeadService.findUserRoles(login);
