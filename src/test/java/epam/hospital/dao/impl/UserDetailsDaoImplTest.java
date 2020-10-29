@@ -9,15 +9,12 @@ import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
-import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@Test(groups = {"dao", "UserDetailsDaoImplTest"})
+@Test(groups = {"dao", "UserDetailsDaoImplTest"}, dependsOnGroups = "UserDaoImplTest")
 public class UserDetailsDaoImplTest {
-    private final Logger logger = Logger.getLogger(UserDetailsDaoImplTest.class);
-
     private UserDetailsDao userDetailsDao;
     private UserDao userDao;
     private Cleaner cleaner;
@@ -31,7 +28,6 @@ public class UserDetailsDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void create_find_update_findByRegistrationData(User user) throws DaoException {
-        UserDetails userDetails = user.getUserDetails();
         UserDetails newUserDetails = new UserDetails();
         newUserDetails.setPassportId(user.getUserDetails().getPassportId());
         newUserDetails.setGender(UserDetails.Gender.MALE);
@@ -43,29 +39,23 @@ public class UserDetailsDaoImplTest {
         newUserDetails.setPhone(user.getUserDetails().getPhone());
 
         userDao.create(user);
+        user.getUserDetails().setUserId(userDao.find(user.getLogin()).orElseThrow(DaoException::new).getId());
+        userDetailsDao.create(user.getUserDetails());
 
-        if (userDetailsDao.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
-                userDetails.getLastName(), userDetails.getBirthday()).isEmpty()) {
-            cleaner.delete(user);
-            logger.fatal("Create or findByRegistrationData work incorrect");
-            Assert.fail("Create or findByRegistrationData work incorrect");
-        }
+        UserDetails userDetailsFindByRegistrationData = userDetailsDao.findByRegistrationData(
+                user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
+                user.getUserDetails().getLastName(), user.getUserDetails().getBirthday())
+                .orElseThrow(DaoException::new);
 
-        if (userDao.find(user.getLogin()).orElse(new User()).getUserDetails().getUserId() == 0) {
-            cleaner.delete(user);
-            logger.fatal("Create or find work incorrect");
-            Assert.fail("Create or find work incorrect");
+        if (!user.getUserDetails().equals(userDetailsFindByRegistrationData)) {
+            throw new DaoException("Create or findByRegistrationData work incorrect");
         }
 
         userDetailsDao.update(user.getUserDetails(), newUserDetails);
-        user.setUserDetails(userDetailsDao.find(user.getUserDetails().getUserId()).orElse(new UserDetails()));
+        user.setUserDetails(userDetailsDao.findByUserId(user.getUserDetails().getUserId())
+                .orElseThrow(DaoException::new));
 
         cleaner.delete(user);
-        if (userDetailsDao.find(user.getUserDetails().getUserId()).isPresent() || userDao.find(user.getLogin()).isPresent()) {
-            logger.fatal("Delete work incorrect");
-            Assert.fail("Delete or find work incorrect");
-        }
-
         Assert.assertEquals(user.getUserDetails(), newUserDetails);
     }
 }

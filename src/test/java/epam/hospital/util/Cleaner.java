@@ -10,7 +10,6 @@ import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.*;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class Cleaner {
@@ -50,7 +49,7 @@ public class Cleaner {
             statement.execute();
             statement.close();
 
-            Optional<UserDetails> optionalUserDetails = userDetailsDao.find(user.getId());
+            Optional<UserDetails> optionalUserDetails = userDetailsDao.findByUserId(user.getId());
             if (optionalUserDetails.isPresent()) {
                 delete(optionalUserDetails.get());
             }
@@ -127,7 +126,7 @@ public class Cleaner {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_DELETE_USER_DETAILS);
 
-            userDetailsFromDb = userDetailsDao.find(userDetails.getUserId()).orElseThrow(DaoException::new);
+            userDetailsFromDb = userDetailsDao.findByUserId(userDetails.getUserId()).orElseThrow(DaoException::new);
             statement.setString(1, userDetailsFromDb.getPassportId());
 
             if (statement.executeUpdate() < 0) {

@@ -40,8 +40,6 @@ public class UserDaoImpl implements UserDao {
                     "INNER JOIN roles r ON r.id = users_roles.role_id " +
                     "WHERE u.login = ? AND r.title = ?";
 
-    private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
-
     @Override
     public void create(User user) throws DaoException {
         Connection connection = null;
@@ -74,9 +72,6 @@ public class UserDaoImpl implements UserDao {
                 throw new DaoException("Creating user roles failed, no rows affected.");
             }
             connection.setAutoCommit(true);
-
-            user.getUserDetails().setUserId(user.getId());
-            userDetailsDao.create(user.getUserDetails());
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -130,7 +125,6 @@ public class UserDaoImpl implements UserDao {
                 userFromDb.setLogin(login);
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
                 findUserRoles(userFromDb);
-                userFromDb.setUserDetails(userDetailsDao.find(userFromDb.getId()).orElse(new UserDetails()));
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -161,7 +155,6 @@ public class UserDaoImpl implements UserDao {
                 userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
                 findUserRoles(userFromDb);
-                userFromDb.setUserDetails(userDetailsDao.find(userFromDb.getId()).orElse(new UserDetails()));
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -169,19 +162,6 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException("Find user failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return Optional.ofNullable(userFromDb);
-    }
-
-    @Override
-    public Optional<User> findByRegistrationData(String firstName, String surname, String lastName, Date birthday)
-            throws DaoException {
-        User userFromDb = null;
-        Optional<UserDetails> optionalUserDetails =
-                userDetailsDao.findByRegistrationData(firstName, surname, lastName, birthday);
-        if (optionalUserDetails.isPresent()) {
-            userFromDb = findById(optionalUserDetails.get().getUserId()).orElseThrow(DaoException::new);
-            userFromDb.setUserDetails(optionalUserDetails.get());
         }
         return Optional.ofNullable(userFromDb);
     }

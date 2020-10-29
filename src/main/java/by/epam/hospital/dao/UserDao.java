@@ -16,8 +16,5 @@ public interface UserDao {
 
     Optional<User> findById(int id) throws DaoException;
 
-    Optional<User> findByRegistrationData(String firstName, String surname, String lastName, Date birthday)
-            throws DaoException;
-
     void updateUserRoles(String login, ServiceAction serviceAction, Role role) throws DaoException;
 }

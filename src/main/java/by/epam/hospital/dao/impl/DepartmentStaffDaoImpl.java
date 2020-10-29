@@ -78,7 +78,6 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
                 user.setId(resultSet.getInt(UsersFieldName.ID));
                 user.setLogin(resultSet.getString(UsersFieldName.LOGIN));
                 user.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-                user.setUserDetails(userDetailsDao.find(user.getId()).orElseThrow(DaoException::new));
                 user.setRoles(userDao.find(user.getLogin()).orElseThrow(DaoException::new).getRoles());
                 userMap.put(user.getLogin(), user);
             }

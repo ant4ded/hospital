@@ -2,7 +2,9 @@ package epam.hospital.service.impl;
 
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
+import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.dao.impl.UserDaoImpl;
+import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.service.DoctorService;
@@ -21,12 +23,14 @@ public class DoctorServiceImplTest {
     private static final Logger logger = Logger.getLogger(UserDaoImplTest.class);
 
     private DoctorService doctorService;
+    private UserDetailsDao userDetailsDao ;
     private UserDao userDao;
     private Cleaner cleaner;
 
     @BeforeClass
     private void setFields() {
         doctorService = new DoctorServiceImpl();
+        userDetailsDao = new UserDetailsDaoImpl();
         userDao = new UserDaoImpl();
         cleaner = new Cleaner();
     }
@@ -34,6 +38,8 @@ public class DoctorServiceImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findByRegistrationData(User user) throws DaoException, ServiceException {
         userDao.create(user);
+        user.getUserDetails().setUserId(userDao.find(user.getLogin()).orElseThrow(DaoException::new).getId());
+        userDetailsDao.create(user.getUserDetails());
         UserDetails userDetails = user.getUserDetails();
 
         if (doctorService.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
@@ -42,7 +48,6 @@ public class DoctorServiceImplTest {
             logger.fatal("Create or findByRegistrationData work incorrect");
             Assert.fail("Create or findByRegistrationData work incorrect");
         }
-
         cleaner.delete(user);
     }
 }

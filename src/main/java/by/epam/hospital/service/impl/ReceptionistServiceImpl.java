@@ -17,13 +17,16 @@ public class ReceptionistServiceImpl implements ReceptionistService {
     public boolean registerClient(User user) throws ServiceException {
         boolean result = true;
         try {
-            if (userDao.find(user.getLogin()).isPresent() &&
-                    userDetailsDao.find(user.getId()).isPresent()) {
+            if (userDao.find(user.getLogin()).isPresent()) {
                 result = false;
+            } else {
+                userDao.create(user);
+                user.getUserDetails().setUserId(userDao.find(user.getLogin())
+                        .orElseThrow(ServiceException::new).getId());
+                userDetailsDao.create(user.getUserDetails());
             }
-            userDao.create(user);
         } catch (DaoException e) {
-            throw new ServiceException("Registration new client failed");
+            throw new ServiceException("Registration new client failed.");
         }
         return result;
     }

@@ -60,7 +60,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
     public void update(UserDetails oldValue, UserDetails newValue) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        UserDetails userDetailsFromDb = find(oldValue.getUserId()).orElseThrow(DaoException::new);
+        UserDetails userDetailsFromDb = findByUserId(oldValue.getUserId()).orElseThrow(DaoException::new);
         newValue.setUserId(userDetailsFromDb.getUserId());
         try {
             connection = ConnectionPool.getInstance().getConnection();
@@ -89,7 +89,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
     }
 
     @Override
-    public Optional<UserDetails> find(int id) throws DaoException {
+    public Optional<UserDetails> findByUserId(int id) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;

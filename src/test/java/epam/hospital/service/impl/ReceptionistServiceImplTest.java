@@ -6,7 +6,6 @@ import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.service.ReceptionistService;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.impl.ReceptionistServiceImpl;
@@ -33,14 +32,12 @@ public class ReceptionistServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void registerClient_user_recordedBDUser(User user) throws ServiceException, DaoException {
-        User userFromDb;
         receptionistService.registerClient(user);
 
-        userFromDb = userDao.find(user.getLogin()).orElse(new User());
-        userFromDb.setUserDetails(userDetailsDao.find(user.getId()).orElse(new UserDetails()));
+        User userFromDb = userDao.find(user.getLogin()).orElseThrow(DaoException::new);
+        userFromDb.setUserDetails(userDetailsDao.findByUserId(user.getId()).orElseThrow(DaoException::new));
 
         cleaner.delete(user);
-
         Assert.assertEquals(user, userFromDb);
     }
 }
