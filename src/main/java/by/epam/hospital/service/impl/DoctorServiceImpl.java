@@ -27,35 +27,38 @@ public class DoctorServiceImpl implements DoctorService {
                 optionalUser = userDao.findById(userDetails.get().getUserId());
             }
         } catch (DaoException e) {
-            throw new ServiceException("Can not find user by id", e);
+            throw new ServiceException("FindByRegistrationData failed.", e);
         }
         return optionalUser;
     }
 
-    // TODO: 29.10.2020 test
     @Override
     public boolean diagnoseDisease(Diagnosis diagnosis, String patientLogin, CardType cardType)
             throws ServiceException {
-        boolean result = false;
         try {
             Optional<User> optionalDoctor = userDao.findByLogin(diagnosis.getDoctor().getLogin());
             Optional<User> optionalPatient = userDao.findByLogin(patientLogin);
             Optional<Icd> optionalIcd = icdDao.findByCode(diagnosis.getIcd().getCode());
-
-            if (optionalDoctor.isPresent() && optionalPatient.isPresent() && optionalIcd.isPresent()) {
-                diagnosis.setIcd(optionalIcd.get());
-                diagnosis.setDoctor(optionalDoctor.get());
-
-                therapyDao.create(diagnosis.getDoctor().getLogin(), patientLogin, cardType);
-                Therapy therapy = therapyDao.find(diagnosis.getDoctor().getLogin(), patientLogin, cardType)
-                        .orElseThrow(ServiceException::new);
-                diagnosisDao.create(diagnosis, patientLogin, therapy.getId());
-
-                result = true;
+            if (optionalDoctor.isEmpty() || optionalPatient.isEmpty()) {
+                throw new ServiceException("DiagnoseDisease failed. User not existing.");
             }
+            if (optionalDoctor.get().getRoles().contains(Role.DOCTOR)) {
+                throw new ServiceException("DiagnoseDisease failed. User is not a doctor.");
+            }
+            if (optionalIcd.isEmpty()) {
+                throw new ServiceException("DiagnoseDisease failed. Icd not existing.");
+            }
+            diagnosis.setIcd(optionalIcd.get());
+            diagnosis.setDoctor(optionalDoctor.get());
+
+            therapyDao.create(diagnosis.getDoctor().getLogin(), patientLogin, cardType);
+            Therapy therapy = therapyDao.find(diagnosis.getDoctor().getLogin(), patientLogin, cardType)
+                    .orElseThrow(ServiceException::new);
+            diagnosisDao.create(diagnosis, patientLogin, therapy.getId());
+
         } catch (DaoException e) {
-            throw new ServiceException("Diagnose disease failed.", e);
+            throw new ServiceException("DiagnoseDisease failed.", e);
         }
-        return result;
+        return true;
     }
 }

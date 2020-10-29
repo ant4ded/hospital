@@ -9,16 +9,18 @@ import by.epam.hospital.entity.User;
 import by.epam.hospital.service.ReceptionistService;
 import by.epam.hospital.service.ServiceException;
 
+import java.util.Optional;
+
 public class ReceptionistServiceImpl implements ReceptionistService {
     private final UserDao userDao = new UserDaoImpl();
     private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
 
     @Override
     public boolean registerClient(User user) throws ServiceException {
-        boolean result = true;
         try {
-            if (userDao.findByLogin(user.getLogin()).isPresent()) {
-                result = false;
+            Optional<User> optionalUser = userDao.findByLogin(user.getLogin());
+            if (optionalUser.isPresent()) {
+                throw new ServiceException("Registration new client failed. User already existing.");
             } else {
                 userDao.create(user);
                 user.getUserDetails().setUserId(userDao.findByLogin(user.getLogin())
@@ -26,8 +28,8 @@ public class ReceptionistServiceImpl implements ReceptionistService {
                 userDetailsDao.create(user.getUserDetails());
             }
         } catch (DaoException e) {
-            throw new ServiceException("Registration new client failed.");
+            throw new ServiceException("Registration new client failed.", e);
         }
-        return result;
+        return true;
     }
 }
