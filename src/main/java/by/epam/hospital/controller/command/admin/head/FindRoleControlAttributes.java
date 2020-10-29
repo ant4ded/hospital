@@ -25,6 +25,7 @@ public class FindRoleControlAttributes implements HttpCommand {
         try {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
             Department department = adminHeadService.findDepartmentByUsername(login);
+
             request.setAttribute(ParameterName.DEPARTMENT, department);
             request.setAttribute(ParameterName.USER_ROLES, roles);
         } catch (ServiceException e) {

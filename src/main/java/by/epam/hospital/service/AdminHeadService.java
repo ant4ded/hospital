@@ -11,7 +11,7 @@ public interface AdminHeadService {
 
     void performUserRolesAction(String login, ServiceAction serviceAction, Role role) throws ServiceException;
 
-    boolean appointDepartmentHead(Department department, String login) throws ServiceException;
+    void appointDepartmentHead(Department department, String login) throws ServiceException;
 
     void performDepartmentStaffAction(Department department, ServiceAction serviceAction, String login) throws ServiceException;
 

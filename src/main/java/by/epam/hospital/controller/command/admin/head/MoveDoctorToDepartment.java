@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MoveDoctorToDepartment implements HttpCommand {
+    private static final String MESSAGE_SUCCESS = "Success.";
+
     private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
 
     @Override
@@ -29,9 +31,11 @@ public class MoveDoctorToDepartment implements HttpCommand {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
             adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, login);
             department = adminHeadService.findDepartmentByUsername(login);
+
             request.setAttribute(UsersFieldName.LOGIN, login);
             request.setAttribute(ParameterName.USER_ROLES, roles);
             request.setAttribute(ParameterName.DEPARTMENT, department);
+            request.setAttribute(ParameterName.MESSAGE, MESSAGE_SUCCESS);
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }

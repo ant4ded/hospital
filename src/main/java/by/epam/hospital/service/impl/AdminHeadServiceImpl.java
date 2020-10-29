@@ -52,8 +52,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public boolean appointDepartmentHead(Department department, String login) throws ServiceException {
-        boolean result = false;
+    public void appointDepartmentHead(Department department, String login) throws ServiceException {
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
             if (optionalUser.isEmpty()) {
@@ -69,12 +68,10 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                 }
                 departmentDao.updateDepartmentHead(department, login);
                 performUserRolesAction(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);
-                result = true;
             }
         } catch (DaoException e) {
             throw new ServiceException("AppointDepartmentHead failed.", e);
         }
-        return result;
     }
 
     @Override

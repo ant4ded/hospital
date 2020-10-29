@@ -1,7 +1,7 @@
 package by.epam.hospital.controller.command.admin.head;
 
-import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
+import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
@@ -15,12 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChangeDepartmentHead implements HttpCommand {
-    private static final String SUCCESSFUL_MESSAGE_PART1 = "Head of ";
-    private static final String SUCCESSFUL_MESSAGE_PART2 = " department was changed.";
-    private static final String UNSUCCESSFUL_MESSAGE = "It is not possible to appoint " +
-            "the head of another department as the head of a department.";
+    private static final String MESSAGE_SUCCESS = "Success.";
 
     private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
 
@@ -30,16 +28,13 @@ public class ChangeDepartmentHead implements HttpCommand {
         Department department = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
 
         try {
-            ArrayList<Role> roles = adminHeadService.findUserRoles(login);
-            request.setAttribute(ParameterName.MESSAGE, UNSUCCESSFUL_MESSAGE);
-            if (adminHeadService.appointDepartmentHead(department, login)) {
-                request.setAttribute(ParameterName.MESSAGE,
-                        SUCCESSFUL_MESSAGE_PART1 + department.name().toLowerCase() + SUCCESSFUL_MESSAGE_PART2);
-                roles = adminHeadService.findUserRoles(login);
-            }
+            adminHeadService.appointDepartmentHead(department, login);
+            List<Role> roles = adminHeadService.findUserRoles(login);
+            
             request.setAttribute(UsersFieldName.LOGIN, login);
             request.setAttribute(ParameterName.USER_ROLES, roles);
             request.setAttribute(ParameterName.DEPARTMENT, department);
+            request.setAttribute(ParameterName.MESSAGE, MESSAGE_SUCCESS);
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
