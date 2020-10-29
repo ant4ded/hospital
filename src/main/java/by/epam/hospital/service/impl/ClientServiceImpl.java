@@ -14,11 +14,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public User authorization(String login, String password) throws ServiceException {
-        User userFromRequest = new User(login, password);
+        User user = new User(login, password);
         User userFromDb = new User();
 
         try {
-            Optional<User> optionalUser = userDao.find(userFromRequest.getLogin());
+            Optional<User> optionalUser = userDao.find(user.getLogin());
             if (optionalUser.isPresent()) {
                 userFromDb.setLogin(optionalUser.get().getLogin());
                 userFromDb.setRoles(optionalUser.get().getRoles());
