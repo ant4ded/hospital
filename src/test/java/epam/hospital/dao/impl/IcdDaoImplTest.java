@@ -7,7 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@Test(groups = "dao")
+@Test(groups = {"dao", "IcdDaoImplTest"})
 public class IcdDaoImplTest {
     private IcdDao icdDao;
 
