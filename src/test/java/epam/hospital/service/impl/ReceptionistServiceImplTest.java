@@ -34,7 +34,7 @@ public class ReceptionistServiceImplTest {
     public void registerClient_user_recordedBDUser(User user) throws ServiceException, DaoException {
         receptionistService.registerClient(user);
 
-        User userFromDb = userDao.find(user.getLogin()).orElseThrow(DaoException::new);
+        User userFromDb = userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new);
         userFromDb.setUserDetails(userDetailsDao.findByUserId(user.getId()).orElseThrow(DaoException::new));
 
         cleaner.delete(user);

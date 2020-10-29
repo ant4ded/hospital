@@ -42,7 +42,7 @@ public class DepartmentDaoImplTest {
 
         userDao.create(user);
         departmentDao.updateDepartmentHead(Department.INFECTIOUS, user.getLogin());
-        firstHead = userDao.find(firstHead.getLogin()).orElseThrow(DaoException::new);
+        firstHead = userDao.findByLogin(firstHead.getLogin()).orElseThrow(DaoException::new);
 
         User secondHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElse(new User());
 

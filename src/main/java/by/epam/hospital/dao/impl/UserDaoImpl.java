@@ -4,10 +4,8 @@ import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.RolesFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
 import by.epam.hospital.service.ServiceAction;
@@ -85,7 +83,7 @@ public class UserDaoImpl implements UserDao {
     public void update(User oldValue, User newValue) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        User userFromDb = find(oldValue.getLogin()).orElseThrow(DaoException::new);
+        User userFromDb = findByLogin(oldValue.getLogin()).orElseThrow(DaoException::new);
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
@@ -107,7 +105,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> find(String login) throws DaoException {
+    public Optional<User> findByLogin(String login) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;

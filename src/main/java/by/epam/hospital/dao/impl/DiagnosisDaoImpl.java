@@ -38,7 +38,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
         if (diagnosis.getDoctor().getId() == 0) {
-            diagnosis.setDoctor(userDao.find(diagnosis.getDoctor().getLogin()).orElseThrow(DaoException::new));
+            diagnosis.setDoctor(userDao.findByLogin(diagnosis.getDoctor().getLogin()).orElseThrow(DaoException::new));
         }
         if (diagnosis.getIcd().getId() == 0) {
             diagnosis.setIcd(icdDao.findByCode(diagnosis.getIcd().getCode()).orElseThrow(DaoException::new));

@@ -18,7 +18,7 @@ public class ClientServiceImpl implements ClientService {
         User userFromDb = new User();
 
         try {
-            Optional<User> optionalUser = userDao.find(user.getLogin());
+            Optional<User> optionalUser = userDao.findByLogin(user.getLogin());
             if (optionalUser.isPresent()) {
                 userFromDb.setLogin(optionalUser.get().getLogin());
                 userFromDb.setRoles(optionalUser.get().getRoles());

@@ -43,7 +43,7 @@ public class Cleaner {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_DELETE_USER_ROLES);
 
-            user = userDao.find(user.getLogin()).orElseThrow(DaoException::new);
+            user = userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new);
             user.setUserDetails(userDetails);
             statement.setInt(1, user.getId());
             statement.execute();

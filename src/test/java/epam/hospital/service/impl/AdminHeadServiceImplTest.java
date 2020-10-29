@@ -82,7 +82,7 @@ public class AdminHeadServiceImplTest {
 
         adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR);
         adminHeadService.appointDepartmentHead(Department.INFECTIOUS, user.getLogin());
-        previousHead = userDao.find(previousHead.getLogin()).orElseThrow(DaoException::new);
+        previousHead = userDao.findByLogin(previousHead.getLogin()).orElseThrow(DaoException::new);
         user = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
 
         result = previousHead.equals(user) || previousHead.getRoles().contains(Role.DEPARTMENT_HEAD);

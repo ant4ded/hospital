@@ -27,7 +27,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     public ArrayList<Role> findUserRoles(String login) throws ServiceException {
         ArrayList<Role> roles = new ArrayList<>();
         try {
-            Optional<User> user = userDao.find(login);
+            Optional<User> user = userDao.findByLogin(login);
             if (user.isPresent()) {
                 roles = user.get().getRoles();
             }
@@ -40,7 +40,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     @Override
     public void performUserRolesAction(String login, ServiceAction serviceAction, Role role) throws ServiceException {
         try {
-            if (userDao.find(login).isPresent()) {
+            if (userDao.findByLogin(login).isPresent()) {
                 userDao.updateUserRoles(login, serviceAction, role);
             }
         } catch (DaoException e) {
@@ -52,7 +52,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     public boolean appointDepartmentHead(Department department, String login) throws ServiceException {
         boolean result = false;
         try {
-            Optional<User> userFromDb = userDao.find(login);
+            Optional<User> userFromDb = userDao.findByLogin(login);
             if (userFromDb.isPresent() &&
                     userFromDb.get().getRoles().contains(Role.DOCTOR)) {
                 Optional<User> previous = departmentDao.findHeadDepartment(department);
@@ -78,7 +78,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         try {
             if ((departmentDao.findDepartment(login) == null && serviceAction.equals(ServiceAction.ADD)) ||
                     serviceAction.equals(ServiceAction.REMOVE)) {
-                Optional<User> userFromDb = userDao.find(login);
+                Optional<User> userFromDb = userDao.findByLogin(login);
                 if (userFromDb.isPresent() && !userFromDb.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
                     departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
                     result = true;
@@ -86,7 +86,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             }
             if (departmentDao.findDepartment(login) != null && serviceAction.equals(ServiceAction.ADD)) {
                 Department previous = findDepartmentByUsername(login);
-                Optional<User> userFromDb = userDao.find(login);
+                Optional<User> userFromDb = userDao.findByLogin(login);
                 if (userFromDb.isPresent() && !userFromDb.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
                     departmentStaffDao.updateStaffDepartment(previous, ServiceAction.REMOVE, login);
                     departmentStaffDao.updateStaffDepartment(department, serviceAction, login);

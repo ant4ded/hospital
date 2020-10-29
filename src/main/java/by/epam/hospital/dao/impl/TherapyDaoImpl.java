@@ -55,8 +55,8 @@ public class TherapyDaoImpl implements TherapyDao {
         Connection connection = null;
         PreparedStatement statement = null;
         int therapyId;
-        int doctorId = userDao.find(doctorLogin).orElseThrow(DaoException::new).getId();
-        int patientId = userDao.find(patientLogin).orElseThrow(DaoException::new).getId();
+        int doctorId = userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new).getId();
+        int patientId = userDao.findByLogin(patientLogin).orElseThrow(DaoException::new).getId();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             connection.setAutoCommit(false);
@@ -115,8 +115,8 @@ public class TherapyDaoImpl implements TherapyDao {
             if (resultSet.next()) {
                 therapy = new Therapy();
                 therapy.setId(resultSet.getInt(TherapyFieldName.ID));
-                therapy.setDoctor(userDao.find(doctorLogin).orElseThrow(DaoException::new));
-                therapy.setPatient(userDao.find(patientLogin).orElseThrow(DaoException::new));
+                therapy.setDoctor(userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new));
+                therapy.setPatient(userDao.findByLogin(patientLogin).orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
                 therapy.setEndTherapy(Optional.ofNullable(resultSet.getDate(TherapyFieldName.END_THERAPY)));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID)));

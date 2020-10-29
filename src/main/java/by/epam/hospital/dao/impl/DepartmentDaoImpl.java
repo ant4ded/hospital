@@ -60,7 +60,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
     public void updateDepartmentHead(Department department, String login) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        Optional<User> user = userDao.find(login);
+        Optional<User> user = userDao.findByLogin(login);
         try {
             if (user.isEmpty()) {
                 throw new DaoException("Can not find user on users table.");

@@ -40,8 +40,8 @@ public class DiagnosisDaoImplTest {
         CardType cardType = CardType.AMBULATORY;
         userDao.create(doctor);
         userDao.create(patient);
-        doctor = userDao.find(doctor.getLogin()).orElseThrow(DaoException::new);
-        patient = userDao.find(patient.getLogin()).orElseThrow(DaoException::new);
+        doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
+        patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         diagnosis.setDoctor(doctor);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
         Therapy therapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), cardType)

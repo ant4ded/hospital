@@ -33,14 +33,14 @@ public class UserDaoImplTest {
         newValue.setId(user.getId());
 
         userDao.create(user);
-        User userFind = userDao.find(user.getLogin()).orElseThrow(DaoException::new);
+        User userFind = userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new);
         User findById = userDao.findById(userFind.getId()).orElseThrow(DaoException::new);
         if (!userFind.equals(findById)) {
             Assert.fail("Create or find work incorrect");
         }
 
         userDao.update(user, newValue);
-        user = userDao.find(newValue.getLogin()).orElse(new User());
+        user = userDao.findByLogin(newValue.getLogin()).orElse(new User());
         Assert.assertEquals(user, newValue);
 
         cleaner.delete(user);
@@ -50,7 +50,7 @@ public class UserDaoImplTest {
     public void updateUserRoles(User user) throws DaoException {
         userDao.create(user);
         userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.MEDICAL_ASSISTANT);
-        User userFromDb = userDao.find(user.getLogin()).orElse(new User());
+        User userFromDb = userDao.findByLogin(user.getLogin()).orElse(new User());
 
         if (!userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT) ||
                 !userFromDb.getRoles().contains(Role.CLIENT)) {
@@ -58,7 +58,7 @@ public class UserDaoImplTest {
         }
 
         userDao.updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.MEDICAL_ASSISTANT);
-        userFromDb = userDao.find(user.getLogin()).orElse(new User());
+        userFromDb = userDao.findByLogin(user.getLogin()).orElse(new User());
 
         if (userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT)) {
             Assert.fail("Update users_roles work incorrect");

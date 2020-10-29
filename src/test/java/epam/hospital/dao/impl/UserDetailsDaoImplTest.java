@@ -39,7 +39,7 @@ public class UserDetailsDaoImplTest {
         newUserDetails.setPhone(user.getUserDetails().getPhone());
 
         userDao.create(user);
-        user.getUserDetails().setUserId(userDao.find(user.getLogin()).orElseThrow(DaoException::new).getId());
+        user.getUserDetails().setUserId(userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new).getId());
         userDetailsDao.create(user.getUserDetails());
 
         UserDetails userDetailsFindByRegistrationData = userDetailsDao.findByRegistrationData(
