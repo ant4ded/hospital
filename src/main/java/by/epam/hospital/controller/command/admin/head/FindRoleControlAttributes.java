@@ -23,13 +23,17 @@ public class FindRoleControlAttributes implements HttpCommand {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter(UsersFieldName.LOGIN);
         try {
+            Department userDepartment = null;
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
-            Department department = adminHeadService.findDepartmentByUsername(login);
+            if (roles.contains(Role.DOCTOR)) {
+                userDepartment = adminHeadService.findDepartmentByUsername(login);
+            }
 
-            request.setAttribute(ParameterName.DEPARTMENT, department);
+            request.setAttribute(ParameterName.DEPARTMENT, userDepartment);
             request.setAttribute(ParameterName.USER_ROLES, roles);
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            return;
         }
         request.getRequestDispatcher(HospitalUrl.PAGE_ROLE_CONTROL).forward(request, response);
     }

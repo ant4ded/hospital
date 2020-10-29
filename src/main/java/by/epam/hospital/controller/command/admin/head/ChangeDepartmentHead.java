@@ -36,6 +36,7 @@ public class ChangeDepartmentHead implements HttpCommand {
             request.setAttribute(ParameterName.MESSAGE, MESSAGE_SUCCESS);
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            return;
         }
         request.getRequestDispatcher(HospitalUrl.PAGE_DEPARTMENT_CONTROL).forward(request, response);
     }

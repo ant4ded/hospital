@@ -31,6 +31,7 @@ public class FindDepartmentControlAttributes implements HttpCommand {
             request.setAttribute(ParameterName.DEPARTMENT, department);
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            return;
         }
         request.getRequestDispatcher(HospitalUrl.PAGE_DEPARTMENT_CONTROL).forward(request, response);
     }

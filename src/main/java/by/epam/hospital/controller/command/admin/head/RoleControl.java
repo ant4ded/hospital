@@ -25,18 +25,29 @@ public class RoleControl implements HttpCommand {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter(UsersFieldName.LOGIN);
-        Department department = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
+        Department doctorDepartment = null;
         ServiceAction serviceAction = ServiceAction.valueOf(request.getParameter(ParameterName.ACTION));
         Role role = Role.valueOf(request.getParameter(ParameterName.ROLE));
         try {
-            adminHeadService.roleControl(login, department, serviceAction, role);
+            if (role != Role.DOCTOR && role != Role.MEDICAL_ASSISTANT && role != Role.DEPARTMENT_HEAD) {
+                adminHeadService.performUserRolesAction(login, serviceAction, role);
+            }
+            if (role == Role.DEPARTMENT_HEAD) {
+                doctorDepartment = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
+                adminHeadService.appointDepartmentHead(doctorDepartment, login);
+            }
+            if (role == Role.DOCTOR || role == Role.MEDICAL_ASSISTANT) {
+                doctorDepartment = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
+                adminHeadService.performDepartmentStaffAction(doctorDepartment, serviceAction, login, role);
+            }
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
 
-            request.setAttribute(ParameterName.DEPARTMENT, department);
+            request.setAttribute(ParameterName.DEPARTMENT, doctorDepartment);
             request.setAttribute(ParameterName.USER_ROLES, roles);
             request.setAttribute(ParameterName.MESSAGE, MESSAGE_SUCCESS);
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            return;
         }
         request.getRequestDispatcher(HospitalUrl.PAGE_ROLE_CONTROL).forward(request, response);
     }

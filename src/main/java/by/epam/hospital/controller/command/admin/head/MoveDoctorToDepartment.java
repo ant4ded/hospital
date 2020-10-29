@@ -1,15 +1,15 @@
 package by.epam.hospital.controller.command.admin.head;
 
-import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
+import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.table.UsersFieldName;
 import by.epam.hospital.service.AdminHeadService;
+import by.epam.hospital.service.ServiceAction;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.impl.AdminHeadServiceImpl;
-import by.epam.hospital.service.ServiceAction;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +29,8 @@ public class MoveDoctorToDepartment implements HttpCommand {
 
         try {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
-            adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, login);
+            Role currentRole = roles.contains(Role.DOCTOR) ? Role.DOCTOR : Role.MEDICAL_ASSISTANT;
+            adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, login, currentRole);
             department = adminHeadService.findDepartmentByUsername(login);
 
             request.setAttribute(UsersFieldName.LOGIN, login);
@@ -38,6 +39,7 @@ public class MoveDoctorToDepartment implements HttpCommand {
             request.setAttribute(ParameterName.MESSAGE, MESSAGE_SUCCESS);
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            return;
         }
         request.getRequestDispatcher(HospitalUrl.PAGE_DEPARTMENT_CONTROL).forward(request, response);
     }
