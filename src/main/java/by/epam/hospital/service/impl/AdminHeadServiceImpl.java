@@ -135,19 +135,4 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         }
         return departmentHeadMap;
     }
-
-    @Override
-    public void roleControl(String login, Department department, ServiceAction serviceAction, Role role)
-            throws ServiceException {
-        if (role != Role.DOCTOR && role != Role.MEDICAL_ASSISTANT && role != Role.DEPARTMENT_HEAD) {
-            performUserRolesAction(login, serviceAction, role);
-        }
-        if (role == Role.DEPARTMENT_HEAD) {
-            appointDepartmentHead(department, login);
-        }
-        if (role == Role.DOCTOR || role == Role.MEDICAL_ASSISTANT) {
-            performDepartmentStaffAction(department, serviceAction, login, role);
-//            performUserRolesAction(login, serviceAction, role);
-        }
-    }
 }

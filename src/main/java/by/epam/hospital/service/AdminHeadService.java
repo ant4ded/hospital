@@ -19,7 +19,4 @@ public interface AdminHeadService {
     Department findDepartmentByUsername(String login) throws ServiceException;
 
     Map<Department, String> findDepartmentsHeads() throws ServiceException;
-
-    void roleControl(String login, Department department, ServiceAction serviceAction, Role role)
-            throws ServiceException;
 }
