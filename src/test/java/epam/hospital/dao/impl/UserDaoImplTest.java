@@ -36,7 +36,7 @@ public class UserDaoImplTest {
         User userFind = userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new);
         User findById = userDao.findById(userFind.getId()).orElseThrow(DaoException::new);
         if (!userFind.equals(findById)) {
-            Assert.fail("Create or find work incorrect");
+            Assert.fail("create or find work incorrect.");
         }
 
         userDao.update(user, newValue);
@@ -54,14 +54,14 @@ public class UserDaoImplTest {
 
         if (!userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT) ||
                 !userFromDb.getRoles().contains(Role.CLIENT)) {
-            Assert.fail("Update users_roles work incorrect");
+            Assert.fail("update users_roles work incorrect.");
         }
 
         userDao.updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.MEDICAL_ASSISTANT);
         userFromDb = userDao.findByLogin(user.getLogin()).orElse(new User());
 
         if (userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT)) {
-            Assert.fail("Update users_roles work incorrect");
+            Assert.fail("update users_roles work incorrect.");
         }
 
         cleaner.delete(user);

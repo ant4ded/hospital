@@ -29,8 +29,6 @@ public class Cleaner {
             "DELETE FROM stationary_cards WHERE therapy_id = ?";
     private static final String SQL_DELETE_THERAPY_DIAGNOSIS_ROW =
             "DELETE FROM therapy_diagnoses WHERE therapy_id = ?";
-    private static final String SQL_FIND_DIAGNOSIS_ID_BY_THERAPY_ID =
-            "SELECT diagnosis_id FROM therapy_diagnoses WHERE therapy_id = ?";
 
     private final UserDao userDao = new UserDaoImpl();
     private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
@@ -58,9 +56,9 @@ public class Cleaner {
             statement.setInt(1, user.getId());
             statement.execute();
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not delete row on users table", e);
+            throw new DaoException("Can not delete row on users table.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
@@ -73,14 +71,14 @@ public class Cleaner {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_DELETE_DIAGNOSIS);
             statement.setInt(1, diagnosis.getId());
-            int deletedRows = statement.executeUpdate();
-            if (deletedRows != 1) {
-                throw new DaoException("Cleaner must delete one row, but delete " + deletedRows + " rows");
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows != 1) {
+                throw new DaoException("Affected rows != 1.");
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not delete row on users_details table", e);
+            throw new DaoException("Can not delete row on diagnoses table.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
@@ -110,9 +108,9 @@ public class Cleaner {
                 delete(therapy.getDiagnoses().get(i));
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not delete row on users_details table", e);
+            throw new DaoException("Can not delete row on therapy table.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
@@ -129,13 +127,14 @@ public class Cleaner {
             userDetailsFromDb = userDetailsDao.findByUserId(userDetails.getUserId()).orElseThrow(DaoException::new);
             statement.setString(1, userDetailsFromDb.getPassportId());
 
-            if (statement.executeUpdate() < 0) {
-                throw new DaoException("Can not delete row on users_details table");
+            int affectedRows = statement.executeUpdate();  
+            if (affectedRows != 1) {
+                throw new DaoException("Affected rows != 1.");
             }
         } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source", e);
+            throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Can not delete row on users_details table", e);
+            throw new DaoException("Can not delete row on users_details table.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }

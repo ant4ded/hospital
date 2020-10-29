@@ -62,7 +62,7 @@ public class AdminHeadServiceImplTest {
 
         if (!result) {
             cleaner.delete(user);
-            Assert.fail("performUserRolesAction work incorrect");
+            Assert.fail("performUserRolesAction work incorrect.");
         }
 
         roles.remove(Role.MEDICAL_ASSISTANT);
@@ -89,7 +89,7 @@ public class AdminHeadServiceImplTest {
 
         if (result) {
             cleaner.delete(user);
-            Assert.fail("can not appointDepartmentHead");
+            Assert.fail("appointDepartmentHead work incorrect.");
         }
 
         adminHeadService.appointDepartmentHead(Department.INFECTIOUS, previousHead.getLogin());
@@ -111,12 +111,12 @@ public class AdminHeadServiceImplTest {
         adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, user.getLogin());
         if (!adminHeadService.findDepartmentByUsername(user.getLogin()).equals(Department.INFECTIOUS)) {
             cleaner.delete(user);
-            Assert.fail("performDepartmentStaffAction or findDepartmentByUsername work incorrect");
+            Assert.fail("performDepartmentStaffAction or findDepartmentByUsername work incorrect.");
         }
         Map<String, User> departmentStaffMap = departmentStaffDao.findDepartmentStaff(department);
         if (!departmentStaffMap.containsKey(user.getLogin())) {
             cleaner.delete(user);
-            Assert.fail("performDepartmentStaffAction work incorrect");
+            Assert.fail("performDepartmentStaffAction work incorrect.");
         }
 
         adminHeadService.performDepartmentStaffAction(department, ServiceAction.REMOVE, user.getLogin());

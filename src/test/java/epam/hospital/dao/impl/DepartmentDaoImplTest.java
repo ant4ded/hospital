@@ -59,7 +59,7 @@ public class DepartmentDaoImplTest {
         if (!departmentDao.findDepartment(user.getLogin()).equals(Department.INFECTIOUS)) {
             departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
             cleaner.delete(user);
-            Assert.fail("findDepartment work incorrect");
+            Assert.fail("findDepartment work incorrect.");
         }
 
         departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());

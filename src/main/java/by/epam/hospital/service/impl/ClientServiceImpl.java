@@ -23,10 +23,10 @@ public class ClientServiceImpl implements ClientService {
                 userFromDb.setLogin(optionalUser.get().getLogin());
                 userFromDb.setRoles(optionalUser.get().getRoles());
             } else {
-                throw new ServiceException("Invalid login or password");
+                throw new ServiceException("Authorization failed. Invalid login or password.");
             }
         } catch (DaoException e) {
-            throw new ServiceException(e);
+            throw new ServiceException("Authorization failed.", e);
         }
         return userFromDb;
     }

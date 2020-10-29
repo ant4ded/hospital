@@ -44,7 +44,7 @@ public class DoctorServiceImplTest {
         if (doctorService.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
                 userDetails.getLastName(), userDetails.getBirthday()).isEmpty()) {
             cleaner.delete(user);
-            Assert.fail("Create or findByRegistrationData work incorrect");
+            Assert.fail("create or findByRegistrationData work incorrect.");
         }
         cleaner.delete(user);
     }
@@ -69,7 +69,7 @@ public class DoctorServiceImplTest {
         cleaner.delete(doctor);
         cleaner.delete(patient);
         if (numberDiagnoses != 1) {
-            Assert.fail("Diagnose disease failed. Size of diagnosis must be 1 but is " + numberDiagnoses);
+            Assert.fail("Diagnose disease failed. Size of diagnosis must be 1 but is " + numberDiagnoses + ".");
         }
     }
 }

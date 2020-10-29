@@ -23,22 +23,22 @@ public class UserValidatorTest {
         String birthdayTooOldDoctor = "1945-10-41";
 
         if (!userValidator.isValidDate(validData)) {
-            Assert.fail("Incorrect work UserDetailsValidator.isValidDate()");
+            Assert.fail("IsValidDate failed.");
         }
         if (userValidator.isValidDate(dataWithInvalidYear)) {
-            Assert.fail("Incorrect work UserDetailsValidator.isValidDate()");
+            Assert.fail("IsValidDate failed.");
         }
         if (userValidator.isValidDate(dataWithInvalidMonth)) {
-            Assert.fail("Incorrect work UserDetailsValidator.isValidDate()");
+            Assert.fail("IsValidDate failed.");
         }
         if (userValidator.isValidDate(dataWithInvalidDay)) {
-            Assert.fail("Incorrect work UserDetailsValidator.isValidDate()");
+            Assert.fail("IsValidDate failed.");
         }
         if (userValidator.isValidDate(birthdayTooYoungDoctor)) {
-            Assert.fail("Incorrect work UserDetailsValidator.isValidDate()");
+            Assert.fail("IsValidDate failed.");
         }
         if (userValidator.isValidDate(birthdayTooOldDoctor)) {
-            Assert.fail("Incorrect work UserDetailsValidator.isValidDate()");
+            Assert.fail("IsValidDate failed.");
         }
     }
 }

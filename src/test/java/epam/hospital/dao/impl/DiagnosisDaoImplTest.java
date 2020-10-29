@@ -52,9 +52,9 @@ public class DiagnosisDaoImplTest {
             throw new DaoException("Incorrect work findAllByTherapyId or create.");
         }
         therapy.setDiagnoses(diagnoses);
-        Diagnosis diagnosis1 = diagnosisDao.findById(diagnoses.get(0).getId()).orElseGet(Diagnosis::new);
-        if (!diagnoses.get(0).equals(diagnosis1)) {
-            throw new DaoException("Incorrect work find or findById");
+        Diagnosis diagnosisFindById = diagnosisDao.findById(diagnoses.get(0).getId()).orElseGet(Diagnosis::new);
+        if (!diagnoses.get(0).equals(diagnosisFindById)) {
+            throw new DaoException("Incorrect work findAllByTherapyId or findById.");
         }
 
         cleaner.delete(therapy, cardType);

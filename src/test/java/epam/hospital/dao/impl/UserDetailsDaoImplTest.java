@@ -48,7 +48,7 @@ public class UserDetailsDaoImplTest {
                 .orElseThrow(DaoException::new);
 
         if (!user.getUserDetails().equals(userDetailsFindByRegistrationData)) {
-            throw new DaoException("Create or findByRegistrationData work incorrect");
+            throw new DaoException("create or findByRegistrationData work incorrect.");
         }
 
         userDetailsDao.update(user.getUserDetails(), newUserDetails);

@@ -42,7 +42,7 @@ public class TherapyDaoImplTest {
         cleaner.delete(patient);
         cleaner.delete(doctor);
         if (!therapy.equals(therapyById)) {
-            throw new DaoException("Find or findById work incorrect");
+            throw new DaoException("find or findById work incorrect.");
         }
     }
 }
