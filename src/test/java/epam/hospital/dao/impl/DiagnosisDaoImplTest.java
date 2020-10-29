@@ -42,7 +42,6 @@ public class DiagnosisDaoImplTest {
         userDao.create(patient);
         doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
         patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
-        diagnosis.setDoctor(doctor);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
         Therapy therapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), cardType)
                 .orElseThrow(DaoException::new);
