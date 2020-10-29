@@ -20,9 +20,9 @@
 </section>
 <!-- Banner Area End -->
 <div class="error-header">
-    <%=request.getAttribute("javax.servlet.error.status_code")%>
+    <%=request.getAttribute(ParameterName.SERVLET_STATUS_CODE)%>
     <p>
-        <%=request.getAttribute("javax.servlet.error.message")%>
+        <%=request.getAttribute(ParameterName.SERVLET_EXCEPTION_MESSAGE)%>
     </p>
     <c:if test="${requestScope.message != null}">
         <p>${requestScope.message}</p>
