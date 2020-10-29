@@ -22,11 +22,7 @@
 <div class="error-header">
     <%=request.getAttribute("javax.servlet.error.status_code")%>
     <p>
-        <%=
-        request.getAttribute("javax.servlet.error.message") == null ?
-                request.getAttribute("javax.servlet.error.exception") :
-                request.getAttribute("javax.servlet.error.message")
-        %>
+        <%=request.getAttribute("javax.servlet.error.message")%>
     </p>
     <c:if test="${requestScope.message != null}">
         <p>${requestScope.message}</p>
