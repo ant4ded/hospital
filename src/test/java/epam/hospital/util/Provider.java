@@ -1,8 +1,6 @@
 package epam.hospital.util;
 
-import by.epam.hospital.entity.Role;
-import by.epam.hospital.entity.User;
-import by.epam.hospital.entity.UserDetails;
+import by.epam.hospital.entity.*;
 import org.testng.annotations.DataProvider;
 
 import java.sql.Date;
@@ -14,21 +12,61 @@ public class Provider {
 
     @DataProvider
     public Object[][] getCorrectUser() {
+        return new Object[][]{{
+                new User(0, STRING_VALUE, STRING_VALUE, getUserRoles(),
+                        getUserDetails(STRING_VALUE))
+        }};
+    }
+
+    @DataProvider
+    public Object[][] getCorrectDoctorAndPatient() {
+        return new Object[][]{{
+                new User(0, STRING_VALUE, STRING_VALUE, getUserRoles(),
+                        getUserDetails(STRING_VALUE)),
+                new User(0, STRING_VALUE + STRING_VALUE, STRING_VALUE + STRING_VALUE, getUserRoles(),
+                        getUserDetails(STRING_VALUE + STRING_VALUE))
+        }};
+    }
+
+    @DataProvider
+    public Object[][] getCorrectDiagnosisAndPatient() {
+        Diagnosis diagnosis = new Diagnosis();
+        diagnosis.setId(0);
+        diagnosis.setIcd(getIcd());
+
+        diagnosis.setDoctor(new User(0, STRING_VALUE, STRING_VALUE, getUserRoles(), getUserDetails(STRING_VALUE)));
+        diagnosis.setDiagnosisDate(new Date(2000, 1, 1));
+        diagnosis.setReason(STRING_VALUE);
+
+        User user = new User(0, STRING_VALUE + STRING_VALUE, STRING_VALUE + STRING_VALUE,
+                getUserRoles(), getUserDetails(STRING_VALUE + STRING_VALUE));
+        return new Object[][]{{
+                diagnosis, user
+        }};
+    }
+
+    private ArrayList<Role> getUserRoles() {
         ArrayList<Role> roles = new ArrayList<>();
         roles.add(Role.CLIENT);
+        return roles;
+    }
+
+    private UserDetails getUserDetails(String parameter) {
         UserDetails userDetails = new UserDetails();
-        userDetails.setPassportId("5f676a86c1dd18");
+        userDetails.setPassportId(parameter);
         userDetails.setUserId(0);
         userDetails.setGender(UserDetails.Gender.FEMALE);
-        userDetails.setFirstName(STRING_VALUE);
-        userDetails.setSurname(STRING_VALUE);
-        userDetails.setLastName(STRING_VALUE);
-        userDetails.setBirthday(new Date(2000, 1, 1));
-        userDetails.setAddress(STRING_VALUE);
-        userDetails.setPhone(STRING_VALUE);
+        userDetails.setFirstName(parameter);
+        userDetails.setSurname(parameter);
+        userDetails.setLastName(parameter);
+        userDetails.setBirthday(new Date(1990, 1, 1));
+        userDetails.setAddress(parameter);
+        userDetails.setPhone(parameter);
+        return userDetails;
+    }
 
-        return new Object[][]{{
-                new User(0, "qwe", "qwe", roles, userDetails)
-        }};
+    private Icd getIcd() {
+        return new Icd(1, "0016070",
+                "Bypass Cerebral Ventricle to Nasopharynx with Autologous Tissue Substitute, Open Approach");
     }
 }

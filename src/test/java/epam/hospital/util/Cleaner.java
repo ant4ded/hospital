@@ -7,12 +7,10 @@ import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
-import by.epam.hospital.entity.User;
-import by.epam.hospital.entity.UserDetails;
+import by.epam.hospital.entity.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class Cleaner {
@@ -22,6 +20,18 @@ public class Cleaner {
             "DELETE FROM users WHERE id = ?";
     private static final String SQL_DELETE_USER_DETAILS =
             "DELETE FROM users_details WHERE passport_id = ?";
+    private static final String SQL_DELETE_DIAGNOSIS =
+            "DELETE FROM diagnoses WHERE id = ?";
+    private static final String SQL_DELETE_THERAPY =
+            "DELETE FROM therapy WHERE id = ?";
+    private static final String SQL_DELETE_AMBULATORY_ROW =
+            "DELETE FROM ambulatory_cards WHERE therapy_id = ?";
+    private static final String SQL_DELETE_STATIONARY_ROW =
+            "DELETE FROM stationary_cards WHERE therapy_id = ?";
+    private static final String SQL_DELETE_THERAPY_DIAGNOSIS_ROW =
+            "DELETE FROM therapy_diagnoses WHERE therapy_id = ?";
+    private static final String SQL_FIND_DIAGNOSIS_ID_BY_THERAPY_ID =
+            "SELECT diagnosis_id FROM therapy_diagnoses WHERE therapy_id = ?";
 
     private final UserDao userDao = new UserDaoImpl();
     private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
@@ -52,6 +62,58 @@ public class Cleaner {
             throw new DaoException("Can not create data source", e);
         } catch (SQLException e) {
             throw new DaoException("Can not delete row on users table", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement);
+        }
+    }
+
+    public void delete(Diagnosis diagnosis) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SQL_DELETE_DIAGNOSIS);
+            statement.setInt(1, diagnosis.getId());
+            int deletedRows = statement.executeUpdate();
+            if (deletedRows != 1) {
+                throw new DaoException("Cleaner must delete one row, but delete " + deletedRows + " rows");
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source", e);
+        } catch (SQLException e) {
+            throw new DaoException("Can not delete row on users_details table", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement);
+        }
+    }
+
+    public void delete(Therapy therapy, CardType cardType) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
+                    SQL_DELETE_AMBULATORY_ROW : SQL_DELETE_STATIONARY_ROW);
+            statement.setInt(1, therapy.getId());
+            statement.execute();
+            statement.close();
+
+            statement = connection.prepareStatement(SQL_DELETE_THERAPY_DIAGNOSIS_ROW);
+            statement.setInt(1, therapy.getId());
+            statement.execute();
+            statement.close();
+
+            statement = connection.prepareStatement(SQL_DELETE_THERAPY);
+            statement.setInt(1, therapy.getId());
+            statement.execute();
+
+            for (int i = 0; i < therapy.getDiagnoses().size(); i++){
+                delete(therapy.getDiagnoses().get(i));
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source", e);
+        } catch (SQLException e) {
+            throw new DaoException("Can not delete row on users_details table", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
