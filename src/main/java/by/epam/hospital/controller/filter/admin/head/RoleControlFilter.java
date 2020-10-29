@@ -22,8 +22,7 @@ public class RoleControlFilter implements Filter {
         StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                 FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
 
-        if (!userValidator.isValidLogin(servletRequest
-                .getParameter(UsersFieldName.LOGIN))) {
+        if (!userValidator.isValidLogin(servletRequest.getParameter(UsersFieldName.LOGIN))) {
             isHaveInvalidFields = true;
             response.add(UsersFieldName.LOGIN);
         }
@@ -35,7 +34,7 @@ public class RoleControlFilter implements Filter {
                 break;
             }
         }
-        if (i >= ServiceAction.values().length) {
+        if (i > ServiceAction.values().length) {
             isHaveInvalidFields = true;
             response.add(ParameterName.ACTION);
         }
@@ -47,7 +46,7 @@ public class RoleControlFilter implements Filter {
                 break;
             }
         }
-        if (i >= Role.values().length) {
+        if (i > Role.values().length) {
             isHaveInvalidFields = true;
             response.add(ParameterName.ROLE);
         }
