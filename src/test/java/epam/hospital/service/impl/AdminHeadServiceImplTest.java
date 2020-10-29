@@ -107,8 +107,7 @@ public class AdminHeadServiceImplTest {
 
         Department department = Department.INFECTIOUS;
 
-        adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR);
-        adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, user.getLogin());
+        adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, user.getLogin(), Role.DOCTOR);
         if (!adminHeadService.findDepartmentByUsername(user.getLogin()).equals(Department.INFECTIOUS)) {
             cleaner.delete(user);
             Assert.fail("performDepartmentStaffAction or findDepartmentByUsername work incorrect.");
@@ -119,7 +118,7 @@ public class AdminHeadServiceImplTest {
             Assert.fail("performDepartmentStaffAction work incorrect.");
         }
 
-        adminHeadService.performDepartmentStaffAction(department, ServiceAction.REMOVE, user.getLogin());
+        adminHeadService.performDepartmentStaffAction(department, ServiceAction.REMOVE, user.getLogin(), Role.DOCTOR);
         departmentStaffMap = departmentStaffDao.findDepartmentStaff(department);
 
         cleaner.delete(user);

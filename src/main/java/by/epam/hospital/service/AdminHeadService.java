@@ -13,7 +13,8 @@ public interface AdminHeadService {
 
     void appointDepartmentHead(Department department, String login) throws ServiceException;
 
-    void performDepartmentStaffAction(Department department, ServiceAction serviceAction, String login) throws ServiceException;
+    void performDepartmentStaffAction(Department department, ServiceAction serviceAction,
+                                      String login, Role appointedRole) throws ServiceException;
 
     Department findDepartmentByUsername(String login) throws ServiceException;
 
