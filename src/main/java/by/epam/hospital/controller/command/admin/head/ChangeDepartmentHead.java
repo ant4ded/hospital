@@ -14,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChangeDepartmentHead implements HttpCommand {
@@ -30,7 +29,7 @@ public class ChangeDepartmentHead implements HttpCommand {
         try {
             adminHeadService.appointDepartmentHead(department, login);
             List<Role> roles = adminHeadService.findUserRoles(login);
-            
+
             request.setAttribute(UsersFieldName.LOGIN, login);
             request.setAttribute(ParameterName.USER_ROLES, roles);
             request.setAttribute(ParameterName.DEPARTMENT, department);
