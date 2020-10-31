@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DiagnosisDao {
-    void create(Diagnosis diagnosis, String patientLogin, int therapyId) throws DaoException;
+    int create(Diagnosis diagnosis, String patientLogin, int therapyId) throws DaoException;
 
     List<Diagnosis> findAllByTherapyId(int id) throws DaoException;
 

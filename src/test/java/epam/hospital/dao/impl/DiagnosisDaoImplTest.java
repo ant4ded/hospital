@@ -13,13 +13,15 @@ import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
-@Test(groups = {"dao", "DiagnosisDaoImplTest"},
-        dependsOnGroups = {"UserDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
+//@Test(groups = {"dao", "DiagnosisDaoImplTest"},
+//        dependsOnGroups = {"UserDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
 public class DiagnosisDaoImplTest {
     private DiagnosisDao diagnosisDao;
     private TherapyDao therapyDao;
@@ -46,16 +48,18 @@ public class DiagnosisDaoImplTest {
         Therapy therapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), cardType)
                 .orElseThrow(DaoException::new);
 
-        diagnosisDao.create(diagnosis, patient.getLogin(), therapy.getId());
-        ArrayList<Diagnosis> diagnoses = (ArrayList<Diagnosis>) diagnosisDao.findAllByTherapyId(therapy.getId());
+        int diagnosisId = diagnosisDao.create(diagnosis, patient.getLogin(), therapy.getId());
+        diagnosis.setId(diagnosisId);
+        Diagnosis diagnosisFindById = diagnosisDao.findById(diagnosisId).orElseGet(Diagnosis::new);
+        if (!diagnosis.equals(diagnosisFindById)){
+            Assert.fail("FindById failed.");
+        }
+
+        List<Diagnosis> diagnoses = diagnosisDao.findAllByTherapyId(therapy.getId());
         if (diagnoses.size() == 0) {
-            throw new DaoException("Incorrect work findAllByTherapyId or create.");
+            throw new DaoException("FindAllByTherapyId failed.");
         }
         therapy.setDiagnoses(diagnoses);
-        Diagnosis diagnosisFindById = diagnosisDao.findById(diagnoses.get(0).getId()).orElseGet(Diagnosis::new);
-        if (!diagnoses.get(0).equals(diagnosisFindById)) {
-            throw new DaoException("Incorrect work findAllByTherapyId or findById.");
-        }
 
         cleaner.delete(therapy, cardType);
         cleaner.delete(doctor);

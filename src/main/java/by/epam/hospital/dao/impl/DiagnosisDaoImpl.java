@@ -33,10 +33,11 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
     private final UserDao userDao = new UserDaoImpl();
 
     @Override
-    public void create(Diagnosis diagnosis, String patientLogin, int therapyId) throws DaoException {
+    public int create(Diagnosis diagnosis, String patientLogin, int therapyId) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
+        int diagnosisId;
         if (diagnosis.getDoctor().getId() == 0) {
             diagnosis.setDoctor(userDao.findByLogin(diagnosis.getDoctor().getLogin()).orElseThrow(DaoException::new));
         }
@@ -58,12 +59,11 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
 
             generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                diagnosis.setId(generatedKeys.getInt(1));
+                diagnosisId = generatedKeys.getInt(1);
             } else {
                 throw new DaoException("Creating diagnosis failed, no id obtained.");
             }
-
-            addDiagnosisToTherapy(therapyId, diagnosis.getId());
+            addDiagnosisToTherapy(therapyId, diagnosisId);
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -71,6 +71,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, generatedKeys);
         }
+        return diagnosisId;
     }
 
     @Override
