@@ -37,7 +37,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
-        int diagnosisId;
+        int diagnosisId = 0;
         if (diagnosis.getDoctor().getId() == 0) {
             diagnosis.setDoctor(userDao.findByLogin(diagnosis.getDoctor().getLogin()).orElseThrow(DaoException::new));
         }
@@ -46,6 +46,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         }
         try {
             connection = ConnectionPool.getInstance().getConnection();
+            connection.setAutoCommit(false);
             statement = connection.prepareStatement(SQL_CREATE_DIAGNOSIS, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, diagnosis.getIcd().getId());
             statement.setInt(2, diagnosis.getDoctor().getId());
@@ -53,17 +54,16 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             statement.setString(4, diagnosis.getReason());
 
             int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DaoException("Creating diagnosis failed no rows affected.");
+            if (affectedRows != 0) {
+                generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    diagnosisId = generatedKeys.getInt(1);
+                    generatedKeys.close();
+                    statement.close();
+                    addDiagnosisToTherapy(connection, therapyId, diagnosisId);
+                }
             }
-
-            generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                diagnosisId = generatedKeys.getInt(1);
-            } else {
-                throw new DaoException("Creating diagnosis failed, no id obtained.");
-            }
-            addDiagnosisToTherapy(therapyId, diagnosisId);
+            connection.setAutoCommit(true);
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -107,7 +107,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Diagnosis diagnosis = null;
+        Optional<Diagnosis> optionalDiagnosis = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_ID);
@@ -116,8 +116,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
 
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                diagnosis = new Diagnosis();
-                setDiagnosis(diagnosis, resultSet);
+                Diagnosis diagnosis = new Diagnosis();
+                setDiagnosis(new Diagnosis(), resultSet);
+                optionalDiagnosis = Optional.of(diagnosis);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -126,7 +127,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return Optional.ofNullable(diagnosis);
+        return optionalDiagnosis;
     }
 
     private void setDiagnosis(Diagnosis diagnosis, ResultSet resultSet) throws SQLException, DaoException {
@@ -138,25 +139,16 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
                 .orElseThrow(DaoException::new));
     }
 
-    private void addDiagnosisToTherapy(int therapyId, int diagnosisId) throws DaoException {
-        Connection connection = null;
+    private void addDiagnosisToTherapy(Connection connection, int therapyId, int diagnosisId) throws DaoException {
         PreparedStatement statement = null;
         try {
-            connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_CREATE_THERAPY_DIAGNOSES);
             statement.setInt(1, therapyId);
             statement.setInt(2, diagnosisId);
 
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DaoException("Adding diagnosis to therapy failed, no rows affected.");
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
+            statement.execute();
         } catch (SQLException e) {
             throw new DaoException("Adding diagnosis to therapy failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement);
         }
     }
 }
