@@ -32,35 +32,35 @@ public class UserDaoImplTest {
         newValue.setLogin(user.getLogin() + "1");
         newValue.setId(user.getId());
 
-        userDao.create(user);
+        int userId = userDao.create(user);
+        User findById = userDao.findById(userId).orElseThrow(DaoException::new);
         User userFind = userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new);
-        User findById = userDao.findById(userFind.getId()).orElseThrow(DaoException::new);
         if (!userFind.equals(findById)) {
             Assert.fail("create or find work incorrect.");
         }
 
-        userDao.update(user, newValue);
-        user = userDao.findByLogin(newValue.getLogin()).orElse(new User());
-        Assert.assertEquals(user, newValue);
+        User updatedUser = userDao.update(user, newValue);
+        newValue = userDao.findByLogin(newValue.getLogin()).orElse(new User());
+        Assert.assertEquals(updatedUser, newValue);
 
-        cleaner.delete(user);
+        cleaner.delete(updatedUser);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void updateUserRoles(User user) throws DaoException {
         userDao.create(user);
-        userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.MEDICAL_ASSISTANT);
+        user.getRoles().add(Role.MEDICAL_ASSISTANT);
+        boolean result = userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.MEDICAL_ASSISTANT);
         User userFromDb = userDao.findByLogin(user.getLogin()).orElse(new User());
 
-        if (!userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT) ||
-                !userFromDb.getRoles().contains(Role.CLIENT)) {
+        if (!userFromDb.getRoles().equals(user.getRoles()) && !result) {
             Assert.fail("update users_roles work incorrect.");
         }
 
-        userDao.updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.MEDICAL_ASSISTANT);
+        result = userDao.updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.MEDICAL_ASSISTANT);
         userFromDb = userDao.findByLogin(user.getLogin()).orElse(new User());
 
-        if (userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT)) {
+        if (userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT) && result) {
             Assert.fail("update users_roles work incorrect.");
         }
 
