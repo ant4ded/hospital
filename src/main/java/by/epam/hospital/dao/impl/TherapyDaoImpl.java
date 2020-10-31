@@ -50,8 +50,7 @@ public class TherapyDaoImpl implements TherapyDao {
     private final DiagnosisDao diagnosisDao = new DiagnosisDaoImpl();
 
     @Override
-    public void create(String doctorLogin, String patientLogin, CardType cardType)
-            throws DaoException {
+    public int create(String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         int therapyId;
@@ -95,6 +94,7 @@ public class TherapyDaoImpl implements TherapyDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
+        return therapyId;
     }
 
     @Override

@@ -10,8 +10,11 @@ import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.Optional;
 
 @Test(groups = {"dao", "TherapyDaoImplTest"}, dependsOnGroups = {"UserDaoImplTest"})
 public class TherapyDaoImplTest {
@@ -32,13 +35,23 @@ public class TherapyDaoImplTest {
         userDao.create(patient);
         CardType cardType = CardType.AMBULATORY;
 
-        therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
-        Therapy therapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY)
-                .orElseThrow(DaoException::new);
-        Therapy therapyById = therapyDao.findById(therapy.getId(), CardType.AMBULATORY)
-                .orElseThrow(DaoException::new);
+        int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
 
-        cleaner.delete(therapy, cardType);
+        Optional<Therapy> therapyById = therapyDao.findById(therapyId, CardType.AMBULATORY);
+        if (therapyById.isEmpty()) {
+            Assert.fail("FindById failed.");
+        }
+
+        Optional<Therapy> therapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY);
+        if (therapy.isEmpty()) {
+            Assert.fail("Find failed.");
+        }
+        if (!therapy.get().equals(therapyById.get())){
+            Assert.fail("Find and FindById failed. They returns non equals therapy.");
+        }
+
+
+        cleaner.delete(therapy.get(), cardType);
         cleaner.delete(patient);
         cleaner.delete(doctor);
         if (!therapy.equals(therapyById)) {
