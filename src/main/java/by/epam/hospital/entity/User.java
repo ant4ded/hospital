@@ -2,6 +2,7 @@ package by.epam.hospital.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 
 public class User implements Serializable {
@@ -58,8 +59,8 @@ public class User implements Serializable {
         return roles;
     }
 
-    public void setRoles(ArrayList<Role> roles) {
-        this.roles = roles;
+    public void setRoles(List<Role> roles) {
+        this.roles = new ArrayList<>(roles);
     }
 
     public UserDetails getUserDetails() {
