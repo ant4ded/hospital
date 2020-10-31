@@ -18,7 +18,7 @@ import org.testng.annotations.Test;
 
 import java.util.Optional;
 
-//@Test(groups = "dao", dependsOnGroups = {"UserDaoImplTest", "DepartmentStaffDaoImplTest"})
+@Test(groups = "dao", dependsOnGroups = {"UserDaoImplTest", "DepartmentStaffDaoImplTest"})
 public class DepartmentDaoImplTest {
     private DepartmentStaffDao departmentStaffDao;
     private DepartmentDao departmentDao;
