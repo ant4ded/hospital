@@ -18,7 +18,7 @@ import org.testng.annotations.Test;
 
 import java.util.Optional;
 
-@Test(groups = "dao", dependsOnGroups = {"UserDaoImplTest", "DepartmentStaffDaoImplTest"})
+//@Test(groups = "dao", dependsOnGroups = {"UserDaoImplTest", "DepartmentStaffDaoImplTest"})
 public class DepartmentDaoImplTest {
     private DepartmentStaffDao departmentStaffDao;
     private DepartmentDao departmentDao;
@@ -38,7 +38,8 @@ public class DepartmentDaoImplTest {
         Assert.assertTrue(departmentDao.findHeadDepartment(Department.INFECTIOUS).isPresent());
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = "findHeadDepartment_correctFind_userPresent")
     public void updateDepartmentHead_correctUpdate_true(User user) throws DaoException {
         User firstHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
 
