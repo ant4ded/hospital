@@ -1,15 +1,14 @@
 package by.epam.hospital.dao;
 
-import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 
 import java.sql.Date;
 import java.util.Optional;
 
 public interface UserDetailsDao {
-    void create(UserDetails userDetails) throws DaoException;
+    boolean create(UserDetails userDetails) throws DaoException;
 
-    void update(UserDetails oldValue, UserDetails newValue) throws DaoException;
+    UserDetails update(UserDetails oldValue, UserDetails newValue) throws DaoException;
 
     Optional<UserDetails> findByUserId(int id) throws DaoException;
 

@@ -38,24 +38,29 @@ public class UserDetailsDaoImplTest {
         newUserDetails.setAddress(user.getUserDetails().getAddress());
         newUserDetails.setPhone(user.getUserDetails().getPhone());
 
-        userDao.create(user);
-        user.getUserDetails().setUserId(userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new).getId());
-        userDetailsDao.create(user.getUserDetails());
+        int userId = userDao.create(user);
+        newUserDetails.setUserId(userId);
+        user.getUserDetails().setUserId(userId);
+        if (!userDetailsDao.create(user.getUserDetails())) {
+            Assert.fail("Create user details failed.");
+        }
 
         UserDetails userDetailsFindByRegistrationData = userDetailsDao.findByRegistrationData(
                 user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
                 user.getUserDetails().getLastName(), user.getUserDetails().getBirthday())
-                .orElseThrow(DaoException::new);
+                .orElse(new UserDetails());
 
         if (!user.getUserDetails().equals(userDetailsFindByRegistrationData)) {
-            throw new DaoException("create or findByRegistrationData work incorrect.");
+            Assert.fail("FindByRegistrationData failed.");
         }
 
-        userDetailsDao.update(user.getUserDetails(), newUserDetails);
-        user.setUserDetails(userDetailsDao.findByUserId(user.getUserDetails().getUserId())
-                .orElseThrow(DaoException::new));
+        userDetailsDao.update(userDetailsFindByRegistrationData, newUserDetails);
+        UserDetails userDetailsFindByUserId = userDetailsDao.findByUserId(user.getUserDetails().getUserId())
+                .orElse(new UserDetails());
+        if (!newUserDetails.equals(userDetailsFindByUserId)){
+            Assert.fail("FindByUserId failed.");
+        }
 
         cleaner.delete(user);
-        Assert.assertEquals(user.getUserDetails(), newUserDetails);
     }
 }
