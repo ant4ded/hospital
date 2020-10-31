@@ -48,7 +48,7 @@ public class UserDetailsDaoImplTest {
         UserDetails userDetailsFindByRegistrationData = userDetailsDao.findByRegistrationData(
                 user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
                 user.getUserDetails().getLastName(), user.getUserDetails().getBirthday())
-                .orElse(new UserDetails());
+                .orElseGet(UserDetails::new);
 
         if (!user.getUserDetails().equals(userDetailsFindByRegistrationData)) {
             Assert.fail("FindByRegistrationData failed.");
@@ -56,7 +56,7 @@ public class UserDetailsDaoImplTest {
 
         userDetailsDao.update(userDetailsFindByRegistrationData, newUserDetails);
         UserDetails userDetailsFindByUserId = userDetailsDao.findByUserId(user.getUserDetails().getUserId())
-                .orElse(new UserDetails());
+                .orElseGet(UserDetails::new);
         if (!newUserDetails.equals(userDetailsFindByUserId)){
             Assert.fail("FindByUserId failed.");
         }

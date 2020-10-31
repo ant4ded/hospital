@@ -40,7 +40,7 @@ public class UserDaoImplTest {
         }
 
         User updatedUser = userDao.update(user, newValue);
-        newValue = userDao.findByLogin(newValue.getLogin()).orElse(new User());
+        newValue = userDao.findByLogin(newValue.getLogin()).orElseGet(User::new);
         Assert.assertEquals(updatedUser, newValue);
 
         cleaner.delete(updatedUser);
@@ -51,14 +51,14 @@ public class UserDaoImplTest {
         userDao.create(user);
         user.getRoles().add(Role.MEDICAL_ASSISTANT);
         boolean result = userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.MEDICAL_ASSISTANT);
-        User userFromDb = userDao.findByLogin(user.getLogin()).orElse(new User());
+        User userFromDb = userDao.findByLogin(user.getLogin()).orElseGet(User::new);
 
         if (!userFromDb.getRoles().equals(user.getRoles()) && !result) {
             Assert.fail("update users_roles work incorrect.");
         }
 
         result = userDao.updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.MEDICAL_ASSISTANT);
-        userFromDb = userDao.findByLogin(user.getLogin()).orElse(new User());
+        userFromDb = userDao.findByLogin(user.getLogin()).orElseGet(User::new);
 
         if (userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT) && result) {
             Assert.fail("update users_roles work incorrect.");
