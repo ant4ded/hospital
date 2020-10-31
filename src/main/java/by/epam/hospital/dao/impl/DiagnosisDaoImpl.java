@@ -134,19 +134,19 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         diagnosis.setId(resultSet.getInt(DiagnosesFieldName.ID));
         diagnosis.setDiagnosisDate(resultSet.getDate(DiagnosesFieldName.DIAGNOSIS_DATE));
         diagnosis.setReason(resultSet.getString(DiagnosesFieldName.REASON));
-        diagnosis.setIcd(icdDao.findById(resultSet.getInt(DiagnosesFieldName.ICD_ID)));
+        diagnosis.setIcd(icdDao.findById(resultSet.getInt(DiagnosesFieldName.ICD_ID)).orElseThrow(DaoException::new));
         diagnosis.setDoctor(userDao.findById(resultSet.getInt(DiagnosesFieldName.DOCTOR_ID))
                 .orElseThrow(DaoException::new));
     }
 
     private void addDiagnosisToTherapy(Connection connection, int therapyId, int diagnosisId) throws DaoException {
-        PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement(SQL_CREATE_THERAPY_DIAGNOSES);
+            PreparedStatement statement = connection.prepareStatement(SQL_CREATE_THERAPY_DIAGNOSES);
             statement.setInt(1, therapyId);
             statement.setInt(2, diagnosisId);
 
             statement.execute();
+            statement.close();
         } catch (SQLException e) {
             throw new DaoException("Adding diagnosis to therapy failed.", e);
         }

@@ -49,11 +49,11 @@ public class IcdDaoImpl implements IcdDao {
     }
 
     @Override
-    public Icd findById(int id) throws DaoException {
+    public Optional<Icd> findById(int id) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Icd icd;
+        Optional<Icd> optionalIcd = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_ID);
@@ -62,20 +62,19 @@ public class IcdDaoImpl implements IcdDao {
 
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                icd = new Icd();
+                Icd icd = new Icd();
                 icd.setId(id);
                 icd.setCode(resultSet.getString(IcdFieldName.CODE));
                 icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
-            } else {
-                throw new DaoException("Find icd failed.");
+                optionalIcd = Optional.of(icd);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Find icd failed.", e);
+            throw new DaoException("Find optionalIcd failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return icd;
+        return optionalIcd;
     }
 }

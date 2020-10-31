@@ -12,17 +12,17 @@ public class IcdDaoImplTest {
     private IcdDao icdDao;
 
     @BeforeClass
-    private void setIcdDao() {
+    private void init() {
         icdDao = new IcdDaoImpl();
     }
 
     @Test
-    public void findByCode() throws DaoException {
+    public void findByCode_existingCode_icdPresent() throws DaoException {
         Assert.assertTrue(icdDao.findByCode("XW0DXJ5").isPresent());
     }
 
     @Test
-    public void findById() throws DaoException{
-        Assert.assertNotNull(icdDao.findById(1));
+    public void findById_existingId_icdPresent() throws DaoException{
+        Assert.assertTrue(icdDao.findById(1).isPresent());
     }
 }
