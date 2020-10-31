@@ -14,6 +14,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.Map;
+
 @Test(groups = {"dao", "DepartmentStaffDaoImplTest"}, dependsOnGroups = "UserDaoImplTest")
 public class DepartmentStaffDaoImplTest {
     private DepartmentStaffDao departmentStaffDao;
@@ -21,25 +23,39 @@ public class DepartmentStaffDaoImplTest {
     private Cleaner cleaner;
 
     @BeforeClass
-    private void setFields() {
+    private void init() {
         departmentStaffDao = new DepartmentStaffDaoImpl();
         userDao = new UserDaoImpl();
         cleaner = new Cleaner();
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void updateStaffDepartment_findDepartmentStaff(User user) throws DaoException {
+    public void updateStaffDepartment_correctUpdate_true(User user) throws DaoException {
         userDao.create(user);
 
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
-        if (!departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS).containsKey(user.getLogin())) {
-            Assert.fail("FindDepartmentStaff or updateStaffDepartment work incorrect.");
+        if (!departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin())) {
+            Assert.fail("UpdateStaffDepartment work incorrect.");
         }
-
         if (!departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin())) {
             Assert.fail("UpdateStaffDepartment work incorrect.");
         }
 
+        cleaner.delete(user);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = "updateStaffDepartment_correctUpdate_true")
+    public void findDepartmentStaff_correctFind_afterCreateResultWithCreatedUser(User user) throws DaoException {
+        Map<String, User> userMap = departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS);
+        userDao.create(user);
+        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
+        Map<String, User> userMapAfterCreate = departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS);
+
+        if (userMap.size() == userMapAfterCreate.size() || !userMapAfterCreate.containsKey(user.getLogin())) {
+            Assert.fail("FindDepartmentStaff fail.");
+        }
+
+        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
         cleaner.delete(user);
     }
 }
