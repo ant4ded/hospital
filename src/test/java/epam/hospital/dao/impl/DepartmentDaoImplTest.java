@@ -34,12 +34,12 @@ public class DepartmentDaoImplTest {
     }
 
     @Test
-    public void findHeadDepartment_user_user() throws DaoException {
+    public void findHeadDepartment_correctFind_userPresent() throws DaoException {
         Assert.assertTrue(departmentDao.findHeadDepartment(Department.INFECTIOUS).isPresent());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void updateDepartmentHead_departmentAndUsername_newHead(User user) throws DaoException {
+    public void updateDepartmentHead_correctUpdate_true(User user) throws DaoException {
         User firstHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
 
         userDao.create(user);
@@ -51,14 +51,18 @@ public class DepartmentDaoImplTest {
         cleaner.delete(user);
     }
 
+    @Test
+    public void updateDepartmentHead_nonExistentLogin_false() throws DaoException {
+        Assert.assertFalse(departmentDao.updateDepartmentHead(Department.INFECTIOUS, "1"));
+    }
+
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findDepartment_username_user(User user) throws DaoException {
+    public void findDepartment_correctFind_departmentPresent(User user) throws DaoException {
         userDao.create(user);
         departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
 
         Optional<Department> optionalDepartment = departmentDao.findDepartment(user.getLogin());
-
-        if (optionalDepartment.isEmpty() || !optionalDepartment.get().equals(Department.INFECTIOUS)) {
+        if (optionalDepartment.isEmpty()) {
             departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
             cleaner.delete(user);
             Assert.fail("FindDepartment failed.");
@@ -69,7 +73,12 @@ public class DepartmentDaoImplTest {
     }
 
     @Test
-    public void findDepartmentsHeads() throws DaoException {
+    public void findDepartment_nonExistentLogin_departmentEmpty() throws DaoException {
+        Assert.assertTrue(departmentDao.findDepartment("1").isEmpty());
+    }
+
+    @Test
+    public void findDepartmentsHeads_correctFind_findAll() throws DaoException {
         Assert.assertEquals(departmentDao.findDepartmentsHeads().values().size(), 9);
     }
 }
