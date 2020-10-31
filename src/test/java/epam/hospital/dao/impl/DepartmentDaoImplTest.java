@@ -16,6 +16,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.Optional;
+
 @Test(groups = "dao", dependsOnGroups = {"UserDaoImplTest", "DepartmentStaffDaoImplTest"})
 public class DepartmentDaoImplTest {
     private DepartmentStaffDao departmentStaffDao;
@@ -24,7 +26,7 @@ public class DepartmentDaoImplTest {
     private Cleaner cleaner;
 
     @BeforeClass
-    private void setFields() {
+    private void init() {
         departmentStaffDao = new DepartmentStaffDaoImpl();
         departmentDao = new DepartmentDaoImpl();
         userDao = new UserDaoImpl();
@@ -54,10 +56,12 @@ public class DepartmentDaoImplTest {
         userDao.create(user);
         departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
 
-        if (!departmentDao.findDepartment(user.getLogin()).equals(Department.INFECTIOUS)) {
+        Optional<Department> optionalDepartment = departmentDao.findDepartment(user.getLogin());
+
+        if (optionalDepartment.isEmpty() || !optionalDepartment.get().equals(Department.INFECTIOUS)) {
             departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
             cleaner.delete(user);
-            Assert.fail("findDepartment work incorrect.");
+            Assert.fail("FindDepartment failed.");
         }
 
         departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());

@@ -42,10 +42,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
             statement.execute();
 
             resultSet = statement.getResultSet();
-            if (!resultSet.next()) {
-                throw new DaoException("Find department failed.");
-            }
-            departmentHead = userDao.findById(resultSet.getInt(1));
+            departmentHead = resultSet.next() ? userDao.findById(resultSet.getInt(1)) : Optional.empty();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -85,20 +82,19 @@ public class DepartmentDaoImpl implements DepartmentDao {
     }
 
     @Override
-    public Department findDepartment(String login) throws DaoException {
+    public Optional<Department> findDepartment(String login) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Department department = null;
+        Optional<Department> optionalDepartment;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_BY_USERNAME);
             statement.setString(1, login);
             statement.execute();
             resultSet = statement.getResultSet();
-            if (resultSet.next()) {
-                department = Department.valueOf(resultSet.getString(1));
-            }
+            optionalDepartment = resultSet.next() ?
+                    Optional.of(Department.valueOf(resultSet.getString(1))) : Optional.empty();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -106,7 +102,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return department;
+        return optionalDepartment;
     }
 
     @Override

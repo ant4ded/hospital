@@ -11,7 +11,7 @@ public interface DepartmentDao {
 
     boolean updateDepartmentHead(Department department, String login) throws DaoException;
 
-    Department findDepartment(String login) throws DaoException;
+    Optional<Department> findDepartment(String login) throws DaoException;
 
     Map<Department, String> findDepartmentsHeads() throws DaoException;
 }
