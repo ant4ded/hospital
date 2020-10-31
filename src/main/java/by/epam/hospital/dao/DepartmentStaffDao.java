@@ -7,7 +7,7 @@ import by.epam.hospital.service.ServiceAction;
 import java.util.Map;
 
 public interface DepartmentStaffDao {
-    void updateStaffDepartment(Department department, ServiceAction serviceAction, String login) throws DaoException;
+    boolean updateStaffDepartment(Department department, ServiceAction serviceAction, String login) throws DaoException;
 
     Map<String, User> findDepartmentStaff(Department department) throws DaoException;
 }

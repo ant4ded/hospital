@@ -33,12 +33,11 @@ public class DepartmentStaffDaoImplTest {
 
         departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
         if (!departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS).containsKey(user.getLogin())) {
-            Assert.fail("findDepartmentStaff or updateStaffDepartment work incorrect.");
+            Assert.fail("FindDepartmentStaff or updateStaffDepartment work incorrect.");
         }
 
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
-        if (departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS).containsKey(user.getLogin())) {
-            Assert.fail("updateStaffDepartment work incorrect.");
+        if (!departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin())) {
+            Assert.fail("UpdateStaffDepartment work incorrect.");
         }
 
         cleaner.delete(user);

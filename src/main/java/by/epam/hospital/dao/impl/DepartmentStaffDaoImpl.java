@@ -5,7 +5,6 @@ import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DepartmentStaffDao;
 import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.table.UsersFieldName;
@@ -32,10 +31,11 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
                     "WHERE department_id = ?";
 
     private final UserDao userDao = new UserDaoImpl();
-    private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
 
     @Override
-    public void updateStaffDepartment(Department department, ServiceAction serviceAction, String login) throws DaoException {
+    public boolean updateStaffDepartment(Department department, ServiceAction serviceAction, String login)
+            throws DaoException {
+        boolean result = false;
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -48,8 +48,8 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
             }
 
             int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DaoException("Updating department staff failed, no rows affected.");
+            if (affectedRows == 1) {
+                result = true;
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -58,6 +58,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
+        return result;
     }
 
     @Override
