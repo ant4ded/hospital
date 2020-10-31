@@ -57,22 +57,22 @@ public class DepartmentDaoImpl implements DepartmentDao {
     }
 
     @Override
-    public void updateDepartmentHead(Department department, String login) throws DaoException {
+    public boolean updateDepartmentHead(Department department, String login) throws DaoException {
+        boolean result = false;
         Connection connection = null;
         PreparedStatement statement = null;
         Optional<User> user = userDao.findByLogin(login);
         try {
-            if (user.isEmpty()) {
-                throw new DaoException("Can not find user on users table.");
-            }
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_UPDATE_DEPARTMENT_HEAD);
-            statement.setInt(1, user.get().getId());
-            statement.setInt(2, department.id);
+            if (user.isPresent()) {
+                connection = ConnectionPool.getInstance().getConnection();
+                statement = connection.prepareStatement(SQL_UPDATE_DEPARTMENT_HEAD);
+                statement.setInt(1, user.get().getId());
+                statement.setInt(2, department.id);
 
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DaoException("Update department failed, no rows affected.");
+                int affectedRows = statement.executeUpdate();
+                if (affectedRows == 1) {
+                    result = true;
+                }
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -81,6 +81,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
+        return result;
     }
 
     @Override

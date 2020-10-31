@@ -38,17 +38,15 @@ public class DepartmentDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void updateDepartmentHead_departmentAndUsername_newHead(User user) throws DaoException {
-        User firstHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElse(new User());
+        User firstHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
 
         userDao.create(user);
-        departmentDao.updateDepartmentHead(Department.INFECTIOUS, user.getLogin());
-        firstHead = userDao.findByLogin(firstHead.getLogin()).orElseThrow(DaoException::new);
-
-        User secondHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElse(new User());
+        if (!departmentDao.updateDepartmentHead(Department.INFECTIOUS, user.getLogin())) {
+            Assert.fail("UpdateDepartmentHead failed.");
+        }
 
         departmentDao.updateDepartmentHead(Department.INFECTIOUS, firstHead.getLogin());
         cleaner.delete(user);
-        Assert.assertTrue(secondHead.equals(user) && secondHead.getId() != 0);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
