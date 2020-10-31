@@ -100,6 +100,10 @@ public class ConnectionPool {
                 statement.close();
             }
             if (connection != null) {
+                if (!connection.getAutoCommit()) {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                }
                 connection.close();
             }
         } catch (SQLException e) {
