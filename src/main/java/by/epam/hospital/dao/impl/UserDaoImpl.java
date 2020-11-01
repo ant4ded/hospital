@@ -43,6 +43,7 @@ public class UserDaoImpl implements UserDao {
     public int create(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
+        int userId = 0;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             connection.setAutoCommit(false);
@@ -51,24 +52,21 @@ public class UserDaoImpl implements UserDao {
             statement.setString(2, user.getPassword());
 
             int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DaoException("Creating user failed, no rows affected.");
-            }
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                user.setId(generatedKeys.getInt(1));
-            } else {
-                throw new DaoException("Creating user failed, no id obtained.");
-            }
-            generatedKeys.close();
-            statement.close();
+            if (affectedRows != 0) {
+                ResultSet generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    userId = generatedKeys.getInt(1);
+                    generatedKeys.close();
+                    statement.close();
 
-            statement = connection.prepareStatement(SQL_CREATE_USER_ROLES);
-            statement.setInt(1, user.getId());
-            statement.setInt(2, Role.CLIENT.id);
-            affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DaoException("Creating user roles failed, no rows affected.");
+                    statement = connection.prepareStatement(SQL_CREATE_USER_ROLES);
+                    statement.setInt(1, userId);
+                    statement.setInt(2, Role.CLIENT.id);
+                    affectedRows = statement.executeUpdate();
+                    if (affectedRows == 0) {
+                        connection.rollback();
+                    }
+                }
             }
             connection.setAutoCommit(true);
         } catch (ConnectionException e) {
@@ -78,7 +76,7 @@ public class UserDaoImpl implements UserDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
-        return user.getId();
+        return userId;
     }
 
     @Override
@@ -86,18 +84,20 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement statement = null;
         User userFromDb = findByLogin(oldValue.getLogin()).orElseThrow(DaoException::new);
-        userFromDb.setLogin(newValue.getLogin());
-        userFromDb.setPassword(newValue.getPassword());
+        User updatedUser = new User();
+        updatedUser.setId(newValue.getId());
+        updatedUser.setLogin(newValue.getLogin());
+        updatedUser.setPassword(newValue.getPassword());
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
-            statement.setString(1, userFromDb.getLogin());
-            statement.setString(2, userFromDb.getPassword());
-            statement.setInt(3, userFromDb.getId());
+            statement.setString(1, updatedUser.getLogin());
+            statement.setString(2, updatedUser.getPassword());
+            statement.setInt(3, updatedUser.getId());
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
-                throw new DaoException("Updating user failed, no rows affected.");
+                updatedUser = userFromDb;
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -106,7 +106,7 @@ public class UserDaoImpl implements UserDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
-        return userFromDb;
+        return updatedUser;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        User userFromDb = null;
+        Optional<User> optionalUser = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_LOGIN);
@@ -123,11 +123,12 @@ public class UserDaoImpl implements UserDao {
 
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                userFromDb = new User();
+                User userFromDb = new User();
                 userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
                 userFromDb.setLogin(login);
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
                 userFromDb.setRoles(findUserRoles(userFromDb.getId()));
+                optionalUser = Optional.of(userFromDb);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -136,7 +137,7 @@ public class UserDaoImpl implements UserDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return Optional.ofNullable(userFromDb);
+        return optionalUser;
     }
 
     @Override
@@ -144,7 +145,7 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        User userFromDb = null;
+        Optional<User> optionalUser = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_ID);
@@ -153,11 +154,12 @@ public class UserDaoImpl implements UserDao {
 
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                userFromDb = new User();
+                User userFromDb = new User();
                 userFromDb.setId(id);
                 userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-                findUserRoles(userFromDb.getId());
+                userFromDb.setRoles(findUserRoles(userFromDb.getId()));
+                optionalUser = Optional.of(userFromDb);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -166,7 +168,7 @@ public class UserDaoImpl implements UserDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return Optional.ofNullable(userFromDb);
+        return optionalUser;
     }
 
     @Override
@@ -210,9 +212,6 @@ public class UserDaoImpl implements UserDao {
             while (resultSet.next()) {
                 Role role = Role.valueOf(resultSet.getString(RolesFieldName.TITLE));
                 roles.add(role);
-            }
-            if (roles.isEmpty()) {
-                throw new DaoException("Find user roles failed. Empty roles list.");
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
