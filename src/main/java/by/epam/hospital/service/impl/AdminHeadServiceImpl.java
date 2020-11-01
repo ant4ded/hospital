@@ -94,7 +94,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                         "Role is not a role doctor or medical assistant.");
             }
             performUserRolesAction(login, serviceAction, role);
-            if ((departmentDao.findDepartment(login) != null || !serviceAction.equals(ServiceAction.ADD)) &&
+            if ((departmentDao.findDepartment(login).isPresent() || !serviceAction.equals(ServiceAction.ADD)) &&
                     !serviceAction.equals(ServiceAction.REMOVE)) {
                 Department previous = findDepartmentByUsername(login);
                 departmentStaffDao.updateStaffDepartment(previous, ServiceAction.REMOVE, login);
@@ -115,7 +115,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             }
             if (optionalUser.get().getRoles().contains(Role.DOCTOR) ||
                     optionalUser.get().getRoles().contains(Role.MEDICAL_ASSISTANT)) {
-                department = departmentDao.findDepartment(login);
+                department = departmentDao.findDepartment(login).orElseThrow(ServiceException::new);
             } else {
                 throw new ServiceException("FindDepartmentByUsername failed. User is not a doctor.");
             }
