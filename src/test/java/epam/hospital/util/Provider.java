@@ -34,7 +34,9 @@ public class Provider {
         diagnosis.setId(0);
         diagnosis.setIcd(getIcd());
 
-        diagnosis.setDoctor(new User(0, STRING_VALUE, STRING_VALUE, getUserRoles(), getUserDetails(STRING_VALUE)));
+        ArrayList<Role> doctorRoles = getUserRoles();
+        doctorRoles.add(Role.DOCTOR);
+        diagnosis.setDoctor(new User(0, STRING_VALUE, STRING_VALUE, doctorRoles, getUserDetails(STRING_VALUE)));
         diagnosis.setDiagnosisDate(new Date(2000, 1, 1));
         diagnosis.setReason(STRING_VALUE);
 

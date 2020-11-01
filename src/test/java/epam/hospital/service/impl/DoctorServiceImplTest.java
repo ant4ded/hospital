@@ -1,75 +1,146 @@
 package epam.hospital.service.impl;
 
 import by.epam.hospital.dao.*;
-import by.epam.hospital.dao.impl.DiagnosisDaoImpl;
-import by.epam.hospital.dao.impl.TherapyDaoImpl;
-import by.epam.hospital.dao.impl.UserDaoImpl;
-import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
-import by.epam.hospital.entity.*;
+import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Diagnosis;
+import by.epam.hospital.entity.User;
 import by.epam.hospital.service.DoctorService;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.impl.DoctorServiceImpl;
-import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@Test(groups = "services", dependsOnGroups = "dao")
+import java.util.Optional;
+
 public class DoctorServiceImplTest {
-    private DoctorService doctorService;
-    private TherapyDao therapyDao;
-    private DiagnosisDao diagnosisDao;
-    private UserDetailsDao userDetailsDao;
+    @Mock
+    private IcdDao icdDao;
+    @Mock
     private UserDao userDao;
-    private Cleaner cleaner;
+    @Mock
+    private TherapyDao therapyDao;
+    @Mock
+    private DiagnosisDao diagnosisDao;
+    @Mock
+    private UserDetailsDao userDetailsDao;
+    private DoctorService doctorService;
 
     @BeforeClass
-    private void setFields() {
-        doctorService = new DoctorServiceImpl();
-        therapyDao = new TherapyDaoImpl();
-        diagnosisDao = new DiagnosisDaoImpl();
-        userDetailsDao = new UserDetailsDaoImpl();
-        userDao = new UserDaoImpl();
-        cleaner = new Cleaner();
+    private void init() {
+        MockitoAnnotations.openMocks(this);
+        doctorService = new DoctorServiceImpl(icdDao, userDao, therapyDao, diagnosisDao, userDetailsDao);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findByRegistrationData(User user) throws DaoException, ServiceException {
-        userDao.create(user);
-        user.getUserDetails().setUserId(userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new).getId());
-        userDetailsDao.create(user.getUserDetails());
-        UserDetails userDetails = user.getUserDetails();
+    public void findByRegistrationData_correctFind_userPresent(User user) throws DaoException, ServiceException {
+        Mockito.when(userDetailsDao.findByRegistrationData(user.getUserDetails().getFirstName(),
+                user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
+                user.getUserDetails().getBirthday()))
+                .thenReturn(Optional.of(user.getUserDetails()));
+        doctorService.findByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
+                user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
+    }
 
-        if (doctorService.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
-                userDetails.getLastName(), userDetails.getBirthday()).isEmpty()) {
-            cleaner.delete(user);
-            Assert.fail("create or findByRegistrationData work incorrect.");
-        }
-        cleaner.delete(user);
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void findByRegistrationData_nonExistentUser_userPresent(User user) throws DaoException, ServiceException {
+        Mockito.when(userDetailsDao.findByRegistrationData(user.getUserDetails().getFirstName(),
+                user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
+                user.getUserDetails().getBirthday()))
+                .thenReturn(Optional.empty());
+        doctorService.findByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
+                user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = {"findByRegistrationData_correctFind_userPresent",
+                    "findByRegistrationData_nonExistentUser_userPresent"},
+            expectedExceptions = ServiceException.class)
+    public void findByRegistrationData_daoException_serviceException(User user) throws DaoException, ServiceException {
+        Mockito.when(userDetailsDao.findByRegistrationData(user.getUserDetails().getFirstName(),
+                user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
+                user.getUserDetails().getBirthday()))
+                .thenThrow(DaoException.class);
+        doctorService.findByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
+                user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
-    public void diagnoseDisease(Diagnosis diagnosis, User patient) throws DaoException, ServiceException {
-        User doctor = diagnosis.getDoctor();
-        CardType cardType = CardType.AMBULATORY;
-        userDao.create(doctor);
-        userDao.create(patient);
-        doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
-        patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
-        diagnosis.setDoctor(doctor);
+    public void diagnoseDisease_correctDiagnose_true(Diagnosis diagnosis, User patient)
+            throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(diagnosis.getDoctor().getLogin()))
+                .thenReturn(Optional.of(diagnosis.getDoctor()));
+        Mockito.when(userDao.findByLogin(patient.getLogin()))
+                .thenReturn(Optional.of(patient));
+        Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
+                .thenReturn(Optional.of(diagnosis.getIcd()));
+        Assert.assertTrue(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+    }
 
-        doctorService.diagnoseDisease(diagnosis, patient.getLogin(), cardType);
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void diagnoseDisease_doctorEmpty_false(Diagnosis diagnosis, User patient)
+            throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(diagnosis.getDoctor().getLogin()))
+                .thenReturn(Optional.empty());
+        Mockito.when(userDao.findByLogin(patient.getLogin()))
+                .thenReturn(Optional.of(patient));
+        Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
+                .thenReturn(Optional.of(diagnosis.getIcd()));
+        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+    }
 
-        Therapy therapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), cardType)
-                .orElseThrow(DaoException::new);
-        int numberDiagnoses = diagnosisDao.findAllByTherapyId(therapy.getId()).size();
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void diagnoseDisease_doctorNotHaveDoctorRole_false(Diagnosis diagnosis, User patient)
+            throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(diagnosis.getDoctor().getLogin()))
+                .thenReturn(Optional.of(patient));
+        Mockito.when(userDao.findByLogin(patient.getLogin()))
+                .thenReturn(Optional.of(patient));
+        Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
+                .thenReturn(Optional.of(diagnosis.getIcd()));
+        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+    }
 
-        cleaner.delete(therapy, cardType);
-        cleaner.delete(doctor);
-        cleaner.delete(patient);
-        if (numberDiagnoses != 1) {
-            Assert.fail("Diagnose disease failed. Size of diagnosis must be 1 but is " + numberDiagnoses + ".");
-        }
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void diagnoseDisease_patientEmpty_false(Diagnosis diagnosis, User patient)
+            throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(diagnosis.getDoctor().getLogin()))
+                .thenReturn(Optional.of(diagnosis.getDoctor()));
+        Mockito.when(userDao.findByLogin(patient.getLogin()))
+                .thenReturn(Optional.empty());
+        Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
+                .thenReturn(Optional.of(diagnosis.getIcd()));
+        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void diagnoseDisease_icdEmpty_false(Diagnosis diagnosis, User patient)
+            throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(diagnosis.getDoctor().getLogin()))
+                .thenReturn(Optional.of(diagnosis.getDoctor()));
+        Mockito.when(userDao.findByLogin(patient.getLogin()))
+                .thenReturn(Optional.of(patient));
+        Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
+                .thenReturn(Optional.empty());
+        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            expectedExceptions = ServiceException.class, dependsOnMethods = "diagnoseDisease_correctDiagnose_true")
+    public void diagnoseDisease_daoException_ServiceException(Diagnosis diagnosis, User patient)
+            throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(diagnosis.getDoctor().getLogin()))
+                .thenReturn(Optional.of(diagnosis.getDoctor()));
+        Mockito.when(userDao.findByLogin(patient.getLogin()))
+                .thenReturn(Optional.of(patient));
+        Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
+                .thenReturn(Optional.of(diagnosis.getIcd()));
+        Mockito.when(therapyDao.create(diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY))
+                .thenThrow(DaoException.class);
+        doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY);
     }
 }
