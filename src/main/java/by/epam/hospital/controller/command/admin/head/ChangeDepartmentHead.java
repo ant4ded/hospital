@@ -3,6 +3,9 @@ package by.epam.hospital.controller.command.admin.head;
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
+import by.epam.hospital.dao.impl.DepartmentDaoImpl;
+import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
+import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.table.UsersFieldName;
@@ -19,7 +22,8 @@ import java.util.List;
 public class ChangeDepartmentHead implements HttpCommand {
     private static final String MESSAGE_SUCCESS = "Success.";
 
-    private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
+    private final AdminHeadService adminHeadService = new AdminHeadServiceImpl(new UserDaoImpl(),
+            new DepartmentDaoImpl(), new DepartmentStaffDaoImpl());
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

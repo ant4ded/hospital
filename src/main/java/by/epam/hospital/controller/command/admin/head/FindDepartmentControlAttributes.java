@@ -3,6 +3,9 @@ package by.epam.hospital.controller.command.admin.head;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
+import by.epam.hospital.dao.impl.DepartmentDaoImpl;
+import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
+import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.table.UsersFieldName;
@@ -17,14 +20,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class FindDepartmentControlAttributes implements HttpCommand {
-    private final AdminHeadService adminHeadService = new AdminHeadServiceImpl();
+    private final AdminHeadService adminHeadService = new AdminHeadServiceImpl(new UserDaoImpl(),
+            new DepartmentDaoImpl(), new DepartmentStaffDaoImpl());
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter(UsersFieldName.LOGIN);
         try {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
-            Department department = adminHeadService.findDepartmentByUsername(login);
+            Department department = adminHeadService.findDepartmentByUsername(login).orElseThrow(ServiceException::new);
 
             request.setAttribute(UsersFieldName.LOGIN, login);
             request.setAttribute(ParameterName.USER_ROLES, roles);

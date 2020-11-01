@@ -2,6 +2,7 @@ package by.epam.hospital.controller.filter;
 
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
+import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.service.AuthenticationService;
 import by.epam.hospital.service.ServiceException;
@@ -18,7 +19,7 @@ public class AuthenticationFilter implements Filter {
     private static final String FORBIDDEN_MESSAGE = "Access denied.";
 
     private final Logger logger = Logger.getLogger(AuthenticationFilter.class);
-    private final AuthenticationService authenticationService = new AuthenticationServiceImpl();
+    private final AuthenticationService authenticationService = new AuthenticationServiceImpl(new UserDaoImpl());
 
     private Role role;
 

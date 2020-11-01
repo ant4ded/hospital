@@ -4,9 +4,6 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DepartmentDao;
 import by.epam.hospital.dao.DepartmentStaffDao;
 import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.dao.impl.DepartmentDaoImpl;
-import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
-import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
@@ -19,19 +16,24 @@ import java.util.Map;
 import java.util.Optional;
 
 public class AdminHeadServiceImpl implements AdminHeadService {
-    private final UserDao userDao = new UserDaoImpl();
-    private final DepartmentDao departmentDao = new DepartmentDaoImpl();
-    private final DepartmentStaffDao departmentStaffDao = new DepartmentStaffDaoImpl();
+    private final UserDao userDao;
+    private final DepartmentDao departmentDao;
+    private final DepartmentStaffDao departmentStaffDao;
+
+    public AdminHeadServiceImpl(UserDao userDao, DepartmentDao departmentDao, DepartmentStaffDao departmentStaffDao) {
+        this.userDao = userDao;
+        this.departmentDao = departmentDao;
+        this.departmentStaffDao = departmentStaffDao;
+    }
 
     @Override
     public ArrayList<Role> findUserRoles(String login) throws ServiceException {
-        ArrayList<Role> roles;
+        ArrayList<Role> roles = new ArrayList<>();
         try {
             Optional<User> user = userDao.findByLogin(login);
-            if (user.isEmpty()) {
-                throw new ServiceException("FindUserRoles failed. User not existing.");
+            if (user.isPresent()) {
+                roles = user.get().getRoles();
             }
-            roles = user.get().getRoles();
         } catch (DaoException e) {
             throw new ServiceException("FindUserRoles failed.", e);
         }
@@ -39,90 +41,85 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public void performUserRolesAction(String login, ServiceAction serviceAction, Role role) throws ServiceException {
+    public boolean performUserRolesAction(String login, ServiceAction serviceAction, Role role)
+            throws ServiceException {
+        boolean result = false;
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
-            if (optionalUser.isEmpty()) {
-                throw new ServiceException("PerformUserRoles failed. User not existing.");
-            }
-            if ((optionalUser.get().getRoles().contains(role) && serviceAction.equals(ServiceAction.REMOVE)) ||
-                    !optionalUser.get().getRoles().contains(role) && serviceAction.equals(ServiceAction.ADD) ) {
-                userDao.updateUserRoles(login, serviceAction, role);
+            if (optionalUser.isPresent() && ((optionalUser.get().getRoles().contains(role)
+                    && serviceAction.equals(ServiceAction.REMOVE)) ||
+                    !optionalUser.get().getRoles().contains(role) && serviceAction.equals(ServiceAction.ADD))) {
+                result = userDao.updateUserRoles(login, serviceAction, role);
             }
         } catch (DaoException e) {
             throw new ServiceException("PerformUserRoles failed.", e);
         }
+        return result;
     }
 
     @Override
-    public void appointDepartmentHead(Department department, String login) throws ServiceException {
+    public boolean appointDepartmentHead(Department department, String login) throws ServiceException {
+        boolean result = false;
         try {
-            Optional<User> optionalUser = userDao.findByLogin(login);
-            if (optionalUser.isEmpty()) {
-                throw new ServiceException("AppointDepartmentHead failed. User not existing.");
-            }
-            if (!optionalUser.get().getRoles().contains(Role.DOCTOR)) {
-                throw new ServiceException("AppointDepartmentHead failed. User is not a doctor.");
-            }
-            Optional<User> previous = departmentDao.findHeadDepartment(department);
-            if (!optionalUser.equals(previous)) {
-                if (previous.isPresent()) {
-                    performUserRolesAction(previous.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD);
+            Optional<User> newHead = userDao.findByLogin(login); //1
+            Optional<User> previousHead = departmentDao.findHeadDepartment(department); //2
+            Optional<Department> departmentOfNewHead = findDepartmentByUsername(login); //3 //4
+            boolean isNonEqualsAndNewHeadIsDoctor = newHead.isPresent() && !newHead.equals(previousHead) &&
+                    newHead.get().getRoles().contains(Role.DOCTOR);
+            boolean isDepartmentNewHeadEqualsThisDepartment = departmentOfNewHead.isPresent() &&
+                    departmentOfNewHead.get().equals(department);
+            if (isNonEqualsAndNewHeadIsDoctor && isDepartmentNewHeadEqualsThisDepartment) {
+                if (previousHead.isPresent()) {
+                    performUserRolesAction(previousHead.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD); //5 //6
                 }
-                departmentDao.updateDepartmentHead(department, login);
-                performUserRolesAction(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);
+                departmentDao.updateDepartmentHead(department, login); //7
+                result = performUserRolesAction(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD); //8 //9
             }
         } catch (DaoException e) {
             throw new ServiceException("AppointDepartmentHead failed.", e);
         }
+        return result;
     }
 
     @Override
-    public void performDepartmentStaffAction(Department department, ServiceAction serviceAction,
-                                             String login, Role role) throws ServiceException {
+    public boolean performDepartmentStaffAction(Department department, ServiceAction serviceAction,
+                                                String login, Role role) throws ServiceException {
+        boolean result = false;
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
-            if (optionalUser.isEmpty()) {
-                throw new ServiceException("PerformDepartmentStaff failed. User not existing.");
+            boolean isNotDepartmentHead =
+                    optionalUser.isPresent() && !optionalUser.get().getRoles().contains(Role.DEPARTMENT_HEAD);
+            boolean isUserFutureDoctorOrMedicalAssistant =
+                    role.equals(Role.MEDICAL_ASSISTANT) || role.equals(Role.DOCTOR);
+            Optional<Department> previousDepartment = departmentDao.findDepartment(login);
+            boolean isUserHaveDepartmentAndActionAdd = previousDepartment.isPresent() &&
+                    serviceAction.equals(ServiceAction.ADD);
+            if (isNotDepartmentHead && isUserFutureDoctorOrMedicalAssistant) {
+                performUserRolesAction(login, serviceAction, role);
+                if (isUserHaveDepartmentAndActionAdd) {
+                    departmentStaffDao.updateStaffDepartment(previousDepartment.get(), ServiceAction.REMOVE, login);
+                }
+                result = departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
             }
-            if (optionalUser.get().getRoles().contains(Role.DEPARTMENT_HEAD)) {
-                throw new ServiceException("PerformDepartmentStaff failed. " +
-                        "Try to appoint the head of another department as the head of a department.");
-            }
-            if (!role.equals(Role.MEDICAL_ASSISTANT) && !role.equals(Role.DOCTOR)) {
-                throw new ServiceException("PerformDepartmentStaff failed. " +
-                        "Role is not a role doctor or medical assistant.");
-            }
-            performUserRolesAction(login, serviceAction, role);
-            if ((departmentDao.findDepartment(login).isPresent() || !serviceAction.equals(ServiceAction.ADD)) &&
-                    !serviceAction.equals(ServiceAction.REMOVE)) {
-                Department previous = findDepartmentByUsername(login);
-                departmentStaffDao.updateStaffDepartment(previous, ServiceAction.REMOVE, login);
-            }
-            departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
         } catch (DaoException e) {
             throw new ServiceException("PerformDepartmentStaff failed.", e);
         }
+        return result;
     }
 
     @Override
-    public Department findDepartmentByUsername(String login) throws ServiceException {
-        Department department;
+    public Optional<Department> findDepartmentByUsername(String login) throws ServiceException {
+        Optional<Department> optionalDepartment = Optional.empty();
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
-            if (optionalUser.isEmpty()) {
-                throw new ServiceException("FindDepartmentByUsername failed. User not existing.");
-            }
-            if (optionalUser.get().getRoles().contains(Role.DOCTOR) ||
-                    optionalUser.get().getRoles().contains(Role.MEDICAL_ASSISTANT)) {
-                department = departmentDao.findDepartment(login).orElseThrow(ServiceException::new);
-            } else {
-                throw new ServiceException("FindDepartmentByUsername failed. User is not a doctor.");
+            if (optionalUser.isPresent() && (optionalUser.get().getRoles().contains(Role.DOCTOR) ||
+                    optionalUser.get().getRoles().contains(Role.MEDICAL_ASSISTANT))) {
+                optionalDepartment = departmentDao.findDepartment(login);
             }
         } catch (DaoException e) {
             throw new ServiceException("FindDepartmentByUsername failed.", e);
         }
-        return department;
+        return optionalDepartment;
     }
 
     @Override

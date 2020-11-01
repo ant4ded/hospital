@@ -3,6 +3,8 @@ package by.epam.hospital.controller.command.receptionist;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
+import by.epam.hospital.dao.impl.UserDaoImpl;
+import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
@@ -21,7 +23,7 @@ public class RegisterClient implements HttpCommand {
     private static final String SUCCESSFUL_MESSAGE = "Client registration completed successful";
     private static final String UNSUCCESSFUL_MESSAGE = "Client registration didn't complete";
 
-    private final ReceptionistService service = new ReceptionistServiceImpl();
+    private final ReceptionistService service = new ReceptionistServiceImpl(new UserDaoImpl(), new UserDetailsDaoImpl());
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
