@@ -53,7 +53,7 @@ public class TherapyDaoImpl implements TherapyDao {
     public int create(String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        int therapyId;
+        int therapyId = 0;
         int doctorId = userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new).getId();
         int patientId = userDao.findByLogin(patientLogin).orElseThrow(DaoException::new).getId();
         try {
@@ -63,28 +63,23 @@ public class TherapyDaoImpl implements TherapyDao {
             statement.setInt(1, doctorId);
 
             int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DaoException("Creating therapy failed, no rows affected.");
-            }
+            if (affectedRows != 0) {
+                ResultSet generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    therapyId = generatedKeys.getInt(1);
+                    generatedKeys.close();
+                    statement.close();
 
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                therapyId = generatedKeys.getInt(1);
-            } else {
-                throw new DaoException("Creating therapy failed, no id obtained.");
-            }
-            generatedKeys.close();
-            statement.close();
+                    statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
+                            SQL_CREATE_AMBULATORY_THERAPY : SQL_CREATE_STATIONARY_THERAPY);
+                    statement.setInt(1, patientId);
+                    statement.setInt(2, therapyId);
 
-            statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
-                    SQL_CREATE_AMBULATORY_THERAPY : SQL_CREATE_STATIONARY_THERAPY);
-            statement.setInt(1, patientId);
-            statement.setInt(2, therapyId);
-
-            affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DaoException("Adding therapy to " + (cardType.equals(CardType.AMBULATORY)
-                        ? "ambulatory_cards" : "stationary_cards") + " failed, no rows affected.");
+                    affectedRows = statement.executeUpdate();
+                    if (affectedRows == 0) {
+                        connection.rollback();
+                    }
+                }
             }
             connection.setAutoCommit(true);
         } catch (ConnectionException e) {
@@ -102,7 +97,7 @@ public class TherapyDaoImpl implements TherapyDao {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Therapy therapy = null;
+        Optional<Therapy> optionalTherapy = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
@@ -113,7 +108,7 @@ public class TherapyDaoImpl implements TherapyDao {
 
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                therapy = new Therapy();
+                Therapy therapy = new Therapy();
                 therapy.setId(resultSet.getInt(TherapyFieldName.ID));
                 therapy.setDoctor(userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new));
                 therapy.setPatient(userDao.findByLogin(patientLogin).orElseThrow(DaoException::new));
@@ -121,6 +116,7 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setEndTherapy(Optional.ofNullable(resultSet.getDate(TherapyFieldName.END_THERAPY)));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID)));
                 therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(therapy.getId()));
+                optionalTherapy = Optional.of(therapy);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -129,7 +125,7 @@ public class TherapyDaoImpl implements TherapyDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return Optional.ofNullable(therapy);
+        return optionalTherapy;
     }
 
     @Override
@@ -137,7 +133,7 @@ public class TherapyDaoImpl implements TherapyDao {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        Therapy therapy = null;
+        Optional<Therapy> optionalTherapy = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
@@ -147,7 +143,7 @@ public class TherapyDaoImpl implements TherapyDao {
 
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                therapy = new Therapy();
+                Therapy therapy = new Therapy();
                 therapy.setId(id);
                 therapy.setDoctor(userDao.findById(resultSet.getInt(TherapyFieldName.DOCTOR_ID))
                         .orElseThrow(DaoException::new));
@@ -156,11 +152,8 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(id));
                 therapy.setPatient(userDao.findById(resultSet.getInt(UsersFieldName.ID))
                         .orElseThrow(DaoException::new));
-                if (cardType.equals(CardType.AMBULATORY)) {
-                    therapy.setCardType(CardType.AMBULATORY);
-                } else {
-                    therapy.setCardType(CardType.STATIONARY);
-                }
+                therapy.setCardType(cardType.equals(CardType.AMBULATORY) ? CardType.AMBULATORY : CardType.STATIONARY);
+                optionalTherapy = Optional.of(therapy);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -169,6 +162,6 @@ public class TherapyDaoImpl implements TherapyDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return Optional.ofNullable(therapy);
+        return optionalTherapy;
     }
 }
