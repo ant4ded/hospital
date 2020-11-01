@@ -50,7 +50,7 @@ public class UserDaoImplTest {
     }
 
     @Test
-    public void findByLogin_nonExistingLogin_userEmpty() throws DaoException {
+    public void findByLogin_nonExistentLogin_userEmpty() throws DaoException {
         Assert.assertTrue(userDao.findByLogin("").isEmpty());
     }
 
@@ -66,7 +66,7 @@ public class UserDaoImplTest {
     }
 
     @Test
-    public void findById_nonExistingId_userEmpty() throws DaoException {
+    public void findById_nonExistentId_userEmpty() throws DaoException {
         Assert.assertTrue(userDao.findById(0).isEmpty());
     }
 
@@ -88,7 +88,7 @@ public class UserDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", expectedExceptions = DaoException.class)
-    public void update_nonExistingLogin_exception(User user) throws DaoException {
+    public void update_nonExistentLogin_exception(User user) throws DaoException {
         userDao.update(user, new User());
     }
 

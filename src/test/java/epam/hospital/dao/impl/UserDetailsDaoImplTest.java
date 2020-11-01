@@ -39,7 +39,7 @@ public class UserDetailsDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", expectedExceptions = DaoException.class)
-    public void create_nonExistingUser_exception(User user) throws DaoException {
+    public void create_nonExistentUser_exception(User user) throws DaoException {
         userDetailsDao.create(user.getUserDetails());
     }
 
@@ -82,7 +82,7 @@ public class UserDetailsDaoImplTest {
     }
 
     @Test
-    public void findByUserId_nonExistingId_userDetailsEmpty() throws DaoException {
+    public void findByUserId_nonExistentId_userDetailsEmpty() throws DaoException {
         Assert.assertTrue(userDetailsDao.findByUserId(0).isEmpty());
     }
 
@@ -101,7 +101,7 @@ public class UserDetailsDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findByRegistrationData_nonExistingUserDetails_userDetailsEmpty(User user) throws DaoException {
+    public void findByRegistrationData_nonExistentUserDetails_userDetailsEmpty(User user) throws DaoException {
         UserDetails userDetails = user.getUserDetails();
 
         Optional<UserDetails> optionalUserDetails = userDetailsDao.findByRegistrationData(userDetails.getFirstName(),
