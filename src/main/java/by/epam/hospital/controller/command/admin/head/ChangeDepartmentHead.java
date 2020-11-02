@@ -1,46 +1,51 @@
 package by.epam.hospital.controller.command.admin.head;
 
-import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
-import by.epam.hospital.dao.impl.DepartmentDaoImpl;
-import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
-import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.table.UsersFieldName;
 import by.epam.hospital.service.AdminHeadService;
 import by.epam.hospital.service.ServiceException;
-import by.epam.hospital.service.impl.AdminHeadServiceImpl;
+import org.apache.log4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChangeDepartmentHead implements HttpCommand {
     private static final String MESSAGE_SUCCESS = "Success.";
+    private static final String MESSAGE_WRONG_RESULT = "Change department head was not perform.";
 
-    private final AdminHeadService adminHeadService = new AdminHeadServiceImpl(new UserDaoImpl(),
-            new DepartmentDaoImpl(), new DepartmentStaffDaoImpl());
+    private final AdminHeadService adminHeadService;
+    private final Logger logger;
+
+    public ChangeDepartmentHead(AdminHeadService adminHeadService, Logger logger) {
+        this.adminHeadService = adminHeadService;
+        this.logger = logger;
+    }
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public Map<String, Object> execute(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> result = new HashMap<>();
         String login = request.getParameter(UsersFieldName.LOGIN);
         Department department = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
         try {
-            adminHeadService.appointDepartmentHead(department, login);
-            List<Role> roles = adminHeadService.findUserRoles(login);
-
-            request.setAttribute(UsersFieldName.LOGIN, login);
-            request.setAttribute(ParameterName.USER_ROLES, roles);
-            request.setAttribute(ParameterName.DEPARTMENT, department);
-            request.setAttribute(ParameterName.MESSAGE, MESSAGE_SUCCESS);
+            if (adminHeadService.appointDepartmentHead(department, login)) {
+                List<Role> roles = adminHeadService.findUserRoles(login);
+                result.put(UsersFieldName.LOGIN, login);
+                result.put(ParameterName.USER_ROLES, roles);
+                result.put(ParameterName.DEPARTMENT, department);
+                result.put(ParameterName.MESSAGE, MESSAGE_SUCCESS);
+            } else {
+                result.put(ParameterName.MESSAGE, MESSAGE_WRONG_RESULT);
+            }
         } catch (ServiceException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            return;
+            logger.error(e);
+            result.put(ParameterName.COMMAND_EXCEPTION, e.getMessage());
         }
-        request.getRequestDispatcher(HospitalUrl.PAGE_DEPARTMENT_CONTROL).forward(request, response);
+        return result;
     }
 }

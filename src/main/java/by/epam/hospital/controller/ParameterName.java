@@ -3,6 +3,7 @@ package by.epam.hospital.controller;
 public class ParameterName {
     public static final String SERVLET_STATUS_CODE = "javax.servlet.error.status_code";
     public static final String SERVLET_EXCEPTION_MESSAGE = "javax.servlet.error.message";
+    public static final String COMMAND_EXCEPTION = "command_exception";
 
     public static final String COMMAND = "command";
     public static final String MESSAGE = "message";
