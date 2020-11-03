@@ -13,7 +13,7 @@ import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
@@ -25,8 +25,8 @@ public class DepartmentDaoImplTest {
     private UserDao userDao;
     private Cleaner cleaner;
 
-    @BeforeClass
-    private void init() {
+    @BeforeMethod
+    private void setUp() {
         departmentStaffDao = new DepartmentStaffDaoImpl();
         departmentDao = new DepartmentDaoImpl();
         userDao = new UserDaoImpl();

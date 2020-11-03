@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
@@ -24,8 +24,8 @@ public class ReceptionistServiceImplTest {
     private UserDetailsDao userDetailsDao;
     private ReceptionistService receptionistService;
 
-    @BeforeClass
-    private void init() {
+    @BeforeMethod
+    private void setUp() {
         MockitoAnnotations.openMocks(this);
         receptionistService = new ReceptionistServiceImpl(userDao, userDetailsDao);
     }
@@ -47,15 +47,15 @@ public class ReceptionistServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class, dependsOnMethods = "registerClient_user_true")
-    public void registerClient_user_daoException(User user) throws ServiceException, DaoException {
+            expectedExceptions = ServiceException.class)
+    public void registerClient_daoException_serviceException(User user) throws ServiceException, DaoException {
         Mockito.doThrow(DaoException.class).when(userDao).create(user);
         receptionistService.registerClient(user);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class, dependsOnMethods = "registerClient_user_true")
-    public void registerClient_user_optionalServiceException(User user) throws ServiceException, DaoException {
+            expectedExceptions = ServiceException.class)
+    public void registerClient_userPresent_serviceException(User user) throws ServiceException, DaoException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.empty());
         receptionistService.registerClient(user);

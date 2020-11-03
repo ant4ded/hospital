@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class ClientServiceImplTest {
@@ -19,8 +19,8 @@ public class ClientServiceImplTest {
     private UserDao userDao;
     private ClientService clientService;
 
-    @BeforeClass
-    private void setFields() {
+    @BeforeMethod
+    private void setUp() {
         MockitoAnnotations.openMocks(this);
         clientService = new ClientServiceImpl(userDao);
     }
@@ -48,10 +48,7 @@ public class ClientServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class,
-            dependsOnMethods = {"authorization_correctAuthorization_userPresent",
-                    "authorization_nonExistentLogin_userEmpty",
-                    "authorization_wrongPassword_userEmpty"})
+            expectedExceptions = ServiceException.class)
     public void authorization_daoException_serviceException(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenThrow(DaoException.class);

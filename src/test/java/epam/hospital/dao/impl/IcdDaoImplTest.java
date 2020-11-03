@@ -4,15 +4,15 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.IcdDao;
 import by.epam.hospital.dao.impl.IcdDaoImpl;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @Test(groups = {"dao", "IcdDaoImplTest"})
 public class IcdDaoImplTest {
     private IcdDao icdDao;
 
-    @BeforeClass
-    private void init() {
+    @BeforeMethod
+    private void setUp() {
         icdDao = new IcdDaoImpl();
     }
 
@@ -22,7 +22,7 @@ public class IcdDaoImplTest {
     }
 
     @Test
-    public void findById_existingId_icdPresent() throws DaoException{
+    public void findById_existingId_icdPresent() throws DaoException {
         Assert.assertTrue(icdDao.findById(1).isPresent());
     }
 }

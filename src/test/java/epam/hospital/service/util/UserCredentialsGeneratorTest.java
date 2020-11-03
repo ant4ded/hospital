@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class UserCredentialsGeneratorTest {
     @Test
-    private void generateLogin() {
+    public void generateLogin() {
         String firstName = "Anton";
         String surname = "Dedik";
         String lastName = "Andreevich";

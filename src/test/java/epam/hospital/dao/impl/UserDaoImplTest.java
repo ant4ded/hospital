@@ -9,7 +9,7 @@ import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
@@ -19,8 +19,8 @@ public class UserDaoImplTest {
     private UserDao userDao;
     private Cleaner cleaner;
 
-    @BeforeClass
-    private void setFields() {
+    @BeforeMethod
+    private void setUp() {
         cleaner = new Cleaner();
         userDao = new UserDaoImpl();
     }

@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
@@ -22,8 +22,8 @@ public class AuthenticationServiceImplTest {
     private UserDao userDao;
     private AuthenticationService authenticationService;
 
-    @BeforeClass
-    private void setFields() {
+    @BeforeMethod
+    private void setUp() {
         MockitoAnnotations.openMocks(this);
         authenticationService = new AuthenticationServiceImpl(userDao);
     }
@@ -50,8 +50,7 @@ public class AuthenticationServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class, dependsOnMethods = {"isHasRole_userHaveRole_true",
-            "isHasRole_nonExistentUser_false", "isHasRole_userDoesNotHaveRole_False"})
+            expectedExceptions = ServiceException.class)
     public void isHasRole_daoException_serviceException(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenThrow(DaoException.class);

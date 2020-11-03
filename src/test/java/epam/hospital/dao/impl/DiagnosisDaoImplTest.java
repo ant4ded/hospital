@@ -11,7 +11,7 @@ import by.epam.hospital.entity.*;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ public class DiagnosisDaoImplTest {
     private UserDao userDao;
     private Cleaner cleaner;
 
-    @BeforeClass
-    private void init() {
+    @BeforeMethod
+    private void setUp() {
         diagnosisDao = new DiagnosisDaoImpl();
         therapyDao = new TherapyDaoImpl();
         userDao = new UserDaoImpl();

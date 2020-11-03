@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -33,8 +33,8 @@ public class AdminHeadServiceImplTest {
     private DepartmentStaffDao departmentStaffDao;
     private AdminHeadService adminHeadService;
 
-    @BeforeClass
-    private void setFields() {
+    @BeforeMethod
+    private void setUp() {
         MockitoAnnotations.openMocks(this);
         adminHeadService = new AdminHeadServiceImpl(userDao, departmentDao, departmentStaffDao);
     }
@@ -50,6 +50,14 @@ public class AdminHeadServiceImplTest {
     public void findUserRoles_nonExistentUser_rolesEmpty(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.empty());
+        Assert.assertTrue(adminHeadService.findUserRoles(user.getLogin()).isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            expectedExceptions = ServiceException.class)
+    public void findUserRoles_daoException_serviceException(User user) throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenThrow(DaoException.class);
         Assert.assertTrue(adminHeadService.findUserRoles(user.getLogin()).isEmpty());
     }
 
@@ -81,6 +89,14 @@ public class AdminHeadServiceImplTest {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
         Assert.assertFalse(adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            expectedExceptions = ServiceException.class)
+    public void performUserRolesAction_daoException_serviceException(User user) throws ServiceException, DaoException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenThrow(DaoException.class);
+        adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "findDepartmentByUsername")
@@ -124,6 +140,15 @@ public class AdminHeadServiceImplTest {
         Mockito.when(departmentDao.findDepartment(user.getLogin()))
                 .thenReturn(Optional.of(Department.INFECTIOUS));
         Assert.assertTrue(adminHeadService.findDepartmentByUsername(user.getLogin()).isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            expectedExceptions = ServiceException.class)
+    public void findDepartmentByUsername_daoException_serviceException(User user)
+            throws ServiceException, DaoException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenThrow(DaoException.class);
+        adminHeadService.findDepartmentByUsername(user.getLogin());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "appointDepartmentHead",
@@ -243,7 +268,25 @@ public class AdminHeadServiceImplTest {
                 .thenReturn(Optional.of(user));
         Mockito.when(departmentDao.findHeadDepartment(Department.INFECTIOUS)) //2
                 .thenReturn(Optional.empty());
+        Mockito.when(userDao.findByLogin(user.getLogin())) //3
+                .thenReturn(Optional.of(user));
+        Mockito.when(departmentDao.findDepartment(user.getLogin())) //4
+                .thenReturn(Optional.of(Department.INFECTIOUS));
+        Mockito.when(departmentDao.updateDepartmentHead(Department.INFECTIOUS, user.getLogin())) //7
+                .thenReturn(true);
+        Mockito.when(userDao.findByLogin(user.getLogin())). //8
+                thenReturn(Optional.of(user));
+        Mockito.when(userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.DEPARTMENT_HEAD)) //9
+                .thenReturn(true);
         Assert.assertTrue(adminHeadService.appointDepartmentHead(Department.INFECTIOUS, user.getLogin()));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            expectedExceptions = ServiceException.class)
+    public void appointDepartmentHead_daoException_serviceException(User user) throws ServiceException, DaoException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenThrow(DaoException.class);
+        adminHeadService.appointDepartmentHead(Department.INFECTIOUS, user.getLogin());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performDepartmentStaffAction",
@@ -293,6 +336,16 @@ public class AdminHeadServiceImplTest {
                 performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
     }
 
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            expectedExceptions = ServiceException.class)
+    public void performDepartmentStaffAction_daoException_serviceException(User user)
+            throws ServiceException, DaoException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenThrow(DaoException.class);
+        adminHeadService.
+                performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR);
+    }
+
     @Test(groups = "findDepartmentsHeads")
     public void findDepartmentsHeads_correctFind_allHeads() throws DaoException, ServiceException {
         Map<Department, String> headMap = new HashMap<>();
@@ -310,45 +363,7 @@ public class AdminHeadServiceImplTest {
         Assert.assertEquals(adminHeadService.findDepartmentsHeads().size(), 9);
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class, dependsOnGroups = {"findUserRoles", "performUserRolesAction",
-            "findDepartmentByUsername", "appointDepartmentHead"})
-    public void findUserRoles_daoException_serviceException(User user) throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(user.getLogin()))
-                .thenThrow(DaoException.class);
-        Assert.assertTrue(adminHeadService.findUserRoles(user.getLogin()).isEmpty());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class,
-            dependsOnMethods = "findUserRoles_daoException_serviceException")
-    public void performUserRolesAction_daoException_serviceException(User user) throws ServiceException {
-        adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR);
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class,
-            dependsOnMethods = "findUserRoles_daoException_serviceException")
-    public void findDepartmentByUsername_daoException_serviceException(User user) throws ServiceException {
-        adminHeadService.findDepartmentByUsername(user.getLogin());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class,
-            dependsOnMethods = "findUserRoles_daoException_serviceException")
-    public void appointDepartmentHead_daoException_serviceException(User user) throws ServiceException {
-        adminHeadService.appointDepartmentHead(Department.INFECTIOUS, user.getLogin());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class,
-            dependsOnMethods = "findUserRoles_daoException_serviceException")
-    public void performDepartmentStaffAction_daoException_serviceException(User user) throws ServiceException {
-        adminHeadService.
-                performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR);
-    }
-
-    @Test(expectedExceptions = ServiceException.class, dependsOnGroups = "findDepartmentsHeads")
+    @Test(expectedExceptions = ServiceException.class)
     public void findDepartmentsHeads_daoException_serviceException() throws DaoException, ServiceException {
         Mockito.when(departmentDao.findDepartmentsHeads()).thenThrow(DaoException.class);
         adminHeadService.findDepartmentsHeads();

@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
@@ -30,8 +30,8 @@ public class DoctorServiceImplTest {
     private UserDetailsDao userDetailsDao;
     private DoctorService doctorService;
 
-    @BeforeClass
-    private void init() {
+    @BeforeMethod
+    private void setUp() {
         MockitoAnnotations.openMocks(this);
         doctorService = new DoctorServiceImpl(icdDao, userDao, therapyDao, diagnosisDao, userDetailsDao);
     }
@@ -57,8 +57,6 @@ public class DoctorServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = {"findByRegistrationData_correctFind_userPresent",
-                    "findByRegistrationData_nonExistentUser_userPresent"},
             expectedExceptions = ServiceException.class)
     public void findByRegistrationData_daoException_serviceException(User user) throws DaoException, ServiceException {
         Mockito.when(userDetailsDao.findByRegistrationData(user.getUserDetails().getFirstName(),
@@ -130,7 +128,7 @@ public class DoctorServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = ServiceException.class, dependsOnMethods = "diagnoseDisease_correctDiagnose_true")
+            expectedExceptions = ServiceException.class)
     public void diagnoseDisease_daoException_ServiceException(Diagnosis diagnosis, User patient)
             throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(diagnosis.getDoctor().getLogin()))

@@ -2,14 +2,14 @@ package epam.hospital.controller.filter.validator;
 
 import by.epam.hospital.controller.filter.validator.UserValidator;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class UserValidatorTest {
     private UserValidator userValidator;
 
-    @BeforeClass
-    public void setUserDetailsValidator() {
+    @BeforeMethod
+    public void setUp() {
         userValidator = new UserValidator();
     }
 
