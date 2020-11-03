@@ -15,36 +15,48 @@ import java.sql.*;
 import java.util.Optional;
 
 public class TherapyDaoImpl implements TherapyDao {
-    private static final String SQL_CREATE_THERAPY =
-            "INSERT INTO therapy (doctor_id) VALUES (?)";
-    private static final String SQL_CREATE_AMBULATORY_THERAPY =
-            "INSERT INTO ambulatory_cards (patient_id, therapy_id) VALUES (?, ?)";
-    private static final String SQL_CREATE_STATIONARY_THERAPY =
-            "INSERT INTO stationary_cards (patient_id, therapy_id) VALUES (?, ?)";
-    private static final String SQL_FIND_AMBULATORY_BY_ID =
-            "SELECT doctor_id, end_therapy, final_diagnosis_id, patient_id, patients.id FROM therapy " +
-                    "INNER JOIN ambulatory_cards ac on therapy.id = ac.therapy_id " +
-                    "INNER JOIN users patients on ac.patient_id = patients.id  " +
-                    "WHERE therapy.id = ?";
-    private static final String SQL_FIND_STATIONARY_BY_ID =
-            "SELECT doctor_id, end_therapy, final_diagnosis_id, patient_id FROM therapy " +
-                    "INNER JOIN stationary_cards sc on therapy.id = sc.therapy_id " +
-                    "INNER JOIN users patients on sc.patient_id = patients.id  " +
-                    "WHERE therapy.id = ?";
-    private static final String SQL_FIND_AMBULATORY_BY_DOCTOR_AND_PATIENT =
-            "SELECT therapy.id, doctor_id, end_therapy, final_diagnosis_id FROM therapy " +
-                    "INNER JOIN users doctors on therapy.doctor_id = doctors.id " +
-                    "INNER JOIN ambulatory_cards ac on therapy.id = ac.therapy_id " +
-                    "INNER JOIN users patients on ac.patient_id = patients.id " +
-                    "WHERE doctor_id = (SELECT doctors.id WHERE doctors.login = ?) " +
-                    "AND patient_id = (SELECT patients.id WHERE patients.login = ?)";
-    private static final String SQL_FIND_STATIONARY_BY_DOCTOR_AND_PATIENT =
-            "SELECT therapy.id, doctor_id, end_therapy, final_diagnosis_id FROM therapy " +
-                    "INNER JOIN users doctors on therapy.doctor_id = doctors.id " +
-                    "INNER JOIN stationary_cards sc on therapy.id = sc.therapy_id " +
-                    "INNER JOIN users patients on sc.patient_id = patients.id " +
-                    "WHERE doctor_id = (SELECT doctors.id WHERE doctors.login = ?) " +
-                    "AND patient_id = (SELECT patients.id WHERE patients.login = ?)";
+    private static final String SQL_CREATE_THERAPY = """
+            INSERT INTO therapy (doctor_id) VALUES (?)""";
+    private static final String SQL_CREATE_AMBULATORY_THERAPY = """
+            INSERT INTO ambulatory_cards (patient_id, therapy_id) VALUES (?, ?)""";
+    private static final String SQL_CREATE_STATIONARY_THERAPY = """
+            INSERT INTO stationary_cards (patient_id, therapy_id) VALUES (?, ?)""";
+    private static final String SQL_FIND_AMBULATORY_BY_ID = """
+            SELECT doctor_id, end_therapy, final_diagnosis_id, patient_id, patients.id
+            FROM therapy
+            INNER JOIN ambulatory_cards ac on therapy.id = ac.therapy_id
+            INNER JOIN users patients on ac.patient_id = patients.id
+            WHERE therapy.id = ?""";
+    private static final String SQL_FIND_STATIONARY_BY_ID = """
+            SELECT doctor_id, end_therapy, final_diagnosis_id, patient_id
+            FROM therapy
+            INNER JOIN stationary_cards sc on therapy.id = sc.therapy_id
+            INNER JOIN users patients on sc.patient_id = patients.id
+            WHERE therapy.id = ?""";
+    private static final String SQL_FIND_AMBULATORY_BY_DOCTOR_AND_PATIENT = """
+            SELECT therapy.id, doctor_id, end_therapy, final_diagnosis_id
+            FROM therapy
+            INNER JOIN users doctors on therapy.doctor_id = doctors.id
+            INNER JOIN ambulatory_cards ac on therapy.id = ac.therapy_id
+            INNER JOIN users patients on ac.patient_id = patients.id
+            WHERE doctor_id = (
+                SELECT doctors.id 
+                WHERE doctors.login = ?)
+            AND patient_id = (
+                SELECT patients.id 
+                WHERE patients.login = ?)""";
+    private static final String SQL_FIND_STATIONARY_BY_DOCTOR_AND_PATIENT = """
+            SELECT therapy.id, doctor_id, end_therapy, final_diagnosis_id
+            FROM therapy
+            INNER JOIN users doctors on therapy.doctor_id = doctors.id
+            INNER JOIN stationary_cards sc on therapy.id = sc.therapy_id
+            INNER JOIN users patients on sc.patient_id = patients.id
+            WHERE doctor_id = (
+                SELECT doctors.id
+                WHERE doctors.login = ?)
+            AND patient_id = (
+                SELECT patients.id
+                WHERE patients.login = ?)""";
 
     private final UserDao userDao = new UserDaoImpl();
     private final DiagnosisDao diagnosisDao = new DiagnosisDaoImpl();

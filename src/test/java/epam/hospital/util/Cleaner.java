@@ -9,26 +9,36 @@ import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.*;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class Cleaner {
-    private static final String SQL_DELETE_USER_ROLES =
-            "DELETE FROM users_roles WHERE user_id = ?";
-    private static final String SQL_DELETE_USER =
-            "DELETE FROM users WHERE id = ?";
-    private static final String SQL_DELETE_USER_DETAILS =
-            "DELETE FROM users_details WHERE passport_id = ?";
-    private static final String SQL_DELETE_DIAGNOSIS =
-            "DELETE FROM diagnoses WHERE id = ?";
-    private static final String SQL_DELETE_THERAPY =
-            "DELETE FROM therapy WHERE id = ?";
-    private static final String SQL_DELETE_AMBULATORY_ROW =
-            "DELETE FROM ambulatory_cards WHERE therapy_id = ?";
-    private static final String SQL_DELETE_STATIONARY_ROW =
-            "DELETE FROM stationary_cards WHERE therapy_id = ?";
-    private static final String SQL_DELETE_THERAPY_DIAGNOSIS_ROW =
-            "DELETE FROM therapy_diagnoses WHERE therapy_id = ?";
+    private static final String SQL_DELETE_USER_ROLES = """
+            DELETE FROM users_roles
+            WHERE user_id = ?""";
+    private static final String SQL_DELETE_USER = """
+            DELETE FROM users
+            WHERE id = ?""";
+    private static final String SQL_DELETE_USER_DETAILS = """
+            DELETE FROM users_details
+            WHERE passport_id = ?""";
+    private static final String SQL_DELETE_DIAGNOSIS = """
+            DELETE FROM diagnoses
+            WHERE id = ?""";
+    private static final String SQL_DELETE_THERAPY = """
+            DELETE FROM therapy
+            WHERE id = ?""";
+    private static final String SQL_DELETE_AMBULATORY_ROW = """
+            DELETE FROM ambulatory_cards
+            WHERE therapy_id = ?""";
+    private static final String SQL_DELETE_STATIONARY_ROW = """
+            DELETE FROM stationary_cards
+            WHERE therapy_id = ?""";
+    private static final String SQL_DELETE_THERAPY_DIAGNOSIS_ROW = """
+            DELETE FROM therapy_diagnoses
+            WHERE therapy_id = ?""";
 
     private final UserDao userDao = new UserDaoImpl();
     private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
@@ -104,7 +114,7 @@ public class Cleaner {
             statement.setInt(1, therapy.getId());
             statement.execute();
 
-            for (int i = 0; i < therapy.getDiagnoses().size(); i++){
+            for (int i = 0; i < therapy.getDiagnoses().size(); i++) {
                 delete(therapy.getDiagnoses().get(i));
             }
         } catch (ConnectionException e) {
@@ -127,7 +137,7 @@ public class Cleaner {
             userDetailsFromDb = userDetailsDao.findByUserId(userDetails.getUserId()).orElseThrow(DaoException::new);
             statement.setString(1, userDetailsFromDb.getPassportId());
 
-            int affectedRows = statement.executeUpdate();  
+            int affectedRows = statement.executeUpdate();
             if (affectedRows != 1) {
                 throw new DaoException("Affected rows != 1.");
             }

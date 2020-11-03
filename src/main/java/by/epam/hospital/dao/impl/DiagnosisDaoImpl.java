@@ -16,18 +16,20 @@ import java.util.Optional;
 
 
 public class DiagnosisDaoImpl implements DiagnosisDao {
-    private static final String SQL_CREATE_DIAGNOSIS =
-            "INSERT INTO diagnoses (icd_id, doctor_id, diagnosis_date, reason) VALUES (?, ?, ?, ?)";
-    private static final String SQL_FIND_BY_ID =
-            "SELECT id, icd_id, doctor_id, diagnosis_date, reason FROM diagnoses WHERE id = ?";
-    private static final String SQL_FIND_BY_THERAPY_ID =
-            "SELECT diagnoses.id, icd_id, diagnoses.doctor_id, diagnosis_date, reason FROM diagnoses " +
-                    "INNER JOIN therapy_diagnoses td on diagnoses.id = td.diagnosis_id " +
-                    "INNER JOIN therapy t on td.therapy_id = t.id " +
-                    "WHERE t.id = ?";
-    private static final String SQL_CREATE_THERAPY_DIAGNOSES =
-            "INSERT INTO therapy_diagnoses (therapy_id, diagnosis_id) " +
-                    "VALUES (?, ?)";
+    private static final String SQL_CREATE_DIAGNOSIS = """
+            INSERT INTO diagnoses (icd_id, doctor_id, diagnosis_date, reason) VALUES (?, ?, ?, ?)""";
+    private static final String SQL_FIND_BY_ID = """
+            SELECT id, icd_id, doctor_id, diagnosis_date, reason
+            FROM diagnoses
+            WHERE id = ?""";
+    private static final String SQL_FIND_BY_THERAPY_ID = """
+            SELECT diagnoses.id, icd_id, diagnoses.doctor_id, diagnosis_date, reason
+            FROM diagnoses
+            INNER JOIN therapy_diagnoses td on diagnoses.id = td.diagnosis_id
+            INNER JOIN therapy t on td.therapy_id = t.id
+            WHERE t.id = ?""";
+    private static final String SQL_CREATE_THERAPY_DIAGNOSES = """
+            INSERT INTO therapy_diagnoses (therapy_id, diagnosis_id) VALUES (?, ?)""";
 
     private final IcdDao icdDao = new IcdDaoImpl();
     private final UserDao userDao = new UserDaoImpl();
