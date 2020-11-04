@@ -36,10 +36,8 @@ public class AuthenticationFilter implements Filter {
         HttpSession session = httpServletRequest.getSession();
 
         String loginUsername = (String) session.getAttribute(ParameterName.LOGIN_USERNAME);
-        loginUsername = loginUsername == null ? ParameterName.ANONYMOUS_USER : loginUsername;
-
         try {
-            if (loginUsername.isBlank() || !authenticationService.isHasRole(loginUsername, role)) {
+            if (loginUsername == null || !authenticationService.isHasRole(loginUsername, role)) {
                 httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, FORBIDDEN_MESSAGE);
             }
             filterChain.doFilter(servletRequest, servletResponse);
