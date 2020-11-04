@@ -10,23 +10,70 @@ import by.epam.hospital.entity.table.UsersDetailsFieldName;
 import java.sql.*;
 import java.util.Optional;
 
+/**
+ * {@code UserDetailsDaoImpl} implementation of {@link UserDetailsDao}.
+ * Implements all required methods for work with the {@link UserDetails} database entity.
+ * <p>
+ * All methods get connection from {@code ConnectionPool}
+ * and it is object of type {@code ProxyConnection}. It is a wrapper of really
+ * {@code Connection}, which different only in methods {@code close}
+ * and {@code reallyClose}.
+ *
+ * @see ConnectionPool
+ * @see by.epam.hospital.connection.ProxyConnection
+ * @see Connection
+ */
+
 public class UserDetailsDaoImpl implements UserDetailsDao {
+    /**
+     * Sql {@code String} object for creating
+     * {@code UserDetails} entity in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_CREATE = """
             INSERT INTO hospital.users_details (passport_id, user_id, gender, first_name, surname, last_name,
                 birthday, address , phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""";
+    /**
+     * Sql {@code String} object for find {@code UserDetails}
+     * entity by {@code userId} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_BY_USER_ID = """
             SELECT passport_id, user_id, gender, first_name, surname, last_name, birthday, address, phone
             FROM hospital.users_details
             WHERE user_id = ?""";
-    private static final String SQL_FIND_BY_REGISTRATION_DATA ="""
+    /**
+     * Sql {@code String} object for find {@code UserDetails} entity by {@code firstName},
+     * {@code surname}, {@code lastName} and {@code birthday} in data base.
+     * Written for the MySQL dialect.
+     */
+    private static final String SQL_FIND_BY_REGISTRATION_DATA = """
             SELECT passport_id, user_id, gender, address, phone
             FROM users_details
             WHERE first_name = ? AND surname = ? AND last_name = ? AND birthday = ?""";
-    private static final String SQL_UPDATE ="""
+    /**
+     * Sql {@code String} object for update {@code UserDetails}
+     * entity by {@code userId} field.
+     * Written for the MySQL dialect.
+     */
+    private static final String SQL_UPDATE = """
             UPDATE users_details
             SET gender = ?, first_name = ?, surname = ?, last_name = ?, birthday = ?, address = ?, phone = ?
             WHERE passport_id = ? AND user_id = ?""";
 
+    /**
+     * Create entity {@code UserDetails} in database
+     * using {@code PreparedStatement}.
+     *
+     * @param userDetails an a {@code UserDetails} entity,
+     *                    that must have nonzero {@code userId}.
+     * @return {@code true} if affected one row or {@code false} if not.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     */
     @Override
     public boolean create(UserDetails userDetails) throws DaoException {
         boolean result = false;
@@ -44,7 +91,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             statement.setDate(7, userDetails.getBirthday());
             statement.setString(8, userDetails.getAddress());
             statement.setString(9, userDetails.getPhone());
-            
+
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 1) {
                 result = true;
@@ -59,6 +106,22 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         return result;
     }
 
+    /**
+     * Update entity {@code UserDetails} in database
+     * using {@code PreparedStatement}.
+     *
+     * @param oldValue {@code UserDetails} entity that need to be updated,
+     *                 must contain the {@code userId} field.
+     * @param newValue new value for {@code UserDetails} entity,
+     *                 that update {@code oldValue}.
+     * @return {@code newValue} if it was updated or
+     * {@code oldValue} if it wasn't of {@code UserDetails} entity.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     */
     @Override
     public UserDetails update(UserDetails oldValue, UserDetails newValue) throws DaoException {
         Connection connection = null;
@@ -77,7 +140,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             statement.setString(7, newValue.getPhone());
             statement.setString(8, newValue.getPassportId());
             statement.setInt(9, newValue.getUserId());
-            
+
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
                 updatedUserDetails = oldValue;
@@ -92,12 +155,26 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         return updatedUserDetails;
     }
 
+    /**
+     * Find {@code UserDetails} entity by {@code UserDetails.userId} field
+     * using {@code PreparedStatement}.
+     *
+     * @param id {@code int} value of {@code User.id} field.
+     * @return {@code Optional<UserDetails>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see Optional
+     */
     @Override
     public Optional<UserDetails> findByUserId(int id) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        UserDetails userDetailsFromDb = null;
+        Optional<UserDetails> optionalUserDetails = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_USER_ID);
@@ -106,17 +183,18 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
 
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                userDetailsFromDb = new UserDetails();
-                userDetailsFromDb.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
-                userDetailsFromDb.setUserId(resultSet.getInt(UsersDetailsFieldName.USER_ID));
-                userDetailsFromDb.setGender(UserDetails.Gender
+                UserDetails userDetails = new UserDetails();
+                userDetails.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
+                userDetails.setUserId(resultSet.getInt(UsersDetailsFieldName.USER_ID));
+                userDetails.setGender(UserDetails.Gender
                         .valueOf(resultSet.getString(UsersDetailsFieldName.GENDER)));
-                userDetailsFromDb.setFirstName(resultSet.getString(UsersDetailsFieldName.FIRST_NAME));
-                userDetailsFromDb.setSurname(resultSet.getString(UsersDetailsFieldName.SURNAME));
-                userDetailsFromDb.setLastName(resultSet.getString(UsersDetailsFieldName.LAST_NAME));
-                userDetailsFromDb.setBirthday(resultSet.getDate(UsersDetailsFieldName.BIRTHDAY));
-                userDetailsFromDb.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
-                userDetailsFromDb.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
+                userDetails.setFirstName(resultSet.getString(UsersDetailsFieldName.FIRST_NAME));
+                userDetails.setSurname(resultSet.getString(UsersDetailsFieldName.SURNAME));
+                userDetails.setLastName(resultSet.getString(UsersDetailsFieldName.LAST_NAME));
+                userDetails.setBirthday(resultSet.getDate(UsersDetailsFieldName.BIRTHDAY));
+                userDetails.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
+                userDetails.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
+                optionalUserDetails = Optional.of(userDetails);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -125,16 +203,39 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return Optional.ofNullable(userDetailsFromDb);
+        return optionalUserDetails;
     }
 
+    /**
+     * Find {@code UserDetails} entity by
+     * {@code UserDetails.firstName}, {@code UserDetails.surname},
+     * {@code UserDetails.lastName} and {@code UserDetails.birthday} fields
+     * using {@code PreparedStatement}.
+     *
+     * @param firstName {@code String} passport data value of
+     *                  {@code UserDetails}.
+     * @param surname   {@code String} passport data value of
+     *                  {@code UserDetails}.
+     * @param lastName  {@code String} passport data value of
+     *                  {@code UserDetails}.
+     * @param birthday  {@code Date} passport data value
+     *                  {@code UserDetails}.
+     * @return {@code Optional<UserDetails>} if it exist
+     * or an empty {@code Optional} if it is not present.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see Optional
+     */
     @Override
     public Optional<UserDetails> findByRegistrationData
-            (String firstName, String surname, String lastName, Date birthday) throws DaoException {
+    (String firstName, String surname, String lastName, Date birthday) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        UserDetails userDetailsFromDb = null;
+        Optional<UserDetails> optionalUserDetails = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_FIND_BY_REGISTRATION_DATA);
@@ -146,17 +247,18 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
 
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
-                userDetailsFromDb = new UserDetails();
-                userDetailsFromDb.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
-                userDetailsFromDb.setUserId(resultSet.getInt(UsersDetailsFieldName.USER_ID));
-                userDetailsFromDb.setGender(UserDetails.Gender
+                UserDetails userDetails = new UserDetails();
+                userDetails.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
+                userDetails.setUserId(resultSet.getInt(UsersDetailsFieldName.USER_ID));
+                userDetails.setGender(UserDetails.Gender
                         .valueOf(resultSet.getString(UsersDetailsFieldName.GENDER)));
-                userDetailsFromDb.setFirstName(firstName);
-                userDetailsFromDb.setSurname(surname);
-                userDetailsFromDb.setLastName(lastName);
-                userDetailsFromDb.setBirthday(birthday);
-                userDetailsFromDb.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
-                userDetailsFromDb.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
+                userDetails.setFirstName(firstName);
+                userDetails.setSurname(surname);
+                userDetails.setLastName(lastName);
+                userDetails.setBirthday(birthday);
+                userDetails.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
+                userDetails.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
+                optionalUserDetails = Optional.of(userDetails);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -165,6 +267,6 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return Optional.ofNullable(userDetailsFromDb);
+        return optionalUserDetails;
     }
 }

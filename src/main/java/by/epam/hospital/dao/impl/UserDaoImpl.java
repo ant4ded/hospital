@@ -15,34 +15,83 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * {@code UserDaoImpl} implementation of {@link UserDao}.
+ * Implements all required methods for work with the {@link User} database entity
+ * and included in {@code User} object element of enum {@link Role}.
+ * <p>
+ * All methods get connection from {@code ConnectionPool}
+ * and it is object of type {@code ProxyConnection}. It is a wrapper of really
+ * {@code Connection}, which different only in methods {@code close}
+ * and {@code reallyClose}.
+ *
+ * @see ConnectionPool
+ * @see by.epam.hospital.connection.ProxyConnection
+ * @see Connection
+ */
+
 public class UserDaoImpl implements UserDao {
-    private static final String SQL_CREATE_USER ="""
+    /**
+     * Sql {@code String} object for creating {@code User} entity in data base.
+     * Written for the MySQL dialect.
+     */
+    private static final String SQL_CREATE_USER = """
             INSERT INTO users (login, password) VALUES (?, ?)""";
-    private static final String SQL_CREATE_USER_ROLES ="""
-            INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)""";
-    private static final String SQL_FIND_BY_LOGIN ="""
+    /**
+     * Sql {@code String} object for find {@code User}
+     * by {@code login} in data base.
+     * Written for the MySQL dialect.
+     */
+    private static final String SQL_FIND_BY_LOGIN = """
             SELECT id, password
             FROM users
             WHERE login = ?""";
-    private static final String SQL_FIND_BY_ID ="""
+    /**
+     * Sql {@code String} object for find {@code User}
+     * by {@code id} in data base.
+     * Written for the MySQL dialect.
+     */
+    private static final String SQL_FIND_BY_ID = """
             SELECT login, password
             FROM users
             WHERE id = ?""";
+    /**
+     * Sql {@code String} object for find {@code User} object's
+     * elements of enum {@code Role} by {@code userId} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_USER_ROLES = """
             SELECT title
             FROM hospital.roles
             INNER JOIN users_roles ON roles.id = users_roles.role_id
             INNER JOIN users ON users_roles.user_id = users.id
             WHERE users.id = ?""";
+    /**
+     * Sql {@code String} object for updating {@code User} entity
+     * by {@code id} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_UPDATE = """
             UPDATE users
             SET login = ?, password = ?
             WHERE id = ?""";
-    private static final String SQL_UPDATE_USER_ROLE = """
+    /**
+     * Sql {@code String} object for creating {@code User} object's
+     * element of enum {@code Role} by {@code User.login}
+     * and {@code Role.title} in data base.
+     * Written for the MySQL dialect.
+     */
+    private static final String SQL_CREATE_USER_ROLE = """
             INSERT INTO users_roles (user_id, role_id)
                 SELECT users.id, roles.id
                 FROM users, roles
                 WHERE login = ? AND title = ?""";
+    /**
+     * Sql {@code String} object for deleting {@code User} object's
+     * element of enum {@code Role} by {@code User.login}
+     * and {@code Role.title} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_DELETE_USER_ROLE = """
             DELETE users_roles
             FROM users_roles
@@ -50,6 +99,18 @@ public class UserDaoImpl implements UserDao {
             INNER JOIN roles r ON r.id = users_roles.role_id
             WHERE u.login = ? AND r.title = ?""";
 
+    /**
+     * Create entity {@code User} in database using {@code PreparedStatement}
+     * with parameter {@code Statement.RETURN_GENERATED_KEYS}.
+     *
+     * @param user an a {@code User} entity.
+     * @return auto-generated {@code User.id} field.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     */
     @Override
     public int create(User user) throws DaoException {
         Connection connection = null;
@@ -70,9 +131,9 @@ public class UserDaoImpl implements UserDao {
                     generatedKeys.close();
                     statement.close();
 
-                    statement = connection.prepareStatement(SQL_CREATE_USER_ROLES);
-                    statement.setInt(1, userId);
-                    statement.setInt(2, Role.CLIENT.id);
+                    statement = connection.prepareStatement(SQL_CREATE_USER_ROLE);
+                    statement.setString(1, user.getLogin());
+                    statement.setString(2, Role.CLIENT.name());
                     affectedRows = statement.executeUpdate();
                     if (affectedRows == 0) {
                         connection.rollback();
@@ -90,6 +151,20 @@ public class UserDaoImpl implements UserDao {
         return userId;
     }
 
+    /**
+     * Update entity {@code User} in database
+     * using {@code PreparedStatement}.
+     *
+     * @param oldValue {@code User} entity that need to be updated.
+     * @param newValue new value for {@code User} entity.
+     * @return {@code newValue} if it was updated or
+     * {@code oldValue} if it wasn't of {@code User} entity.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     */
     @Override
     public User update(User oldValue, User newValue) throws DaoException {
         Connection connection = null;
@@ -120,6 +195,20 @@ public class UserDaoImpl implements UserDao {
         return updatedUser;
     }
 
+    /**
+     * Find {@code User} entity by {@code User.login} field
+     * using {@code PreparedStatement}.
+     *
+     * @param login {@code String} value of {@code User.login} field.
+     * @return {@code Optional<User>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see Optional
+     */
     @Override
     public Optional<User> findByLogin(String login) throws DaoException {
         Connection connection = null;
@@ -151,6 +240,20 @@ public class UserDaoImpl implements UserDao {
         return optionalUser;
     }
 
+    /**
+     * Find {@code User} entity by {@code User.id} field
+     * using {@code PreparedStatement}.
+     *
+     * @param id {@code int} value of {@code User.id} field.
+     * @return {@code Optional<User>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see Optional
+     */
     @Override
     public Optional<User> findById(int id) throws DaoException {
         Connection connection = null;
@@ -182,6 +285,20 @@ public class UserDaoImpl implements UserDao {
         return optionalUser;
     }
 
+    /**
+     * Update roles {@code User} entity by {@code login} field
+     * using {@code PreparedStatement}.
+     *
+     * @param login         {@code String} value of {@code User.login} field.
+     * @param serviceAction enumeration element of {@link ServiceAction}.
+     * @param role          enumeration element of {@link Role}.
+     * @return {@code true} if it was successful and {@code false} if it wasn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     */
     @Override
     public boolean updateUserRoles(String login, ServiceAction serviceAction, Role role) throws DaoException {
         boolean result = false;
@@ -190,7 +307,7 @@ public class UserDaoImpl implements UserDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(serviceAction.equals(ServiceAction.REMOVE) ?
-                    SQL_DELETE_USER_ROLE : SQL_UPDATE_USER_ROLE);
+                    SQL_DELETE_USER_ROLE : SQL_CREATE_USER_ROLE);
             statement.setString(1, login);
             statement.setString(2, role.name());
 
@@ -208,6 +325,21 @@ public class UserDaoImpl implements UserDao {
         return result;
     }
 
+    /**
+     * Update roles {@code User} entity by {@code User.login} field
+     * using {@code PreparedStatement}.
+     *
+     * @param id {@code int} value of {@code User.login} field.
+     * @return {@code List<Role>} being a {@code ArrayList<Role>}
+     * object if it present  or an empty {@code List} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see List
+     * @see ArrayList
+     * @see ConnectionException
+     */
     private List<Role> findUserRoles(int id) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;

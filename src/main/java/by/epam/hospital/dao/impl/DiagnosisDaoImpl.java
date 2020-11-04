@@ -14,26 +14,80 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * {@code DiagnosisDaoImpl} implementation of {@link DiagnosisDao}.
+ * Implements all required methods for work with the {@link Diagnosis} database entity.
+ * <p>
+ * All methods get connection from {@code ConnectionPool}
+ * and it is object of type {@code ProxyConnection}. It is a wrapper of really
+ * {@code Connection}, which different only in methods {@code close}
+ * and {@code reallyClose}.
+ *
+ * @see ConnectionPool
+ * @see by.epam.hospital.connection.ProxyConnection
+ * @see Connection
+ */
 
 public class DiagnosisDaoImpl implements DiagnosisDao {
+    /**
+     * Sql {@code String} object for creating {@code Diagnosis}
+     * entity in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_CREATE_DIAGNOSIS = """
             INSERT INTO diagnoses (icd_id, doctor_id, diagnosis_date, reason) VALUES (?, ?, ?, ?)""";
+    /**
+     * Sql {@code String} object for find {@code Diagnosis}
+     * entity by {@code Diagnosis.id} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_BY_ID = """
             SELECT id, icd_id, doctor_id, diagnosis_date, reason
             FROM diagnoses
             WHERE id = ?""";
+    /**
+     * Sql {@code String} object for find {@code Diagnosis}
+     * entity by {@code Therapy.id} of therapy in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_BY_THERAPY_ID = """
             SELECT diagnoses.id, icd_id, diagnoses.doctor_id, diagnosis_date, reason
             FROM diagnoses
             INNER JOIN therapy_diagnoses td on diagnoses.id = td.diagnosis_id
             INNER JOIN therapy t on td.therapy_id = t.id
             WHERE t.id = ?""";
+    /**
+     * Sql {@code String} object for add {@code Diagnosis}
+     * entity in therapy_diagnoses table in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_CREATE_THERAPY_DIAGNOSES = """
             INSERT INTO therapy_diagnoses (therapy_id, diagnosis_id) VALUES (?, ?)""";
 
+    /**
+     * {@link IcdDao} data access object.
+     */
     private final IcdDao icdDao = new IcdDaoImpl();
+    /**
+     * {@link UserDao} data access object.
+     */
     private final UserDao userDao = new UserDaoImpl();
 
+    /**
+     * Create entity {@code Diagnosis} in database using {@code PreparedStatement}
+     * with parameter {@code Statement.RETURN_GENERATED_KEYS}.
+     *
+     * @param diagnosis    an a {@code Diagnosis} entity.
+     * @param patientLogin {@code String} value of patient
+     *                     {@code User.login} field.
+     * @param therapyId    {@code int} value of {@code Therapy.id}.
+     * @return auto-generated {@code Diagnosis.id} field.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     */
     @Override
     public int create(Diagnosis diagnosis, String patientLogin, int therapyId) throws DaoException {
         Connection connection = null;
@@ -76,6 +130,22 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         return diagnosisId;
     }
 
+    /**
+     * Find all {@code Diagnosis} entity by {@code Therapy.id} field
+     * using {@code PreparedStatement}.
+     *
+     * @param id {@code int} value of {@code Therapy.id} field.
+     * @return {@code List<Diagnosis>} being a
+     * {@code ArrayList<Diagnosis>} object if it present
+     * or an empty {@code List} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see ArrayList
+     * @see List
+     */
     @Override
     public List<Diagnosis> findAllByTherapyId(int id) throws DaoException {
         Connection connection = null;
@@ -104,6 +174,20 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         return diagnoses;
     }
 
+    /**
+     * Find {@code Diagnosis} entity by {@code Diagnosis.id} field
+     * using {@code PreparedStatement}.
+     *
+     * @param id {@code int} value of {@code Therapy.id} field.
+     * @return {@code Optional<Diagnosis>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see Optional
+     */
     @Override
     public Optional<Diagnosis> findById(int id) throws DaoException {
         Connection connection = null;
@@ -132,15 +216,41 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         return optionalDiagnosis;
     }
 
+    /**
+     * Set {@code Diagnosis} fields.
+     *
+     * @param diagnosis empty {@code Diagnosis} entity.
+     * @param resultSet {@code ResultSet} object with result
+     *                  of execute sql string.
+     * @throws SQLException when db send error.
+     * @throws DaoException when {@code IcdDao} or {@code UserDao}
+     *                      throws exception.
+     * @see ResultSet
+     * @see SQLException
+     */
     private void setDiagnosis(Diagnosis diagnosis, ResultSet resultSet) throws SQLException, DaoException {
         diagnosis.setId(resultSet.getInt(DiagnosesFieldName.ID));
         diagnosis.setDiagnosisDate(resultSet.getDate(DiagnosesFieldName.DIAGNOSIS_DATE));
         diagnosis.setReason(resultSet.getString(DiagnosesFieldName.REASON));
-        diagnosis.setIcd(icdDao.findById(resultSet.getInt(DiagnosesFieldName.ICD_ID)).orElseThrow(DaoException::new));
+        diagnosis.setIcd(icdDao.findById(resultSet.getInt(DiagnosesFieldName.ICD_ID))
+                .orElseThrow(DaoException::new));
         diagnosis.setDoctor(userDao.findById(resultSet.getInt(DiagnosesFieldName.DOCTOR_ID))
                 .orElseThrow(DaoException::new));
     }
 
+    /**
+     * Add {@code Diagnosis} to {@code Therapy} table using {@code PreparedStatement}.
+     *
+     * @param connection  {@code Connection} object for executing sql string.
+     * @param therapyId   {@code int} value of {@code Therapy.id} field.
+     * @param diagnosisId {@code int} value of {@code Diagnosis.id} field.
+     * @throws DaoException throws when adding {@code Diagnosis} to
+     *                      {@code Therapy} table throws
+     *                      {@code SQLException}.
+     * @see PreparedStatement
+     * @see Connection
+     * @see SQLException
+     */
     private void addDiagnosisToTherapy(Connection connection, int therapyId, int diagnosisId) throws DaoException {
         try {
             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_THERAPY_DIAGNOSES);

@@ -14,25 +14,70 @@ import by.epam.hospital.entity.table.UsersFieldName;
 import java.sql.*;
 import java.util.Optional;
 
+/**
+ * {@code TherapyDaoImpl} implementation of {@link TherapyDao}.
+ * Implements all required methods for work with the {@link Therapy} database entity.
+ * <p>
+ * All methods get connection from {@code ConnectionPool}
+ * and it is object of type {@code ProxyConnection}. It is a wrapper of really
+ * {@code Connection}, which different only in methods {@code close}
+ * and {@code reallyClose}.
+ *
+ * @see ConnectionPool
+ * @see by.epam.hospital.connection.ProxyConnection
+ * @see Connection
+ */
+
 public class TherapyDaoImpl implements TherapyDao {
+    /**
+     * Sql {@code String} object for creating
+     * {@code Therapy} entity in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_CREATE_THERAPY = """
             INSERT INTO therapy (doctor_id) VALUES (?)""";
+    /**
+     * Sql {@code String} object for adding {@code Therapy} entity to
+     * ambulatory card table in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_CREATE_AMBULATORY_THERAPY = """
             INSERT INTO ambulatory_cards (patient_id, therapy_id) VALUES (?, ?)""";
+    /**
+     * Sql {@code String} object for adding {@code Therapy} entity to
+     * stationary card table in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_CREATE_STATIONARY_THERAPY = """
             INSERT INTO stationary_cards (patient_id, therapy_id) VALUES (?, ?)""";
+    /**
+     * Sql {@code String} object for find {@code Therapy} entity in
+     * ambulatory card table by {@code id} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_AMBULATORY_BY_ID = """
             SELECT doctor_id, end_therapy, final_diagnosis_id, patient_id, patients.id
             FROM therapy
             INNER JOIN ambulatory_cards ac on therapy.id = ac.therapy_id
             INNER JOIN users patients on ac.patient_id = patients.id
             WHERE therapy.id = ?""";
+    /**
+     * Sql {@code String} object for find {@code Therapy} entity in
+     * stationary card table by {@code id} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_STATIONARY_BY_ID = """
             SELECT doctor_id, end_therapy, final_diagnosis_id, patient_id
             FROM therapy
             INNER JOIN stationary_cards sc on therapy.id = sc.therapy_id
             INNER JOIN users patients on sc.patient_id = patients.id
             WHERE therapy.id = ?""";
+    /**
+     * Sql {@code String} object for find {@code Therapy} entity in
+     * ambulatory card table by doctor {@code login}
+     * and patient {@code login} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_AMBULATORY_BY_DOCTOR_AND_PATIENT = """
             SELECT therapy.id, doctor_id, end_therapy, final_diagnosis_id
             FROM therapy
@@ -45,6 +90,12 @@ public class TherapyDaoImpl implements TherapyDao {
             AND patient_id = (
                 SELECT patients.id 
                 WHERE patients.login = ?)""";
+    /**
+     * Sql {@code String} object for find {@code Therapy} entity in
+     * stationary card table by doctor {@code login}
+     * and patient {@code login} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_STATIONARY_BY_DOCTOR_AND_PATIENT = """
             SELECT therapy.id, doctor_id, end_therapy, final_diagnosis_id
             FROM therapy
@@ -58,9 +109,31 @@ public class TherapyDaoImpl implements TherapyDao {
                 SELECT patients.id
                 WHERE patients.login = ?)""";
 
+    /**
+     * {@code UserDao} data access object.
+     */
     private final UserDao userDao = new UserDaoImpl();
+    /**
+     * {@code DiagnosisDao} data access object.
+     */
     private final DiagnosisDao diagnosisDao = new DiagnosisDaoImpl();
 
+    /**
+     * Create entity {@code Therapy} in database using {@code PreparedStatement}
+     * with parameter {@code Statement.RETURN_GENERATED_KEYS}.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @param cardType     element of enum {@code CardType}
+     *                     table is selected based on this element.
+     * @return auto-generated {@code Therapy.id} field.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see CardType
+     */
     @Override
     public int create(String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
         Connection connection = null;
@@ -104,6 +177,23 @@ public class TherapyDaoImpl implements TherapyDao {
         return therapyId;
     }
 
+    /**
+     * Find entity {@code Therapy} in database
+     * using {@code PreparedStatement}.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @param cardType     element of enum {@code CardType}
+     *                     table is selected based on this element.
+     * @return {@code Optional<Therapy>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see CardType
+     */
     @Override
     public Optional<Therapy> find(String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
         Connection connection = null;
@@ -140,6 +230,22 @@ public class TherapyDaoImpl implements TherapyDao {
         return optionalTherapy;
     }
 
+    /**
+     * Find {@code Therapy} entity by {@code id} in database
+     * using {@code PreparedStatement}.
+     *
+     * @param id       {@code int} value of {@code User.id} field.
+     * @param cardType element of enum {@code CardType}
+     *                 table is selected based on this element.
+     * @return {@code Optional<Therapy>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see CardType
+     */
     @Override
     public Optional<Therapy> findById(int id, CardType cardType) throws DaoException {
         Connection connection = null;

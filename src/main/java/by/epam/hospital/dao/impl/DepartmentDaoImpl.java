@@ -16,15 +16,45 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * {@code DepartmentDaoImpl} implementation of {@link DepartmentDao}.
+ * Implements all required methods for work with the
+ * {@link Department} and {@link User} database entity.
+ * <p>
+ * All methods get connection from {@code ConnectionPool}
+ * and it is object of type {@code ProxyConnection}. It is a wrapper of really
+ * {@code Connection}, which different only in methods {@code close}
+ * and {@code reallyClose}.
+ *
+ * @see ConnectionPool
+ * @see by.epam.hospital.connection.ProxyConnection
+ * @see Connection
+ */
+
 public class DepartmentDaoImpl implements DepartmentDao {
+    /**
+     * Sql {@code String} object for find department_head_id in
+     * departments table entity by {@code Department.id} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_DEPARTMENT_HEAD = """
             SELECT department_head_id
             FROM departments
             WHERE id = ?""";
-    private static final String SQL_UPDATE_DEPARTMENT_HEAD ="""
+    /**
+     * Sql {@code String} object for update department_head_id in
+     * departments table entity by {@code Department.id} in data base.
+     * Written for the MySQL dialect.
+     */
+    private static final String SQL_UPDATE_DEPARTMENT_HEAD = """
             UPDATE departments
             SET department_head_id = ?
             WHERE id = ?""";
+    /**
+     * Sql {@code String} object for find title in
+     * departments table entity by {@code Department.id} in data base.
+     * Written for the MySQL dialect.
+     */
     private static final String SQL_FIND_DEPARTMENT_BY_USERNAME = """
             SELECT title
             FROM departments
@@ -32,8 +62,25 @@ public class DepartmentDaoImpl implements DepartmentDao {
             INNER JOIN users u on ds.doctor_id = u.id
             WHERE u.login = ?""";
 
+    /**
+     * {@link UserDao} data access object.
+     */
     private final UserDao userDao = new UserDaoImpl();
 
+    /**
+     * Find head of department {@code User} entity by {@code Department.id} field
+     * in database using {@code PreparedStatement}.
+     *
+     * @param department {@code Department} value.
+     * @return {@code Optional<Diagnosis>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see Optional
+     */
     @Override
     public Optional<User> findHeadDepartment(Department department) throws DaoException {
         Connection connection = null;
@@ -58,6 +105,19 @@ public class DepartmentDaoImpl implements DepartmentDao {
         return departmentHead;
     }
 
+    /**
+     * Update departmentHead in table departments
+     * in database using {@code PreparedStatement}.
+     *
+     * @param department element of enum {@code Department}.
+     * @param login      {@code String} value of {@code User.login}.
+     * @return {@code true} if it was successful or {@code false} if not.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     */
     @Override
     public boolean updateDepartmentHead(Department department, String login) throws DaoException {
         boolean result = false;
@@ -86,6 +146,20 @@ public class DepartmentDaoImpl implements DepartmentDao {
         return result;
     }
 
+    /**
+     * Find {@code Department} entity by {@code User.login} field
+     * in database using {@code PreparedStatement}.
+     *
+     * @param login {@code String} value of {@code User.login}.
+     * @return {@code Optional<Diagnosis>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see ConnectionException
+     * @see Optional
+     */
     @Override
     public Optional<Department> findDepartment(String login) throws DaoException {
         Connection connection = null;
@@ -110,6 +184,16 @@ public class DepartmentDaoImpl implements DepartmentDao {
         return optionalDepartment;
     }
 
+    /**
+     * Find department heads.
+     *
+     * @return {@code Map<Department, String>} being a
+     * {@code HashMap<Department, String>} object if it present
+     * or an empty {@code Map} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see Map
+     * @see HashMap
+     */
     @Override
     public Map<Department, String> findDepartmentsHeads() throws DaoException {
         Map<Department, String> departmentHeadMap = new HashMap<>();
