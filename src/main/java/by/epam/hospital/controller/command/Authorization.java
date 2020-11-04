@@ -1,5 +1,6 @@
 package by.epam.hospital.controller.command;
 
+import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.User;
@@ -38,6 +39,7 @@ public class Authorization implements HttpCommand {
             } else {
                 result.put(ParameterName.MESSAGE, MESSAGE_WRONG_RESULT);
             }
+            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_MAIN);
         } catch (ServiceException e) {
             logger.error(e);
             result.put(ParameterName.COMMAND_EXCEPTION, e.getMessage());

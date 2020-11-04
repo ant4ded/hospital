@@ -1,5 +1,6 @@
 package by.epam.hospital.controller.command.receptionist;
 
+import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.User;
@@ -59,6 +60,7 @@ public class RegisterClient implements HttpCommand {
         try {
             isSuccess = receptionistService.registerClient(user);
             result.put(ParameterName.MESSAGE, isSuccess ? MESSAGE_SUCCESS : MESSAGE_WRONG_RESULT);
+            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_REGISTRY);
         } catch (ServiceException e) {
             logger.error(e);
             result.put(ParameterName.COMMAND_EXCEPTION, e.getMessage());

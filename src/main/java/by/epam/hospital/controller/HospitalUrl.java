@@ -3,7 +3,7 @@ package by.epam.hospital.controller;
 public class HospitalUrl {
     public static final String EMPTY = "";
     public static final String MAIN_URL = "http://localhost:8080/hospital";
-    public static final String APP_NAME_URL = "/hospital/";
+    public static final String APP_NAME_URL = "/hospital";
     public static final String SERVLET_MAIN = "/main-servlet";
 
     public static final String PAGE_MAIN = "/main";

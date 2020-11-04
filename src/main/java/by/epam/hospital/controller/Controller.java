@@ -41,8 +41,12 @@ public class Controller extends HttpServlet {
         Map<String, Object> parameters = httpCommand.execute(request, response);
         if (!parameters.containsKey(ParameterName.COMMAND_EXCEPTION)) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                request.setAttribute(entry.getKey(), entry.getValue());
+                if (!entry.getKey().equals(ParameterName.PAGE_FORWARD)) {
+                    request.setAttribute(entry.getKey(), entry.getValue());
+                }
             }
+            request.getRequestDispatcher(String.valueOf(parameters.get(ParameterName.PAGE_FORWARD)))
+                    .forward(request,response);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     String.valueOf(parameters.get(ParameterName.COMMAND_EXCEPTION)));

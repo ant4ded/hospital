@@ -13,9 +13,12 @@ import java.util.Map;
 public class SignOut implements HttpCommand {
     @Override
     public Map<String, Object> execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, Object> result = new HashMap<>();
         request.getSession().removeAttribute(ParameterName.LOGIN_USERNAME);
         request.getSession().removeAttribute(ParameterName.LOGIN_ROLES);
-        response.sendRedirect(HospitalUrl.MAIN_URL);
-        return new HashMap<>();
+        result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_MAIN);
+//        response.sendRedirect(HospitalUrl.MAIN_URL);
+//        return new HashMap<>();
+        return result;
     }
 }
