@@ -1,5 +1,6 @@
 package epam.hospital.controller.command.admin.head;
 
+import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.command.admin.head.FindRoleControlAttributes;
@@ -54,6 +55,7 @@ public class FindRoleControlAttributesTest {
         Map<String, Object> expected = new HashMap<>();
         expected.put(ParameterName.DEPARTMENT, Department.INFECTIOUS);
         expected.put(ParameterName.USER_ROLES, roles);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_ROLE_CONTROL);
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
@@ -73,6 +75,7 @@ public class FindRoleControlAttributesTest {
         Map<String, Object> expected = new HashMap<>();
         expected.put(ParameterName.DEPARTMENT, Department.INFECTIOUS);
         expected.put(ParameterName.USER_ROLES, roles);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_ROLE_CONTROL);
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
@@ -91,6 +94,7 @@ public class FindRoleControlAttributesTest {
         Map<String, Object> expected = new HashMap<>();
         expected.put(ParameterName.DEPARTMENT, null);
         expected.put(ParameterName.USER_ROLES, roles);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_ROLE_CONTROL);
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))

@@ -1,5 +1,6 @@
 package epam.hospital.controller.command.admin.head;
 
+import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.command.admin.head.FindDepartmentControlAttributes;
@@ -55,6 +56,7 @@ public class FindDepartmentControlAttributesTest {
         expected.put(UsersFieldName.LOGIN, user.getLogin());
         expected.put(ParameterName.DEPARTMENT, Department.INFECTIOUS);
         expected.put(ParameterName.USER_ROLES, roles);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DEPARTMENT_CONTROL);
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))

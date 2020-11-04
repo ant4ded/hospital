@@ -1,5 +1,6 @@
 package epam.hospital.controller.command.admin.head;
 
+import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.command.admin.head.RoleControl;
@@ -56,6 +57,7 @@ public class RoleControlTest {
         expected.put(ParameterName.DEPARTMENT, null);
         expected.put(ParameterName.USER_ROLES, roles);
         expected.put(ParameterName.MESSAGE, MESSAGE_SUCCESS);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_ROLE_CONTROL);
 
         Mockito.when(request.getParameter(ParameterName.ACTION))
                 .thenReturn(String.valueOf(ServiceAction.ADD));
@@ -81,6 +83,7 @@ public class RoleControlTest {
         expected.put(ParameterName.DEPARTMENT, Department.INFECTIOUS);
         expected.put(ParameterName.USER_ROLES, roles);
         expected.put(ParameterName.MESSAGE, MESSAGE_SUCCESS);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_ROLE_CONTROL);
 
         Mockito.when(request.getParameter(ParameterName.DEPARTMENT))
                 .thenReturn(String.valueOf(Department.INFECTIOUS));
@@ -108,6 +111,7 @@ public class RoleControlTest {
         expected.put(ParameterName.DEPARTMENT, Department.INFECTIOUS);
         expected.put(ParameterName.USER_ROLES, roles);
         expected.put(ParameterName.MESSAGE, MESSAGE_SUCCESS);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_ROLE_CONTROL);
 
         Mockito.when(request.getParameter(ParameterName.DEPARTMENT))
                 .thenReturn(String.valueOf(Department.INFECTIOUS));
@@ -134,6 +138,7 @@ public class RoleControlTest {
         roles.add(Role.DOCTOR);
         Map<String, Object> expected = new HashMap<>();
         expected.put(ParameterName.MESSAGE, MESSAGE_WRONG_RESULT);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_ROLE_CONTROL);
 
         Mockito.when(request.getParameter(ParameterName.DEPARTMENT))
                 .thenReturn(String.valueOf(Department.INFECTIOUS));
@@ -160,6 +165,7 @@ public class RoleControlTest {
         roles.add(Role.DOCTOR);
         Map<String, Object> expected = new HashMap<>();
         expected.put(ParameterName.MESSAGE, MESSAGE_WRONG_RESULT);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_ROLE_CONTROL);
 
         Mockito.when(request.getParameter(ParameterName.DEPARTMENT))
                 .thenReturn(String.valueOf(Department.INFECTIOUS));

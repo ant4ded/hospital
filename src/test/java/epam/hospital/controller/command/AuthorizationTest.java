@@ -43,7 +43,7 @@ public class AuthorizationTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void execute_correctAuthorization_mapWithSuccessMessage(User user)
+    public void execute_correctAuthorization_mapWithOnlyPageForward(User user)
             throws ServiceException, IOException, ServletException {
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
@@ -55,7 +55,7 @@ public class AuthorizationTest {
         Mockito.when(request.getSession()).thenReturn(httpSession);
         Mockito.doNothing().when(httpSession).setAttribute(ParameterName.LOGIN_USERNAME, user.getLogin());
         Mockito.doNothing().when(httpSession).setAttribute(ParameterName.LOGIN_ROLES, user.getRoles());
-        Assert.assertTrue(httpCommand.execute(request, response).isEmpty());
+        Assert.assertTrue(httpCommand.execute(request, response).containsKey(ParameterName.PAGE_FORWARD));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")

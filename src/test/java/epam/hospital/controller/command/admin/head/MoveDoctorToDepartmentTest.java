@@ -1,5 +1,6 @@
 package epam.hospital.controller.command.admin.head;
 
+import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.command.admin.head.MoveDoctorToDepartment;
@@ -57,6 +58,7 @@ public class MoveDoctorToDepartmentTest {
         expected.put(ParameterName.USER_ROLES, roles);
         expected.put(ParameterName.DEPARTMENT, Department.INFECTIOUS);
         expected.put(ParameterName.MESSAGE, MESSAGE_SUCCESS);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DEPARTMENT_CONTROL);
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
         Mockito.when(request.getParameter(ParameterName.DEPARTMENT))
@@ -78,6 +80,7 @@ public class MoveDoctorToDepartmentTest {
         roles.add(Role.DOCTOR);
         Map<String, Object> expected = new HashMap<>();
         expected.put(ParameterName.MESSAGE, MESSAGE_WRONG_RESULT);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DEPARTMENT_CONTROL);
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
         Mockito.when(request.getParameter(ParameterName.DEPARTMENT))
