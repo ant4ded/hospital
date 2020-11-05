@@ -16,12 +16,12 @@ public class Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CommandProvider commandHelper = new CommandProvider();
+        CommandProvider commandProvider = new CommandProvider();
         String commandFromRequest = request.getParameter(ParameterName.COMMAND);
         if (commandFromRequest != null && !commandFromRequest.isBlank()) {
             doCommand(request, response, commandFromRequest);
         } else {
-            commandHelper.getCommand(CommandName.FIRST_VISIT).execute(request, response);
+            commandProvider.getCommand(CommandName.FIRST_VISIT).execute(request, response);
         }
     }
 
