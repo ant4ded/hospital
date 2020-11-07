@@ -4,16 +4,16 @@ import by.epam.hospital.controller.command.Authorization;
 import by.epam.hospital.controller.command.FirstVisit;
 import by.epam.hospital.controller.command.SignOut;
 import by.epam.hospital.controller.command.admin.head.*;
+import by.epam.hospital.controller.command.doctor.DiagnoseDisease;
 import by.epam.hospital.controller.command.receptionist.RegisterClient;
-import by.epam.hospital.dao.impl.DepartmentDaoImpl;
-import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
-import by.epam.hospital.dao.impl.UserDaoImpl;
-import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
+import by.epam.hospital.dao.impl.*;
 import by.epam.hospital.service.AdminHeadService;
 import by.epam.hospital.service.ClientService;
+import by.epam.hospital.service.DoctorService;
 import by.epam.hospital.service.ReceptionistService;
 import by.epam.hospital.service.impl.AdminHeadServiceImpl;
 import by.epam.hospital.service.impl.ClientServiceImpl;
+import by.epam.hospital.service.impl.DoctorServiceImpl;
 import by.epam.hospital.service.impl.ReceptionistServiceImpl;
 import org.apache.log4j.Logger;
 
@@ -48,13 +48,15 @@ public class CommandProvider {
         map.put(CommandName.MOVE_DOCTOR_TO_DEPARTMENT,
                 new MoveDoctorToDepartment(getAdminHeadService(),
                         Logger.getLogger(MoveDoctorToDepartment.class)));
+        map.put(CommandName.DIAGNOSE_DISEASE, new DiagnoseDisease(getDoctorService(),
+                Logger.getLogger(DiagnoseDisease.class)));
     }
 
     public HttpCommand getCommand(CommandName command) {
         return map.get(command);
     }
 
-    private ClientService getClientService(){
+    private ClientService getClientService() {
         return new ClientServiceImpl(new UserDaoImpl());
     }
 
@@ -64,6 +66,11 @@ public class CommandProvider {
 
     private AdminHeadService getAdminHeadService() {
         return new AdminHeadServiceImpl(new UserDaoImpl(), new DepartmentDaoImpl(), new DepartmentStaffDaoImpl());
+    }
+
+    private DoctorService getDoctorService() {
+        return new DoctorServiceImpl(new IcdDaoImpl(), new UserDaoImpl(),
+                new TherapyDaoImpl(), new DiagnosisDaoImpl(), new UserDetailsDaoImpl());
     }
 
 }

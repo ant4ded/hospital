@@ -91,6 +91,12 @@
                                             Register new client
                                         </a></li>
                                     </c:if>
+                                        <%--Role.DOCTOR--%>
+                                    <c:if test="${sessionScope.loginRoles.contains(Role.DOCTOR)}">
+                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DIAGNOSE_DISEASE}">
+                                            Diagnose disease
+                                        </a></li>
+                                    </c:if>
                                         <%--Role.ADMIN_HEAD--%>
                                     <c:if test="${sessionScope.loginRoles.contains(Role.ADMIN_HEAD)}">
                                         <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DEPARTMENT_CONTROL}">
