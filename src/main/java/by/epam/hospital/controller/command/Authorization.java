@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Authorization implements HttpCommand {
-    private static final String MESSAGE_WRONG_RESULT = "Move doctor to another department was not perform.";
+    private static final String MESSAGE_WRONG_RESULT = "Authorization was not perform.";
 
     private final ClientService clientService;
     private final Logger logger;
