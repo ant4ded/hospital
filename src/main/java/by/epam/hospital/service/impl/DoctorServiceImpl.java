@@ -6,6 +6,8 @@ import by.epam.hospital.service.DoctorService;
 import by.epam.hospital.service.ServiceException;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public class DoctorServiceImpl implements DoctorService {
@@ -25,7 +27,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Optional<User> findByRegistrationData(String firstName, String surname, String lastName, Date birthday)
+    public Optional<User> findPatientByRegistrationData(String firstName, String surname, String lastName, Date birthday)
             throws ServiceException {
         Optional<User> optionalUser = Optional.empty();
         try {
@@ -40,19 +42,23 @@ public class DoctorServiceImpl implements DoctorService {
         return optionalUser;
     }
 
+    // TODO: 07.11.2020 instead diagnosis send diagnosis fields
     @Override
-    public boolean diagnoseDisease(Diagnosis diagnosis, String patientLogin, CardType cardType)
-            throws ServiceException {
+    public boolean diagnoseDisease(String icdCode, String reason, String doctorLogin,
+                                   String patientLogin, CardType cardType) throws ServiceException {
         boolean result = false;
+        Diagnosis diagnosis = new Diagnosis();
+        diagnosis.setReason(reason);
+        diagnosis.setDiagnosisDate(Date.valueOf(LocalDate.now()));
         try {
-            Optional<User> optionalDoctor = userDao.findByLogin(diagnosis.getDoctor().getLogin());
+            Optional<User> optionalDoctor = userDao.findByLogin(doctorLogin);
             Optional<User> optionalPatient = userDao.findByLogin(patientLogin);
-            Optional<Icd> optionalIcd = icdDao.findByCode(diagnosis.getIcd().getCode());
+            Optional<Icd> optionalIcd = icdDao.findByCode(icdCode);
             if (optionalDoctor.isPresent() && optionalPatient.isPresent() &&
                     optionalDoctor.get().getRoles().contains(Role.DOCTOR) && optionalIcd.isPresent()) {
                 diagnosis.setIcd(optionalIcd.get());
                 diagnosis.setDoctor(optionalDoctor.get());
-                int therapyId = therapyDao.create(diagnosis.getDoctor().getLogin(), patientLogin, cardType);
+                int therapyId = therapyDao.create(doctorLogin, patientLogin, cardType);
                 diagnosisDao.create(diagnosis, patientLogin, therapyId);
                 result = true;
             }
@@ -60,5 +66,22 @@ public class DoctorServiceImpl implements DoctorService {
             throw new ServiceException("DiagnoseDisease failed.", e);
         }
         return result;
+    }
+
+    // TODO: 06.11.2020 test
+    public Optional<Therapy> findCurrentPatientTherapy(String patientLogin, String doctorLogin, CardType cardType)
+            throws ServiceException {
+        Optional<Therapy> optionalTherapy;
+        try {
+            optionalTherapy = therapyDao.findCurrentPatientTherapy(patientLogin, doctorLogin, cardType);
+        } catch (DaoException e) {
+            throw new ServiceException("Find therapy failed.", e);
+        }
+        return optionalTherapy;
+    }
+
+    // TODO: 06.11.2020 find all therapies with all diagnoses
+    public List<Therapy> findAllPatientTherapies(String patientLogin, CardType cardType) {
+        return null;
     }
 }

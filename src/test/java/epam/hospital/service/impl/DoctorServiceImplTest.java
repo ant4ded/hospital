@@ -42,7 +42,7 @@ public class DoctorServiceImplTest {
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
                 .thenReturn(Optional.of(user.getUserDetails()));
-        doctorService.findByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
+        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
                 user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
     }
 
@@ -52,7 +52,7 @@ public class DoctorServiceImplTest {
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
                 .thenReturn(Optional.empty());
-        doctorService.findByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
+        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
                 user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
     }
 
@@ -63,20 +63,22 @@ public class DoctorServiceImplTest {
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
                 .thenThrow(DaoException.class);
-        doctorService.findByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
+        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
                 user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
     public void diagnoseDisease_correctDiagnose_true(Diagnosis diagnosis, User patient)
             throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(diagnosis.getDoctor().getLogin()))
-                .thenReturn(Optional.of(diagnosis.getDoctor()));
+        User doctor = diagnosis.getDoctor();
+        Mockito.when(userDao.findByLogin(doctor.getLogin()))
+                .thenReturn(Optional.of(doctor));
         Mockito.when(userDao.findByLogin(patient.getLogin()))
                 .thenReturn(Optional.of(patient));
         Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
                 .thenReturn(Optional.of(diagnosis.getIcd()));
-        Assert.assertTrue(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+        Assert.assertTrue(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
+                doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
@@ -88,7 +90,8 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
                 .thenReturn(Optional.of(diagnosis.getIcd()));
-        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
+                diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
@@ -100,7 +103,8 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
                 .thenReturn(Optional.of(diagnosis.getIcd()));
-        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
+                diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
@@ -112,7 +116,8 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.empty());
         Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
                 .thenReturn(Optional.of(diagnosis.getIcd()));
-        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
+                diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
@@ -124,7 +129,8 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
                 .thenReturn(Optional.empty());
-        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY));
+        Assert.assertFalse(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
+                diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
@@ -139,6 +145,7 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(diagnosis.getIcd()));
         Mockito.when(therapyDao.create(diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenThrow(DaoException.class);
-        doctorService.diagnoseDisease(diagnosis, patient.getLogin(), CardType.AMBULATORY);
+        doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
+                diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY);
     }
 }
