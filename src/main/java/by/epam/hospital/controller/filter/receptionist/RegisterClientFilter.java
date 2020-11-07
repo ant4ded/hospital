@@ -33,17 +33,17 @@ public class RegisterClientFilter implements Filter {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.PASSPORT_ID);
         }
-        if (!userValidator.isValidFirstLastNameOrSurname(servletRequest
+        if (!userValidator.isValidName(servletRequest
                 .getParameter(UsersDetailsFieldName.FIRST_NAME))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.FIRST_NAME);
         }
-        if (!userValidator.isValidFirstLastNameOrSurname(servletRequest
+        if (!userValidator.isValidName(servletRequest
                 .getParameter(UsersDetailsFieldName.SURNAME))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.SURNAME);
         }
-        if (!userValidator.isValidFirstLastNameOrSurname(servletRequest
+        if (!userValidator.isValidName(servletRequest
                 .getParameter(UsersDetailsFieldName.LAST_NAME))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.LAST_NAME);
