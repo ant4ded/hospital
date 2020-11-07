@@ -5,6 +5,7 @@ public class UserValidator {
     private static final String NAME_REGEX = "\\p{Lu}\\p{Ll}{2,14}";
     private static final String PHONE_REGEX = "\\d{12}";
     private static final String LOGIN_REGEX = "\\p{Ll}{3,15}_\\p{Ll}_\\p{Ll}{3,15}";
+    private static final String ICD_CODE_REGEX = "[\\d-\\p{Lu}]{7}";
 
     public boolean isValidLogin(String login) {
         return login.matches(LOGIN_REGEX);
@@ -15,7 +16,7 @@ public class UserValidator {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public boolean isValidFirstLastNameOrSurname(String name) {
+    public boolean isValidName(String name) {
         return name.matches(NAME_REGEX);
     }
 
@@ -52,5 +53,9 @@ public class UserValidator {
 
     public boolean isValidPhone(String phone) {
         return phone.matches(PHONE_REGEX);
+    }
+
+    public boolean isValidIcdCode(String icdCode) {
+        return icdCode.matches(ICD_CODE_REGEX);
     }
 }
