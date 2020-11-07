@@ -11,6 +11,10 @@ public class Icd implements Serializable {
     public Icd() {
     }
 
+    public Icd(String code) {
+        this.code = code;
+    }
+
     public Icd(int id, String code, String title) {
         this.id = id;
         this.code = code;
