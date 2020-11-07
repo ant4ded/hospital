@@ -43,7 +43,7 @@ public class DiagnosisDaoImplTest {
         doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
         patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
-        Therapy therapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), cardType)
+        Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
                 .orElseThrow(DaoException::new);
 
         int diagnosisId = diagnosisDao.create(diagnosis, patient.getLogin(), therapy.getId());
@@ -101,7 +101,7 @@ public class DiagnosisDaoImplTest {
         doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
         patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
-        Therapy therapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), cardType)
+        Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
                 .orElseThrow(DaoException::new);
 
         int diagnosisId = diagnosisDao.create(diagnosis, patient.getLogin(), therapy.getId());
@@ -134,7 +134,7 @@ public class DiagnosisDaoImplTest {
         doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
         patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
-        Therapy therapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), cardType)
+        Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
                 .orElseThrow(DaoException::new);
 
         List<Diagnosis> diagnoses = diagnosisDao.findAllByTherapyId(therapy.getId());

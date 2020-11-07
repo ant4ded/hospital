@@ -65,7 +65,7 @@ public class TherapyDaoImplTest {
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
-        Optional<Therapy> optionalTherapy = therapyDao.find(doctor.getLogin(), patient.getLogin(), cardType);
+        Optional<Therapy> optionalTherapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType);
         Therapy therapy = new Therapy();
         therapy.setId(therapyId);
         cleaner.delete(therapy, cardType);
@@ -77,7 +77,7 @@ public class TherapyDaoImplTest {
 
     @Test
     public void find_incorrectLogins_therapyPresent() throws DaoException {
-        Assert.assertTrue(therapyDao.find("", "", CardType.AMBULATORY).isEmpty());
+        Assert.assertTrue(therapyDao.findCurrentPatientTherapy("", "", CardType.AMBULATORY).isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
@@ -101,5 +101,11 @@ public class TherapyDaoImplTest {
     @Test
     public void findById_incorrectLogins_therapyPresent() throws DaoException {
         Assert.assertTrue(therapyDao.findById(0, CardType.AMBULATORY).isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
+            dependsOnMethods = "create_correctCreate_notZero", enabled = false)
+    public void findAllTherapies() {
+
     }
 }

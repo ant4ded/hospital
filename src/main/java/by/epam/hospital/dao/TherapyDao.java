@@ -3,6 +3,7 @@ package by.epam.hospital.dao;
 import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Therapy;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,7 +26,7 @@ public interface TherapyDao {
     int create(String doctorLogin, String patientLogin, CardType cardType) throws DaoException;
 
     /**
-     * Find entity {@code Therapy} in database.
+     * Find current patient entity {@code Therapy} in database.
      *
      * @param doctorLogin  {@code String} value of {@code User.login} field.
      * @param patientLogin {@code String} value of {@code User.login} field.
@@ -37,7 +38,8 @@ public interface TherapyDao {
      * @see Optional
      * @see CardType
      */
-    Optional<Therapy> find(String doctorLogin, String patientLogin, CardType cardType) throws DaoException;
+    Optional<Therapy> findCurrentPatientTherapy(String doctorLogin, String patientLogin, CardType cardType)
+            throws DaoException;
 
     /**
      * Find {@code Therapy} entity by {@code id} in database.
@@ -52,4 +54,6 @@ public interface TherapyDao {
      * @see CardType
      */
     Optional<Therapy> findById(int id, CardType cardType) throws DaoException;
+
+    List<Therapy> findAllTherapies(String patientLogin, CardType cardType) throws DaoException;
 }
