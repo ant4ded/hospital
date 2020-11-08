@@ -27,8 +27,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Optional<User> findPatientByRegistrationData(String firstName, String surname, String lastName, Date birthday)
-            throws ServiceException {
+    public Optional<User> findPatientByRegistrationData(String firstName, String surname, String lastName,
+                                                        Date birthday) throws ServiceException {
         Optional<User> optionalUser = Optional.empty();
         try {
             Optional<UserDetails> userDetails =
