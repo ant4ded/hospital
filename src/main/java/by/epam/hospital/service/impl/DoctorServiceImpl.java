@@ -42,7 +42,6 @@ public class DoctorServiceImpl implements DoctorService {
         return optionalUser;
     }
 
-    // TODO: 07.11.2020 instead diagnosis send diagnosis fields
     @Override
     public boolean diagnoseDisease(String icdCode, String reason, String doctorLogin,
                                    String patientLogin, CardType cardType) throws ServiceException {
@@ -54,11 +53,17 @@ public class DoctorServiceImpl implements DoctorService {
             Optional<User> optionalDoctor = userDao.findByLogin(doctorLogin);
             Optional<User> optionalPatient = userDao.findByLogin(patientLogin);
             Optional<Icd> optionalIcd = icdDao.findByCode(icdCode);
-            if (optionalDoctor.isPresent() && optionalPatient.isPresent() &&
-                    optionalDoctor.get().getRoles().contains(Role.DOCTOR) && optionalIcd.isPresent()) {
+            boolean isParametersExist = optionalDoctor.isPresent() &&
+                    optionalPatient.isPresent() &&
+                    optionalIcd.isPresent();
+            if (isParametersExist && optionalDoctor.get().getRoles().contains(Role.DOCTOR)) {
                 diagnosis.setIcd(optionalIcd.get());
                 diagnosis.setDoctor(optionalDoctor.get());
-                int therapyId = therapyDao.create(doctorLogin, patientLogin, cardType);
+                Optional<Therapy> currentTherapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
+
+                int therapyId = currentTherapy.isPresent() ?
+                        currentTherapy.get().getId() :
+                        therapyDao.create(doctorLogin, patientLogin, cardType);
                 diagnosisDao.create(diagnosis, patientLogin, therapyId);
                 result = true;
             }
@@ -68,12 +73,17 @@ public class DoctorServiceImpl implements DoctorService {
         return result;
     }
 
-    // TODO: 06.11.2020 test
-    public Optional<Therapy> findCurrentPatientTherapy(String patientLogin, String doctorLogin, CardType cardType)
+    @Override
+    public Optional<Therapy> findCurrentPatientTherapy(String doctorLogin, String patientLogin, CardType cardType)
             throws ServiceException {
         Optional<Therapy> optionalTherapy;
         try {
-            optionalTherapy = therapyDao.findCurrentPatientTherapy(patientLogin, doctorLogin, cardType);
+            optionalTherapy = therapyDao.findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
+            if (optionalTherapy.isPresent()) {
+                optionalTherapy = optionalTherapy.get().getEndTherapy().isPresent() ?
+                        Optional.empty() :
+                        optionalTherapy;
+            }
         } catch (DaoException e) {
             throw new ServiceException("Find therapy failed.", e);
         }
