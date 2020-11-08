@@ -49,7 +49,7 @@ public class MoveDoctorToDepartmentTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void execute_performDepartmentStaffAction_mapWithSuccessMessage(User user)
+    public void execute_doctor_mapWithSuccessMessage(User user)
             throws ServiceException, IOException, ServletException {
         ArrayList<Role> roles = user.getRoles();
         roles.add(Role.DOCTOR);
@@ -67,6 +67,31 @@ public class MoveDoctorToDepartmentTest {
                 .thenReturn(roles);
         Mockito.when(adminHeadService.performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD,
                 user.getLogin(), Role.DOCTOR))
+                .thenReturn(true);
+
+        Map<String, Object> result = httpCommand.execute(request, response);
+        Assert.assertEquals(result, expected);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void execute_medicalAssistant_mapWithSuccessMessage(User user)
+            throws ServiceException, IOException, ServletException {
+        ArrayList<Role> roles = user.getRoles();
+        roles.add(Role.MEDICAL_ASSISTANT);
+        Map<String, Object> expected = new HashMap<>();
+        expected.put(UsersFieldName.LOGIN, user.getLogin());
+        expected.put(ParameterName.USER_ROLES, roles);
+        expected.put(ParameterName.DEPARTMENT, Department.INFECTIOUS);
+        expected.put(ParameterName.MESSAGE, MESSAGE_SUCCESS);
+        expected.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DEPARTMENT_CONTROL);
+        Mockito.when(request.getParameter(UsersFieldName.LOGIN))
+                .thenReturn(user.getLogin());
+        Mockito.when(request.getParameter(ParameterName.DEPARTMENT))
+                .thenReturn(String.valueOf(Department.INFECTIOUS));
+        Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
+                .thenReturn(roles);
+        Mockito.when(adminHeadService.performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD,
+                user.getLogin(), Role.MEDICAL_ASSISTANT))
                 .thenReturn(true);
 
         Map<String, Object> result = httpCommand.execute(request, response);
