@@ -62,16 +62,16 @@ public class Therapy implements Serializable {
         return endTherapy;
     }
 
-    public void setEndTherapy(Optional<Date> endTherapy) {
-        this.endTherapy = endTherapy;
+    public void setEndTherapy(Date endTherapy) {
+        this.endTherapy = Optional.ofNullable(endTherapy);
     }
 
     public Optional<Diagnosis> getFinalDiagnosis() {
         return finalDiagnosis;
     }
 
-    public void setFinalDiagnosis(Optional<Diagnosis> finalDiagnosis) {
-        this.finalDiagnosis = finalDiagnosis;
+    public void setFinalDiagnosis(Diagnosis finalDiagnosis) {
+        this.finalDiagnosis = Optional.ofNullable(finalDiagnosis);
     }
 
     public List<Diagnosis> getDiagnoses() {
