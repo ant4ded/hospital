@@ -90,7 +90,6 @@ public class DoctorServiceImpl implements DoctorService {
         return optionalTherapy;
     }
 
-    // TODO: 06.11.2020 find all therapies with all diagnoses
     @Override
     public List<Therapy> findAllPatientTherapies(String patientLogin, CardType cardType) throws ServiceException {
         List<Therapy> therapies;
