@@ -3,6 +3,7 @@ package epam.hospital.service.impl;
 import by.epam.hospital.dao.*;
 import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Diagnosis;
+import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.service.DoctorService;
 import by.epam.hospital.service.ServiceException;
@@ -63,8 +64,39 @@ public class DoctorServiceImplTest {
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
                 .thenThrow(DaoException.class);
-        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
+        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(),
+                user.getUserDetails().getSurname(),
                 user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient")
+    public void findCurrentPatientTherapy_patientTherapyPresent_therapyPresent(User doctor, User patient)
+            throws DaoException, ServiceException {
+        Mockito.when(therapyDao
+                .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
+                .thenReturn(Optional.of(new Therapy()));
+        Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
+                patient.getLogin(),CardType.AMBULATORY).isPresent());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient")
+    public void findCurrentPatientTherapy_patientTherapyEmpty_therapyEmpty(User doctor, User patient)
+            throws DaoException, ServiceException {
+        Mockito.when(therapyDao
+                .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
+                .thenReturn(Optional.empty());
+        Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
+                patient.getLogin(),CardType.AMBULATORY).isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient")
+    public void findCurrentPatientTherapy_daoException_serviceException(User doctor, User patient)
+            throws DaoException, ServiceException {
+        Mockito.when(therapyDao
+                .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
+                .thenThrow(new ServiceException());
+        Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
+                patient.getLogin(),CardType.AMBULATORY).isPresent());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
