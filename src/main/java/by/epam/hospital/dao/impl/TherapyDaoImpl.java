@@ -236,8 +236,9 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setDoctor(userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new));
                 therapy.setPatient(userDao.findByLogin(patientLogin).orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
-                therapy.setEndTherapy(Optional.ofNullable(resultSet.getDate(TherapyFieldName.END_THERAPY)));
-                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID)));
+                therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
+                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
+                        .orElse(null));
                 therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(therapy.getId()));
                 optionalTherapy = Optional.of(therapy);
             }
@@ -286,8 +287,9 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setId(id);
                 therapy.setDoctor(userDao.findById(resultSet.getInt(TherapyFieldName.DOCTOR_ID))
                         .orElseThrow(DaoException::new));
-                therapy.setEndTherapy(Optional.ofNullable(resultSet.getDate(TherapyFieldName.END_THERAPY)));
-                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID)));
+                therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
+                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
+                        .orElse(null));
                 therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(id));
                 therapy.setPatient(userDao.findById(resultSet.getInt(UsersFieldName.ID))
                         .orElseThrow(DaoException::new));
@@ -325,8 +327,9 @@ public class TherapyDaoImpl implements TherapyDao {
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
                 therapy.setPatient(userDao.findByLogin(patientLogin).orElseThrow(DaoException::new));
-                therapy.setEndTherapy(Optional.ofNullable(resultSet.getDate(TherapyFieldName.END_THERAPY)));
-                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID)));
+                therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
+                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
+                        .orElse(null));
                 therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(therapy.getId()));
                 therapies.add(therapy);
             }
