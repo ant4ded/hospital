@@ -176,7 +176,8 @@ public class TherapyDaoImpl implements TherapyDao {
                     statement.close();
 
                     statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
-                            SQL_CREATE_AMBULATORY_THERAPY : SQL_CREATE_STATIONARY_THERAPY);
+                            SQL_CREATE_AMBULATORY_THERAPY :
+                            SQL_CREATE_STATIONARY_THERAPY);
                     statement.setInt(1, patientId);
                     statement.setInt(2, therapyId);
 
@@ -224,7 +225,8 @@ public class TherapyDaoImpl implements TherapyDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
-                    SQL_FIND_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN : SQL_FIND_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN);
+                    SQL_FIND_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN :
+                    SQL_FIND_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN);
             statement.setString(1, doctorLogin);
             statement.setString(2, patientLogin);
             statement.execute();
@@ -277,7 +279,8 @@ public class TherapyDaoImpl implements TherapyDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
-                    SQL_FIND_AMBULATORY_THERAPY_BY_THERAPY_ID : SQL_FIND_STATIONARY_THERAPY_BY_THERAPY_ID);
+                    SQL_FIND_AMBULATORY_THERAPY_BY_THERAPY_ID :
+                    SQL_FIND_STATIONARY_THERAPY_BY_THERAPY_ID);
             statement.setInt(1, id);
             statement.execute();
 
@@ -293,7 +296,7 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(id));
                 therapy.setPatient(userDao.findById(resultSet.getInt(UsersFieldName.ID))
                         .orElseThrow(DaoException::new));
-                therapy.setCardType(cardType.equals(CardType.AMBULATORY) ? CardType.AMBULATORY : CardType.STATIONARY);
+                therapy.setCardType(cardType);
                 optionalTherapy = Optional.of(therapy);
             }
         } catch (ConnectionException e) {
@@ -315,7 +318,8 @@ public class TherapyDaoImpl implements TherapyDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
-                    SQL_FIND_AMBULATORY_THERAPY_BY_PATIENT_LOGIN : SQL_FIND_STATIONARY_THERAPY_BY_PATIENT_LOGIN);
+                    SQL_FIND_AMBULATORY_THERAPY_BY_PATIENT_LOGIN :
+                    SQL_FIND_STATIONARY_THERAPY_BY_PATIENT_LOGIN);
             statement.setString(1, patientLogin);
             statement.execute();
 

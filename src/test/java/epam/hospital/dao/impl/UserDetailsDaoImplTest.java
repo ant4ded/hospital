@@ -66,7 +66,8 @@ public class UserDetailsDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void update_nonExistentUserId_exception(User user) throws DaoException {
-        Assert.assertEquals(userDetailsDao.update(user.getUserDetails(), user.getUserDetails()), user.getUserDetails());
+        Assert.assertEquals(userDetailsDao
+                .update(user.getUserDetails(), user.getUserDetails()), user.getUserDetails());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
@@ -93,8 +94,9 @@ public class UserDetailsDaoImplTest {
         UserDetails userDetails = user.getUserDetails();
 
         userDetailsDao.create(user.getUserDetails());
-        Optional<UserDetails> optionalUserDetails = userDetailsDao.findByRegistrationData(userDetails.getFirstName(),
-                userDetails.getSurname(), userDetails.getLastName(), userDetails.getBirthday());
+        Optional<UserDetails> optionalUserDetails = userDetailsDao
+                .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                        userDetails.getLastName(), userDetails.getBirthday());
         cleaner.delete(user);
 
         Assert.assertTrue(optionalUserDetails.isPresent());
@@ -104,8 +106,9 @@ public class UserDetailsDaoImplTest {
     public void findByRegistrationData_nonExistentUserDetails_userDetailsEmpty(User user) throws DaoException {
         UserDetails userDetails = user.getUserDetails();
 
-        Optional<UserDetails> optionalUserDetails = userDetailsDao.findByRegistrationData(userDetails.getFirstName(),
-                userDetails.getSurname(), userDetails.getLastName(), userDetails.getBirthday());
+        Optional<UserDetails> optionalUserDetails = userDetailsDao
+                .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                        userDetails.getLastName(), userDetails.getBirthday());
 
         Assert.assertTrue(optionalUserDetails.isEmpty());
     }

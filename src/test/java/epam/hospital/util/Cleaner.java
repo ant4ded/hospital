@@ -100,7 +100,8 @@ public class Cleaner {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
-                    SQL_DELETE_AMBULATORY_ROW : SQL_DELETE_STATIONARY_ROW);
+                    SQL_DELETE_AMBULATORY_ROW :
+                    SQL_DELETE_STATIONARY_ROW);
             statement.setInt(1, therapy.getId());
             statement.execute();
             statement.close();

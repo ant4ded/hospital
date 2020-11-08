@@ -17,8 +17,6 @@ public class SignOut implements HttpCommand {
         request.getSession().removeAttribute(ParameterName.LOGIN_USERNAME);
         request.getSession().removeAttribute(ParameterName.LOGIN_ROLES);
         result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_MAIN);
-//        response.sendRedirect(HospitalUrl.MAIN_URL);
-//        return new HashMap<>();
         return result;
     }
 }

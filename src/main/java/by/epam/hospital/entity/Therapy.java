@@ -93,8 +93,12 @@ public class Therapy implements Serializable {
         if (!doctor.equals(therapy.doctor)) return false;
         if (!patient.equals(therapy.patient)) return false;
         if (cardType != therapy.cardType) return false;
-        if (endTherapy.isPresent() ? !endTherapy.equals(therapy.endTherapy) : therapy.endTherapy.isPresent()) return false;
-        if (finalDiagnosis.isPresent() ? !finalDiagnosis.equals(therapy.finalDiagnosis) : therapy.finalDiagnosis.isPresent())
+        if (endTherapy.isPresent() ?
+                !endTherapy.equals(therapy.endTherapy) :
+                therapy.endTherapy.isPresent()) return false;
+        if (finalDiagnosis.isPresent() ?
+                !finalDiagnosis.equals(therapy.finalDiagnosis) :
+                therapy.finalDiagnosis.isPresent())
             return false;
         return diagnoses.equals(therapy.diagnoses);
     }

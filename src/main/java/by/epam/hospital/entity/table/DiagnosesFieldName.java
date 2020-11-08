@@ -6,4 +6,7 @@ public class DiagnosesFieldName {
     public static final String DOCTOR_ID = "doctor_id";
     public static final String DIAGNOSIS_DATE = "diagnosis_date";
     public static final String REASON = "reason";
+
+    private DiagnosesFieldName() {
+    }
 }

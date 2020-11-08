@@ -77,7 +77,8 @@ public class TherapyDaoImplTest {
 
     @Test
     public void find_incorrectLogins_therapyPresent() throws DaoException {
-        Assert.assertTrue(therapyDao.findCurrentPatientTherapy("", "", CardType.AMBULATORY).isEmpty());
+        Assert.assertTrue(therapyDao
+                .findCurrentPatientTherapy("", "", CardType.AMBULATORY).isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",

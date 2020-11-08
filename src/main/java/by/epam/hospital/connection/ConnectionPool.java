@@ -67,7 +67,8 @@ public class ConnectionPool {
     public void releaseConnection(Connection connection) throws ConnectionException {
         if (connection.getClass() == ProxyConnection.class) {
             if (!usedConnections.remove(connection)) {
-                throw new ConnectionException("Can not delete connection from usedConnections. Connection not present.");
+                throw new ConnectionException("Can not delete connection from usedConnections. " +
+                        "Connection not present.");
             }
             if (!freeConnections.offer(connection)) {
                 throw new ConnectionException("Can not add connection to freeConnections. Used queue is full.");

@@ -94,7 +94,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
             statement.execute();
 
             resultSet = statement.getResultSet();
-            departmentHead = resultSet.next() ? userDao.findById(resultSet.getInt(1)) : Optional.empty();
+            departmentHead = resultSet.next() ?
+                    userDao.findById(resultSet.getInt(1)) :
+                    Optional.empty();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -173,7 +175,8 @@ public class DepartmentDaoImpl implements DepartmentDao {
             statement.execute();
             resultSet = statement.getResultSet();
             optionalDepartment = resultSet.next() ?
-                    Optional.of(Department.valueOf(resultSet.getString(1))) : Optional.empty();
+                    Optional.of(Department.valueOf(resultSet.getString(1))) :
+                    Optional.empty();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {

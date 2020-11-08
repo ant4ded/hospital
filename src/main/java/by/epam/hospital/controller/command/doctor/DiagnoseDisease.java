@@ -44,12 +44,14 @@ public class DiagnoseDisease implements HttpCommand {
         String reason = request.getParameter(DiagnosesFieldName.REASON);
         CardType cardType = CardType.valueOf(request.getParameter(ParameterName.CARD_TYPE));
         try {
-            Optional<User> patient = doctorService.
-                    findPatientByRegistrationData(firstName, surname, lastName, birthday);
+            Optional<User> patient = doctorService
+                    .findPatientByRegistrationData(firstName, surname, lastName, birthday);
             if (patient.isPresent()) {
                 boolean isDiagnosisApply = doctorService
                         .diagnoseDisease(icdCode, reason, doctorLogin, patient.get().getLogin(), cardType);
-                result.put(ParameterName.MESSAGE, isDiagnosisApply ? MESSAGE_SUCCESS : MESSAGE_INCORRECT_ICD);
+                result.put(ParameterName.MESSAGE, isDiagnosisApply ?
+                        MESSAGE_SUCCESS :
+                        MESSAGE_INCORRECT_ICD);
             } else {
                 result.put(ParameterName.MESSAGE, MESSAGE_WRONG_RESULT);
             }

@@ -36,7 +36,9 @@ public class MoveDoctorToDepartment implements HttpCommand {
         Department department = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
         try {
             ArrayList<Role> roles = adminHeadService.findUserRoles(login);
-            Role currentRole = roles.contains(Role.DOCTOR) ? Role.DOCTOR : Role.MEDICAL_ASSISTANT;
+            Role currentRole = roles.contains(Role.DOCTOR) ?
+                    Role.DOCTOR :
+                    Role.MEDICAL_ASSISTANT;
             if (adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, login, currentRole)) {
                 result.put(UsersFieldName.LOGIN, login);
                 result.put(ParameterName.USER_ROLES, roles);

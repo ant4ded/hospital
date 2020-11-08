@@ -59,7 +59,9 @@ public class RegisterClient implements HttpCommand {
         request.removeAttribute(UsersDetailsFieldName.PHONE);
         try {
             isSuccess = receptionistService.registerClient(user);
-            result.put(ParameterName.MESSAGE, isSuccess ? MESSAGE_SUCCESS : MESSAGE_WRONG_RESULT);
+            result.put(ParameterName.MESSAGE, isSuccess ?
+                    MESSAGE_SUCCESS :
+                    MESSAGE_WRONG_RESULT);
             result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_REGISTRY);
         } catch (ServiceException e) {
             logger.error(e);

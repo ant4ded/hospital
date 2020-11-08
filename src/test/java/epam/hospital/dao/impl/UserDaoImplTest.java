@@ -87,7 +87,8 @@ public class UserDaoImplTest {
         Assert.assertEquals(updatedUser, newUser);
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", expectedExceptions = DaoException.class)
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            expectedExceptions = DaoException.class)
     public void update_nonExistentLogin_exception(User user) throws DaoException {
         userDao.update(user, new User());
     }

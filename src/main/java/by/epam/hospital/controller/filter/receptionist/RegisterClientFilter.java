@@ -53,8 +53,8 @@ public class RegisterClientFilter implements Filter {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.BIRTHDAY);
         }
-        if (!userValidator.isValidPhone(servletRequest.
-                getParameter(UsersDetailsFieldName.PHONE))) {
+        if (!userValidator.isValidPhone(servletRequest
+                .getParameter(UsersDetailsFieldName.PHONE))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.PHONE);
         }

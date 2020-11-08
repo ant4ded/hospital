@@ -23,7 +23,8 @@ public interface DepartmentStaffDao {
      * @return {@code true} if it was successful or {@code false} if not.
      * @throws DaoException if a database access error occurs.
      */
-    boolean updateStaffDepartment(Department department, ServiceAction serviceAction, String login) throws DaoException;
+    boolean updateStaffDepartment(Department department, ServiceAction serviceAction, String login)
+            throws DaoException;
 
     /**
      * Find department staff.

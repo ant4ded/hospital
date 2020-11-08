@@ -67,32 +67,32 @@ public class AdminHeadServiceImplTest {
                 .thenReturn(Optional.of(user));
         Mockito.when(userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.DOCTOR))
                 .thenReturn(true);
-        Assert.assertTrue(adminHeadService.
-                performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR));
+        Assert.assertTrue(adminHeadService
+                .performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
     public void performUserRolesAction_nonExistentUser_false(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.empty());
-        Assert.assertFalse(adminHeadService.
-                performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR));
+        Assert.assertFalse(adminHeadService
+                .performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
     public void performUserRolesAction_addExistingRole_false(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
-        Assert.assertFalse(adminHeadService.
-                performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.CLIENT));
+        Assert.assertFalse(adminHeadService
+                .performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.CLIENT));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
     public void performUserRolesAction_removeNonExistentRole_false(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
-        Assert.assertFalse(adminHeadService.
-                performUserRolesAction(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR));
+        Assert.assertFalse(adminHeadService
+                .performUserRolesAction(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
@@ -303,8 +303,8 @@ public class AdminHeadServiceImplTest {
         Mockito.when(departmentStaffDao.updateStaffDepartment(Department.SURGERY,
                 ServiceAction.ADD, user.getLogin()))
                 .thenReturn(true);
-        Assert.assertTrue(adminHeadService.
-                performDepartmentStaffAction(Department.SURGERY, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
+        Assert.assertTrue(adminHeadService
+                .performDepartmentStaffAction(Department.SURGERY, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performDepartmentStaffAction",
@@ -317,8 +317,8 @@ public class AdminHeadServiceImplTest {
         Mockito.when(departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS,
                 ServiceAction.ADD, user.getLogin()))
                 .thenReturn(true);
-        Assert.assertTrue(adminHeadService.
-                performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
+        Assert.assertTrue(adminHeadService
+                .performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performDepartmentStaffAction",
@@ -326,8 +326,8 @@ public class AdminHeadServiceImplTest {
     public void performDepartmentStaffAction_nonExistentUser_false(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.empty());
-        Assert.assertFalse(adminHeadService.
-                performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
+        Assert.assertFalse(adminHeadService
+                .performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performDepartmentStaffAction",
@@ -336,8 +336,8 @@ public class AdminHeadServiceImplTest {
         user.getRoles().add(Role.DEPARTMENT_HEAD);
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
-        Assert.assertFalse(adminHeadService.
-                performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
+        Assert.assertFalse(adminHeadService
+                .performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
@@ -346,8 +346,8 @@ public class AdminHeadServiceImplTest {
             throws ServiceException, DaoException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenThrow(DaoException.class);
-        adminHeadService.
-                performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR);
+        adminHeadService
+                .performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR);
     }
 
     @Test(groups = "findDepartmentsHeads")

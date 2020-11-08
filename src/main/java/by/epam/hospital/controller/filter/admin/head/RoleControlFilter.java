@@ -52,7 +52,8 @@ public class RoleControlFilter implements Filter {
         }
         if (isHaveInvalidFields) {
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
-            servletRequest.getRequestDispatcher(HospitalUrl.PAGE_ROLE_CONTROL).forward(servletRequest, servletResponse);
+            servletRequest.getRequestDispatcher(HospitalUrl.PAGE_ROLE_CONTROL)
+                    .forward(servletRequest, servletResponse);
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);

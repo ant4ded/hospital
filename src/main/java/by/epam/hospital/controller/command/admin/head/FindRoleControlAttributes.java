@@ -36,7 +36,8 @@ public class FindRoleControlAttributes implements HttpCommand {
             if (!roles.isEmpty()) {
                 Department userDepartment = null;
                 if (roles.contains(Role.DOCTOR) || roles.contains(Role.MEDICAL_ASSISTANT)) {
-                    userDepartment = adminHeadService.findDepartmentByUsername(login).orElseThrow(ServiceException::new);
+                    userDepartment = adminHeadService.findDepartmentByUsername(login)
+                            .orElseThrow(ServiceException::new);
                 }
                 result.put(ParameterName.DEPARTMENT, userDepartment);
                 result.put(ParameterName.USER_ROLES, roles);

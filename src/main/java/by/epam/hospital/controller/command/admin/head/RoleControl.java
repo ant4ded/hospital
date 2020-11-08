@@ -47,7 +47,8 @@ public class RoleControl implements HttpCommand {
             }
             if (role == Role.DOCTOR || role == Role.MEDICAL_ASSISTANT) {
                 doctorDepartment = Department.valueOf(request.getParameter(ParameterName.DEPARTMENT));
-                isSuccess = adminHeadService.performDepartmentStaffAction(doctorDepartment, serviceAction, login, role);
+                isSuccess = adminHeadService
+                        .performDepartmentStaffAction(doctorDepartment, serviceAction, login, role);
             }
             if (isSuccess) {
                 ArrayList<Role> roles = adminHeadService.findUserRoles(login);
