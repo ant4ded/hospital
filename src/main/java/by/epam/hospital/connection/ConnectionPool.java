@@ -74,7 +74,7 @@ public class ConnectionPool {
                 throw new ConnectionException("Can not add connection to freeConnections. Used queue is full.");
             }
         } else {
-            throw new ConnectionException("Error with release non proxy connection");
+            throw new ConnectionException("Error with release non proxy connection.");
         }
     }
 
@@ -86,7 +86,7 @@ public class ConnectionPool {
             try {
                 ((ProxyConnection) freeConnections.take()).reallyClose();
             } catch (SQLException e) {
-                throw new ConnectionException("Error with close connection", e);
+                throw new ConnectionException("Error with close connection.", e);
             } catch (InterruptedException e) {
                 logger.warn("Interrupted!", e);
                 Thread.currentThread().interrupt();

@@ -91,7 +91,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     // TODO: 06.11.2020 find all therapies with all diagnoses
-    public List<Therapy> findAllPatientTherapies(String patientLogin, CardType cardType) {
+    public List<Therapy> findAllPatientTherapies(String patientLogin, CardType cardType) throws ServiceException {
+        try {
+            therapyDao.findAllTherapies(patientLogin, cardType);
+        } catch (DaoException e) {
+            throw new ServiceException("FindAllPatientTherapies failed.", e);
+        }
         return null;
     }
 }
