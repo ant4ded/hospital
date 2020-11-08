@@ -5,6 +5,7 @@ import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 
 public interface DoctorService {
@@ -16,4 +17,6 @@ public interface DoctorService {
 
     boolean diagnoseDisease(String icdCode, String reason, String doctorLogin,
                             String patientLogin, CardType cardType) throws ServiceException;
+
+    List<Therapy> findAllPatientTherapies(String patientLogin, CardType cardType) throws ServiceException;
 }

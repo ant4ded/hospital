@@ -17,6 +17,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class DoctorServiceImplTest {
@@ -39,28 +40,33 @@ public class DoctorServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findByRegistrationData_correctFind_userPresent(User user) throws DaoException, ServiceException {
+    public void findByRegistrationData_correctFind_userPresent(User user)
+            throws DaoException, ServiceException {
         Mockito.when(userDetailsDao.findByRegistrationData(user.getUserDetails().getFirstName(),
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
                 .thenReturn(Optional.of(user.getUserDetails()));
-        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
-                user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
+        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(),
+                user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
+                user.getUserDetails().getBirthday());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findByRegistrationData_nonExistentUser_userPresent(User user) throws DaoException, ServiceException {
+    public void findByRegistrationData_nonExistentUser_userPresent(User user)
+            throws DaoException, ServiceException {
         Mockito.when(userDetailsDao.findByRegistrationData(user.getUserDetails().getFirstName(),
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
                 .thenReturn(Optional.empty());
-        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
-                user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
+        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(),
+                user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
+                user.getUserDetails().getBirthday());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
             expectedExceptions = ServiceException.class)
-    public void findByRegistrationData_daoException_serviceException(User user) throws DaoException, ServiceException {
+    public void findByRegistrationData_daoException_serviceException(User user)
+            throws DaoException, ServiceException {
         Mockito.when(userDetailsDao.findByRegistrationData(user.getUserDetails().getFirstName(),
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
@@ -78,7 +84,7 @@ public class DoctorServiceImplTest {
                 .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.of(new Therapy()));
         Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
-                patient.getLogin(),CardType.AMBULATORY).isPresent());
+                patient.getLogin(), CardType.AMBULATORY).isPresent());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
@@ -91,7 +97,7 @@ public class DoctorServiceImplTest {
                 .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.of(therapy));
         Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
-                patient.getLogin(),CardType.AMBULATORY).isEmpty());
+                patient.getLogin(), CardType.AMBULATORY).isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
@@ -102,7 +108,7 @@ public class DoctorServiceImplTest {
                 .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.empty());
         Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
-                patient.getLogin(),CardType.AMBULATORY).isEmpty());
+                patient.getLogin(), CardType.AMBULATORY).isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
@@ -113,7 +119,7 @@ public class DoctorServiceImplTest {
                 .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenThrow(new DaoException());
         Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
-                patient.getLogin(),CardType.AMBULATORY).isPresent());
+                patient.getLogin(), CardType.AMBULATORY).isPresent());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
@@ -218,5 +224,24 @@ public class DoctorServiceImplTest {
                 .thenThrow(DaoException.class);
         doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
                 diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void findAllPatientTherapies_findTherapies_therapiesList(User user)
+            throws DaoException, ServiceException {
+        Mockito.when(therapyDao.findAllTherapies(user.getLogin(), CardType.AMBULATORY))
+                .thenReturn(new ArrayList<>());
+        Assert.assertEquals(doctorService.
+                findAllPatientTherapies(user.getLogin(), CardType.AMBULATORY), new ArrayList<>());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            expectedExceptions = ServiceException.class)
+    public void findAllPatientTherapies_daoException_serviceException(User user)
+            throws DaoException, ServiceException {
+        Mockito.when(therapyDao.findAllTherapies(user.getLogin(), CardType.AMBULATORY))
+                .thenThrow(DaoException.class);
+        Assert.assertEquals(doctorService.
+                findAllPatientTherapies(user.getLogin(), CardType.AMBULATORY), new ArrayList<>());
     }
 }

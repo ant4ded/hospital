@@ -14,6 +14,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Test(groups = {"dao", "TherapyDaoImplTest"}, dependsOnGroups = {"UserDaoImplTest"})
@@ -105,8 +107,36 @@ public class TherapyDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
-            dependsOnMethods = "create_correctCreate_notZero", enabled = false)
-    public void findAllTherapies() {
+            dependsOnMethods = "create_correctCreate_notZero")
+    public void findAllTherapies_correctFind_ListWithCreatedTherapies(User doctor, User patient)
+            throws DaoException {
+        patient.setId(userDao.create(patient));
+        doctor.setId(userDao.create(doctor));
+        CardType cardType = CardType.AMBULATORY;
+        List<Therapy> expected = new ArrayList<>();
 
+        int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
+        Therapy first = new Therapy();
+        first.setId(therapyId);
+        first.setCardType(cardType);
+        first.setPatient(patient);
+        first.setDoctor(doctor);
+        therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
+        Therapy second = new Therapy();
+        second.setId(therapyId);
+        second.setCardType(cardType);
+        second.setPatient(patient);
+        second.setDoctor(doctor);
+        expected.add(first);
+        expected.add(second);
+
+        List<Therapy> actual = therapyDao.findAllTherapies(patient.getLogin(), cardType);
+
+        cleaner.delete(first, cardType);
+        cleaner.delete(second, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertEquals(actual, expected);
     }
 }
