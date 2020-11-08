@@ -61,19 +61,19 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     public boolean appointDepartmentHead(Department department, String login) throws ServiceException {
         boolean result = false;
         try {
-            Optional<User> newHead = userDao.findByLogin(login); //1
-            Optional<User> previousHead = departmentDao.findHeadDepartment(department); //2
-            Optional<Department> departmentOfNewHead = findDepartmentByUsername(login); //3 //4
+            Optional<User> newHead = userDao.findByLogin(login); 
+            Optional<User> previousHead = departmentDao.findHeadDepartment(department); 
+            Optional<Department> departmentOfNewHead = findDepartmentByUsername(login);  
             boolean isNonEqualsAndNewHeadIsDoctor = newHead.isPresent() && !newHead.equals(previousHead) &&
                     newHead.get().getRoles().contains(Role.DOCTOR);
             boolean isDepartmentNewHeadEqualsThisDepartment = departmentOfNewHead.isPresent() &&
                     departmentOfNewHead.get().equals(department);
             if (isNonEqualsAndNewHeadIsDoctor && isDepartmentNewHeadEqualsThisDepartment) {
                 if (previousHead.isPresent()) {
-                    performUserRolesAction(previousHead.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD); //5 //6
+                    performUserRolesAction(previousHead.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD);  
                 }
-                departmentDao.updateDepartmentHead(department, login); //7
-                result = performUserRolesAction(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD); //8 //9
+                departmentDao.updateDepartmentHead(department, login); 
+                result = performUserRolesAction(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);  
             }
         } catch (DaoException e) {
             throw new ServiceException("AppointDepartmentHead failed.", e);

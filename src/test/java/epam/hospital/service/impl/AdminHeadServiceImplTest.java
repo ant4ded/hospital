@@ -67,28 +67,32 @@ public class AdminHeadServiceImplTest {
                 .thenReturn(Optional.of(user));
         Mockito.when(userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.DOCTOR))
                 .thenReturn(true);
-        Assert.assertTrue(adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR));
+        Assert.assertTrue(adminHeadService.
+                performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
     public void performUserRolesAction_nonExistentUser_false(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.empty());
-        Assert.assertFalse(adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR));
+        Assert.assertFalse(adminHeadService.
+                performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
     public void performUserRolesAction_addExistingRole_false(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
-        Assert.assertFalse(adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.CLIENT));
+        Assert.assertFalse(adminHeadService.
+                performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.CLIENT));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
     public void performUserRolesAction_removeNonExistentRole_false(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
-        Assert.assertFalse(adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR));
+        Assert.assertFalse(adminHeadService.
+                performUserRolesAction(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
