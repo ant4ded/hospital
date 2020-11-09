@@ -27,14 +27,14 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Optional<User> findPatientByRegistrationData(String firstName, String surname, String lastName,
-                                                        Date birthday) throws ServiceException {
+    public Optional<User> findPatientByUserDetails(UserDetails userDetails) throws ServiceException {
         Optional<User> optionalUser = Optional.empty();
         try {
-            Optional<UserDetails> userDetails =
-                    userDetailsDao.findByRegistrationData(firstName, surname, lastName, birthday);
-            if (userDetails.isPresent()) {
-                optionalUser = userDao.findById(userDetails.get().getUserId());
+            Optional<UserDetails> optionalUserDetails = userDetailsDao
+                    .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                            userDetails.getLastName(), userDetails.getBirthday());
+            if (optionalUserDetails.isPresent()) {
+                optionalUser = userDao.findById(optionalUserDetails.get().getUserId());
             }
         } catch (DaoException e) {
             throw new ServiceException("FindByRegistrationData failed.", e);

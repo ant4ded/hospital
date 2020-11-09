@@ -46,9 +46,7 @@ public class DoctorServiceImplTest {
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
                 .thenReturn(Optional.of(user.getUserDetails()));
-        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(),
-                user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
-                user.getUserDetails().getBirthday());
+        doctorService.findPatientByUserDetails(user.getUserDetails());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
@@ -58,9 +56,7 @@ public class DoctorServiceImplTest {
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
                 .thenReturn(Optional.empty());
-        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(),
-                user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
-                user.getUserDetails().getBirthday());
+        doctorService.findPatientByUserDetails(user.getUserDetails());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
@@ -71,9 +67,7 @@ public class DoctorServiceImplTest {
                 user.getUserDetails().getSurname(), user.getUserDetails().getLastName(),
                 user.getUserDetails().getBirthday()))
                 .thenThrow(DaoException.class);
-        doctorService.findPatientByRegistrationData(user.getUserDetails().getFirstName(),
-                user.getUserDetails().getSurname(),
-                user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
+        doctorService.findPatientByUserDetails(user.getUserDetails());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",

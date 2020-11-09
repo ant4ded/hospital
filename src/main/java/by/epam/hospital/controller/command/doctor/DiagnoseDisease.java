@@ -5,6 +5,7 @@ import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.DiagnosesFieldName;
 import by.epam.hospital.entity.table.IcdFieldName;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
@@ -36,16 +37,20 @@ public class DiagnoseDisease implements HttpCommand {
     public Map<String, Object> execute(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
         String doctorLogin = String.valueOf(request.getSession().getAttribute(ParameterName.LOGIN_USERNAME));
+        UserDetails userDetails = new UserDetails();
         String firstName = request.getParameter(UsersDetailsFieldName.FIRST_NAME);
         String surname = request.getParameter(UsersDetailsFieldName.SURNAME);
         String lastName = request.getParameter(UsersDetailsFieldName.LAST_NAME);
         Date birthday = Date.valueOf(request.getParameter(UsersDetailsFieldName.BIRTHDAY));
+        userDetails.setFirstName(firstName);
+        userDetails.setSurname(surname);
+        userDetails.setLastName(lastName);
+        userDetails.setBirthday(birthday);
         String icdCode = request.getParameter(IcdFieldName.CODE);
         String reason = request.getParameter(DiagnosesFieldName.REASON);
         CardType cardType = CardType.valueOf(request.getParameter(ParameterName.CARD_TYPE));
         try {
-            Optional<User> patient = doctorService
-                    .findPatientByRegistrationData(firstName, surname, lastName, birthday);
+            Optional<User> patient = doctorService.findPatientByUserDetails(userDetails);
             if (patient.isPresent()) {
                 boolean isDiagnosisApply = doctorService
                         .diagnoseDisease(icdCode, reason, doctorLogin, patient.get().getLogin(), cardType);

@@ -71,9 +71,7 @@ public class DiagnoseDiseaseTest {
                 .thenReturn(String.valueOf(diagnosis.getReason()));
         Mockito.when(request.getParameter(ParameterName.CARD_TYPE))
                 .thenReturn(CardType.AMBULATORY.name());
-        Mockito.when(doctorService.findPatientByRegistrationData(patient.getUserDetails().getFirstName(),
-                patient.getUserDetails().getSurname(), patient.getUserDetails().getLastName(),
-                patient.getUserDetails().getBirthday()))
+        Mockito.when(doctorService.findPatientByUserDetails(patient.getUserDetails()))
                 .thenReturn(Optional.of(patient));
         Mockito.when(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
                 diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY))
@@ -103,9 +101,7 @@ public class DiagnoseDiseaseTest {
                 .thenReturn(String.valueOf(diagnosis.getReason()));
         Mockito.when(request.getParameter(ParameterName.CARD_TYPE))
                 .thenReturn(CardType.AMBULATORY.name());
-        Mockito.when(doctorService.findPatientByRegistrationData(patient.getUserDetails().getFirstName(),
-                patient.getUserDetails().getSurname(), patient.getUserDetails().getLastName(),
-                patient.getUserDetails().getBirthday()))
+        Mockito.when(doctorService.findPatientByUserDetails(patient.getUserDetails()))
                 .thenReturn(Optional.of(patient));
         Mockito.when(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
                 diagnosis.getDoctor().getLogin(), patient.getLogin(), CardType.AMBULATORY))
@@ -135,9 +131,7 @@ public class DiagnoseDiseaseTest {
                 .thenReturn(String.valueOf(diagnosis.getReason()));
         Mockito.when(request.getParameter(ParameterName.CARD_TYPE))
                 .thenReturn(CardType.AMBULATORY.name());
-        Mockito.when(doctorService.findPatientByRegistrationData(patient.getUserDetails().getFirstName(),
-                patient.getUserDetails().getSurname(), patient.getUserDetails().getLastName(),
-                patient.getUserDetails().getBirthday()))
+        Mockito.when(doctorService.findPatientByUserDetails(patient.getUserDetails()))
                 .thenReturn(Optional.empty());
 
         Map<String, Object> result = httpCommand.execute(request, response);
@@ -164,9 +158,7 @@ public class DiagnoseDiseaseTest {
                 .thenReturn(String.valueOf(diagnosis.getReason()));
         Mockito.when(request.getParameter(ParameterName.CARD_TYPE))
                 .thenReturn(CardType.AMBULATORY.name());
-        Mockito.when(doctorService.findPatientByRegistrationData(patient.getUserDetails().getFirstName(),
-                patient.getUserDetails().getSurname(), patient.getUserDetails().getLastName(),
-                patient.getUserDetails().getBirthday()))
+        Mockito.when(doctorService.findPatientByUserDetails(patient.getUserDetails()))
                 .thenThrow(new ServiceException());
 
         Map<String, Object> result = httpCommand.execute(request, response);
