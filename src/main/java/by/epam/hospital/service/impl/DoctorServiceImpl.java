@@ -7,6 +7,7 @@ import by.epam.hospital.service.ServiceException;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,10 +92,18 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<Therapy> findAllPatientTherapies(String patientLogin, CardType cardType) throws ServiceException {
-        List<Therapy> therapies;
+    public List<Therapy> findAllPatientTherapies(UserDetails userDetails, CardType cardType) throws ServiceException {
+        List<Therapy> therapies = new ArrayList<>();
         try {
-            therapies = therapyDao.findAllTherapies(patientLogin, cardType);
+            Optional<UserDetails> optionalUserDetails = userDetailsDao
+                    .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                            userDetails.getLastName(), userDetails.getBirthday());
+            if (optionalUserDetails.isPresent()) {
+                Optional<User> optionalUser = userDao.findById(optionalUserDetails.get().getUserId());
+                if (optionalUser.isPresent()) {
+                    therapies = therapyDao.findAllTherapies(optionalUser.get().getLogin(), cardType);
+                }
+            }
         } catch (DaoException e) {
             throw new ServiceException("FindAllPatientTherapies failed.", e);
         }

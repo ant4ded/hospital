@@ -17,5 +17,5 @@ public interface DoctorService {
     boolean diagnoseDisease(String icdCode, String reason, String doctorLogin,
                             String patientLogin, CardType cardType) throws ServiceException;
 
-    List<Therapy> findAllPatientTherapies(String patientLogin, CardType cardType) throws ServiceException;
+    List<Therapy> findAllPatientTherapies(UserDetails userDetails, CardType cardType) throws ServiceException;
 }
