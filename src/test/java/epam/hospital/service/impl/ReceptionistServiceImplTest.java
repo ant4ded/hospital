@@ -4,6 +4,7 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.service.ReceptionistService;
 import by.epam.hospital.service.ServiceException;
 import by.epam.hospital.service.impl.ReceptionistServiceImpl;
@@ -31,16 +32,15 @@ public class ReceptionistServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void registerClient_user_true(User user) throws ServiceException, DaoException {
+    public void registerClient_nonExistentUser_true(User user) throws ServiceException, DaoException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(user));
         Assert.assertTrue(receptionistService.registerClient(user));
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = ServiceException.class)
-    public void registerClient_user_serviceException(User user) throws ServiceException, DaoException {
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void registerClient_existingUser_false(User user) throws ServiceException, DaoException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
         receptionistService.registerClient(user);
@@ -53,11 +53,33 @@ public class ReceptionistServiceImplTest {
         receptionistService.registerClient(user);
     }
 
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void findUserCredentials_existingUser_userPresent(User user) throws DaoException, ServiceException {
+        UserDetails userDetails = user.getUserDetails();
+        Mockito.when(userDetailsDao.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                userDetails.getLastName(), userDetails.getBirthday()))
+                .thenReturn(Optional.of(userDetails));
+        Mockito.when(userDao.findById(user.getId()))
+                .thenReturn(Optional.of(user));
+        Assert.assertTrue(receptionistService.findUserCredentials(userDetails).isPresent());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void findUserCredentials_nonExistentUser_emptyUser(User user) throws DaoException, ServiceException {
+        UserDetails userDetails = user.getUserDetails();
+        Mockito.when(userDetailsDao.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                userDetails.getLastName(), userDetails.getBirthday()))
+                .thenReturn(Optional.empty());
+        Assert.assertTrue(receptionistService.findUserCredentials(userDetails).isEmpty());
+    }
+
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
             expectedExceptions = ServiceException.class)
-    public void registerClient_userPresent_serviceException(User user) throws ServiceException, DaoException {
-        Mockito.when(userDao.findByLogin(user.getLogin()))
-                .thenReturn(Optional.empty());
-        receptionistService.registerClient(user);
+    public void findUserCredentials_daoException_serviceException(User user) throws DaoException, ServiceException {
+        UserDetails userDetails = user.getUserDetails();
+        Mockito.when(userDetailsDao.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                userDetails.getLastName(), userDetails.getBirthday()))
+                .thenThrow(DaoException.class);
+        Assert.assertTrue(receptionistService.findUserCredentials(userDetails).isEmpty());
     }
 }

@@ -4,6 +4,7 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.service.ReceptionistService;
 import by.epam.hospital.service.ServiceException;
 
@@ -20,19 +21,39 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 
     @Override
     public boolean registerClient(User user) throws ServiceException {
+        boolean result = false;
         try {
             Optional<User> optionalUser = userDao.findByLogin(user.getLogin());
-            if (optionalUser.isPresent()) {
-                throw new ServiceException("Registration new client failed. User already existing.");
-            } else {
+            if (optionalUser.isEmpty()) {
                 userDao.create(user);
-                user.getUserDetails().setUserId(userDao.findByLogin(user.getLogin())
-                        .orElseThrow(ServiceException::new).getId());
+                user.getUserDetails().setUserId(userDao
+                        .findByLogin(user.getLogin()).orElseThrow(DaoException::new).getId());
                 userDetailsDao.create(user.getUserDetails());
+                result = true;
             }
         } catch (DaoException e) {
             throw new ServiceException("Registration new client failed.", e);
         }
-        return true;
+        return result;
+    }
+
+    @Override
+    public Optional<User> findUserCredentials(UserDetails userDetails) throws ServiceException {
+        Optional<User> userFromDb;
+        Optional<User> optionalUser = Optional.empty();
+        try {
+            Optional<UserDetails> optionalUserDetails = userDetailsDao
+                    .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+                            userDetails.getLastName(), userDetails.getBirthday());
+            if (optionalUserDetails.isPresent()) {
+                optionalUser = Optional.of(new User());
+                userFromDb = userDao.findById(optionalUserDetails.get().getUserId());
+                optionalUser.get().setLogin(userFromDb.orElse(new User()).getLogin());
+                optionalUser.get().setPassword(userFromDb.orElse(new User()).getPassword());
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("FindUserCredentials failed.", e);
+        }
+        return optionalUser;
     }
 }
