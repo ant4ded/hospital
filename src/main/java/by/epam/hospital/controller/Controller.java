@@ -1,5 +1,7 @@
 package by.epam.hospital.controller;
 
+import org.apache.log4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,24 +17,32 @@ import java.util.Map;
         HospitalUrl.COMMAND_DIAGNOSE_DISEASE, HospitalUrl.COMMAND_EDIT_USER_DETAILS,
         HospitalUrl.COMMAND_FIND_USER_DETAILS})
 public class Controller extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(Controller.class);
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         CommandProvider commandProvider = new CommandProvider();
         String commandFromRequest = request.getParameter(ParameterName.COMMAND);
-        if (commandFromRequest != null && !commandFromRequest.isBlank()) {
-            doCommand(request, response, commandFromRequest);
-        } else {
-            commandProvider.getCommand(CommandName.FIRST_VISIT).execute(request, response);
+        try {
+            if (commandFromRequest != null && !commandFromRequest.isBlank()) {
+                doCommand(request, response, commandFromRequest);
+            } else {
+                commandProvider.getCommand(CommandName.FIRST_VISIT).execute(request, response);
+            }
+        } catch (ServletException | IOException e) {
+            logger.error("Exception in controller. Get method.", e);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String commandFromRequest = request.getParameter(ParameterName.COMMAND);
-        if (commandFromRequest != null && !commandFromRequest.isBlank()) {
-            doCommand(request, response, commandFromRequest);
+        try {
+            if (commandFromRequest != null && !commandFromRequest.isBlank()) {
+                doCommand(request, response, commandFromRequest);
+            }
+        } catch (ServletException | IOException e) {
+            logger.error("Exception in controller. Post method", e);
         }
     }
 

@@ -19,30 +19,26 @@ public class PassportDetailsFilter implements Filter {
         StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                 FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
 
-        if (!userValidator.isValidName(servletRequest
-                .getParameter(UsersDetailsFieldName.FIRST_NAME))) {
+        if (!userValidator.isValidName(servletRequest.getParameter(UsersDetailsFieldName.FIRST_NAME))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.FIRST_NAME);
         }
-        if (!userValidator.isValidName(servletRequest
-                .getParameter(UsersDetailsFieldName.SURNAME))) {
+        if (!userValidator.isValidName(servletRequest.getParameter(UsersDetailsFieldName.SURNAME))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.SURNAME);
         }
-        if (!userValidator.isValidName(servletRequest
-                .getParameter(UsersDetailsFieldName.LAST_NAME))) {
+        if (!userValidator.isValidName(servletRequest.getParameter(UsersDetailsFieldName.LAST_NAME))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.LAST_NAME);
         }
-        if (!userValidator.isValidBirthDate(servletRequest
-                .getParameter(UsersDetailsFieldName.BIRTHDAY))) {
+        if (!userValidator.isValidBirthDate(servletRequest.getParameter(UsersDetailsFieldName.BIRTHDAY))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.BIRTHDAY);
         }
         if (isHaveInvalidFields) {
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
-            servletRequest.getRequestDispatcher(servletRequest
-                    .getParameter(ParameterName.PAGE_OF_DEPARTURE)).forward(servletRequest, servletResponse);
+            servletRequest.getRequestDispatcher(servletRequest.getParameter(ParameterName.PAGE_OF_DEPARTURE))
+                    .forward(servletRequest, servletResponse);
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);

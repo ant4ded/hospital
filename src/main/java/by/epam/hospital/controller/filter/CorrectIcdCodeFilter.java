@@ -19,15 +19,14 @@ public class CorrectIcdCodeFilter implements Filter {
         StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                 FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
 
-        if (!userValidator.isValidIcdCode(servletRequest
-                .getParameter(IcdFieldName.CODE))) {
+        if (!userValidator.isValidIcdCode(servletRequest.getParameter(IcdFieldName.CODE))) {
             isHaveInvalidFields = true;
             response.add(IcdFieldName.CODE);
         }
         if (isHaveInvalidFields) {
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
-            servletRequest.getRequestDispatcher(servletRequest
-                    .getParameter(ParameterName.PAGE_OF_DEPARTURE)).forward(servletRequest, servletResponse);
+            servletRequest.getRequestDispatcher(servletRequest.getParameter(ParameterName.PAGE_OF_DEPARTURE))
+                    .forward(servletRequest, servletResponse);
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);

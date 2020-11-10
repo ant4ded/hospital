@@ -1,8 +1,6 @@
 package by.epam.hospital.controller.filter;
 
-import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
-import by.epam.hospital.controller.filter.FilterMessageParameter;
 import by.epam.hospital.entity.Role;
 
 import javax.servlet.*;
@@ -30,7 +28,7 @@ public class CorrectRoleFilter implements Filter {
         }
         if (isHaveInvalidFields) {
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
-            servletRequest.getRequestDispatcher(HospitalUrl.PAGE_ROLE_CONTROL)
+            servletRequest.getRequestDispatcher(servletRequest.getParameter(ParameterName.PAGE_OF_DEPARTURE))
                     .forward(servletRequest, servletResponse);
             return;
         }

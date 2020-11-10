@@ -30,7 +30,7 @@ public class CorrectCardTypeFilter implements Filter {
         }
         if (isHaveInvalidFields) {
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
-            servletRequest.getRequestDispatcher(HospitalUrl.PAGE_ROLE_CONTROL)
+            servletRequest.getRequestDispatcher(servletRequest.getParameter(ParameterName.PAGE_OF_DEPARTURE))
                     .forward(servletRequest, servletResponse);
             return;
         }

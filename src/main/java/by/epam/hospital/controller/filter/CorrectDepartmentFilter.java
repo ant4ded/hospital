@@ -30,8 +30,8 @@ public class CorrectDepartmentFilter implements Filter {
 
         if (isHaveInvalidFields) {
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
-            servletRequest.getRequestDispatcher(servletRequest
-                    .getParameter(ParameterName.PAGE_OF_DEPARTURE)).forward(servletRequest, servletResponse);
+            servletRequest.getRequestDispatcher(servletRequest.getParameter(ParameterName.PAGE_OF_DEPARTURE))
+                    .forward(servletRequest, servletResponse);
             return;
         }
         filterChain.doFilter(servletRequest, servletResponse);
