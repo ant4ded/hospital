@@ -37,7 +37,7 @@ public class DiagnoseDiseaseFilter implements Filter {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.LAST_NAME);
         }
-        if (!userValidator.isValidDate(servletRequest
+        if (!userValidator.isValidBirthDate(servletRequest
                 .getParameter(UsersDetailsFieldName.BIRTHDAY))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.BIRTHDAY);
