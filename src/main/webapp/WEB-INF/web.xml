@@ -230,8 +230,20 @@
     <filter-class>by.epam.hospital.controller.filter.PassportDetailsFilter</filter-class>
   </filter>
   <filter>
+    <filter-name>CorrectIcdCodeFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.CorrectIcdCodeFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>CorrectCardTypeFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.CorrectCardTypeFilter</filter-class>
+  </filter>
+  <filter>
     <filter-name>CorrectPhoneFilter</filter-name>
     <filter-class>by.epam.hospital.controller.filter.CorrectPhoneFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>CorrectGenderFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.CorrectGenderFilter</filter-class>
   </filter>
 
   <filter-mapping>
@@ -281,7 +293,15 @@
   </filter-mapping>
 
   <filter-mapping>
+    <filter-name>CorrectLoginFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
     <filter-name>CorrectPassportIdFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CorrectGenderFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
   <filter-mapping>
@@ -292,10 +312,6 @@
     <filter-name>CorrectPhoneFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
-  <filter-mapping>
-    <filter-name>CorrectLoginFilter</filter-name>
-    <url-pattern>/c-register-client</url-pattern>
-  </filter-mapping>
 
   <filter-mapping>
     <filter-name>PassportDetailsFilter</filter-name>
@@ -304,6 +320,14 @@
 
   <filter-mapping>
     <filter-name>PassportDetailsFilter</filter-name>
+    <url-pattern>/c-diagnose-disease</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CorrectIcdCodeFilter</filter-name>
+    <url-pattern>/c-diagnose-disease</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CorrectCardTypeFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>
   </filter-mapping>
   <!--Validation filters declaration end-->
