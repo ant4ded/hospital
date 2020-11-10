@@ -20,6 +20,7 @@ public class HospitalUrl {
     public static final String COMMAND_ROLE_CONTROL = "/c-role-control";
 
     public static final String COMMAND_REGISTER_CLIENT = "/c-register-client";
+    public static final String COMMAND_FIND_USER_CREDENTIALS = "/c-find-user-credentials";
 
     public static final String COMMAND_DIAGNOSE_DISEASE = "/c-diagnose-disease";
 

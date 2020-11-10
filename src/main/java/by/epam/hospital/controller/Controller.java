@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.util.Map;
 
 @WebServlet(urlPatterns = {HospitalUrl.EMPTY, HospitalUrl.SERVLET_MAIN, HospitalUrl.COMMAND_REGISTER_CLIENT,
-        HospitalUrl.COMMAND_CHANGE_DEPARTMENT_HEAD, HospitalUrl.COMMAND_FIND_DEPARTMENT_CONTROL_ATTRIBUTES,
-        HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES, HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT,
-        HospitalUrl.COMMAND_ROLE_CONTROL, HospitalUrl.COMMAND_DIAGNOSE_DISEASE})
+        HospitalUrl.COMMAND_FIND_USER_CREDENTIALS, HospitalUrl.COMMAND_CHANGE_DEPARTMENT_HEAD,
+        HospitalUrl.COMMAND_FIND_DEPARTMENT_CONTROL_ATTRIBUTES, HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES,
+        HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT, HospitalUrl.COMMAND_ROLE_CONTROL,
+        HospitalUrl.COMMAND_DIAGNOSE_DISEASE})
 public class Controller extends HttpServlet {
-    // TODO: 06.11.2020 add 4 fields to db in all tables who_create, when_create, who_update, when_update
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

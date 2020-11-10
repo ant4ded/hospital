@@ -5,6 +5,7 @@ import by.epam.hospital.controller.command.FirstVisit;
 import by.epam.hospital.controller.command.SignOut;
 import by.epam.hospital.controller.command.admin.head.*;
 import by.epam.hospital.controller.command.doctor.DiagnoseDisease;
+import by.epam.hospital.controller.command.receptionist.FindUserCredentials;
 import by.epam.hospital.controller.command.receptionist.RegisterClient;
 import by.epam.hospital.dao.impl.*;
 import by.epam.hospital.service.AdminHeadService;
@@ -24,15 +25,14 @@ public class CommandProvider {
     private final Map<CommandName, HttpCommand> map = new HashMap<>();
 
     public CommandProvider() {
-        map.put(CommandName.FIRST_VISIT,
-                new FirstVisit());
-        map.put(CommandName.SIGN_OUT,
-                new SignOut());
+        map.put(CommandName.FIRST_VISIT, new FirstVisit());
+        map.put(CommandName.SIGN_OUT, new SignOut());
         map.put(CommandName.AUTHORIZATION,
                 new Authorization(getClientService(),
                         Logger.getLogger(Authorization.class)));
         map.put(CommandName.REGISTER_CLIENT,
-                new RegisterClient(getReceptionistService(), Logger.getLogger(RegisterClient.class)));
+                new RegisterClient(getReceptionistService(),
+                        Logger.getLogger(RegisterClient.class)));
         map.put(CommandName.FIND_ROLE_CONTROL_ATTRIBUTES,
                 new FindRoleControlAttributes(getAdminHeadService(),
                         Logger.getLogger(FindRoleControlAttributes.class)));
@@ -48,8 +48,12 @@ public class CommandProvider {
         map.put(CommandName.MOVE_DOCTOR_TO_DEPARTMENT,
                 new MoveDoctorToDepartment(getAdminHeadService(),
                         Logger.getLogger(MoveDoctorToDepartment.class)));
-        map.put(CommandName.DIAGNOSE_DISEASE, new DiagnoseDisease(getDoctorService(),
-                Logger.getLogger(DiagnoseDisease.class)));
+        map.put(CommandName.DIAGNOSE_DISEASE,
+                new DiagnoseDisease(getDoctorService(),
+                        Logger.getLogger(DiagnoseDisease.class)));
+        map.put(CommandName.FIND_USER_CREDENTIALS,
+                new FindUserCredentials(getReceptionistService(),
+                        Logger.getLogger(FindUserCredentials.class)));
     }
 
     public HttpCommand getCommand(CommandName command) {
