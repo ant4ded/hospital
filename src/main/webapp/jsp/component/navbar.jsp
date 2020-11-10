@@ -87,30 +87,39 @@
                                 <ul>
                                         <%--Role.RECEPTIONIST--%>
                                     <c:if test="${sessionScope.loginRoles.contains(Role.RECEPTIONIST)}">
-                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_REGISTRY}">
-                                            Register new client
-                                        </a></li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_REGISTRY}">
+                                                register new client
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_USER_CREDENTIALS}">
+                                                find user credentials
+                                            </a>
+                                        </li>
                                     </c:if>
                                         <%--Role.DOCTOR--%>
                                     <c:if test="${sessionScope.loginRoles.contains(Role.DOCTOR)}">
-                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DIAGNOSE_DISEASE}">
-                                            Diagnose disease
-                                        </a></li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DIAGNOSE_DISEASE}">
+                                                diagnose disease
+                                            </a>
+                                        </li>
                                     </c:if>
                                         <%--Role.ADMIN_HEAD--%>
                                     <c:if test="${sessionScope.loginRoles.contains(Role.ADMIN_HEAD)}">
-                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DEPARTMENT_CONTROL}">
-                                            Department control
-                                        </a></li>
-                                        <li><a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_ROLE_CONTROL}">
-                                            Role control
-                                        </a></li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DEPARTMENT_CONTROL}">
+                                                department control
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_ROLE_CONTROL}">
+                                                role control
+                                            </a>
+                                        </li>
                                     </c:if>
-                                    <li>
-                                        <a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.SIGN_OUT}">
-                                            sign out
-                                        </a>
-                                    </li>
+                                    <li><a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.SIGN_OUT}">sign out</a></li>
                                     <li><a href="#">settings</a></li>
                                 </ul>
                             </li>

@@ -45,7 +45,7 @@ public class FindUserCredentials implements HttpCommand {
             } else {
                 result.put(ParameterName.MESSAGE, MESSAGE_NON_EXISTENT_USER);
             }
-            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_REGISTRY);
+            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_USER_CREDENTIALS);
         } catch (ServiceException e) {
             logger.error(e);
             result.put(ParameterName.COMMAND_EXCEPTION, e.getMessage());

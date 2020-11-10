@@ -29,6 +29,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>UserCredentials</servlet-name>
+    <jsp-file>/jsp/userCredentials.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserCredentials</servlet-name>
+    <url-pattern>/user-credentials</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>RoleControl</servlet-name>
     <jsp-file>/jsp/roleControl.jsp</jsp-file>
   </servlet>
