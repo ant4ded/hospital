@@ -24,6 +24,7 @@ public class UserValidator {
 
     public boolean isValidBirthDate(String s) {
         boolean result = false;
+
         final int YEAR_LENGTH = 4;
         final int MULTIPLICITY_LEAP_YEAR = 4;
         final int MONTH_LENGTH = 2;
@@ -36,24 +37,31 @@ public class UserValidator {
         final int NON_LEAP_YEAR_DAY = 28;
         final int MIN_YEAR_BIRTH = LocalDate.now().getYear() - MAX_AGE;
 
-        int firstDash = s.indexOf('-');
-        int secondDash = s.indexOf('-', firstDash + 1);
+        int firstDashPosition = s.indexOf('-');
+        int secondDashPosition = s.indexOf('-', firstDashPosition + 1);
         int len = s.length();
 
-        if ((secondDash > 0) && (secondDash < len - 1) && firstDash == YEAR_LENGTH &&
-                (secondDash - firstDash > 1 && secondDash - firstDash <= MONTH_LENGTH + 1) &&
-                (len - secondDash > 1 && len - secondDash <= DAY_LENGTH + 1)) {
-            int year = Integer.parseInt(s, 0, firstDash, 10);
-            int month = Integer.parseInt(s, firstDash + 1, secondDash, 10);
-            int day = Integer.parseInt(s, secondDash + 1, len, 10);
+        boolean isValidYearLength = (secondDashPosition > 0) && (secondDashPosition < len - 1) &&
+                firstDashPosition == YEAR_LENGTH;
+        boolean isValidMonthLength = (secondDashPosition - firstDashPosition > 1 &&
+                secondDashPosition - firstDashPosition <= MONTH_LENGTH + 1);
+        boolean isValidDayLength = (len - secondDashPosition > 1 && len - secondDashPosition <= DAY_LENGTH + 1);
+        
+        if (isValidYearLength && isValidMonthLength && isValidDayLength) {
+            int year = Integer.parseInt(s, 0, firstDashPosition, 10);
+            int month = Integer.parseInt(s, firstDashPosition + 1, secondDashPosition, 10);
+            int day = Integer.parseInt(s, secondDashPosition + 1, len, 10);
+
             boolean isValidMonth = (month >= 1 && month <= MAX_MONTH);
             boolean isValidYear = year >= MIN_YEAR_BIRTH && year <= LocalDate.now().getYear();
+
             boolean isValidDaysInThirtyDayMonth = (month == 4 || month == 6 || month == 9 || month == 11)
                     && day <= DEFAULT_DAY;
             boolean isValidDaysInThirtyOneDayMonth = (month == 1 || month == 3 || month == 5 || month == 7 ||
                     month == 8 || month == 10 || month == 12) && day <= MAX_DAY;
             boolean isValidDaysInFebruary = month == 2 &&
                     (day <= NON_LEAP_YEAR_DAY || (day == LEAP_YEAR_DAY && year % MULTIPLICITY_LEAP_YEAR == 0));
+
             result = isValidMonth && isValidYear &&
                     (isValidDaysInThirtyDayMonth || isValidDaysInThirtyOneDayMonth || isValidDaysInFebruary);
         }
