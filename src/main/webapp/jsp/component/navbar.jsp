@@ -119,8 +119,16 @@
                                             </a>
                                         </li>
                                     </c:if>
-                                    <li><a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.SIGN_OUT}">sign out</a></li>
-                                    <li><a href="#">settings</a></li>
+                                    <li>
+                                        <a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.FIND_USER_DETAILS}">
+                                            profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.SIGN_OUT}">
+                                            sign out
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         </c:if>

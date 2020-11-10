@@ -13,6 +13,10 @@ public class HospitalUrl {
     public static final String PAGE_DEPARTMENT_CONTROL = "/department-control";
     public static final String PAGE_ERROR = "/error-handler";
     public static final String PAGE_DIAGNOSE_DISEASE = "/diagnose-disease";
+    public static final String PAGE_PROFILE = "/profile";
+
+    public static final String COMMAND_FIND_USER_DETAILS = "/c-find-user-details";
+    public static final String COMMAND_EDIT_USER_DETAILS = "/c-edit-user-details";
 
     public static final String COMMAND_CHANGE_DEPARTMENT_HEAD = "/c-change-department-head";
     public static final String COMMAND_FIND_DEPARTMENT_CONTROL_ATTRIBUTES = "/c-find-department-control-attributes";

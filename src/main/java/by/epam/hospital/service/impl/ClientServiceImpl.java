@@ -35,8 +35,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Optional<UserDetails> updateUserDetails(UserDetails userDetails, String login) throws ServiceException {
+    public Optional<UserDetails> updateUserDetails(String phone, String address, String login)
+            throws ServiceException {
         Optional<UserDetails> result = Optional.empty();
+        UserDetails userDetails = new UserDetails();
+        userDetails.setPhone(phone);
+        userDetails.setAddress(address);
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
             if (optionalUser.isPresent()) {
@@ -46,5 +50,19 @@ public class ClientServiceImpl implements ClientService {
             throw new ServiceException("UpdateUserDetails failed.", e);
         }
         return result;
+    }
+
+    @Override
+    public Optional<UserDetails> findUserDetails(String login) throws ServiceException {
+        Optional<UserDetails> optionalUserDetails = Optional.empty();
+        try {
+            Optional<User> optionalUser = userDao.findByLogin(login);
+            if (optionalUser.isPresent()) {
+                optionalUserDetails = userDetailsDao.findByUserId(optionalUser.get().getId());
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("FindUserDetails failed.", e);
+        }
+        return optionalUserDetails;
     }
 }

@@ -131,7 +131,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             statement = connection.prepareStatement(SQL_UPDATE);
             statement.setString(1, newValue.getAddress());
             statement.setString(2, newValue.getPhone());
-            statement.setInt(3, newValue.getUserId());
+            statement.setInt(3, userId);
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows != 0) {

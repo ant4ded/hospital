@@ -12,7 +12,8 @@ import java.util.Map;
         HospitalUrl.COMMAND_FIND_USER_CREDENTIALS, HospitalUrl.COMMAND_CHANGE_DEPARTMENT_HEAD,
         HospitalUrl.COMMAND_FIND_DEPARTMENT_CONTROL_ATTRIBUTES, HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES,
         HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT, HospitalUrl.COMMAND_ROLE_CONTROL,
-        HospitalUrl.COMMAND_DIAGNOSE_DISEASE})
+        HospitalUrl.COMMAND_DIAGNOSE_DISEASE, HospitalUrl.COMMAND_EDIT_USER_DETAILS,
+        HospitalUrl.COMMAND_FIND_USER_DETAILS})
 public class Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -47,7 +48,7 @@ public class Controller extends HttpServlet {
                 }
             }
             request.getRequestDispatcher(String.valueOf(parameters.get(ParameterName.PAGE_FORWARD)))
-                    .forward(request,response);
+                    .forward(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     String.valueOf(parameters.get(ParameterName.COMMAND_EXCEPTION)));

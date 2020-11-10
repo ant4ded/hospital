@@ -4,6 +4,8 @@ import by.epam.hospital.controller.command.Authorization;
 import by.epam.hospital.controller.command.FirstVisit;
 import by.epam.hospital.controller.command.SignOut;
 import by.epam.hospital.controller.command.admin.head.*;
+import by.epam.hospital.controller.command.client.EditUserDetails;
+import by.epam.hospital.controller.command.client.FindUserDetails;
 import by.epam.hospital.controller.command.doctor.DiagnoseDisease;
 import by.epam.hospital.controller.command.receptionist.FindUserCredentials;
 import by.epam.hospital.controller.command.receptionist.RegisterClient;
@@ -54,6 +56,12 @@ public class CommandProvider {
         map.put(CommandName.FIND_USER_CREDENTIALS,
                 new FindUserCredentials(getReceptionistService(),
                         Logger.getLogger(FindUserCredentials.class)));
+        map.put(CommandName.EDIT_USER_DETAILS,
+                new EditUserDetails(getClientService(),
+                        Logger.getLogger(EditUserDetails.class)));
+        map.put(CommandName.FIND_USER_DETAILS,
+                new FindUserDetails(getClientService(),
+                        Logger.getLogger(FindUserDetails.class)));
     }
 
     public HttpCommand getCommand(CommandName command) {

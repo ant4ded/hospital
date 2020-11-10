@@ -65,6 +65,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>Profile</servlet-name>
+    <jsp-file>/jsp/profile.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Profile</servlet-name>
+    <url-pattern>/profile</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>Error</servlet-name>
     <jsp-file>/jsp/error.jsp</jsp-file>
   </servlet>
