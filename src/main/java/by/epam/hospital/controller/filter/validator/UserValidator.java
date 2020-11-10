@@ -54,10 +54,8 @@ public class UserValidator {
                     month == 8 || month == 10 || month == 12) && day <= MAX_DAY;
             boolean isValidDaysInFebruary = month == 2 &&
                     (day <= NON_LEAP_YEAR_DAY || (day == LEAP_YEAR_DAY && year % MULTIPLICITY_LEAP_YEAR == 0));
-            if (isValidMonth && isValidYear &&
-                    (isValidDaysInThirtyDayMonth || isValidDaysInThirtyOneDayMonth || isValidDaysInFebruary)) {
-                    result = true;
-            }
+            result = isValidMonth && isValidYear &&
+                    (isValidDaysInThirtyDayMonth || isValidDaysInThirtyOneDayMonth || isValidDaysInFebruary);
         }
         return result;
     }
