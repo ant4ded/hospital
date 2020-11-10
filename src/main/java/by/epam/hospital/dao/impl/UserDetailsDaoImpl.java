@@ -58,8 +58,8 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
      */
     private static final String SQL_UPDATE = """
             UPDATE users_details
-            SET gender = ?, first_name = ?, surname = ?, last_name = ?, birthday = ?, address = ?, phone = ?
-            WHERE passport_id = ? AND user_id = ?""";
+            SET address = ?, phone = ?
+            WHERE user_id = ?""";
 
     /**
      * Create entity {@code UserDetails} in database
@@ -110,10 +110,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
      * Update entity {@code UserDetails} in database
      * using {@code PreparedStatement}.
      *
-     * @param oldValue {@code UserDetails} entity that need to be updated,
-     *                 must contain the {@code userId} field.
      * @param newValue new value for {@code UserDetails} entity,
      *                 that update {@code oldValue}.
+     * @param userId   {@code int} value for {@code User.id}.
      * @return {@code newValue} if it was updated or
      * {@code oldValue} if it wasn't of {@code UserDetails} entity.
      * @throws DaoException if a database access error occurs
@@ -123,27 +122,20 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
      * @see ConnectionException
      */
     @Override
-    public UserDetails update(UserDetails oldValue, UserDetails newValue) throws DaoException {
+    public Optional<UserDetails> update(UserDetails newValue, int userId) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        UserDetails updatedUserDetails = newValue;
-        newValue.setUserId(oldValue.getUserId());
+        Optional<UserDetails> optionalUserDetails = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_UPDATE);
-            statement.setString(1, newValue.getGender().name());
-            statement.setString(2, newValue.getFirstName());
-            statement.setString(3, newValue.getSurname());
-            statement.setString(4, newValue.getLastName());
-            statement.setDate(5, newValue.getBirthday());
-            statement.setString(6, newValue.getAddress());
-            statement.setString(7, newValue.getPhone());
-            statement.setString(8, newValue.getPassportId());
-            statement.setInt(9, newValue.getUserId());
+            statement.setString(1, newValue.getAddress());
+            statement.setString(2, newValue.getPhone());
+            statement.setInt(3, newValue.getUserId());
 
             int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                updatedUserDetails = oldValue;
+            if (affectedRows != 0) {
+                optionalUserDetails = findByUserId(userId);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -152,7 +144,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
-        return updatedUserDetails;
+        return optionalUserDetails;
     }
 
     /**

@@ -2,6 +2,7 @@ package epam.hospital.service.impl;
 
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
+import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.service.ClientService;
 import by.epam.hospital.service.ServiceException;
@@ -14,15 +15,19 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Optional;
+
 public class ClientServiceImplTest {
     @Mock
     private UserDao userDao;
+    @Mock
+    private UserDetailsDao userDetailsDao;
     private ClientService clientService;
 
     @BeforeMethod
     private void setUp() {
         MockitoAnnotations.openMocks(this);
-        clientService = new ClientServiceImpl(userDao);
+        clientService = new ClientServiceImpl(userDao, userDetailsDao);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
@@ -53,5 +58,33 @@ public class ClientServiceImplTest {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenThrow(DaoException.class);
         Assert.assertTrue(clientService.authorization(user.getLogin(), user.getPassword()).isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void updateUserDetails_existingUser_userPresent(User user) throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenReturn(Optional.of(user));
+        Mockito.when(userDetailsDao.update(user.getUserDetails(), user.getId()))
+                .thenReturn(Optional.of(user.getUserDetails()));
+        Assert.assertTrue(clientService.updateUserDetails(user.getUserDetails(), user.getLogin()).isPresent());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void updateUserDetails_nonExistentUser_userEmpty(User user) throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenReturn(Optional.of(user));
+        Mockito.when(userDetailsDao.update(user.getUserDetails(), user.getId()))
+                .thenReturn(Optional.empty());
+        Assert.assertTrue(clientService.updateUserDetails(user.getUserDetails(), user.getLogin()).isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            expectedExceptions = ServiceException.class)
+    public void updateUserDetails_daoException_serviceException(User user) throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenReturn(Optional.of(user));
+        Mockito.when(userDetailsDao.update(user.getUserDetails(), user.getId()))
+                .thenThrow(DaoException.class);
+        clientService.updateUserDetails(user.getUserDetails(), user.getLogin());
     }
 }

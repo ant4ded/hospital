@@ -2,7 +2,9 @@ package by.epam.hospital.service.impl;
 
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
+import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.service.ClientService;
 import by.epam.hospital.service.ServiceException;
 
@@ -10,9 +12,11 @@ import java.util.Optional;
 
 public class ClientServiceImpl implements ClientService {
     private final UserDao userDao;
+    private final UserDetailsDao userDetailsDao;
 
-    public ClientServiceImpl(UserDao userDao) {
+    public ClientServiceImpl(UserDao userDao, UserDetailsDao userDetailsDao) {
         this.userDao = userDao;
+        this.userDetailsDao = userDetailsDao;
     }
 
     @Override
@@ -28,5 +32,19 @@ public class ClientServiceImpl implements ClientService {
             throw new ServiceException("Authorization failed.", e);
         }
         return optionalUser;
+    }
+
+    @Override
+    public Optional<UserDetails> updateUserDetails(UserDetails userDetails, String login) throws ServiceException {
+        Optional<UserDetails> result = Optional.empty();
+        try {
+            Optional<User> optionalUser = userDao.findByLogin(login);
+            if (optionalUser.isPresent()) {
+                result = userDetailsDao.update(userDetails, optionalUser.get().getId());
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("UpdateUserDetails failed.", e);
+        }
+        return result;
     }
 }

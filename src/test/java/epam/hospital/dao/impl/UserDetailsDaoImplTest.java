@@ -45,29 +45,24 @@ public class UserDetailsDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
             dependsOnMethods = "create_correctCreate_true")
-    public void update_correctUpdate_true(User user) throws DaoException {
+    public void update_correctUpdate_userDetailsPresent(User user) throws DaoException {
         UserDetails newUserDetails = new UserDetails();
-        newUserDetails.setPassportId(user.getUserDetails().getPassportId());
-        newUserDetails.setGender(UserDetails.Gender.MALE);
-        newUserDetails.setFirstName(user.getUserDetails().getFirstName());
-        newUserDetails.setSurname(user.getUserDetails().getSurname());
-        newUserDetails.setLastName(user.getUserDetails().getLastName());
-        newUserDetails.setBirthday(user.getUserDetails().getBirthday());
-        newUserDetails.setAddress(user.getUserDetails().getAddress());
+        newUserDetails.setAddress(user.getUserDetails().getAddress() + "1");
         newUserDetails.setPhone(user.getUserDetails().getPhone());
 
         user.getUserDetails().setUserId(userDao.create(user));
+        userDetailsDao.create(user.getUserDetails());
         newUserDetails.setUserId(user.getUserDetails().getUserId());
-        UserDetails updatedUserDetails = userDetailsDao.update(user.getUserDetails(), newUserDetails);
+        Optional<UserDetails> optionalUserDetails = userDetailsDao.update(newUserDetails, newUserDetails.getUserId());
         cleaner.delete(user);
 
-        Assert.assertEquals(newUserDetails, updatedUserDetails);
+        Assert.assertTrue(optionalUserDetails.isPresent());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void update_nonExistentUserId_exception(User user) throws DaoException {
-        Assert.assertEquals(userDetailsDao
-                .update(user.getUserDetails(), user.getUserDetails()), user.getUserDetails());
+    public void update_nonExistentUserId_userDetailsEmpty(User user) throws DaoException {
+        Assert.assertTrue(userDetailsDao
+                .update(user.getUserDetails(), user.getUserDetails().getUserId()).isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",

@@ -23,13 +23,13 @@ public interface UserDetailsDao {
     /**
      * Update entity {@code UserDetails} in database.
      *
-     * @param oldValue {@code UserDetails} entity that need to be updated.
      * @param newValue new value for {@code UserDetails} entity.
+     * @param userId {@code int} value for {@code User.id}.
      * @return {@code newValue} if it was updated or {@code oldValue} if it wasn't
      * of {@code UserDetails} entity.
      * @throws DaoException if a database access error occurs.
      */
-    UserDetails update(UserDetails oldValue, UserDetails newValue) throws DaoException;
+    Optional<UserDetails> update(UserDetails newValue, int userId) throws DaoException;
 
     /**
      * Find {@code UserDetails} entity by {@code UserDetails.userId} field.

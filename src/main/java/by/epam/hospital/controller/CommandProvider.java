@@ -61,7 +61,7 @@ public class CommandProvider {
     }
 
     private ClientService getClientService() {
-        return new ClientServiceImpl(new UserDaoImpl());
+        return new ClientServiceImpl(new UserDaoImpl(), new UserDetailsDaoImpl());
     }
 
     private ReceptionistService getReceptionistService() {
