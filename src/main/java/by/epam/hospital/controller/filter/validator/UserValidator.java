@@ -46,7 +46,7 @@ public class UserValidator {
         boolean isValidMonthLength = (secondDashPosition - firstDashPosition > 1 &&
                 secondDashPosition - firstDashPosition <= MONTH_LENGTH + 1);
         boolean isValidDayLength = (len - secondDashPosition > 1 && len - secondDashPosition <= DAY_LENGTH + 1);
-        
+
         if (isValidYearLength && isValidMonthLength && isValidDayLength) {
             int year = Integer.parseInt(s, 0, firstDashPosition, 10);
             int month = Integer.parseInt(s, firstDashPosition + 1, secondDashPosition, 10);
