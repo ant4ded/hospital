@@ -1,9 +1,9 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
-<%@page import="by.epam.hospital.entity.table.DiagnosesFieldName" %>
-<%@page import="by.epam.hospital.entity.table.UsersDetailsFieldName" %>
-<%@page import="by.epam.hospital.entity.table.IcdFieldName" %>
 <%@page import="by.epam.hospital.entity.CardType" %>
+<%@page import="by.epam.hospital.entity.table.DiagnosesFieldName" %>
+<%@page import="by.epam.hospital.entity.table.IcdFieldName" %>
+<%@page import="by.epam.hospital.entity.table.UsersDetailsFieldName" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,10 +36,10 @@
                     <p>${requestScope.message}</p>
                     <form method="post"
                           action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_DIAGNOSE_DISEASE}">
-                                                <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
-                                                       value="${HospitalUrl.PAGE_DIAGNOSE_DISEASE}">
-                                                <input type="hidden" name="${ParameterName.COMMAND}"
-                                                       value="${CommandName.DIAGNOSE_DISEASE}">
+                        <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                               value="${HospitalUrl.PAGE_DIAGNOSE_DISEASE}">
+                        <input type="hidden" name="${ParameterName.COMMAND}"
+                               value="${CommandName.DIAGNOSE_DISEASE}">
                         <div class="form-group form-inline justify-content-between">
                             <div class="form-group">
                                 <input type="text" name="${UsersDetailsFieldName.FIRST_NAME}" placeholder="First name"
