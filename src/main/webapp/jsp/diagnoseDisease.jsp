@@ -34,12 +34,6 @@
                 <div class="comment-form">
                     <h4>Diagnose disease panel</h4>
                     <p>${requestScope.message}</p>
-                    <c:if test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
-                        <p>
-                            This user is head of department ${requestScope.department}.
-                            Please reassign department head to change roles.
-                        </p>
-                    </c:if>
                     <form method="post"
                           action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_DIAGNOSE_DISEASE}">
                                                 <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
