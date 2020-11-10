@@ -37,8 +37,28 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void isValidBirthDate_dataWithInvalidYear_false() {
+    public void isValidBirthDate_null_false() {
+        Assert.assertFalse(userValidator.isValidBirthDate(null));
+    }
+
+    @Test
+    public void isValidBirthDate_withoutDash_false() {
+        Assert.assertFalse(userValidator.isValidBirthDate("19652021"));
+    }
+
+    @Test
+    public void isValidBirthDate_dataWithInvalidYearLength_false() {
         Assert.assertFalse(userValidator.isValidBirthDate("11965-10-21"));
+    }
+
+    @Test
+    public void isValidBirthDate_dataWithInvalidMonthLength_false() {
+        Assert.assertFalse(userValidator.isValidBirthDate("1965-002-21"));
+    }
+
+    @Test
+    public void isValidBirthDate_dataWithInvalidDayLength_false() {
+        Assert.assertFalse(userValidator.isValidBirthDate("1965-02-001"));
     }
 
     @Test
@@ -54,6 +74,11 @@ public class UserValidatorTest {
     @Test
     public void isValidBirthDate_dataWithInvalidDayInNonLeapYear_false() {
         Assert.assertFalse(userValidator.isValidBirthDate("2001-02-29"));
+    }
+
+    @Test
+    public void isValidBirthDate_dataWithInvalidDayInThirtyDayMonth_false() {
+        Assert.assertFalse(userValidator.isValidBirthDate("2001-04-31"));
     }
 
     @Test

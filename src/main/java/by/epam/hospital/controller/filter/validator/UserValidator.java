@@ -37,33 +37,35 @@ public class UserValidator {
         final int NON_LEAP_YEAR_DAY = 28;
         final int MIN_YEAR_BIRTH = LocalDate.now().getYear() - MAX_AGE;
 
-        int firstDashPosition = s.indexOf('-');
-        int secondDashPosition = s.indexOf('-', firstDashPosition + 1);
-        int len = s.length();
+        if(s != null) {
+            int firstDashPosition = s.indexOf('-');
+            int secondDashPosition = s.indexOf('-', firstDashPosition + 1);
+            int len = s.length();
 
-        boolean isValidYearLength = (secondDashPosition > 0) && (secondDashPosition < len - 1) &&
-                firstDashPosition == YEAR_LENGTH;
-        boolean isValidMonthLength = (secondDashPosition - firstDashPosition > 1 &&
-                secondDashPosition - firstDashPosition <= MONTH_LENGTH + 1);
-        boolean isValidDayLength = (len - secondDashPosition > 1 && len - secondDashPosition <= DAY_LENGTH + 1);
+            boolean isValidYearLength = (secondDashPosition > 0) && (secondDashPosition < len - 1) &&
+                    firstDashPosition == YEAR_LENGTH;
+            boolean isValidMonthLength = (secondDashPosition - firstDashPosition > 1 &&
+                    secondDashPosition - firstDashPosition <= MONTH_LENGTH + 1);
+            boolean isValidDayLength = (len - secondDashPosition > 1 && len - secondDashPosition <= DAY_LENGTH + 1);
 
-        if (isValidYearLength && isValidMonthLength && isValidDayLength) {
-            int year = Integer.parseInt(s, 0, firstDashPosition, 10);
-            int month = Integer.parseInt(s, firstDashPosition + 1, secondDashPosition, 10);
-            int day = Integer.parseInt(s, secondDashPosition + 1, len, 10);
+            if (isValidYearLength && isValidMonthLength && isValidDayLength) {
+                int year = Integer.parseInt(s, 0, firstDashPosition, 10);
+                int month = Integer.parseInt(s, firstDashPosition + 1, secondDashPosition, 10);
+                int day = Integer.parseInt(s, secondDashPosition + 1, len, 10);
 
-            boolean isValidMonth = (month >= 1 && month <= MAX_MONTH);
-            boolean isValidYear = year >= MIN_YEAR_BIRTH && year <= LocalDate.now().getYear();
+                boolean isValidMonth = (month >= 1 && month <= MAX_MONTH);
+                boolean isValidYear = year >= MIN_YEAR_BIRTH && year <= LocalDate.now().getYear();
 
-            boolean isValidDaysInThirtyDayMonth = (month == 4 || month == 6 || month == 9 || month == 11)
-                    && day <= DEFAULT_DAY;
-            boolean isValidDaysInThirtyOneDayMonth = (month == 1 || month == 3 || month == 5 || month == 7 ||
-                    month == 8 || month == 10 || month == 12) && day <= MAX_DAY;
-            boolean isValidDaysInFebruary = month == 2 &&
-                    (day <= NON_LEAP_YEAR_DAY || (day == LEAP_YEAR_DAY && year % MULTIPLICITY_LEAP_YEAR == 0));
+                boolean isValidDaysInThirtyDayMonth = (month == 4 || month == 6 || month == 9 || month == 11)
+                        && day <= DEFAULT_DAY;
+                boolean isValidDaysInThirtyOneDayMonth = (month == 1 || month == 3 || month == 5 || month == 7 ||
+                        month == 8 || month == 10 || month == 12) && day <= MAX_DAY;
+                boolean isValidDaysInFebruary = month == 2 &&
+                        (day <= NON_LEAP_YEAR_DAY || (day == LEAP_YEAR_DAY && year % MULTIPLICITY_LEAP_YEAR == 0));
 
-            result = isValidMonth && isValidYear &&
-                    (isValidDaysInThirtyDayMonth || isValidDaysInThirtyOneDayMonth || isValidDaysInFebruary);
+                result = isValidMonth && isValidYear &&
+                        (isValidDaysInThirtyDayMonth || isValidDaysInThirtyOneDayMonth || isValidDaysInFebruary);
+            }
         }
         return result;
     }
