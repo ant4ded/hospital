@@ -206,20 +206,24 @@
   <!--Authentication filters declaration end-->
   <!--Validation filters declaration start-->
   <filter>
-    <filter-name>RegisterClientFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.receptionist.RegisterClientFilter</filter-class>
+    <filter-name>CorrectPassportIdFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.CorrectPassportIdFilter</filter-class>
   </filter>
   <filter>
     <filter-name>CorrectDepartmentFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.admin.head.CorrectDepartmentFilter</filter-class>
+    <filter-class>by.epam.hospital.controller.filter.CorrectDepartmentFilter</filter-class>
   </filter>
   <filter>
     <filter-name>CorrectLoginFilter</filter-name>
     <filter-class>by.epam.hospital.controller.filter.CorrectLoginFilter</filter-class>
   </filter>
   <filter>
-    <filter-name>RoleControlFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.admin.head.RoleControlFilter</filter-class>
+    <filter-name>CorrectRoleFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.CorrectRoleFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>CorrectActionFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.CorrectActionFilter</filter-class>
   </filter>
   <filter>
     <filter-name>PassportDetailsFilter</filter-name>
@@ -264,12 +268,20 @@
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>RoleControlFilter</filter-name>
+    <filter-name>CorrectRoleFilter</filter-name>
+    <url-pattern>/c-role-control</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CorrectLoginFilter</filter-name>
+    <url-pattern>/c-role-control</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CorrectActionFilter</filter-name>
     <url-pattern>/c-role-control</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>RegisterClientFilter</filter-name>
+    <filter-name>CorrectPassportIdFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
   <filter-mapping>
@@ -278,6 +290,10 @@
   </filter-mapping>
   <filter-mapping>
     <filter-name>CorrectPhoneFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CorrectLoginFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
 

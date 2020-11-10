@@ -1,17 +1,16 @@
-package by.epam.hospital.controller.filter.receptionist;
+package by.epam.hospital.controller.filter;
 
 import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.filter.FilterMessageParameter;
 import by.epam.hospital.controller.filter.validator.UserValidator;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
-import by.epam.hospital.entity.table.UsersFieldName;
 
 import javax.servlet.*;
 import java.io.IOException;
 import java.util.StringJoiner;
 
-public class RegisterClientFilter implements Filter {
+public class CorrectPassportIdFilter implements Filter {
 
     private final UserValidator userValidator = new UserValidator();
 
@@ -21,11 +20,6 @@ public class RegisterClientFilter implements Filter {
         boolean isHaveInvalidFields = false;
         StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                 FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
-        if (!userValidator.isValidLogin(servletRequest
-                .getParameter(UsersFieldName.LOGIN))) {
-            isHaveInvalidFields = true;
-            response.add(UsersFieldName.LOGIN);
-        }
         if (!userValidator.isValidPassportId(servletRequest
                 .getParameter(UsersDetailsFieldName.PASSPORT_ID))) {
             isHaveInvalidFields = true;
