@@ -21,8 +21,6 @@ public class RegisterClientFilter implements Filter {
         boolean isHaveInvalidFields = false;
         StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                 FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
-
-        // TODO: 24.10.2020 auto generate login and password
         if (!userValidator.isValidLogin(servletRequest
                 .getParameter(UsersFieldName.LOGIN))) {
             isHaveInvalidFields = true;
@@ -32,26 +30,6 @@ public class RegisterClientFilter implements Filter {
                 .getParameter(UsersDetailsFieldName.PASSPORT_ID))) {
             isHaveInvalidFields = true;
             response.add(UsersDetailsFieldName.PASSPORT_ID);
-        }
-        if (!userValidator.isValidName(servletRequest
-                .getParameter(UsersDetailsFieldName.FIRST_NAME))) {
-            isHaveInvalidFields = true;
-            response.add(UsersDetailsFieldName.FIRST_NAME);
-        }
-        if (!userValidator.isValidName(servletRequest
-                .getParameter(UsersDetailsFieldName.SURNAME))) {
-            isHaveInvalidFields = true;
-            response.add(UsersDetailsFieldName.SURNAME);
-        }
-        if (!userValidator.isValidName(servletRequest
-                .getParameter(UsersDetailsFieldName.LAST_NAME))) {
-            isHaveInvalidFields = true;
-            response.add(UsersDetailsFieldName.LAST_NAME);
-        }
-        if (!userValidator.isValidBirthDate(servletRequest
-                .getParameter(UsersDetailsFieldName.BIRTHDAY))) {
-            isHaveInvalidFields = true;
-            response.add(UsersDetailsFieldName.BIRTHDAY);
         }
         if (!userValidator.isValidPhone(servletRequest
                 .getParameter(UsersDetailsFieldName.PHONE))) {

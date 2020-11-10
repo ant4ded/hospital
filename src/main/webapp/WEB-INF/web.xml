@@ -203,12 +203,16 @@
   </filter-mapping>
 
   <filter>
-    <filter-name>DiagnoseDiseaseFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.doctor.DiagnoseDiseaseFilter</filter-class>
+    <filter-name>PassportDetailsFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.PassportDetailsFilter</filter-class>
   </filter>
   <filter-mapping>
-    <filter-name>DiagnoseDiseaseFilter</filter-name>
+    <filter-name>PassportDetailsFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>PassportDetailsFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
   <!--Validation filters declaration end-->
   <!--Filters declaration end-->
