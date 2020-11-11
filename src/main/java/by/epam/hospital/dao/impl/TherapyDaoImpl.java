@@ -241,7 +241,7 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));
-                therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(therapy.getId()));
+                therapy.setDiagnoses(diagnosisDao.findByTherapyId(therapy.getId()));
                 optionalTherapy = Optional.of(therapy);
             }
         } catch (ConnectionException e) {
@@ -293,7 +293,7 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));
-                therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(id));
+                therapy.setDiagnoses(diagnosisDao.findByTherapyId(id));
                 therapy.setPatient(userDao.findById(resultSet.getInt(UsersFieldName.ID))
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
@@ -310,7 +310,7 @@ public class TherapyDaoImpl implements TherapyDao {
     }
 
     @Override
-    public List<Therapy> findAllTherapies(String patientLogin, CardType cardType) throws DaoException {
+    public List<Therapy> findTherapies(String patientLogin, CardType cardType) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -334,7 +334,7 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));
-                therapy.setDiagnoses(diagnosisDao.findAllByTherapyId(therapy.getId()));
+                therapy.setDiagnoses(diagnosisDao.findByTherapyId(therapy.getId()));
                 therapies.add(therapy);
             }
         } catch (ConnectionException e) {

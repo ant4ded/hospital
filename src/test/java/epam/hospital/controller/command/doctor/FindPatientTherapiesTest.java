@@ -2,11 +2,8 @@ package epam.hospital.controller.command.doctor;
 
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
-import by.epam.hospital.controller.command.doctor.DiagnoseDisease;
 import by.epam.hospital.controller.command.doctor.FindPatientTherapies;
 import by.epam.hospital.entity.*;
-import by.epam.hospital.entity.table.DiagnosesFieldName;
-import by.epam.hospital.entity.table.IcdFieldName;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
 import by.epam.hospital.service.DoctorService;
 import by.epam.hospital.service.ServiceException;
@@ -22,14 +19,11 @@ import org.testng.annotations.Test;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.testng.Assert.*;
 
 public class FindPatientTherapiesTest {
     @Mock
@@ -69,7 +63,7 @@ public class FindPatientTherapiesTest {
                 .thenReturn(CardType.AMBULATORY.name());
         Mockito.when(doctorService.findPatientByUserDetails(patient.getUserDetails()))
                 .thenReturn(Optional.of(patient));
-        Mockito.when(doctorService.findAllPatientTherapies(userDetails, CardType.AMBULATORY))
+        Mockito.when(doctorService.findPatientTherapies(userDetails, CardType.AMBULATORY))
                 .thenReturn(therapies);
 
         Map<String, Object> result = httpCommand.execute(request, response);
@@ -96,7 +90,7 @@ public class FindPatientTherapiesTest {
                 .thenReturn(CardType.AMBULATORY.name());
         Mockito.when(doctorService.findPatientByUserDetails(patient.getUserDetails()))
                 .thenReturn(Optional.of(patient));
-        Mockito.when(doctorService.findAllPatientTherapies(userDetails, CardType.AMBULATORY))
+        Mockito.when(doctorService.findPatientTherapies(userDetails, CardType.AMBULATORY))
                 .thenReturn(new ArrayList<>());
 
         Map<String, Object> result = httpCommand.execute(request, response);
@@ -123,7 +117,7 @@ public class FindPatientTherapiesTest {
                 .thenReturn(CardType.AMBULATORY.name());
         Mockito.when(doctorService.findPatientByUserDetails(patient.getUserDetails()))
                 .thenReturn(Optional.of(patient));
-        Mockito.when(doctorService.findAllPatientTherapies(userDetails, CardType.AMBULATORY))
+        Mockito.when(doctorService.findPatientTherapies(userDetails, CardType.AMBULATORY))
                 .thenThrow(ServiceException.class);
 
         Map<String, Object> result = httpCommand.execute(request, response);

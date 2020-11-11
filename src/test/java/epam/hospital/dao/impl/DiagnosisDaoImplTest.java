@@ -125,7 +125,7 @@ public class DiagnosisDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
-    public void findAllByTherapyId_correctFind_afterCreateResultWithCreatedDiagnosis(Diagnosis diagnosis, User patient)
+    public void findByTherapyId_correctFind_afterCreateResultWithCreatedDiagnosis(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
         CardType cardType = CardType.AMBULATORY;
@@ -137,15 +137,15 @@ public class DiagnosisDaoImplTest {
         Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
                 .orElseThrow(DaoException::new);
 
-        List<Diagnosis> diagnoses = diagnosisDao.findAllByTherapyId(therapy.getId());
+        List<Diagnosis> diagnoses = diagnosisDao.findByTherapyId(therapy.getId());
         if (diagnoses.size() != 0) {
-            throw new DaoException("FindAllByTherapyId failed.");
+            throw new DaoException("FindByTherapyId failed.");
         }
         int diagnosisId = diagnosisDao.create(diagnosis, patient.getLogin(), therapy.getId());
         diagnosis.setId(diagnosisId);
-        diagnoses = diagnosisDao.findAllByTherapyId(therapy.getId());
+        diagnoses = diagnosisDao.findByTherapyId(therapy.getId());
         if (diagnoses.size() == 0 || !diagnoses.get(0).equals(diagnosis)) {
-            throw new DaoException("FindAllByTherapyId failed.");
+            throw new DaoException("FindByTherapyId failed.");
         }
         therapy.setDiagnoses(diagnoses);
 
@@ -155,7 +155,7 @@ public class DiagnosisDaoImplTest {
     }
 
     @Test
-    public void findAllByTherapyId_incorrectTherapyId_emptyList() throws DaoException {
-        Assert.assertTrue(diagnosisDao.findAllByTherapyId(0).isEmpty());
+    public void findByTherapyId_incorrectTherapyId_emptyList() throws DaoException {
+        Assert.assertTrue(diagnosisDao.findByTherapyId(0).isEmpty());
     }
 }

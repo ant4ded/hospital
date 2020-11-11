@@ -32,7 +32,7 @@ public interface DiagnosisDao {
      * @throws DaoException if a database access error occurs.
      * @see List
      */
-    List<Diagnosis> findAllByTherapyId(int id) throws DaoException;
+    List<Diagnosis> findByTherapyId(int id) throws DaoException;
 
     /**
      * Find {@code Diagnosis} entity by {@code Diagnosis.id} field.

@@ -147,7 +147,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @see List
      */
     @Override
-    public List<Diagnosis> findAllByTherapyId(int id) throws DaoException {
+    public List<Diagnosis> findByTherapyId(int id) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;

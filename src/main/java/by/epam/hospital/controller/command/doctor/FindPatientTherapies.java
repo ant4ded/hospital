@@ -43,7 +43,7 @@ public class FindPatientTherapies implements HttpCommand {
         userDetails.setLastName(lastName);
         userDetails.setBirthday(birthday);
         try {
-            List<Therapy> therapies = doctorService.findAllPatientTherapies(userDetails, cardType);
+            List<Therapy> therapies = doctorService.findPatientTherapies(userDetails, cardType);
             if (!therapies.isEmpty()) {
                 result.put(ParameterName.THERAPIES_LIST, therapies);
             } else {
