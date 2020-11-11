@@ -27,6 +27,13 @@
 <fmt:message bundle="${local}" key="input.password" var="inputPassword"/>
 <fmt:message bundle="${local}" key="btn.submit" var="btnSubmit"/>
 <fmt:message bundle="${local}" key="btn.find" var="btnFind"/>
+<fmt:message bundle="${local}" key="input.first_name" var="inputFirstName"/>
+<fmt:message bundle="${local}" key="input.surname" var="inputSurname"/>
+<fmt:message bundle="${local}" key="input.last_name" var="inputLastName"/>
+<fmt:message bundle="${local}" key="input.icd_code" var="inputIcdCode"/>
+<fmt:message bundle="${local}" key="input.reason" var="inputReason"/>
+<fmt:message bundle="${local}" key="radio.card_type.ambulatory" var="inputAmbulatory"/>
+<fmt:message bundle="${local}" key="radio.card_type.stationary" var="inputStationary"/>
 
 <html lang="${sessionScope.lang}">
 <head>
