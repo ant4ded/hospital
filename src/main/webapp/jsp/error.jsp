@@ -12,7 +12,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h1>Error page</h1>
+                <h1>Error</h1>
                 <a href="${HospitalUrl.MAIN_URL}">Home</a> <span>|</span> <a href="#">Error</a>
             </div>
         </div>

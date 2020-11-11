@@ -17,8 +17,8 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h1>Role control</h1>
-                <a href="${HospitalUrl.MAIN_URL}">Home</a> <span>|</span> <a href="#">Role control</a>
+                <h1>User credentials</h1>
+                <a href="${HospitalUrl.MAIN_URL}">Home</a> <span>|</span> <a href="#">User credentials</a>
             </div>
         </div>
     </div>

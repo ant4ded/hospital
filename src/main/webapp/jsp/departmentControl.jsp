@@ -7,6 +7,7 @@
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="locale" var="local"/>
 
+<fmt:message bundle="${local}" key="page.department_control" var="page"/>
 <fmt:message bundle="${local}" key="department_control.title" var="title"/>
 <fmt:message bundle="${local}" key="department_control.message.department_head.part1" var="messagePart1"/>
 <fmt:message bundle="${local}" key="department_control.message.department_head.part2" var="messagePart2"/>
@@ -22,6 +23,18 @@
 <body>
 <%@include file="component/navbar.jsp" %>
 <!-- Banner Area Starts -->
+<section class="banner-area other-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>${page}</h1>
+                <a href="${HospitalUrl.MAIN_URL}">${home}</a> <span>|</span> <a href="#">${page}</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Banner Area End -->
+<!--================Blog Area =================-->
 <section class="blog_area section-padding">
     <div class="container">
         <div class="row">
