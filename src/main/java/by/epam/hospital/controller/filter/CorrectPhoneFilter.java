@@ -14,19 +14,17 @@ public class CorrectPhoneFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws ServletException, IOException {
-        boolean isHaveInvalidFields = false;
-        StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
-                FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
         if (!userValidator.isValidPhone(servletRequest.getParameter(UsersDetailsFieldName.PHONE))) {
-            isHaveInvalidFields = true;
+            StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
+                    FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
             response.add(UsersDetailsFieldName.PHONE);
-        }
-        if (isHaveInvalidFields) {
+
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
             servletRequest.getRequestDispatcher(servletRequest.getParameter(ParameterName.PAGE_OF_DEPARTURE))
                     .forward(servletRequest, servletResponse);
             return;
         }
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

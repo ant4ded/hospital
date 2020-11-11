@@ -11,27 +11,17 @@ public class CorrectRoleFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        boolean isHaveInvalidFields = false;
-        StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
-                FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
-
-        String parameter = servletRequest.getParameter(ParameterName.ROLE);
-        int i = 0;
-        while (i < Role.values().length) {
-            if (Role.values()[i++].name().equals(parameter)) {
-                break;
-            }
-        }
-        if (i > Role.values().length) {
-            isHaveInvalidFields = true;
+        if (!Role.hasRole(servletRequest.getParameter(ParameterName.ROLE))) {
+            StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
+                    FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
             response.add(ParameterName.ROLE);
-        }
-        if (isHaveInvalidFields) {
+
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
             servletRequest.getRequestDispatcher(servletRequest.getParameter(ParameterName.PAGE_OF_DEPARTURE))
                     .forward(servletRequest, servletResponse);
             return;
         }
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

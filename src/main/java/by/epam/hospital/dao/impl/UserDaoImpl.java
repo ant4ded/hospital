@@ -306,9 +306,9 @@ public class UserDaoImpl implements UserDao {
         PreparedStatement statement = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(serviceAction.equals(ServiceAction.REMOVE) ?
-                    SQL_DELETE_USER_ROLE :
-                    SQL_CREATE_USER_ROLE);
+            statement = connection.prepareStatement(serviceAction == ServiceAction.ADD ?
+                    SQL_CREATE_USER_ROLE :
+                    SQL_DELETE_USER_ROLE);
             statement.setString(1, login);
             statement.setString(2, role.name());
 

@@ -175,7 +175,7 @@ public class TherapyDaoImpl implements TherapyDao {
                     generatedKeys.close();
                     statement.close();
 
-                    statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
+                    statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
                             SQL_CREATE_AMBULATORY_THERAPY :
                             SQL_CREATE_STATIONARY_THERAPY);
                     statement.setInt(1, patientId);
@@ -224,7 +224,7 @@ public class TherapyDaoImpl implements TherapyDao {
         Optional<Therapy> optionalTherapy = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
+            statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
                     SQL_FIND_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN :
                     SQL_FIND_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN);
             statement.setString(1, doctorLogin);
@@ -278,7 +278,7 @@ public class TherapyDaoImpl implements TherapyDao {
         Optional<Therapy> optionalTherapy = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
+            statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
                     SQL_FIND_AMBULATORY_THERAPY_BY_THERAPY_ID :
                     SQL_FIND_STATIONARY_THERAPY_BY_THERAPY_ID);
             statement.setInt(1, id);
@@ -317,7 +317,7 @@ public class TherapyDaoImpl implements TherapyDao {
         List<Therapy> therapies = new ArrayList<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
+            statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
                     SQL_FIND_AMBULATORY_THERAPY_BY_PATIENT_LOGIN :
                     SQL_FIND_STATIONARY_THERAPY_BY_PATIENT_LOGIN);
             statement.setString(1, patientLogin);

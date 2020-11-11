@@ -1,6 +1,6 @@
 package by.epam.hospital.entity;
 
-public enum  Department {
+public enum Department {
     INFECTIOUS(1),
     CARDIOLOGY(2),
     NEUROLOGY(3),
@@ -15,5 +15,14 @@ public enum  Department {
 
     Department(int departmentId) {
         this.id = departmentId;
+    }
+
+    public static boolean hasDepartment(String department) {
+        for (Department value : Department.values()) {
+            if (value.name().equals(department)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

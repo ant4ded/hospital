@@ -15,20 +15,17 @@ public class CorrectLoginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws ServletException, IOException {
-        boolean isHaveInvalidFields = false;
-        StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
-                FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
-
         if (!userValidator.isValidLogin(servletRequest.getParameter(UsersFieldName.LOGIN))) {
-            isHaveInvalidFields = true;
+            StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
+                    FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
             response.add(UsersFieldName.LOGIN);
-        }
-        if (isHaveInvalidFields) {
+
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
             servletRequest.getRequestDispatcher(servletRequest.getParameter(ParameterName.PAGE_OF_DEPARTURE))
                     .forward(servletRequest, servletResponse);
             return;
         }
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

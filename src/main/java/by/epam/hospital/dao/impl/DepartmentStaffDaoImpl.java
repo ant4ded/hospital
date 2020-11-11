@@ -92,11 +92,11 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
         PreparedStatement statement = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(serviceAction.equals(ServiceAction.ADD) ?
+            statement = connection.prepareStatement(serviceAction == ServiceAction.ADD ?
                     SQL_ADD_DEPARTMENTS_STAFF_ROW :
                     SQL_DELETE_DEPARTMENTS_STAFF_ROW);
             statement.setString(1, login);
-            if (serviceAction.equals(ServiceAction.ADD)) {
+            if (serviceAction == ServiceAction.ADD) {
                 statement.setInt(2, department.id);
             }
 

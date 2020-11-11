@@ -15,19 +15,17 @@ public class CorrectPassportIdFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        boolean isHaveInvalidFields = false;
-        StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
-                FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
         if (!userValidator.isValidPassportId(servletRequest.getParameter(UsersDetailsFieldName.PASSPORT_ID))) {
-            isHaveInvalidFields = true;
+            StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
+                    FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
             response.add(UsersDetailsFieldName.PASSPORT_ID);
-        }
-        if (isHaveInvalidFields) {
+
             servletRequest.setAttribute(ParameterName.MESSAGE, response.toString());
             servletRequest.getRequestDispatcher(servletRequest.getParameter(ParameterName.PAGE_OF_DEPARTURE))
                     .forward(servletRequest, servletResponse);
             return;
         }
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

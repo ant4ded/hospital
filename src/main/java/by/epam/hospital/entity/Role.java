@@ -14,4 +14,13 @@ public enum Role {
     Role(int id) {
         this.id = id;
     }
+
+    public static boolean hasRole(String role) {
+        for (Role value : Role.values()) {
+            if (value.name().equals(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

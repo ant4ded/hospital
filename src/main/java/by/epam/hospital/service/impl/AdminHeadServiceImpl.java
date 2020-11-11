@@ -47,8 +47,8 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
             if (optionalUser.isPresent() && ((optionalUser.get().getRoles().contains(role)
-                    && serviceAction.equals(ServiceAction.REMOVE)) ||
-                    !optionalUser.get().getRoles().contains(role) && serviceAction.equals(ServiceAction.ADD))) {
+                    && serviceAction == ServiceAction.REMOVE) ||
+                    !optionalUser.get().getRoles().contains(role) && serviceAction == ServiceAction.ADD)) {
                 result = userDao.updateUserRoles(login, serviceAction, role);
             }
         } catch (DaoException e) {
@@ -93,7 +93,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                     role.equals(Role.MEDICAL_ASSISTANT) || role.equals(Role.DOCTOR);
             Optional<Department> previousDepartment = departmentDao.findDepartment(login);
             boolean isUserHaveDepartmentAndActionAdd = previousDepartment.isPresent() &&
-                    serviceAction.equals(ServiceAction.ADD);
+                    serviceAction == ServiceAction.ADD;
             if (isNotDepartmentHead && isUserFutureDoctorOrMedicalAssistant) {
                 performUserRolesAction(login, serviceAction, role);
                 if (isUserHaveDepartmentAndActionAdd) {
