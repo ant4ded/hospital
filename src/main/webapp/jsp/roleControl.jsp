@@ -1,8 +1,16 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
 <%@page import="by.epam.hospital.entity.Department" %>
+<%@page import="by.epam.hospital.entity.Role" %>
 <%@page import="by.epam.hospital.service.ServiceAction" %>
 <!DOCTYPE html>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="locale" var="local"/>
+
+<fmt:message bundle="${local}" key="page.role_control" var="page"/>
+<fmt:message bundle="${local}" key="role_control.title" var="title"/>
+<fmt:message bundle="${local}" key="role_control.message.department_head.part1" var="messagePart1"/>
+<fmt:message bundle="${local}" key="role_control.message.department_head.part2" var="messagePart2"/>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -17,8 +25,8 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h1>Role control</h1>
-                <a href="${HospitalUrl.MAIN_URL}">Home</a> <span>|</span> <a href="#">Role control</a>
+                <h1>${page}</h1>
+                <a href="${HospitalUrl.MAIN_URL}">${home}</a> <span>|</span> <a href="#">${page}</a>
             </div>
         </div>
     </div>
@@ -30,12 +38,11 @@
         <div class="row">
             <div class="col-lg-12 posts-list">
                 <div class="comment-form">
-                    <h4>Role control panel</h4>
+                    <h4>${title}</h4>
                     <p>${requestScope.message}</p>
                     <c:if test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
                         <p>
-                           This user is head of department ${requestScope.department}.
-                            Please reassign department head to change roles.
+                           ${messagePart1} ${requestScope.department}. ${messagePart2}
                         </p>
                     </c:if>
                     <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES}">
@@ -46,13 +53,13 @@
                         <div class="form-group form-inline">
                             <div class="form-group col-lg-10 col-md-10 name">
                                 <input type="text" name="${UsersFieldName.LOGIN}" required
-                                       class="form-control" placeholder="Login"
+                                       class="form-control" placeholder="${inputLogin}"
                                        value="<%=request.getParameter(UsersFieldName.LOGIN) == null ?
                                         "" : request.getParameter(UsersFieldName.LOGIN)%>"
-                                       onfocus="this.placeholder = ''" onblur="this.placeholder = 'Login'">
+                                       onfocus="this.placeholder = ''" onblur="this.placeholder = '${inputLogin}'">
                             </div>
                             <div class="form-group col-lg-2 col-md-2 name">
-                                <button type="submit" class="template-btn">Find</button>
+                                <button type="submit" class="template-btn">${btnFind}</button>
                             </div>
                         </div>
                     </form>
@@ -62,7 +69,7 @@
                                    value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
-                                    <p>Administrator</p>
+                                    <p>${Role.ADMIN}</p>
                                 </div>
                                 <c:choose>
                                     <c:when test="${requestScope.userRoles.contains(Role.ADMIN)}">
@@ -76,11 +83,11 @@
                                                value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger">Remove</button>
+                                            <button type="submit" class="genric-btn danger">${btnRemove}</button>
                                         </div>
                                     </c:when>
                                     <c:when test="${requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT) ||
@@ -89,11 +96,11 @@
                                         requestScope.userRoles.contains(Role.DOCTOR)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -108,10 +115,10 @@
                                                value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary">Add</button>
+                                            <button type="submit" class="genric-btn primary">${btnAdd}</button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>
@@ -123,7 +130,7 @@
                                    value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
-                                    <p>Receptionist</p>
+                                    <p>${Role.RECEPTIONIST}</p>
                                 </div>
                                 <c:choose>
                                     <c:when test="${requestScope.userRoles.contains(Role.RECEPTIONIST)}">
@@ -137,11 +144,11 @@
                                                value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger">Remove</button>
+                                            <button type="submit" class="genric-btn danger">${btnRemove}</button>
                                         </div>
                                     </c:when>
                                     <c:when test="${requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT) ||
@@ -150,11 +157,11 @@
                                         requestScope.userRoles.contains(Role.ADMIN)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -169,10 +176,10 @@
                                                value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary">Add</button>
+                                            <button type="submit" class="genric-btn primary">${btnAdd}</button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>
@@ -184,7 +191,7 @@
                                    value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
-                                    <p>Doctor</p>
+                                    <p>${Role.DOCTOR}</p>
                                 </div>
                                 <c:choose>
                                     <c:when test="${requestScope.userRoles.contains(Role.DOCTOR) &&
@@ -201,11 +208,11 @@
                                                value="${requestScope.department}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger">Remove</button>
+                                            <button type="submit" class="genric-btn danger">${btnRemove}</button>
                                         </div>
                                     </c:when>
                                     <c:when test="${(requestScope.userRoles.contains(Role.DOCTOR) &&
@@ -216,11 +223,11 @@
                                         requestScope.userRoles.contains(Role.ADMIN)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -235,23 +242,22 @@
                                                value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3">
                                             <select name="${ParameterName.DEPARTMENT}">
-                                                <option value="${Department.INFECTIOUS}">Infectious</option>
-                                                <option value="${Department.CARDIOLOGY}">Cardiology</option>
-                                                <option value="${Department.NEUROLOGY}">Neurology</option>
-                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology
-                                                </option>
-                                                <option value="${Department.PEDIATRIC}">Pediatric</option>
-                                                <option value="${Department.THERAPEUTIC}">Therapeutic</option>
-                                                <option value="${Department.UROLOGY}">Urology</option>
-                                                <option value="${Department.TRAUMATOLOGY}">Traumatology</option>
-                                                <option value="${Department.SURGERY}">Surgery</option>
+                                                <option value="${Department.INFECTIOUS}">${Department.INFECTIOUS}</option>
+                                                <option value="${Department.CARDIOLOGY}">${Department.CARDIOLOGY}</option>
+                                                <option value="${Department.NEUROLOGY}">${Department.NEUROLOGY}</option>
+                                                <option value="${Department.OTORHINOLARYNGOLOGY}">${Department.OTORHINOLARYNGOLOGY}</option>
+                                                <option value="${Department.PEDIATRIC}">${Department.PEDIATRIC}</option>
+                                                <option value="${Department.THERAPEUTIC}">${Department.THERAPEUTIC}</option>
+                                                <option value="${Department.UROLOGY}">${Department.UROLOGY}</option>
+                                                <option value="${Department.TRAUMATOLOGY}">${Department.TRAUMATOLOGY}</option>
+                                                <option value="${Department.SURGERY}">${Department.SURGERY}</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary">Add</button>
+                                            <button type="submit" class="genric-btn primary">${btnAdd}</button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>
@@ -263,7 +269,7 @@
                                    value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
-                                    <p>Head of department</p>
+                                    <p>${Role.DEPARTMENT_HEAD}</p>
                                 </div>
                                 <c:choose>
                                     <c:when test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
@@ -279,11 +285,11 @@
                                                value="${requestScope.department}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable">Remove</button>
+                                            <button type="submit" class="genric-btn danger disable">${btnRemove}</button>
                                         </div>
                                     </c:when>
                                     <c:when test="${requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT) ||
@@ -292,11 +298,11 @@
                                         requestScope.userRoles.contains(Role.ADMIN)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -310,24 +316,23 @@
                                         <input type="hidden" name="${UsersFieldName.LOGIN}"
                                                value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary">Add</button>
+                                            <button type="submit" class="genric-btn primary">${btnAdd}</button>
                                         </div>
                                         <div class="form-group col-lg-3 col-md-3">
                                             <select name="${ParameterName.DEPARTMENT}">
-                                                <option value="${Department.INFECTIOUS}">Infectious</option>
-                                                <option value="${Department.CARDIOLOGY}">Cardiology</option>
-                                                <option value="${Department.NEUROLOGY}">Neurology</option>
-                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology
-                                                </option>
-                                                <option value="${Department.PEDIATRIC}">Pediatric</option>
-                                                <option value="${Department.THERAPEUTIC}">Therapeutic</option>
-                                                <option value="${Department.UROLOGY}">Urology</option>
-                                                <option value="${Department.TRAUMATOLOGY}">Traumatology</option>
-                                                <option value="${Department.SURGERY}">Surgery</option>
+                                                <option value="${Department.INFECTIOUS}">${Department.INFECTIOUS}</option>
+                                                <option value="${Department.CARDIOLOGY}">${Department.CARDIOLOGY}</option>
+                                                <option value="${Department.NEUROLOGY}">${Department.NEUROLOGY}</option>
+                                                <option value="${Department.OTORHINOLARYNGOLOGY}">${Department.OTORHINOLARYNGOLOGY}</option>
+                                                <option value="${Department.PEDIATRIC}">${Department.PEDIATRIC}</option>
+                                                <option value="${Department.THERAPEUTIC}">${Department.THERAPEUTIC}</option>
+                                                <option value="${Department.UROLOGY}">${Department.UROLOGY}</option>
+                                                <option value="${Department.TRAUMATOLOGY}">${Department.TRAUMATOLOGY}</option>
+                                                <option value="${Department.SURGERY}">${Department.SURGERY}</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>
@@ -339,7 +344,7 @@
                                    value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                             <div class="form-group form-inline ">
                                 <div class="form-group col-lg-4 col-md-4">
-                                    <p>Medical assistant</p>
+                                    <p>${Role.MEDICAL_ASSISTANT}</p>
                                 </div>
                                 <c:choose>
                                     <c:when test="${requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT)}">
@@ -355,11 +360,11 @@
                                                value="${requestScope.department}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger">Remove</button>
+                                            <button type="submit" class="genric-btn danger">${btnRemove}</button>
                                         </div>
                                     </c:when>
                                     <c:when test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD) ||
@@ -368,11 +373,11 @@
                                         requestScope.userRoles.contains(Role.ADMIN)}">
                                         <div class="form-group col-lg-3 col-md-3"></div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary disable" disabled>Add
+                                            <button type="submit" class="genric-btn primary disable" disabled>${btnAdd}
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -387,23 +392,22 @@
                                                value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <div class="form-group col-lg-3 col-md-3">
                                             <select name="${ParameterName.DEPARTMENT}">
-                                                <option value="${Department.INFECTIOUS}">Infectious</option>
-                                                <option value="${Department.CARDIOLOGY}">Cardiology</option>
-                                                <option value="${Department.NEUROLOGY}">Neurology</option>
-                                                <option value="${Department.OTORHINOLARYNGOLOGY}">Otorhinolaryngology
-                                                </option>
-                                                <option value="${Department.PEDIATRIC}">Pediatric</option>
-                                                <option value="${Department.THERAPEUTIC}">Therapeutic</option>
-                                                <option value="${Department.UROLOGY}">Urology</option>
-                                                <option value="${Department.TRAUMATOLOGY}">Traumatology</option>
-                                                <option value="${Department.SURGERY}">Surgery</option>
+                                                <option value="${Department.INFECTIOUS}">${Department.INFECTIOUS}</option>
+                                                <option value="${Department.CARDIOLOGY}">${Department.CARDIOLOGY}</option>
+                                                <option value="${Department.NEUROLOGY}">${Department.NEUROLOGY}</option>
+                                                <option value="${Department.OTORHINOLARYNGOLOGY}">${Department.OTORHINOLARYNGOLOGY}</option>
+                                                <option value="${Department.PEDIATRIC}">${Department.PEDIATRIC}</option>
+                                                <option value="${Department.THERAPEUTIC}">${Department.THERAPEUTIC}</option>
+                                                <option value="${Department.UROLOGY}">${Department.UROLOGY}</option>
+                                                <option value="${Department.TRAUMATOLOGY}">${Department.TRAUMATOLOGY}</option>
+                                                <option value="${Department.SURGERY}">${Department.SURGERY}</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn primary">Add</button>
+                                            <button type="submit" class="genric-btn primary">${btnAdd}</button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>Remove
+                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>

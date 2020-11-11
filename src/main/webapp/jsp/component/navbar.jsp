@@ -40,6 +40,8 @@
 <fmt:message bundle="${local}" key="btn.submit" var="btnSubmit"/>
 <fmt:message bundle="${local}" key="btn.find" var="btnFind"/>
 <fmt:message bundle="${local}" key="btn.update" var="btnUpdate"/>
+<fmt:message bundle="${local}" key="btn.add" var="btnAdd"/>
+<fmt:message bundle="${local}" key="btn.remove" var="btnRemove"/>
 
 <html lang="${sessionScope.lang}">
 <head>
