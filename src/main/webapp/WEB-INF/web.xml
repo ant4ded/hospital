@@ -214,6 +214,14 @@
   <!--Authentication filters declaration end-->
   <!--Validation filters declaration start-->
   <filter>
+    <filter-name>CommandFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>command</param-value>
+    </init-param>
+  </filter>
+  <filter>
     <filter-name>PassportIdFilter</filter-name>
     <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
     <init-param>
@@ -319,10 +327,18 @@
   </filter>
 
   <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-edit-user-details</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
     <filter-name>PhoneFilter</filter-name>
     <url-pattern>/c-edit-user-details</url-pattern>
   </filter-mapping>
 
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-change-department-head</url-pattern>
+  </filter-mapping>
   <filter-mapping>
     <filter-name>DepartmentFilter</filter-name>
     <url-pattern>/c-change-department-head</url-pattern>
@@ -332,16 +348,28 @@
     <url-pattern>/c-change-department-head</url-pattern>
   </filter-mapping>
 
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-find-department-control-attributes</url-pattern>
+  </filter-mapping>
   <filter-mapping>
     <filter-name>LoginFilter</filter-name>
     <url-pattern>/c-find-department-control-attributes</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-find-role-control-attributes</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
     <filter-name>LoginFilter</filter-name>
     <url-pattern>/c-find-role-control-attributes</url-pattern>
   </filter-mapping>
 
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-move-doctor-to-department</url-pattern>
+  </filter-mapping>
   <filter-mapping>
     <filter-name>DepartmentFilter</filter-name>
     <url-pattern>/c-move-doctor-to-department</url-pattern>
@@ -351,6 +379,10 @@
     <url-pattern>/c-move-doctor-to-department</url-pattern>
   </filter-mapping>
 
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-role-control</url-pattern>
+  </filter-mapping>
   <filter-mapping>
     <filter-name>RoleFilter</filter-name>
     <url-pattern>/c-role-control</url-pattern>
@@ -364,6 +396,10 @@
     <url-pattern>/c-role-control</url-pattern>
   </filter-mapping>
 
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
+  </filter-mapping>
   <filter-mapping>
     <filter-name>LoginFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
@@ -398,6 +434,10 @@
   </filter-mapping>
 
   <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-find-user-credentials</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
     <filter-name>FirstNameFilter</filter-name>
     <url-pattern>/c-find-user-credentials</url-pattern>
   </filter-mapping>
@@ -414,6 +454,10 @@
     <url-pattern>/c-find-user-credentials</url-pattern>
   </filter-mapping>
 
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-diagnose-disease</url-pattern>
+  </filter-mapping>
   <filter-mapping>
     <filter-name>FirstNameFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>

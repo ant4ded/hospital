@@ -13,5 +13,16 @@ public enum CommandName {
     MOVE_DOCTOR_TO_DEPARTMENT,
     DIAGNOSE_DISEASE,
     FIND_USER_DETAILS,
-    EDIT_USER_DETAILS
+    EDIT_USER_DETAILS;
+
+    public static boolean hasValue(String value) {
+        if (value != null) {
+            for (CommandName v : CommandName.values()) {
+                if (v.name().equals(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
