@@ -35,7 +35,7 @@ public class RequestParametersFilter implements Filter {
             throws IOException, ServletException {
         String parameterValue = servletRequest.getParameter(parameterName);
         boolean isParameterInvalid = switch (parameterName) {
-            case ParameterName.COMMAND -> CommandName.hasValue(parameterValue);
+            case ParameterName.COMMAND -> !CommandName.hasValue(parameterValue);
             case ParameterName.ACTION -> !ServiceAction.hasValue(parameterValue);
             case ParameterName.CARD_TYPE -> !CardType.hasValue(parameterValue);
             case ParameterName.DEPARTMENT -> !Department.hasValue(parameterValue);
@@ -48,7 +48,7 @@ public class RequestParametersFilter implements Filter {
             case UsersDetailsFieldName.BIRTHDAY -> !dataValidator.isValidBirthDate(parameterName);
             case UsersDetailsFieldName.FIRST_NAME,
                     UsersDetailsFieldName.SURNAME,
-                    UsersDetailsFieldName.LAST_NAME -> dataValidator.isValidName(parameterName);
+                    UsersDetailsFieldName.LAST_NAME -> !dataValidator.isValidName(parameterName);
             default -> false;
         };
         if (isParameterInvalid) {
