@@ -2,11 +2,12 @@
 <%--suppress HtmlUnknownTarget --%>
 <!-- Footer Area Starts -->
 <!DOCTYPE html>
+<fmt:message bundle="${local}" key="footer.hospital" var="hospital"/>
 <html lang="en">
 <body>
 <footer class="footer text-faded text-center py-5 footer-area">
     <div class="container">
-        <p class="m-0 small">&copy; Hospital Medino 2020</p>
+        <p class="m-0 small">&copy; ${hospital} Medino 2020</p>
     </div>
 </footer>
 <!-- Footer Area End -->
