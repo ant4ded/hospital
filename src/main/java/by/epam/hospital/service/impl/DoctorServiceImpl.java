@@ -54,10 +54,10 @@ public class DoctorServiceImpl implements DoctorService {
             Optional<User> optionalDoctor = userDao.findByLogin(doctorLogin);
             Optional<User> optionalPatient = userDao.findByLogin(patientLogin);
             Optional<Icd> optionalIcd = icdDao.findByCode(icdCode);
-            boolean isParametersExist = optionalDoctor.isPresent() &&
+            boolean isParametersPresent = optionalDoctor.isPresent() &&
                     optionalPatient.isPresent() &&
                     optionalIcd.isPresent();
-            if (isParametersExist && optionalDoctor.get().getRoles().contains(Role.DOCTOR)) {
+            if (isParametersPresent && optionalDoctor.get().getRoles().contains(Role.DOCTOR)) {
                 diagnosis.setIcd(optionalIcd.get());
                 diagnosis.setDoctor(optionalDoctor.get());
                 Optional<Therapy> currentTherapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);

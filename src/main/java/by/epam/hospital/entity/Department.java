@@ -18,9 +18,11 @@ public enum Department {
     }
 
     public static boolean hasDepartment(String department) {
-        for (Department value : Department.values()) {
-            if (value.name().equals(department)) {
-                return true;
+        if (department != null) {
+            for (Department value : Department.values()) {
+                if (value.name().equals(department)) {
+                    return true;
+                }
             }
         }
         return false;

@@ -112,8 +112,10 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         Optional<Department> optionalDepartment = Optional.empty();
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
-            if (optionalUser.isPresent() && (optionalUser.get().getRoles().contains(Role.DOCTOR) ||
-                    optionalUser.get().getRoles().contains(Role.MEDICAL_ASSISTANT))) {
+            boolean isUserMedicalWorker = optionalUser.isPresent() &&
+                    (optionalUser.get().getRoles().contains(Role.DOCTOR) ||
+                    optionalUser.get().getRoles().contains(Role.MEDICAL_ASSISTANT));
+            if (isUserMedicalWorker) {
                 optionalDepartment = departmentDao.findDepartment(login);
             }
         } catch (DaoException e) {

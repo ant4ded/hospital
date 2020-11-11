@@ -16,9 +16,11 @@ public enum Role {
     }
 
     public static boolean hasRole(String role) {
-        for (Role value : Role.values()) {
-            if (value.name().equals(role)) {
-                return true;
+        if (role != null) {
+            for (Role value : Role.values()) {
+                if (value.name().equals(role)) {
+                    return true;
+                }
             }
         }
         return false;
