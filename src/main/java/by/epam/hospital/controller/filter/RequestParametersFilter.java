@@ -1,7 +1,7 @@
 package by.epam.hospital.controller.filter;
 
 import by.epam.hospital.controller.ParameterName;
-import by.epam.hospital.controller.filter.validator.UserValidator;
+import by.epam.hospital.controller.filter.validator.DataValidator;
 import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
@@ -21,7 +21,7 @@ public class RequestParametersFilter implements Filter {
     private static final String SUFFIX = "]";
     private static final String DELIMITER = ", ";
 
-    private final UserValidator userValidator = new UserValidator();
+    private final DataValidator dataValidator = new DataValidator();
     private String parameterName;
 
     @Override
@@ -39,14 +39,14 @@ public class RequestParametersFilter implements Filter {
             case ParameterName.DEPARTMENT -> !Department.hasValue(parameterValue);
             case ParameterName.ROLE -> !Role.hasValue(parameterValue);
             case UsersDetailsFieldName.GENDER -> !UserDetails.Gender.hasValue(parameterValue);
-            case IcdFieldName.CODE -> !userValidator.isValidIcdCode(parameterValue);
-            case UsersFieldName.LOGIN -> !userValidator.isValidLogin(parameterValue);
-            case UsersDetailsFieldName.PASSPORT_ID -> !userValidator.isValidPassportId(parameterName);
-            case UsersDetailsFieldName.PHONE -> !userValidator.isValidPhone(parameterName);
-            case UsersDetailsFieldName.BIRTHDAY -> !userValidator.isValidBirthDate(parameterName);
+            case IcdFieldName.CODE -> !dataValidator.isValidIcdCode(parameterValue);
+            case UsersFieldName.LOGIN -> !dataValidator.isValidLogin(parameterValue);
+            case UsersDetailsFieldName.PASSPORT_ID -> !dataValidator.isValidPassportId(parameterName);
+            case UsersDetailsFieldName.PHONE -> !dataValidator.isValidPhone(parameterName);
+            case UsersDetailsFieldName.BIRTHDAY -> !dataValidator.isValidBirthDate(parameterName);
             case UsersDetailsFieldName.FIRST_NAME,
                     UsersDetailsFieldName.SURNAME,
-                    UsersDetailsFieldName.LAST_NAME -> userValidator.isValidName(parameterName);
+                    UsersDetailsFieldName.LAST_NAME -> dataValidator.isValidName(parameterName);
             default -> false;
         };
         if (isParameterInvalid) {

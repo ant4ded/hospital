@@ -2,7 +2,7 @@ package by.epam.hospital.controller.filter.validator;
 
 import java.time.LocalDate;
 
-public class UserValidator {
+public class DataValidator {
     private static final String PASSPORT_ID_REGEX = "[\\d\\p{L}]{14}";
     private static final String NAME_REGEX = "\\p{Lu}\\p{Ll}{2,14}";
     private static final String PHONE_REGEX = "\\d{12}";
@@ -10,16 +10,27 @@ public class UserValidator {
     private static final String ICD_CODE_REGEX = "[\\d-\\p{Lu}]{7}";
 
     public boolean isValidLogin(String login) {
-        return login.matches(LOGIN_REGEX);
+        boolean result = false;
+        if (login != null) {
+            result = login.matches(LOGIN_REGEX);
+        }
+        return result;
     }
 
     public boolean isValidPassportId(String passportId) {
-        return passportId.matches(PASSPORT_ID_REGEX);
+        boolean result = false;
+        if (passportId != null) {
+            result = passportId.matches(PASSPORT_ID_REGEX);
+        }
+        return result;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isValidName(String name) {
-        return name.matches(NAME_REGEX);
+        boolean result = false;
+        if (name != null) {
+            result = name.matches(NAME_REGEX);
+        }
+        return result;
     }
 
     public boolean isValidBirthDate(String s) {
@@ -37,7 +48,7 @@ public class UserValidator {
         final int NON_LEAP_YEAR_DAY = 28;
         final int MIN_YEAR_BIRTH = LocalDate.now().getYear() - MAX_AGE;
 
-        if(s != null) {
+        if (s != null) {
             int firstDashPosition = s.indexOf('-');
             int secondDashPosition = s.indexOf('-', firstDashPosition + 1);
             int len = s.length();
@@ -71,10 +82,18 @@ public class UserValidator {
     }
 
     public boolean isValidPhone(String phone) {
-        return phone.matches(PHONE_REGEX);
+        boolean result = false;
+        if (phone != null) {
+            result = phone.matches(PHONE_REGEX);
+        }
+        return result;
     }
 
     public boolean isValidIcdCode(String icdCode) {
-        return icdCode.matches(ICD_CODE_REGEX);
+        boolean result = false;
+        if (icdCode != null) {
+            result = icdCode.matches(ICD_CODE_REGEX);
+        }
+        return result;
     }
 }
