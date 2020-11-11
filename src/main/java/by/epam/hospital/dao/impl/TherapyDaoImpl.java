@@ -310,7 +310,7 @@ public class TherapyDaoImpl implements TherapyDao {
     }
 
     @Override
-    public List<Therapy> findTherapies(String patientLogin, CardType cardType) throws DaoException {
+    public List<Therapy> findPatientTherapies(String patientLogin, CardType cardType) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;

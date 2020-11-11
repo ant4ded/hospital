@@ -55,5 +55,5 @@ public interface TherapyDao {
      */
     Optional<Therapy> findById(int id, CardType cardType) throws DaoException;
 
-    List<Therapy> findTherapies(String patientLogin, CardType cardType) throws DaoException;
+    List<Therapy> findPatientTherapies(String patientLogin, CardType cardType) throws DaoException;
 }

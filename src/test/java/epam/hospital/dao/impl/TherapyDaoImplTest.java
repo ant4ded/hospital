@@ -108,7 +108,7 @@ public class TherapyDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
-    public void findTherapies_correctFind_ListWithCreatedTherapies(User doctor, User patient)
+    public void findPatientTherapies_correctFind_ListWithCreatedTherapies(User doctor, User patient)
             throws DaoException {
         patient.setId(userDao.create(patient));
         doctor.setId(userDao.create(doctor));
@@ -130,7 +130,7 @@ public class TherapyDaoImplTest {
         expected.add(first);
         expected.add(second);
 
-        List<Therapy> actual = therapyDao.findTherapies(patient.getLogin(), cardType);
+        List<Therapy> actual = therapyDao.findPatientTherapies(patient.getLogin(), cardType);
 
         cleaner.delete(first, cardType);
         cleaner.delete(second, cardType);

@@ -101,7 +101,7 @@ public class DoctorServiceImpl implements DoctorService {
             if (optionalUserDetails.isPresent()) {
                 Optional<User> optionalUser = userDao.findById(optionalUserDetails.get().getUserId());
                 if (optionalUser.isPresent()) {
-                    therapies = therapyDao.findTherapies(optionalUser.get().getLogin(), cardType);
+                    therapies = therapyDao.findPatientTherapies(optionalUser.get().getLogin(), cardType);
                 }
             }
         } catch (DaoException e) {

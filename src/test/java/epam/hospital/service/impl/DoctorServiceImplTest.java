@@ -231,7 +231,7 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(userDetails));
         Mockito.when(userDao.findById(userDetails.getUserId()))
                 .thenReturn(Optional.of(user));
-        Mockito.when(therapyDao.findTherapies(user.getLogin(), CardType.AMBULATORY))
+        Mockito.when(therapyDao.findPatientTherapies(user.getLogin(), CardType.AMBULATORY))
                 .thenReturn(therapies);
         Assert.assertEquals(doctorService.
                 findPatientTherapies(user.getUserDetails(), CardType.AMBULATORY), therapies);
