@@ -71,8 +71,7 @@
                         <div class="form-group form-inline justify-content-between">
                             <div class="form-group">
                                 <input type="date" name="${UsersDetailsFieldName.BIRTHDAY}" required
-                                       class="form-control" placeholder="Birthday"
-                                       onfocus="this.placeholder = ''" onblur="this.placeholder = 'Birthday'">
+                                       class="form-control">
                             </div>
                             <div class="switch-wrap d-flex justify-content-between">
                                 <p class="radio-p">Male</p>
