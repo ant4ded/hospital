@@ -23,17 +23,23 @@
 <fmt:message bundle="${local}" key="nav.admin.head.department_control" var="departmentControl"/>
 <fmt:message bundle="${local}" key="nav.admin.head.role_control" var="roleControl"/>
 <fmt:message bundle="${local}" key="authorization.title" var="authorizationTitle"/>
+
 <fmt:message bundle="${local}" key="input.login" var="inputLogin"/>
 <fmt:message bundle="${local}" key="input.password" var="inputPassword"/>
-<fmt:message bundle="${local}" key="btn.submit" var="btnSubmit"/>
-<fmt:message bundle="${local}" key="btn.find" var="btnFind"/>
 <fmt:message bundle="${local}" key="input.first_name" var="inputFirstName"/>
 <fmt:message bundle="${local}" key="input.surname" var="inputSurname"/>
 <fmt:message bundle="${local}" key="input.last_name" var="inputLastName"/>
 <fmt:message bundle="${local}" key="input.icd_code" var="inputIcdCode"/>
 <fmt:message bundle="${local}" key="input.reason" var="inputReason"/>
+<fmt:message bundle="${local}" key="input.passport_id" var="inputPassportId"/>
+<fmt:message bundle="${local}" key="input.address" var="inputAddress"/>
+<fmt:message bundle="${local}" key="input.phone" var="inputPhone"/>
 <fmt:message bundle="${local}" key="radio.card_type.ambulatory" var="inputAmbulatory"/>
 <fmt:message bundle="${local}" key="radio.card_type.stationary" var="inputStationary"/>
+
+<fmt:message bundle="${local}" key="btn.submit" var="btnSubmit"/>
+<fmt:message bundle="${local}" key="btn.find" var="btnFind"/>
+<fmt:message bundle="${local}" key="btn.update" var="btnUpdate"/>
 
 <html lang="${sessionScope.lang}">
 <head>
