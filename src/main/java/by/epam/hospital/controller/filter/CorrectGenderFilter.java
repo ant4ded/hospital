@@ -12,9 +12,7 @@ public class CorrectGenderFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        String parameter = servletRequest.getParameter(UsersDetailsFieldName.GENDER);
-
-        if (!UserDetails.Gender.isMale(parameter) && !UserDetails.Gender.isFemale(parameter)) {
+        if (!UserDetails.Gender.hasValue(servletRequest.getParameter(UsersDetailsFieldName.GENDER))) {
             StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                     FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
             response.add(UsersDetailsFieldName.GENDER);
@@ -24,7 +22,6 @@ public class CorrectGenderFilter implements Filter {
                     .forward(servletRequest, servletResponse);
             return;
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

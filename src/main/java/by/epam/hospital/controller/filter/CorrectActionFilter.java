@@ -11,9 +11,7 @@ public class CorrectActionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        String parameter = servletRequest.getParameter(ParameterName.ACTION);
-
-        if (!ServiceAction.isAdd(parameter) && !ServiceAction.isRemove(parameter)) {
+        if (!ServiceAction.hasValue(servletRequest.getParameter(ParameterName.ACTION))) {
             StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                     FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
             response.add(ParameterName.ACTION);
@@ -23,7 +21,6 @@ public class CorrectActionFilter implements Filter {
                     .forward(servletRequest, servletResponse);
             return;
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

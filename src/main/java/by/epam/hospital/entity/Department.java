@@ -17,10 +17,10 @@ public enum Department {
         this.id = departmentId;
     }
 
-    public static boolean hasDepartment(String department) {
-        if (department != null) {
-            for (Department value : Department.values()) {
-                if (value.name().equals(department)) {
+    public static boolean hasValue(String value) {
+        if (value != null) {
+            for (Department v : Department.values()) {
+                if (v.name().equals(value)) {
                     return true;
                 }
             }

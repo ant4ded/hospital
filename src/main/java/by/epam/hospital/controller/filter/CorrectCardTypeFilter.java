@@ -11,9 +11,7 @@ public class CorrectCardTypeFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        String parameter = servletRequest.getParameter(ParameterName.CARD_TYPE);
-
-        if (!CardType.isAmbulatory(parameter) && !CardType.isStationary(parameter)) {
+        if (!CardType.hasValue(servletRequest.getParameter(ParameterName.CARD_TYPE))) {
             StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                     FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
             response.add(ParameterName.CARD_TYPE);
@@ -23,7 +21,6 @@ public class CorrectCardTypeFilter implements Filter {
                     .forward(servletRequest, servletResponse);
             return;
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

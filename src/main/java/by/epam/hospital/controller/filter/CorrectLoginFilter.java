@@ -25,7 +25,6 @@ public class CorrectLoginFilter implements Filter {
                     .forward(servletRequest, servletResponse);
             return;
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

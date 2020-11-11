@@ -15,10 +15,10 @@ public enum Role {
         this.id = id;
     }
 
-    public static boolean hasRole(String role) {
-        if (role != null) {
-            for (Role value : Role.values()) {
-                if (value.name().equals(role)) {
+    public static boolean hasValue(String value) {
+        if (value != null) {
+            for (Role v : Role.values()) {
+                if (v.name().equals(value)) {
                     return true;
                 }
             }

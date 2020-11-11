@@ -11,7 +11,7 @@ public class CorrectDepartmentFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        if (!Department.hasDepartment(servletRequest.getParameter(ParameterName.DEPARTMENT))) {
+        if (!Department.hasValue(servletRequest.getParameter(ParameterName.DEPARTMENT))) {
             StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                     FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
             response.add(ParameterName.DEPARTMENT);
@@ -21,7 +21,6 @@ public class CorrectDepartmentFilter implements Filter {
                     .forward(servletRequest, servletResponse);
             return;
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

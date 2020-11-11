@@ -11,7 +11,7 @@ public class CorrectRoleFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        if (!Role.hasRole(servletRequest.getParameter(ParameterName.ROLE))) {
+        if (!Role.hasValue(servletRequest.getParameter(ParameterName.ROLE))) {
             StringJoiner response = new StringJoiner(FilterMessageParameter.DELIMITER,
                     FilterMessageParameter.PREFIX, FilterMessageParameter.SUFFIX);
             response.add(ParameterName.ROLE);
@@ -21,7 +21,6 @@ public class CorrectRoleFilter implements Filter {
                     .forward(servletRequest, servletResponse);
             return;
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

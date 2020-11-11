@@ -129,20 +129,15 @@ public class UserDetails implements Serializable {
     public enum Gender {
         MALE, FEMALE;
 
-        public static boolean isMale(String gender) {
-            boolean result = false;
-            if (gender != null) {
-                result = gender.equals(MALE.toString());
+        public static boolean hasValue(String value) {
+            if (value != null) {
+                for (Gender v : Gender.values()) {
+                    if (v.name().equals(value)) {
+                        return true;
+                    }
+                }
             }
-            return result;
-        }
-
-        public static boolean isFemale(String gender) {
-            boolean result = false;
-            if (gender != null) {
-                result = gender.equals(FEMALE.toString());
-            }
-            return result;
+            return false;
         }
     }
 }
