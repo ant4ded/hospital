@@ -72,7 +72,7 @@
                     <c:forEach items="${Department.values()}" var="department">
                         <div class="form-group form-inline">
                             <form method="post" class="col-lg-9 col-md-9 d-flex"
-                                  action="${HospitalUrl.MAIN_URL}${HospitalUrl.SERVLET_MAIN}">
+                                  action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_CHANGE_DEPARTMENT_HEAD}">
                                 <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
                                        value="${HospitalUrl.PAGE_DEPARTMENT_CONTROL}">
                                 <input type="hidden" name="${ParameterName.DEPARTMENT}"
