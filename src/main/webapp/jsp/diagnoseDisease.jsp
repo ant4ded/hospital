@@ -5,12 +5,6 @@
 <%@page import="by.epam.hospital.entity.table.IcdFieldName" %>
 <%@page import="by.epam.hospital.entity.table.UsersDetailsFieldName" %>
 <!DOCTYPE html>
-<fmt:setLocale value="${sessionScope.lang}"/>
-<fmt:setBundle basename="locale" var="local"/>
-
-<fmt:message bundle="${local}" key="page.diagnose_disease" var="page"/>
-<fmt:message bundle="${local}" key="diagnose_disease.title" var="title"/>
-<fmt:message bundle="${local}" key="diagnose_disease.btn.diagnose" var="btnDiagnose"/>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -19,6 +13,12 @@
 </head>
 <body>
 <%@include file="component/navbar.jsp" %>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="locale" var="local"/>
+
+<fmt:message bundle="${local}" key="page.diagnose_disease" var="page"/>
+<fmt:message bundle="${local}" key="diagnose_disease.title" var="title"/>
+<fmt:message bundle="${local}" key="diagnose_disease.btn.diagnose" var="btnDiagnose"/>
 
 <!-- Banner Area Starts -->
 <section class="banner-area other-page">

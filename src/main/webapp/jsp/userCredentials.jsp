@@ -3,11 +3,6 @@
 <%@page import="by.epam.hospital.entity.table.UsersDetailsFieldName" %>
 <%@page import="by.epam.hospital.entity.table.UsersFieldName" %>
 <!DOCTYPE html>
-<fmt:setLocale value="${sessionScope.lang}"/>
-<fmt:setBundle basename="locale" var="local"/>
-
-<fmt:message bundle="${local}" key="page.user_credentials" var="page"/>
-<fmt:message bundle="${local}" key="user_credentials.title" var="title"/>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -16,6 +11,11 @@
 </head>
 <body>
 <%@include file="component/navbar.jsp" %>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="locale" var="local"/>
+
+<fmt:message bundle="${local}" key="page.user_credentials" var="page"/>
+<fmt:message bundle="${local}" key="user_credentials.title" var="title"/>
 
 <!-- Banner Area Starts -->
 <section class="banner-area other-page">

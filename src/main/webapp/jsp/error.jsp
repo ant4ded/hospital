@@ -1,9 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
-<fmt:setLocale value="${sessionScope.lang}"/>
-<fmt:setBundle basename="locale" var="local"/>
-
-<fmt:message bundle="${local}" key="page.error" var="page"/>
 <html lang="en">
 <head>
     <title>Medino</title>
@@ -11,6 +7,10 @@
 </head>
 <body>
 <%@include file="component/navbar.jsp" %>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="locale" var="local"/>
+
+<fmt:message bundle="${local}" key="page.error" var="page"/>
 <!-- Banner Area Starts -->
 <section class="banner-area other-page">
     <div class="container">

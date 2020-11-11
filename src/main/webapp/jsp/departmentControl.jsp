@@ -4,6 +4,14 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Medino</title>
+    <%@include file="component/head.jsp" %>
+</head>
+<body>
+<%@include file="component/navbar.jsp" %>
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="locale" var="local"/>
 
@@ -14,14 +22,6 @@
 <fmt:message bundle="${local}" key="department_control.message.nullLogin" var="messageNullLogin"/>
 <fmt:message bundle="${local}" key="department_control.btn.change_head" var="btnChangeHead"/>
 <fmt:message bundle="${local}" key="department_control.btn.move_to_department" var="btnMoveToDepartment"/>
-<html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Medino</title>
-    <%@include file="component/head.jsp" %>
-</head>
-<body>
-<%@include file="component/navbar.jsp" %>
 <!-- Banner Area Starts -->
 <section class="banner-area other-page">
     <div class="container">

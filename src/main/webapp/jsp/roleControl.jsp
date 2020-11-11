@@ -4,13 +4,6 @@
 <%@page import="by.epam.hospital.entity.Role" %>
 <%@page import="by.epam.hospital.service.ServiceAction" %>
 <!DOCTYPE html>
-<fmt:setLocale value="${sessionScope.lang}"/>
-<fmt:setBundle basename="locale" var="local"/>
-
-<fmt:message bundle="${local}" key="page.role_control" var="page"/>
-<fmt:message bundle="${local}" key="role_control.title" var="title"/>
-<fmt:message bundle="${local}" key="role_control.message.department_head.part1" var="messagePart1"/>
-<fmt:message bundle="${local}" key="role_control.message.department_head.part2" var="messagePart2"/>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -19,6 +12,13 @@
 </head>
 <body>
 <%@include file="component/navbar.jsp" %>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="locale" var="local"/>
+
+<fmt:message bundle="${local}" key="page.role_control" var="page"/>
+<fmt:message bundle="${local}" key="role_control.title" var="title"/>
+<fmt:message bundle="${local}" key="role_control.message.department_head.part1" var="messagePart1"/>
+<fmt:message bundle="${local}" key="role_control.message.department_head.part2" var="messagePart2"/>
 
 <!-- Banner Area Starts -->
 <section class="banner-area other-page">

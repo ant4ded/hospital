@@ -7,6 +7,11 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
+<html lang="${sessionScope.lang}">
+<head>
+    <title></title>
+</head>
+<body>
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="locale" var="local"/>
 
@@ -43,12 +48,6 @@
 <fmt:message bundle="${local}" key="btn.add" var="btnAdd"/>
 <fmt:message bundle="${local}" key="btn.remove" var="btnRemove"/>
 
-<html lang="${sessionScope.lang}">
-<head>
-    <title></title>
-</head>
-<body>
-
 <!-- Preloader Starts -->
 <div class="preloader">
     <div class="spinner"></div>
@@ -80,12 +79,7 @@
     <div class="header-top">
         <div class="container">
             <div class="row">
-                <div class="col-lg-9 d-md-flex">
-                    <h6 class="mr-3"><span class="mr-2"><i class="fa fa-mobile"></i></span> call us now! +1 305 708 2563
-                    </h6>
-                    <h6 class="mr-3"><span class="mr-2"><i class="fa fa-envelope-o"></i></span> medical@example.com</h6>
-                    <h6><span class="mr-2"><i class="fa fa-map-marker"></i></span> Find our Location</h6>
-                </div>
+                <div class="col-lg-9 d-md-flex"></div>
                 <div class="col-lg-3">
                     <div class="social-links">
                         <ul>
@@ -113,10 +107,7 @@
                 </div>
                 <nav id="nav-menu-container">
                     <ul class="nav-menu">
-                        <li class="menu-active"><a href="#">${home}</a></li>
-                        <li><a href="#">${departments}</a></li>
-                        <li><a href="#">${doctors}</a></li>
-                        <li><a href="#">${contact}</a></li>
+                        <li class="menu-active"><a href="${HospitalUrl.MAIN_URL}">${home}</a></li>
                         <c:if test="${sessionScope.loginUsername != null}">
                             <li class="menu-has-children"><a href="">${sessionScope.loginUsername}</a>
                                 <ul>
