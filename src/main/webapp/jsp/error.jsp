@@ -1,5 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="locale" var="local"/>
+
+<fmt:message bundle="${local}" key="page.error" var="page"/>
 <html lang="en">
 <head>
     <title>Medino</title>
@@ -12,8 +16,8 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h1>Error</h1>
-                <a href="${HospitalUrl.MAIN_URL}">Home</a> <span>|</span> <a href="#">Error</a>
+                <h1>${page}</h1>
+                <a href="${HospitalUrl.MAIN_URL}">${home}</a> <span>|</span> <a href="#">${page}</a>
             </div>
         </div>
     </div>
