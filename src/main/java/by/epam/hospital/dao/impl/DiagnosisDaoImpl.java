@@ -244,23 +244,18 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @param connection  {@code Connection} object for executing sql string.
      * @param therapyId   {@code int} value of {@code Therapy.id} field.
      * @param diagnosisId {@code int} value of {@code Diagnosis.id} field.
-     * @throws DaoException throws when adding {@code Diagnosis} to
+     * @throws SQLException throws when adding {@code Diagnosis} to
      *                      {@code Therapy} table throws
      *                      {@code SQLException}.
      * @see PreparedStatement
      * @see Connection
      * @see SQLException
      */
-    private void addDiagnosisToTherapy(Connection connection, int therapyId, int diagnosisId) throws DaoException {
-        try {
-            PreparedStatement statement = connection.prepareStatement(SQL_CREATE_THERAPY_DIAGNOSES);
-            statement.setInt(1, therapyId);
-            statement.setInt(2, diagnosisId);
-
-            statement.execute();
-            statement.close();
-        } catch (SQLException e) {
-            throw new DaoException("Adding diagnosis to therapy failed.", e);
-        }
+    private void addDiagnosisToTherapy(Connection connection, int therapyId, int diagnosisId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(SQL_CREATE_THERAPY_DIAGNOSES);
+        statement.setInt(1, therapyId);
+        statement.setInt(2, diagnosisId);
+        statement.execute();
+        statement.close();
     }
 }
