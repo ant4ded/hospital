@@ -214,128 +214,228 @@
   <!--Authentication filters declaration end-->
   <!--Validation filters declaration start-->
   <filter>
-    <filter-name>CorrectPassportIdFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectPassportIdFilter</filter-class>
+    <filter-name>PassportIdFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>passport_id</param-value>
+    </init-param>
   </filter>
   <filter>
-    <filter-name>CorrectDepartmentFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectDepartmentFilter</filter-class>
+    <filter-name>DepartmentFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>department</param-value>
+    </init-param>
   </filter>
   <filter>
-    <filter-name>CorrectLoginFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectLoginFilter</filter-class>
+    <filter-name>LoginFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>login</param-value>
+    </init-param>
   </filter>
   <filter>
-    <filter-name>CorrectRoleFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectRoleFilter</filter-class>
+    <filter-name>RoleFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>role</param-value>
+    </init-param>
   </filter>
   <filter>
-    <filter-name>CorrectActionFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectActionFilter</filter-class>
+    <filter-name>ActionFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>action</param-value>
+    </init-param>
   </filter>
   <filter>
-    <filter-name>PassportDetailsFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.PassportDetailsFilter</filter-class>
+    <filter-name>FirstNameFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>first_name</param-value>
+    </init-param>
   </filter>
   <filter>
-    <filter-name>CorrectIcdCodeFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectIcdCodeFilter</filter-class>
+    <filter-name>SurnameFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>surname</param-value>
+    </init-param>
   </filter>
   <filter>
-    <filter-name>CorrectCardTypeFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectCardTypeFilter</filter-class>
+    <filter-name>LastNameFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>last_name</param-value>
+    </init-param>
   </filter>
   <filter>
-    <filter-name>CorrectPhoneFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectPhoneFilter</filter-class>
+    <filter-name>BirthdayFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>birthday</param-value>
+    </init-param>
   </filter>
   <filter>
-    <filter-name>CorrectGenderFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.CorrectGenderFilter</filter-class>
+    <filter-name>IcdCodeFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>code</param-value>
+    </init-param>
+  </filter>
+  <filter>
+    <filter-name>CardTypeFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>card_type</param-value>
+    </init-param>
+  </filter>
+  <filter>
+    <filter-name>PhoneFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>phone</param-value>
+    </init-param>
+  </filter>
+  <filter>
+    <filter-name>GenderFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>gender</param-value>
+    </init-param>
   </filter>
 
   <filter-mapping>
-    <filter-name>CorrectPhoneFilter</filter-name>
+    <filter-name>PhoneFilter</filter-name>
     <url-pattern>/c-edit-user-details</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>CorrectDepartmentFilter</filter-name>
+    <filter-name>DepartmentFilter</filter-name>
     <url-pattern>/c-change-department-head</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CorrectLoginFilter</filter-name>
+    <filter-name>LoginFilter</filter-name>
     <url-pattern>/c-change-department-head</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>CorrectLoginFilter</filter-name>
+    <filter-name>LoginFilter</filter-name>
     <url-pattern>/c-find-department-control-attributes</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>CorrectLoginFilter</filter-name>
+    <filter-name>LoginFilter</filter-name>
     <url-pattern>/c-find-role-control-attributes</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>CorrectDepartmentFilter</filter-name>
+    <filter-name>DepartmentFilter</filter-name>
     <url-pattern>/c-move-doctor-to-department</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CorrectLoginFilter</filter-name>
+    <filter-name>LoginFilter</filter-name>
     <url-pattern>/c-move-doctor-to-department</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>CorrectRoleFilter</filter-name>
+    <filter-name>RoleFilter</filter-name>
     <url-pattern>/c-role-control</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CorrectLoginFilter</filter-name>
+    <filter-name>LoginFilter</filter-name>
     <url-pattern>/c-role-control</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CorrectActionFilter</filter-name>
+    <filter-name>ActionFilter</filter-name>
     <url-pattern>/c-role-control</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>CorrectLoginFilter</filter-name>
+    <filter-name>LoginFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CorrectPassportIdFilter</filter-name>
+    <filter-name>PassportIdFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CorrectGenderFilter</filter-name>
+    <filter-name>GenderFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>PassportDetailsFilter</filter-name>
+    <filter-name>FirstNameFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CorrectPhoneFilter</filter-name>
+    <filter-name>SurnameFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>LastNameFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>BirthdayFilter</filter-name>
+    <url-pattern>/c-register-client</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>PhoneFilter</filter-name>
     <url-pattern>/c-register-client</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>PassportDetailsFilter</filter-name>
+    <filter-name>FirstNameFilter</filter-name>
+    <url-pattern>/c-find-user-credentials</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>SurnameFilter</filter-name>
+    <url-pattern>/c-find-user-credentials</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>LastNameFilter</filter-name>
+    <url-pattern>/c-find-user-credentials</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>BirthdayFilter</filter-name>
     <url-pattern>/c-find-user-credentials</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
-    <filter-name>PassportDetailsFilter</filter-name>
+    <filter-name>FirstNameFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CorrectIcdCodeFilter</filter-name>
+    <filter-name>SurnameFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CorrectCardTypeFilter</filter-name>
+    <filter-name>LastNameFilter</filter-name>
+    <url-pattern>/c-diagnose-disease</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>BirthdayFilter</filter-name>
+    <url-pattern>/c-diagnose-disease</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>IcdCodeFilter</filter-name>
+    <url-pattern>/c-diagnose-disease</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CardTypeFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>
   </filter-mapping>
   <!--Validation filters declaration end-->
