@@ -7,6 +7,7 @@ import by.epam.hospital.controller.command.admin.head.*;
 import by.epam.hospital.controller.command.client.EditUserDetails;
 import by.epam.hospital.controller.command.client.FindUserDetails;
 import by.epam.hospital.controller.command.doctor.DiagnoseDisease;
+import by.epam.hospital.controller.command.doctor.FindPatientTherapies;
 import by.epam.hospital.controller.command.receptionist.FindUserCredentials;
 import by.epam.hospital.controller.command.receptionist.RegisterClient;
 import by.epam.hospital.dao.impl.*;
@@ -62,6 +63,9 @@ public class CommandProvider {
         map.put(CommandName.FIND_USER_DETAILS,
                 new FindUserDetails(getClientService(),
                         Logger.getLogger(FindUserDetails.class)));
+        map.put(CommandName.FIND_PATIENT_THERAPIES,
+                new FindPatientTherapies(getDoctorService(),
+                        Logger.getLogger(FindPatientTherapies.class)));
     }
 
     public HttpCommand getCommand(CommandName command) {

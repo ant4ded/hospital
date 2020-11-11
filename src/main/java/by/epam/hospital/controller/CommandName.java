@@ -13,7 +13,8 @@ public enum CommandName {
     MOVE_DOCTOR_TO_DEPARTMENT,
     DIAGNOSE_DISEASE,
     FIND_USER_DETAILS,
-    EDIT_USER_DETAILS;
+    EDIT_USER_DETAILS,
+    FIND_PATIENT_THERAPIES;
 
     public static boolean hasValue(String value) {
         if (value != null) {
