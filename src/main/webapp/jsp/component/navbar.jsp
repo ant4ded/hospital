@@ -23,9 +23,10 @@
 <fmt:message bundle="${local}" key="nav.admin.head.department_control" var="departmentControl"/>
 <fmt:message bundle="${local}" key="nav.admin.head.role_control" var="roleControl"/>
 <fmt:message bundle="${local}" key="authorization.title" var="authorizationTitle"/>
-<fmt:message bundle="${local}" key="authorization.input.login" var="authorizationInputLogin"/>
-<fmt:message bundle="${local}" key="authorization.input.password" var="authorizationInputPassword"/>
-<fmt:message bundle="${local}" key="authorization.btn.submit" var="authorizationBtnSubmit"/>
+<fmt:message bundle="${local}" key="input.login" var="inputLogin"/>
+<fmt:message bundle="${local}" key="input.password" var="inputPassword"/>
+<fmt:message bundle="${local}" key="btn.submit" var="btnSubmit"/>
+<fmt:message bundle="${local}" key="btn.find" var="btnFind"/>
 
 <html lang="${sessionScope.lang}">
 <head>
@@ -47,14 +48,14 @@
             <div class="form-group">
                 <p>${requestScope.message}</p>
                 <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.AUTHORIZATION}">
-                <input type="text" name="${UsersFieldName.LOGIN}" placeholder="${authorizationInputLogin}"
+                <input type="text" name="${UsersFieldName.LOGIN}" placeholder="${inputLogin}"
                        onfocus="this.placeholder = ''"
-                       onblur="this.placeholder = '${authorizationInputLogin}'" required class="single-input">
-                <input type="password" name="${UsersFieldName.PASSWORD}" placeholder="${authorizationInputPassword}"
+                       onblur="this.placeholder = '${inputLogin}'" required class="single-input">
+                <input type="password" name="${UsersFieldName.PASSWORD}" placeholder="${inputPassword}"
                        onfocus="this.placeholder = ''"
-                       onblur="this.placeholder = '${authorizationInputPassword}'" required class="single-input">
+                       onblur="this.placeholder = '${inputPassword}'" required class="single-input">
             </div>
-            <button type="submit" class="template-btn form-btn">${authorizationBtnSubmit}</button>
+            <button type="submit" class="template-btn form-btn">${btnSubmit}</button>
         </form>
     </div>
 </div>
@@ -74,12 +75,12 @@
                     <div class="social-links">
                         <ul>
                             <li>
-                                <a href="${HospitalUrl.MAIN_URL}?${ParameterName.LOCALE_SESSION}=${ParameterName.LOCALE_EN}">
+                                <a href="?${ParameterName.LOCALE_SESSION}=${ParameterName.LOCALE_EN}">
                                     <i class="fa fa-cog"></i>EN
                                 </a>
                             </li>
                             <li>
-                                <a href="${HospitalUrl.MAIN_URL}?${ParameterName.LOCALE_SESSION}=${ParameterName.LOCALE_DE}">
+                                <a href="?${ParameterName.LOCALE_SESSION}=${ParameterName.LOCALE_DE}">
                                     <i class="fa fa-cog"></i>DE
                                 </a>
                             </li>
@@ -108,12 +109,12 @@
                                     <c:if test="${sessionScope.loginRoles.contains(Role.RECEPTIONIST)}">
                                         <li>
                                             <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_REGISTRY}">
-                                                ${registerNewClient}
+                                                    ${registerNewClient}
                                             </a>
                                         </li>
                                         <li>
                                             <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_USER_CREDENTIALS}">
-                                                ${findUserCredentials}
+                                                    ${findUserCredentials}
                                             </a>
                                         </li>
                                     </c:if>
@@ -121,7 +122,7 @@
                                     <c:if test="${sessionScope.loginRoles.contains(Role.DOCTOR)}">
                                         <li>
                                             <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DIAGNOSE_DISEASE}">
-                                                ${diagnoseDisease}
+                                                    ${diagnoseDisease}
                                             </a>
                                         </li>
                                     </c:if>
@@ -129,23 +130,23 @@
                                     <c:if test="${sessionScope.loginRoles.contains(Role.ADMIN_HEAD)}">
                                         <li>
                                             <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DEPARTMENT_CONTROL}">
-                                                ${departmentControl}
+                                                    ${departmentControl}
                                             </a>
                                         </li>
                                         <li>
                                             <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_ROLE_CONTROL}">
-                                                ${roleControl}
+                                                    ${roleControl}
                                             </a>
                                         </li>
                                     </c:if>
                                     <li>
                                         <a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.FIND_USER_DETAILS}">
-                                            ${profile}
+                                                ${profile}
                                         </a>
                                     </li>
                                     <li>
                                         <a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.SIGN_OUT}">
-                                            ${signOut}
+                                                ${signOut}
                                         </a>
                                     </li>
                                 </ul>
