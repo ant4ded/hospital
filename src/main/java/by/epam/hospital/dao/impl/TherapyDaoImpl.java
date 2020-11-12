@@ -352,7 +352,6 @@ public class TherapyDaoImpl implements TherapyDao {
             throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        ResultSet resultSet = null;
         boolean result = false;
         try {
             connection = ConnectionPool.getInstance().getConnection();
@@ -372,7 +371,7 @@ public class TherapyDaoImpl implements TherapyDao {
         } catch (SQLException e) {
             throw new DaoException("Close therapy failed.", e);
         } finally {
-            ConnectionPool.closeConnection(connection, statement, resultSet);
+            ConnectionPool.closeConnection(connection, statement);
         }
         return result;
     }
@@ -382,7 +381,6 @@ public class TherapyDaoImpl implements TherapyDao {
             throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        ResultSet resultSet = null;
         boolean result = false;
         try {
             connection = ConnectionPool.getInstance().getConnection();
@@ -403,7 +401,7 @@ public class TherapyDaoImpl implements TherapyDao {
         } catch (SQLException e) {
             throw new DaoException("Close therapy failed.", e);
         } finally {
-            ConnectionPool.closeConnection(connection, statement, resultSet);
+            ConnectionPool.closeConnection(connection, statement);
         }
         return result;
     }
