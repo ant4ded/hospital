@@ -117,7 +117,7 @@ public class TherapyDaoImpl implements TherapyDao {
      * and patient {@code User.login} in data base.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_CLOSE_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
+    private static final String SQL_SET_END_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
             UPDATE therapy
             SET end_therapy = ?
             WHERE doctor_id = (
@@ -125,7 +125,7 @@ public class TherapyDaoImpl implements TherapyDao {
             		SELECT doctors.id did
             		FROM ambulatory_cards
             		INNER JOIN therapy t ON ambulatory_cards.therapy_id = t.id
-            		INNER JOIN users doctors ON t.doctor_id = doctors.id\s
+            		INNER JOIN users doctors ON t.doctor_id = doctors.id
             		INNER JOIN users patients ON ambulatory_cards.patient_id = patients.id
             		WHERE doctors.login = ? AND patients.login = ?) 
             	as c)""";
@@ -136,7 +136,7 @@ public class TherapyDaoImpl implements TherapyDao {
      * and patient {@code User.login} in data base.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_CLOSE_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
+    private static final String SQL_SET_END_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
             UPDATE therapy
             SET end_therapy = ?
             WHERE doctor_id = (
@@ -144,10 +144,70 @@ public class TherapyDaoImpl implements TherapyDao {
             		SELECT doctors.id did
             		FROM stationary_cards
             		INNER JOIN therapy t ON stationary_cards.therapy_id = t.id
-            		INNER JOIN users doctors ON t.doctor_id = doctors.id\s
+            		INNER JOIN users doctors ON t.doctor_id = doctors.id
             		INNER JOIN users patients ON stationary_cards.patient_id = patients.id
             		WHERE doctors.login = ? AND patients.login = ?) 
             	as c)""";
+    /**
+     * Sql {@code String} object for set {@code Therapy.finalDiagnosis}
+     * field to entity {@code Therapy} in
+     * ambulatory card table by doctor {@code User.login}
+     * and patient {@code User.login} in data base.
+     * Written for the MySQL dialect.
+     */
+    private static final String SQL_SET_FINAL_DIAGNOSIS_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
+            UPDATE therapy
+            SET final_diagnosis_id = (
+                SELECT fdid FROM (
+                  	SELECT d.id fdid
+                  	FROM ambulatory_cards
+                  	INNER JOIN therapy t ON ambulatory_cards.therapy_id = t.id
+                  	INNER JOIN users doctors ON t.doctor_id = doctors.id
+                  	INNER JOIN users patients ON ambulatory_cards.patient_id = patients.id
+                  	INNER JOIN therapy_diagnoses td ON td.therapy_id = t.id
+                  	INNER JOIN diagnoses d ON d.id = td.diagnosis_id
+                  	WHERE doctors.login = ? AND patients.login = ?
+                  	HAVING d.id = MAX(d.id))
+                as c)
+            WHERE doctor_id = (
+                SELECT did FROM (
+                  	SELECT doctors.id did
+                  	FROM ambulatory_cards
+                  	INNER JOIN therapy t ON ambulatory_cards.therapy_id = t.id
+                  	INNER JOIN users doctors ON t.doctor_id = doctors.id
+                  	INNER JOIN users patients ON ambulatory_cards.patient_id = patients.id
+                  	WHERE doctors.login = ? AND patients.login = ?)
+                as c)""";
+    /**
+     * Sql {@code String} object for set {@code Therapy.finalDiagnosis}
+     * field to entity {@code Therapy} in
+     * stationary card table by doctor {@code User.login}
+     * and patient {@code User.login} in data base.
+     * Written for the MySQL dialect.
+     */
+    private static final String SQL_SET_FINAL_DIAGNOSIS_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
+            UPDATE therapy
+            SET final_diagnosis_id = (
+                SELECT fdid FROM (
+                  	SELECT d.id fdid
+                  	FROM stationary_cards
+                  	INNER JOIN therapy t ON stationary_cards.therapy_id = t.id
+                  	INNER JOIN users doctors ON t.doctor_id = doctors.id
+                  	INNER JOIN users patients ON stationary_cards.patient_id = patients.id
+                  	INNER JOIN therapy_diagnoses td ON td.therapy_id = t.id
+                  	INNER JOIN diagnoses d ON d.id = td.diagnosis_id
+                  	WHERE doctors.login = ? AND patients.login = ?
+                  	HAVING d.id = MAX(d.id))
+                as c)
+            WHERE doctor_id = (
+                SELECT did FROM (
+                  	SELECT doctors.id did
+                  	FROM stationary_cards
+                  	INNER JOIN therapy t ON stationary_cards.therapy_id = t.id
+                  	INNER JOIN users doctors ON t.doctor_id = doctors.id
+                  	INNER JOIN users patients ON stationary_cards.patient_id = patients.id
+                  	WHERE doctors.login = ? AND patients.login = ?)
+                as c)""";
     /**
      * Sql {@code String} object for find {@code Therapy} entity in
      * ambulatory card table by patient {@code User.login} in data base.
@@ -297,11 +357,42 @@ public class TherapyDaoImpl implements TherapyDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
-                    SQL_CLOSE_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN :
-                    SQL_CLOSE_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN);
+                    SQL_SET_END_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN :
+                    SQL_SET_END_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN);
             statement.setDate(1, date);
             statement.setString(2, doctorLogin);
             statement.setString(3, patientLogin);
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows != 0) {
+                result = true;
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Close therapy failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean setFinalDiagnosisToTherapy(String doctorLogin, String patientLogin, CardType cardType)
+            throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        boolean result = false;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
+                    SQL_SET_FINAL_DIAGNOSIS_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN :
+                    SQL_SET_FINAL_DIAGNOSIS_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN);
+            statement.setString(1, doctorLogin);
+            statement.setString(2, patientLogin);
+            statement.setString(3, doctorLogin);
+            statement.setString(4, patientLogin);
 
             int affectedRows = statement.executeUpdate();
             if (affectedRows != 0) {

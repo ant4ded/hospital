@@ -42,6 +42,21 @@ public interface TherapyDao {
             throws DaoException;
 
     /**
+     * Set {@code Therapy.finalDiagnosis} field to entity {@code Therapy} in
+     * stationary card table by doctor {@code User.login} and patient {@code User.login} in data base.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @param cardType     element of enum {@code CardType}
+     *                     table is selected based on this element.
+     * @return auto-generated {@code Therapy.id} field.
+     * @throws DaoException if a database access error occurs.
+     * @see CardType
+     */
+    boolean setFinalDiagnosisToTherapy(String doctorLogin, String patientLogin, CardType cardType)
+            throws DaoException;
+
+    /**
      * Find current patient entity {@code Therapy} in database.
      *
      * @param doctorLogin  {@code String} value of {@code User.login} field.
