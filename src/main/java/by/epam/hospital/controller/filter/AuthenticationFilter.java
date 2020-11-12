@@ -39,6 +39,7 @@ public class AuthenticationFilter implements Filter {
         try {
             if (loginUsername == null || !authenticationService.isHasRole(loginUsername, role)) {
                 httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, FORBIDDEN_MESSAGE);
+                return;
             }
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (ServiceException e) {
