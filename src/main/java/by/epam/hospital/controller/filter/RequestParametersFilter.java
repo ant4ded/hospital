@@ -35,7 +35,6 @@ public class RequestParametersFilter implements Filter {
             throws IOException, ServletException {
         String parameterValue = servletRequest.getParameter(parameterName);
         boolean isParameterInvalid = switch (parameterName) {
-            case ParameterName.COMMAND -> !CommandName.hasValue(parameterValue);
             case ParameterName.ACTION -> !ServiceAction.hasValue(parameterValue);
             case ParameterName.CARD_TYPE -> !CardType.hasValue(parameterValue);
             case ParameterName.DEPARTMENT -> !Department.hasValue(parameterValue);
