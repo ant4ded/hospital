@@ -303,7 +303,7 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(therapy));
         Mockito.when(therapyDao.setFinalDiagnosisToTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(true);
-        Assert.assertTrue(doctorService.setFinalDiagnosis(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
+        Assert.assertTrue(doctorService.makeLastDiagnosisFinal(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient")
@@ -315,7 +315,7 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.of(new Therapy()));
-        Assert.assertFalse(doctorService.setFinalDiagnosis(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
+        Assert.assertFalse(doctorService.makeLastDiagnosisFinal(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
@@ -324,7 +324,7 @@ public class DoctorServiceImplTest {
             throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(doctor.getLogin()))
                 .thenThrow(DaoException.class);
-        Assert.assertFalse(doctorService.setFinalDiagnosis(doctor.getLogin(),
+        Assert.assertFalse(doctorService.makeLastDiagnosisFinal(doctor.getLogin(),
                 patient.getLogin(), CardType.AMBULATORY));
     }
 

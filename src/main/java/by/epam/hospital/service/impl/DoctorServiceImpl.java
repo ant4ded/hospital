@@ -125,7 +125,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public boolean setFinalDiagnosis(String doctorLogin, String patientLogin, CardType cardType)
+    public boolean makeLastDiagnosisFinal(String doctorLogin, String patientLogin, CardType cardType)
             throws ServiceException {
         boolean result = false;
         try {
