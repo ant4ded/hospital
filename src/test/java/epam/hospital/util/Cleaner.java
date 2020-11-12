@@ -46,13 +46,11 @@ public class Cleaner {
     public void delete(User user) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        UserDetails userDetails = user.getUserDetails();
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareStatement(SQL_DELETE_USER_ROLES);
 
             user = userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new);
-            user.setUserDetails(userDetails);
             statement.setInt(1, user.getId());
             statement.execute();
             statement.close();
