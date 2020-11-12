@@ -111,6 +111,20 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public List<Therapy> findOpenDoctorTherapies(String doctorLogin, CardType cardType) throws ServiceException {
+        List<Therapy> therapies = new ArrayList<>();
+        try {
+            Optional<User> optionalUser = userDao.findByLogin(doctorLogin);
+            if (optionalUser.isPresent()) {
+                therapies = therapyDao.findOpenDoctorTherapies(optionalUser.get().getLogin(), cardType);
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("FindPatientTherapies failed.", e);
+        }
+        return therapies;
+    }
+
+    @Override
     public boolean setFinalDiagnosis(String doctorLogin, String patientLogin, CardType cardType)
             throws ServiceException {
         boolean result = false;
