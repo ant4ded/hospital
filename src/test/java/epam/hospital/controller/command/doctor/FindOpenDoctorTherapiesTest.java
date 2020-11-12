@@ -90,7 +90,7 @@ public class FindOpenDoctorTherapiesTest {
         Mockito.when(request.getParameter(ParameterName.CARD_TYPE))
                 .thenReturn(String.valueOf(CardType.AMBULATORY));
         Mockito.when(doctorService.findOpenDoctorTherapies(patient.getLogin(), CardType.AMBULATORY))
-                .thenThrow(new ServiceException());
+                .thenThrow(ServiceException.class);
 
         Map<String, Object> result = httpCommand.execute(request, response);
         Assert.assertTrue(result.containsKey(ParameterName.COMMAND_EXCEPTION));
