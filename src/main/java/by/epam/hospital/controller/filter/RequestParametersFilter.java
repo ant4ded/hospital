@@ -43,12 +43,12 @@ public class RequestParametersFilter implements Filter {
             case UsersDetailsFieldName.GENDER -> !UserDetails.Gender.hasValue(parameterValue);
             case IcdFieldName.CODE -> !dataValidator.isValidIcdCode(parameterValue);
             case UsersFieldName.LOGIN -> !dataValidator.isValidLogin(parameterValue);
-            case UsersDetailsFieldName.PASSPORT_ID -> !dataValidator.isValidPassportId(parameterName);
-            case UsersDetailsFieldName.PHONE -> !dataValidator.isValidPhone(parameterName);
-            case UsersDetailsFieldName.BIRTHDAY -> !dataValidator.isValidBirthDate(parameterName);
+            case UsersDetailsFieldName.PASSPORT_ID -> !dataValidator.isValidPassportId(parameterValue);
+            case UsersDetailsFieldName.PHONE -> !dataValidator.isValidPhone(parameterValue);
+            case UsersDetailsFieldName.BIRTHDAY -> !dataValidator.isValidBirthDate(parameterValue);
             case UsersDetailsFieldName.FIRST_NAME,
                     UsersDetailsFieldName.SURNAME,
-                    UsersDetailsFieldName.LAST_NAME -> !dataValidator.isValidName(parameterName);
+                    UsersDetailsFieldName.LAST_NAME -> !dataValidator.isValidName(parameterValue);
             default -> false;
         };
         if (isParameterInvalid) {
