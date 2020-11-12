@@ -18,4 +18,10 @@ public interface DoctorService {
                             String patientLogin, CardType cardType) throws ServiceException;
 
     List<Therapy> findPatientTherapies(UserDetails userDetails, CardType cardType) throws ServiceException;
+
+    boolean setFinalDiagnosis(String doctorLogin, String patientLogin, CardType cardType)
+            throws ServiceException;
+
+    boolean setEndDate(String doctorLogin, String patientLogin, CardType cardType)
+            throws ServiceException;
 }

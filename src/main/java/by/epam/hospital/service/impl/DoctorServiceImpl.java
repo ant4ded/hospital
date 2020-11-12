@@ -109,4 +109,40 @@ public class DoctorServiceImpl implements DoctorService {
         }
         return therapies;
     }
+
+    @Override
+    public boolean setFinalDiagnosis(String doctorLogin, String patientLogin, CardType cardType)
+            throws ServiceException {
+        boolean result = false;
+        try {
+            Optional<User> doctor = userDao.findByLogin(doctorLogin);
+            Optional<User> patient = userDao.findByLogin(patientLogin);
+            Optional<Therapy> therapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
+            boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
+            if (isPresent && !therapy.get().getDiagnoses().isEmpty()) {
+                result = therapyDao.setFinalDiagnosisToTherapy(doctorLogin, patientLogin, cardType);
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("SetFinalDiagnosis failed.", e);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean setEndDate(String doctorLogin, String patientLogin, CardType cardType)
+            throws ServiceException {
+        boolean result = false;
+        try {
+            Optional<User> doctor = userDao.findByLogin(doctorLogin);
+            Optional<User> patient = userDao.findByLogin(patientLogin);
+            Optional<Therapy> therapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
+            boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
+            if (isPresent && therapy.get().getFinalDiagnosis().isPresent()) {
+                result = therapyDao.setEndTherapy(doctorLogin, patientLogin, Date.valueOf(LocalDate.now()), cardType);
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("SetEndDate failed.", e);
+        }
+        return result;
+    }
 }
