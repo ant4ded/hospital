@@ -143,7 +143,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public boolean setEndDate(String doctorLogin, String patientLogin, CardType cardType)
+    public boolean closeTherapy(String doctorLogin, String patientLogin, CardType cardType)
             throws ServiceException {
         boolean result = false;
         try {
