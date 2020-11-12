@@ -290,7 +290,7 @@ public class DoctorServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient")
-    public void setFinalDiagnosis_doctorAndPatientExist_true(User doctor, User patient)
+    public void makeLastDiagnosisFinal_doctorAndPatientExist_true(User doctor, User patient)
             throws DaoException, ServiceException {
         Diagnosis diagnosis = new Diagnosis();
         Therapy therapy = new Therapy();
@@ -307,7 +307,7 @@ public class DoctorServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient")
-    public void setFinalDiagnosis_diagnosisEmpty_false(User doctor, User patient)
+    public void makeLastDiagnosisFinal_diagnosisEmpty_false(User doctor, User patient)
             throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(doctor.getLogin()))
                 .thenReturn(Optional.of(doctor));
@@ -320,7 +320,7 @@ public class DoctorServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             expectedExceptions = ServiceException.class)
-    public void setFinalDiagnosis_daoException_serviceException(User doctor, User patient)
+    public void makeLastDiagnosisFinal_daoException_serviceException(User doctor, User patient)
             throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(doctor.getLogin()))
                 .thenThrow(DaoException.class);
