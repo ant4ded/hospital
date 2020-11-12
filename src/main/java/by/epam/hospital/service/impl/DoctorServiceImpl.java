@@ -137,7 +137,7 @@ public class DoctorServiceImpl implements DoctorService {
                 result = therapyDao.setFinalDiagnosisToTherapy(doctorLogin, patientLogin, cardType);
             }
         } catch (DaoException e) {
-            throw new ServiceException("SetFinalDiagnosis failed.", e);
+            throw new ServiceException("MakeLastDiagnosisFinal failed.", e);
         }
         return result;
     }
