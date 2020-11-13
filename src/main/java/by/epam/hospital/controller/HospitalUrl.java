@@ -27,7 +27,11 @@ public class HospitalUrl {
     public static final String COMMAND_REGISTER_CLIENT = "/c-register-client";
     public static final String COMMAND_FIND_USER_CREDENTIALS = "/c-find-user-credentials";
 
+    public static final String COMMAND_CLOSE_THERAPY = "/c-close-therapy";
     public static final String COMMAND_DIAGNOSE_DISEASE = "/c-diagnose-disease";
+    public static final String COMMAND_FIND_OPEN_DOCTOR_THERAPIES = "/c-find-open-doctor-therapies";
+    public static final String COMMAND_FIND_PATIENT_THERAPIES = "/c-find-patient-therapies";
+    public static final String COMMAND_MAKE_LAST_DIAGNOSIS_FINAL = "/c-make-last-diagnosis-final";
 
     private HospitalUrl() {
     }
