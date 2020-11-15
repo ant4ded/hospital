@@ -3,8 +3,10 @@ package epam.hospital.dao.impl;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.TherapyDao;
 import by.epam.hospital.dao.UserDao;
+import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.dao.impl.TherapyDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
+import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
@@ -19,16 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Test(groups = {"dao", "TherapyDaoImplTest"}, dependsOnGroups = {"UserDaoImplTest"})
+@Test(groups = {"dao", "TherapyDaoImplTest"}, dependsOnGroups = {"UserDaoImplTest", "UserDetailsDaoImplTest"})
 public class TherapyDaoImplTest {
     private TherapyDao therapyDao;
     private UserDao userDao;
+    private UserDetailsDao userDetailsDao;
     private Cleaner cleaner;
 
     @BeforeMethod
     private void setUp() {
         therapyDao = new TherapyDaoImpl();
         userDao = new UserDaoImpl();
+        userDetailsDao = new UserDetailsDaoImpl();
         cleaner = new Cleaner();
     }
 
@@ -102,8 +106,12 @@ public class TherapyDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
     public void find_correctFind_therapyPresent(User doctor, User patient) throws DaoException {
-        userDao.create(doctor);
-        userDao.create(patient);
+        doctor.setId(userDao.create(doctor));
+        doctor.getUserDetails().setUserId(doctor.getId());
+        patient.setId(userDao.create(patient));
+        patient.getUserDetails().setUserId(patient.getId());
+        userDetailsDao.create(doctor.getUserDetails());
+        userDetailsDao.create(patient.getUserDetails());
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -126,8 +134,13 @@ public class TherapyDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
     public void findById_correctFind_therapyPresent(User doctor, User patient) throws DaoException {
-        userDao.create(doctor);
-        userDao.create(patient);
+        doctor.setId(userDao.create(doctor));
+        doctor.getUserDetails().setUserId(doctor.getId());
+        patient.setId(userDao.create(patient));
+        patient.getUserDetails().setUserId(patient.getId());
+        userDetailsDao.create(doctor.getUserDetails());
+        userDetailsDao.create(patient.getUserDetails());
+
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -150,8 +163,12 @@ public class TherapyDaoImplTest {
             dependsOnMethods = "create_correctCreate_notZero")
     public void findPatientTherapies_correctFind_ListWithCreatedTherapies(User doctor, User patient)
             throws DaoException {
-        patient.setId(userDao.create(patient));
         doctor.setId(userDao.create(doctor));
+        doctor.getUserDetails().setUserId(doctor.getId());
+        patient.setId(userDao.create(patient));
+        patient.getUserDetails().setUserId(patient.getId());
+        userDetailsDao.create(doctor.getUserDetails());
+        userDetailsDao.create(patient.getUserDetails());
         CardType cardType = CardType.AMBULATORY;
         List<Therapy> expected = new ArrayList<>();
 
@@ -186,16 +203,49 @@ public class TherapyDaoImplTest {
         User patient1 = new User();
         patient1.setLogin(patient.getLogin() + "1");
         patient1.setPassword(patient.getLogin() + "1");
+        patient1.getUserDetails().setPassportId(patient.getUserDetails().getPassportId().replace("T", "1"));
+        patient1.getUserDetails().setGender(patient.getUserDetails().getGender());
+        patient1.getUserDetails().setFirstName(patient.getUserDetails().getFirstName() + "1");
+        patient1.getUserDetails().setSurname(patient.getUserDetails().getSurname());
+        patient1.getUserDetails().setLastName(patient.getUserDetails().getLastName());
+        patient1.getUserDetails().setBirthday(patient.getUserDetails().getBirthday());
+        patient1.getUserDetails().setAddress(patient.getUserDetails().getAddress());
+        patient1.getUserDetails().setPhone(patient.getUserDetails().getPhone());
         User patient2 = new User();
         patient2.setLogin(patient.getLogin() + "2");
-        patient2.setPassword(patient.getLogin() + "1");
+        patient2.setPassword(patient.getLogin() + "2");
+        patient2.getUserDetails().setPassportId(patient.getUserDetails().getPassportId().replace("T", "2"));
+        patient2.getUserDetails().setGender(patient.getUserDetails().getGender());
+        patient2.getUserDetails().setFirstName(patient.getUserDetails().getFirstName() + "2");
+        patient2.getUserDetails().setSurname(patient.getUserDetails().getSurname());
+        patient2.getUserDetails().setLastName(patient.getUserDetails().getLastName());
+        patient2.getUserDetails().setBirthday(patient.getUserDetails().getBirthday());
+        patient2.getUserDetails().setAddress(patient.getUserDetails().getAddress());
+        patient2.getUserDetails().setPhone(patient.getUserDetails().getPhone());
         User patient3 = new User();
         patient3.setLogin(patient.getLogin() + "3");
-        patient3.setPassword(patient.getLogin() + "1");
-        userDao.create(patient1);
-        userDao.create(patient2);
-        userDao.create(patient3);
-        userDao.create(doctor);
+        patient3.setPassword(patient.getLogin() + "3");
+        patient3.getUserDetails().setPassportId(patient.getUserDetails().getPassportId().replace("T", "3"));
+        patient3.getUserDetails().setGender(patient.getUserDetails().getGender());
+        patient3.getUserDetails().setFirstName(patient.getUserDetails().getFirstName() + "3");
+        patient3.getUserDetails().setSurname(patient.getUserDetails().getSurname());
+        patient3.getUserDetails().setLastName(patient.getUserDetails().getLastName());
+        patient3.getUserDetails().setBirthday(patient.getUserDetails().getBirthday());
+        patient3.getUserDetails().setAddress(patient.getUserDetails().getAddress());
+        patient3.getUserDetails().setPhone(patient.getUserDetails().getPhone());
+
+        patient1.setId(userDao.create(patient1));
+        patient2.setId(userDao.create(patient2));
+        patient3.setId(userDao.create(patient3));
+        patient1.getUserDetails().setUserId(patient1.getId());
+        patient2.getUserDetails().setUserId(patient2.getId());
+        patient3.getUserDetails().setUserId(patient3.getId());
+        userDetailsDao.create(patient1.getUserDetails());
+        userDetailsDao.create(patient2.getUserDetails());
+        userDetailsDao.create(patient3.getUserDetails());
+        doctor.setId(userDao.create(doctor));
+        doctor.getUserDetails().setUserId(doctor.getId());
+        userDetailsDao.create(doctor.getUserDetails());
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient1.getLogin(), cardType);

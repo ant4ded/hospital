@@ -1,12 +1,10 @@
 package epam.hospital.dao.impl;
 
-import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.DiagnosisDao;
-import by.epam.hospital.dao.TherapyDao;
-import by.epam.hospital.dao.UserDao;
+import by.epam.hospital.dao.*;
 import by.epam.hospital.dao.impl.DiagnosisDaoImpl;
 import by.epam.hospital.dao.impl.TherapyDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
+import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.*;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
@@ -19,11 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Test(groups = {"dao", "DiagnosisDaoImplTest"},
-        dependsOnGroups = {"UserDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
+        dependsOnGroups = {"UserDaoImplTest", "UserDetailsDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
 public class DiagnosisDaoImplTest {
     private DiagnosisDao diagnosisDao;
     private TherapyDao therapyDao;
     private UserDao userDao;
+    private UserDetailsDao userDetailsDao;
     private Cleaner cleaner;
 
     @BeforeMethod
@@ -31,6 +30,7 @@ public class DiagnosisDaoImplTest {
         diagnosisDao = new DiagnosisDaoImpl();
         therapyDao = new TherapyDaoImpl();
         userDao = new UserDaoImpl();
+        userDetailsDao = new UserDetailsDaoImpl();
         cleaner = new Cleaner();
     }
 
@@ -38,8 +38,14 @@ public class DiagnosisDaoImplTest {
     public void create_correctCreate_notZero(Diagnosis diagnosis, User patient) throws DaoException {
         User doctor = diagnosis.getDoctor();
         CardType cardType = CardType.AMBULATORY;
-        userDao.create(doctor);
-        userDao.create(patient);
+
+        doctor.setId(userDao.create(doctor));
+        doctor.getUserDetails().setUserId(doctor.getId());
+        patient.setId(userDao.create(patient));
+        patient.getUserDetails().setUserId(patient.getId());
+        userDetailsDao.create(doctor.getUserDetails());
+        userDetailsDao.create(patient.getUserDetails());
+
         doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
         patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -96,8 +102,14 @@ public class DiagnosisDaoImplTest {
     public void findById_correctFind_diagnosisPresent(Diagnosis diagnosis, User patient) throws DaoException {
         User doctor = diagnosis.getDoctor();
         CardType cardType = CardType.AMBULATORY;
-        userDao.create(doctor);
-        userDao.create(patient);
+
+        doctor.setId(userDao.create(doctor));
+        doctor.getUserDetails().setUserId(doctor.getId());
+        patient.setId(userDao.create(patient));
+        patient.getUserDetails().setUserId(patient.getId());
+        userDetailsDao.create(doctor.getUserDetails());
+        userDetailsDao.create(patient.getUserDetails());
+
         doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
         patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -129,8 +141,14 @@ public class DiagnosisDaoImplTest {
             throws DaoException {
         User doctor = diagnosis.getDoctor();
         CardType cardType = CardType.AMBULATORY;
-        userDao.create(doctor);
-        userDao.create(patient);
+
+        doctor.setId(userDao.create(doctor));
+        doctor.getUserDetails().setUserId(doctor.getId());
+        patient.setId(userDao.create(patient));
+        patient.getUserDetails().setUserId(patient.getId());
+        userDetailsDao.create(doctor.getUserDetails());
+        userDetailsDao.create(patient.getUserDetails());
+
         doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
         patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
