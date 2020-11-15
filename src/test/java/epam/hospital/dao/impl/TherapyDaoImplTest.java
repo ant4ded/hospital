@@ -21,25 +21,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Test(groups = {"dao", "TherapyDaoImplTest"}, dependsOnGroups = {"UserDaoImplTest", "UserDetailsDaoImplTest"})
+@Test(groups = {"dao", "TherapyDaoImplTest"}, dependsOnGroups = {"UserDaoImplTest"})
 public class TherapyDaoImplTest {
     private TherapyDao therapyDao;
     private UserDao userDao;
-    private UserDetailsDao userDetailsDao;
     private Cleaner cleaner;
 
     @BeforeMethod
     private void setUp() {
         therapyDao = new TherapyDaoImpl();
         userDao = new UserDaoImpl();
-        userDetailsDao = new UserDetailsDaoImpl();
         cleaner = new Cleaner();
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient")
     public void create_correctCreate_notZero(User doctor, User patient) throws DaoException {
-        userDao.create(patient);
-        userDao.create(doctor);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -67,8 +65,8 @@ public class TherapyDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
     public void setEndTherapy_existingTherapy_true(User doctor, User patient) throws DaoException {
-        userDao.create(patient);
-        userDao.create(doctor);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -86,8 +84,8 @@ public class TherapyDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
     public void setEndTherapy_nonExistentTherapy_false(User doctor, User patient) throws DaoException {
-        userDao.create(patient);
-        userDao.create(doctor);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -106,8 +104,8 @@ public class TherapyDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
     public void setFinalDiagnosisToTherapy_existingTherapy_true(User doctor, User patient) throws DaoException {
-        userDao.create(patient);
-        userDao.create(doctor);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -125,8 +123,8 @@ public class TherapyDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
     public void setFinalDiagnosisToTherapy_nonExistentTherapy_false(User doctor, User patient) throws DaoException {
-        userDao.create(patient);
-        userDao.create(doctor);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -144,12 +142,8 @@ public class TherapyDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
     public void find_correctFind_therapyPresent(User doctor, User patient) throws DaoException {
-        doctor.setId(userDao.create(doctor));
-        doctor.getUserDetails().setUserId(doctor.getId());
-        patient.setId(userDao.create(patient));
-        patient.getUserDetails().setUserId(patient.getId());
-        userDetailsDao.create(doctor.getUserDetails());
-        userDetailsDao.create(patient.getUserDetails());
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
@@ -172,12 +166,8 @@ public class TherapyDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
     public void findById_correctFind_therapyPresent(User doctor, User patient) throws DaoException {
-        doctor.setId(userDao.create(doctor));
-        doctor.getUserDetails().setUserId(doctor.getId());
-        patient.setId(userDao.create(patient));
-        patient.getUserDetails().setUserId(patient.getId());
-        userDetailsDao.create(doctor.getUserDetails());
-        userDetailsDao.create(patient.getUserDetails());
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
 
         CardType cardType = CardType.AMBULATORY;
 
@@ -201,12 +191,8 @@ public class TherapyDaoImplTest {
             dependsOnMethods = "create_correctCreate_notZero")
     public void findPatientTherapies_correctFind_ListWithCreatedTherapies(User doctor, User patient)
             throws DaoException {
-        doctor.setId(userDao.create(doctor));
-        doctor.getUserDetails().setUserId(doctor.getId());
-        patient.setId(userDao.create(patient));
-        patient.getUserDetails().setUserId(patient.getId());
-        userDetailsDao.create(doctor.getUserDetails());
-        userDetailsDao.create(patient.getUserDetails());
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
         CardType cardType = CardType.AMBULATORY;
         List<Therapy> expected = new ArrayList<>();
 
@@ -272,18 +258,10 @@ public class TherapyDaoImplTest {
         patient3.getUserDetails().setAddress(patient.getUserDetails().getAddress());
         patient3.getUserDetails().setPhone(patient.getUserDetails().getPhone());
 
-        patient1.setId(userDao.create(patient1));
-        patient2.setId(userDao.create(patient2));
-        patient3.setId(userDao.create(patient3));
-        patient1.getUserDetails().setUserId(patient1.getId());
-        patient2.getUserDetails().setUserId(patient2.getId());
-        patient3.getUserDetails().setUserId(patient3.getId());
-        userDetailsDao.create(patient1.getUserDetails());
-        userDetailsDao.create(patient2.getUserDetails());
-        userDetailsDao.create(patient3.getUserDetails());
-        doctor.setId(userDao.create(doctor));
-        doctor.getUserDetails().setUserId(doctor.getId());
-        userDetailsDao.create(doctor.getUserDetails());
+        userDao.createClientWithUserDetails(patient1);
+        userDao.createClientWithUserDetails(patient2);
+        userDao.createClientWithUserDetails(patient3);
+        userDao.createClientWithUserDetails(doctor);
         CardType cardType = CardType.AMBULATORY;
 
         int therapyId = therapyDao.create(doctor.getLogin(), patient1.getLogin(), cardType);

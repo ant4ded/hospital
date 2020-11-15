@@ -31,7 +31,7 @@ public class DepartmentStaffDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void updateStaffDepartment_correctUpdate_true(User user) throws DaoException {
-        userDao.create(user);
+        userDao.createClientWithUserDetails(user);
 
         if (!departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin())) {
             Assert.fail("UpdateStaffDepartment work incorrect.");
@@ -47,7 +47,7 @@ public class DepartmentStaffDaoImplTest {
             dependsOnMethods = "updateStaffDepartment_correctUpdate_true")
     public void findDepartmentStaff_correctFind_afterCreateResultWithCreatedUser(User user) throws DaoException {
         Map<String, User> userMap = departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS);
-        userDao.create(user);
+        userDao.createClientWithUserDetails(user);
         departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
         Map<String, User> userMapAfterCreate = departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS);
 

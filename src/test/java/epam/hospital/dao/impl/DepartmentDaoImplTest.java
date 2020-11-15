@@ -43,7 +43,7 @@ public class DepartmentDaoImplTest {
     public void updateDepartmentHead_correctUpdate_true(User user) throws DaoException {
         User firstHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
 
-        userDao.create(user);
+        userDao.createClientWithUserDetails(user);
         if (!departmentDao.updateDepartmentHead(Department.INFECTIOUS, user.getLogin())) {
             Assert.fail("UpdateDepartmentHead failed.");
         }
@@ -59,7 +59,7 @@ public class DepartmentDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findDepartment_correctFind_departmentPresent(User user) throws DaoException {
-        userDao.create(user);
+        userDao.createClientWithUserDetails(user);
         departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
 
         Optional<Department> optionalDepartment = departmentDao.findDepartment(user.getLogin());

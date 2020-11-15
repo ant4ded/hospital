@@ -5,6 +5,7 @@ import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
@@ -32,23 +33,19 @@ public class UserDaoImplTest {
         Assert.assertTrue(userId != 0);
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void create_correctCreate_notZero(User user) throws DaoException {
-        int userId = userDao.create(user);
-        cleaner.delete(user);
-        Assert.assertTrue(userId != 0);
-    }
-
-    @Test(expectedExceptions = DaoException.class)
-    public void create_nullField_exception() throws DaoException {
+    @Test
+    public void createClientWithUserDetails_nullField_zero() throws DaoException {
+        UserDetails userDetails = new UserDetails();
+        userDetails.setGender(UserDetails.Gender.MALE);
         User user = new User();
-        userDao.create(user);
+        user.setUserDetails(userDetails);
+        Assert.assertEquals(userDao.createClientWithUserDetails(user), 0);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = "create_correctCreate_notZero")
+            dependsOnMethods = "createClientWithUserDetails_correctCreate_nonZero")
     public void findByLogin_correctFind_userPresent(User user) throws DaoException {
-        userDao.create(user);
+        userDao.createClientWithUserDetails(user);
         Optional<User> optionalUser = userDao.findByLogin(user.getLogin());
 
         cleaner.delete(user);
@@ -62,9 +59,9 @@ public class UserDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = "create_correctCreate_notZero")
+            dependsOnMethods = "createClientWithUserDetails_correctCreate_nonZero")
     public void findById_correctFind_userPresent(User user) throws DaoException {
-        int userId = userDao.create(user);
+        int userId = userDao.createClientWithUserDetails(user);
         Optional<User> optionalUser = userDao.findById(userId);
 
         cleaner.delete(user);
@@ -78,14 +75,15 @@ public class UserDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = {"create_correctCreate_notZero", "findByLogin_correctFind_userPresent"})
+            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero",
+                    "findByLogin_correctFind_userPresent"})
     public void update_correctUpdate_updatedUser(User user) throws DaoException {
         User newUser = new User();
         newUser.setUserDetails(user.getUserDetails());
         newUser.setPassword(user.getPassword());
         newUser.setRoles(user.getRoles());
         newUser.setLogin(user.getLogin() + "1");
-        user.setId(userDao.create(user));
+        user.setId(userDao.createClientWithUserDetails(user));
         newUser.setId(user.getId());
 
         User updatedUser = userDao.update(user, newUser);
@@ -101,9 +99,10 @@ public class UserDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = {"create_correctCreate_notZero", "findByLogin_correctFind_userPresent"})
+            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero",
+                    "findByLogin_correctFind_userPresent"})
     public void updateUserRoles_correctUpdate_true(User user) throws DaoException {
-        userDao.create(user);
+        userDao.createClientWithUserDetails(user);
         user.getRoles().add(Role.MEDICAL_ASSISTANT);
         boolean result = userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.MEDICAL_ASSISTANT);
         User userFromDb = userDao.findByLogin(user.getLogin()).orElseGet(User::new);

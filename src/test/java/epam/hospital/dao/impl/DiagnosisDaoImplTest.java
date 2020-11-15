@@ -17,12 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Test(groups = {"dao", "DiagnosisDaoImplTest"},
-        dependsOnGroups = {"UserDaoImplTest", "UserDetailsDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
+        dependsOnGroups = {"UserDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
 public class DiagnosisDaoImplTest {
     private DiagnosisDao diagnosisDao;
     private TherapyDao therapyDao;
     private UserDao userDao;
-    private UserDetailsDao userDetailsDao;
     private Cleaner cleaner;
 
     @BeforeMethod
@@ -30,7 +29,6 @@ public class DiagnosisDaoImplTest {
         diagnosisDao = new DiagnosisDaoImpl();
         therapyDao = new TherapyDaoImpl();
         userDao = new UserDaoImpl();
-        userDetailsDao = new UserDetailsDaoImpl();
         cleaner = new Cleaner();
     }
 
@@ -39,15 +37,9 @@ public class DiagnosisDaoImplTest {
         User doctor = diagnosis.getDoctor();
         CardType cardType = CardType.AMBULATORY;
 
-        doctor.setId(userDao.create(doctor));
-        doctor.getUserDetails().setUserId(doctor.getId());
-        patient.setId(userDao.create(patient));
-        patient.getUserDetails().setUserId(patient.getId());
-        userDetailsDao.create(doctor.getUserDetails());
-        userDetailsDao.create(patient.getUserDetails());
+        userDao.createClientWithUserDetails(doctor);
+        userDao.createClientWithUserDetails(patient);
 
-        doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
-        patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
         Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
                 .orElseThrow(DaoException::new);
@@ -82,10 +74,9 @@ public class DiagnosisDaoImplTest {
             expectedExceptions = DaoException.class)
     public void create_incorrectTherapyId_exception(Diagnosis diagnosis, User patient) throws DaoException {
         User doctor = diagnosis.getDoctor();
-        userDao.create(doctor);
-        userDao.create(patient);
-        doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
-        patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
+
+        userDao.createClientWithUserDetails(doctor);
+        userDao.createClientWithUserDetails(patient);
 
         try {
             diagnosisDao.create(diagnosis, patient.getLogin(), 0);
@@ -103,15 +94,9 @@ public class DiagnosisDaoImplTest {
         User doctor = diagnosis.getDoctor();
         CardType cardType = CardType.AMBULATORY;
 
-        doctor.setId(userDao.create(doctor));
-        doctor.getUserDetails().setUserId(doctor.getId());
-        patient.setId(userDao.create(patient));
-        patient.getUserDetails().setUserId(patient.getId());
-        userDetailsDao.create(doctor.getUserDetails());
-        userDetailsDao.create(patient.getUserDetails());
+        userDao.createClientWithUserDetails(doctor);
+        userDao.createClientWithUserDetails(patient);
 
-        doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
-        patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
         Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
                 .orElseThrow(DaoException::new);
@@ -142,15 +127,9 @@ public class DiagnosisDaoImplTest {
         User doctor = diagnosis.getDoctor();
         CardType cardType = CardType.AMBULATORY;
 
-        doctor.setId(userDao.create(doctor));
-        doctor.getUserDetails().setUserId(doctor.getId());
-        patient.setId(userDao.create(patient));
-        patient.getUserDetails().setUserId(patient.getId());
-        userDetailsDao.create(doctor.getUserDetails());
-        userDetailsDao.create(patient.getUserDetails());
+        userDao.createClientWithUserDetails(doctor);
+        userDao.createClientWithUserDetails(patient);
 
-        doctor = userDao.findByLogin(doctor.getLogin()).orElseThrow(DaoException::new);
-        patient = userDao.findByLogin(patient.getLogin()).orElseThrow(DaoException::new);
         therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
         Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
                 .orElseThrow(DaoException::new);

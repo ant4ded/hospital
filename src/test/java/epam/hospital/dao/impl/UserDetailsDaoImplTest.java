@@ -29,29 +29,12 @@ public class UserDetailsDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void create_correctCreate_true(User user) throws DaoException {
-        user.getUserDetails().setUserId(userDao.create(user));
-
-        boolean result = userDetailsDao.create(user.getUserDetails());
-        cleaner.delete(user);
-
-        Assert.assertTrue(result);
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", expectedExceptions = DaoException.class)
-    public void create_nonExistentUser_exception(User user) throws DaoException {
-        userDetailsDao.create(user.getUserDetails());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = "create_correctCreate_true")
     public void update_correctUpdate_userDetailsPresent(User user) throws DaoException {
         UserDetails newUserDetails = new UserDetails();
         newUserDetails.setAddress(user.getUserDetails().getAddress() + "1");
         newUserDetails.setPhone(user.getUserDetails().getPhone());
 
-        user.getUserDetails().setUserId(userDao.create(user));
-        userDetailsDao.create(user.getUserDetails());
+        user.getUserDetails().setUserId(userDao.createClientWithUserDetails(user));
         newUserDetails.setUserId(user.getUserDetails().getUserId());
         Optional<UserDetails> optionalUserDetails = userDetailsDao.update(newUserDetails, newUserDetails.getUserId());
         cleaner.delete(user);
@@ -65,12 +48,10 @@ public class UserDetailsDaoImplTest {
                 .update(user.getUserDetails(), user.getUserDetails().getUserId()).isEmpty());
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = "create_correctCreate_true")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findByUserId_correctFind_userDetailsPresent(User user) throws DaoException {
-        user.getUserDetails().setUserId(userDao.create(user));
+        user.getUserDetails().setUserId(userDao.createClientWithUserDetails(user));
 
-        userDetailsDao.create(user.getUserDetails());
         Optional<UserDetails> userDetails = userDetailsDao.findByUserId(user.getUserDetails().getUserId());
         cleaner.delete(user);
 
@@ -82,16 +63,13 @@ public class UserDetailsDaoImplTest {
         Assert.assertTrue(userDetailsDao.findByUserId(0).isEmpty());
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = "create_correctCreate_true")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findByRegistrationData_correctFind_userDetailsPresent(User user) throws DaoException {
-        user.getUserDetails().setUserId(userDao.create(user));
-        UserDetails userDetails = user.getUserDetails();
+        user.getUserDetails().setUserId(userDao.createClientWithUserDetails(user));
 
-        userDetailsDao.create(user.getUserDetails());
         Optional<UserDetails> optionalUserDetails = userDetailsDao
-                .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
-                        userDetails.getLastName(), userDetails.getBirthday());
+                .findByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
+                        user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
         cleaner.delete(user);
 
         Assert.assertTrue(optionalUserDetails.isPresent());
