@@ -1,6 +1,5 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
-<%@page import="by.epam.hospital.entity.CardType" %>
 <%@page import="by.epam.hospital.entity.table.DiagnosesFieldName" %>
 <%@page import="by.epam.hospital.entity.table.IcdFieldName" %>
 <%@page import="by.epam.hospital.entity.table.UsersDetailsFieldName" %>
@@ -48,7 +47,8 @@
                                value="${CommandName.DIAGNOSE_DISEASE}">
                         <div class="form-group form-inline justify-content-between">
                             <div class="form-group">
-                                <input type="text" name="${UsersDetailsFieldName.FIRST_NAME}" placeholder="${inputFirstName}"
+                                <input type="text" name="${UsersDetailsFieldName.FIRST_NAME}"
+                                       placeholder="${inputFirstName}"
                                        onfocus="this.placeholder = ''"
                                        onblur="this.placeholder = '${inputFirstName}'" required class="form-control">
                             </div>
@@ -58,7 +58,8 @@
                                        onblur="this.placeholder = '${inputSurname}'" required class="form-control">
                             </div>
                             <div class="form-group">
-                                <input type="text" name="${UsersDetailsFieldName.LAST_NAME}" placeholder="${inputLastName}"
+                                <input type="text" name="${UsersDetailsFieldName.LAST_NAME}"
+                                       placeholder="${inputLastName}"
                                        onfocus="this.placeholder = ''"
                                        onblur="this.placeholder = '${inputLastName}'" required class="form-control">
                             </div>

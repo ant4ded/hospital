@@ -1,7 +1,6 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
 <%@page import="by.epam.hospital.entity.Department" %>
-<%@page import="by.epam.hospital.entity.Role" %>
 <%@page import="by.epam.hospital.service.ServiceAction" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,10 +41,11 @@
                     <p>${requestScope.message}</p>
                     <c:if test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
                         <p>
-                           ${messagePart1} ${requestScope.department}. ${messagePart2}
+                                ${messagePart1} ${requestScope.department}. ${messagePart2}
                         </p>
                     </c:if>
-                    <form method="post" action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES}">
+                    <form method="post"
+                          action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES}">
                         <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
                                value="${HospitalUrl.PAGE_ROLE_CONTROL}">
                         <input type="hidden" name="${ParameterName.COMMAND}"
@@ -100,7 +100,8 @@
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -118,7 +119,8 @@
                                             <button type="submit" class="genric-btn primary">${btnAdd}</button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>
@@ -161,7 +163,8 @@
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -179,7 +182,8 @@
                                             <button type="submit" class="genric-btn primary">${btnAdd}</button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>
@@ -227,7 +231,8 @@
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -257,7 +262,8 @@
                                             <button type="submit" class="genric-btn primary">${btnAdd}</button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>
@@ -289,7 +295,8 @@
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable">${btnRemove}</button>
+                                            <button type="submit"
+                                                    class="genric-btn danger disable">${btnRemove}</button>
                                         </div>
                                     </c:when>
                                     <c:when test="${requestScope.userRoles.contains(Role.MEDICAL_ASSISTANT) ||
@@ -302,7 +309,8 @@
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -332,7 +340,8 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>
@@ -377,7 +386,8 @@
                                             </button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:when>
@@ -407,7 +417,8 @@
                                             <button type="submit" class="genric-btn primary">${btnAdd}</button>
                                         </div>
                                         <div class="form-group col-lg-2 col-md-2">
-                                            <button type="submit" class="genric-btn danger disable" disabled>${btnRemove}
+                                            <button type="submit" class="genric-btn danger disable"
+                                                    disabled>${btnRemove}
                                             </button>
                                         </div>
                                     </c:otherwise>

@@ -1,7 +1,6 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
 <%@page import="by.epam.hospital.entity.table.UsersDetailsFieldName" %>
-<%@page import="by.epam.hospital.entity.table.UsersFieldName" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,18 +37,18 @@
                     <h4>${title}</h4>
                     <p>${requestScope.message}</p>
                     <c:if test="${requestScope.get(UsersFieldName.LOGIN) != null}">
-                    <div class="form-group form-inline justify-content-between">
-                        <div class="form-group">
-                            <input type="text" value="${requestScope.get(UsersFieldName.LOGIN)}"
-                                   placeholder="${inputLogin}" onfocus="this.placeholder = ''"
-                                   onblur="this.placeholder = '${inputLogin}'" disabled class="form-control">
+                        <div class="form-group form-inline justify-content-between">
+                            <div class="form-group">
+                                <input type="text" value="${requestScope.get(UsersFieldName.LOGIN)}"
+                                       placeholder="${inputLogin}" onfocus="this.placeholder = ''"
+                                       onblur="this.placeholder = '${inputLogin}'" disabled class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" value="${requestScope.get(UsersFieldName.PASSWORD)}"
+                                       placeholder="${inputPassword}" onfocus="this.placeholder = ''"
+                                       onblur="this.placeholder = '${inputPassword}'" disabled class="form-control">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <input type="text" value="${requestScope.get(UsersFieldName.PASSWORD)}"
-                                   placeholder="${inputPassword}" onfocus="this.placeholder = ''"
-                                   onblur="this.placeholder = '${inputPassword}'" disabled class="form-control">
-                        </div>
-                    </div>
                     </c:if>
                     <form method="post"
                           action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_FIND_USER_CREDENTIALS}">
@@ -59,7 +58,8 @@
                                value="${CommandName.FIND_USER_CREDENTIALS}">
                         <div class="form-group form-inline justify-content-between">
                             <div class="form-group">
-                                <input type="text" name="${UsersDetailsFieldName.FIRST_NAME}" placeholder="${inputFirstName}"
+                                <input type="text" name="${UsersDetailsFieldName.FIRST_NAME}"
+                                       placeholder="${inputFirstName}"
                                        onfocus="this.placeholder = ''"
                                        onblur="this.placeholder = '${inputFirstName}'" required class="form-control">
                             </div>
@@ -69,7 +69,8 @@
                                        onblur="this.placeholder = '${inputSurname}'" required class="form-control">
                             </div>
                             <div class="form-group">
-                                <input type="text" name="${UsersDetailsFieldName.LAST_NAME}" placeholder="${inputLastName}"
+                                <input type="text" name="${UsersDetailsFieldName.LAST_NAME}"
+                                       placeholder="${inputLastName}"
                                        onfocus="this.placeholder = ''"
                                        onblur="this.placeholder = '${inputLastName}'" required class="form-control">
                             </div>

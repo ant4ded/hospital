@@ -44,7 +44,7 @@
                     <p>${requestScope.message}</p>
                     <c:if test="${requestScope.userRoles.contains(Role.DEPARTMENT_HEAD)}">
                         <p>
-                            ${messagePart1} ${requestScope.department}. ${messagePart2}
+                                ${messagePart1} ${requestScope.department}. ${messagePart2}
                         </p>
                     </c:if>
                     <c:if test="${requestScope.login == null}">
@@ -83,7 +83,7 @@
                                     <c:if test="${requestScope.department.equals(department)}">
                                         <i class="fa fa-user-md"></i>
                                     </c:if>
-                                    ${department}
+                                        ${department}
                                 </div>
                                 <div class="form-group col-lg-4 col-md-4">
                                     <input type="text" name="${UsersFieldName.LOGIN}" required
@@ -108,14 +108,14 @@
                                         <input type="hidden" name="${UsersFieldName.LOGIN}"
                                                value="<%=request.getParameter(UsersFieldName.LOGIN)%>">
                                         <button type="submit" class="genric-btn primary">
-                                            ${btnMoveToDepartment}
+                                                ${btnMoveToDepartment}
                                         </button>
                                     </form>
                                 </c:when>
                                 <c:otherwise>
                                     <form method="post" class="col-lg-3 col-md-3" action="#">
                                         <button type="submit" class="genric-btn primary disable" disabled>
-                                            ${btnMoveToDepartment}
+                                                ${btnMoveToDepartment}
                                         </button>
                                     </form>
                                 </c:otherwise>
