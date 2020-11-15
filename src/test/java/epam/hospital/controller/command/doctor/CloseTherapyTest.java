@@ -5,6 +5,7 @@ import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.command.doctor.CloseTherapy;
 import by.epam.hospital.controller.command.doctor.MakeLastDiagnosisFinal;
 import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
@@ -24,13 +25,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.testng.Assert.*;
 
 public class CloseTherapyTest {
-    private static final String MESSAGE_SUCCESS = "Success.";
     private static final String MESSAGE_WRONG_RESULT = "Patient not exist.";
     @Mock
     private Logger logger;
@@ -76,10 +78,11 @@ public class CloseTherapyTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(doctorService.closeTherapy(patient.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(true);
-
+        Mockito.when(doctorService.findOpenDoctorTherapies(patient.getLogin(), CardType.AMBULATORY))
+                .thenReturn(new ArrayList<>(List.of(new Therapy())));
 
         Map<String, Object> result = httpCommand.execute(request, response);
-        Assert.assertTrue(result.containsValue(MESSAGE_SUCCESS));
+        Assert.assertTrue(result.containsKey(ParameterName.THERAPIES_LIST));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")

@@ -4,6 +4,7 @@ import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.command.doctor.MakeLastDiagnosisFinal;
 import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
@@ -23,11 +24,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class MakeLastDiagnosisFinalTest {
-    private static final String MESSAGE_SUCCESS = "Success.";
     private static final String MESSAGE_WRONG_RESULT = "Patient not exist.";
     @Mock
     private Logger logger;
@@ -73,14 +75,15 @@ public class MakeLastDiagnosisFinalTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(doctorService.makeLastDiagnosisFinal(patient.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(true);
-
+        Mockito.when(doctorService.findOpenDoctorTherapies(Mockito.anyString(), Mockito.any(CardType.class)))
+                .thenReturn(new ArrayList<>(List.of(new Therapy())));
 
         Map<String, Object> result = httpCommand.execute(request, response);
-        Assert.assertTrue(result.containsValue(MESSAGE_SUCCESS));
+        Assert.assertTrue(result.containsKey(ParameterName.THERAPIES_LIST));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void execute_makeLastDiagnosisFinal_mapWithMessage(User patient)
+    public void execute_makeLastDiagnosisFinal_mapWithWrongMessage(User patient)
             throws ServiceException, IOException, ServletException {
         UserDetails userDetails = new UserDetails();
         userDetails.setFirstName(patient.getUserDetails().getFirstName());
