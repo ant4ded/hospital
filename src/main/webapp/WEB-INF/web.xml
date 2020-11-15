@@ -74,6 +74,24 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>DoctorTherapies</servlet-name>
+    <jsp-file>/jsp/doctorTherapies.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DoctorTherapies</servlet-name>
+    <url-pattern>/doctor-therapies</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>PatientTherapies</servlet-name>
+    <jsp-file>/jsp/patientTherapies.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PatientTherapies</servlet-name>
+    <url-pattern>/patient-therapies</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>Error</servlet-name>
     <jsp-file>/jsp/error.jsp</jsp-file>
   </servlet>

@@ -10,12 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
-@WebServlet(urlPatterns = {HospitalUrl.EMPTY, HospitalUrl.SERVLET_MAIN, HospitalUrl.COMMAND_REGISTER_CLIENT,
-        HospitalUrl.COMMAND_FIND_USER_CREDENTIALS, HospitalUrl.COMMAND_CHANGE_DEPARTMENT_HEAD,
-        HospitalUrl.COMMAND_FIND_DEPARTMENT_CONTROL_ATTRIBUTES, HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES,
-        HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT, HospitalUrl.COMMAND_ROLE_CONTROL,
-        HospitalUrl.COMMAND_DIAGNOSE_DISEASE, HospitalUrl.COMMAND_EDIT_USER_DETAILS,
-        HospitalUrl.COMMAND_FIND_USER_DETAILS})
+@WebServlet(urlPatterns = {HospitalUrl.EMPTY, HospitalUrl.SERVLET_MAIN,
+        HospitalUrl.COMMAND_EDIT_USER_DETAILS, HospitalUrl.COMMAND_FIND_USER_DETAILS,
+
+        HospitalUrl.COMMAND_CHANGE_DEPARTMENT_HEAD, HospitalUrl.COMMAND_FIND_DEPARTMENT_CONTROL_ATTRIBUTES,
+        HospitalUrl.COMMAND_FIND_ROLE_CONTROL_ATTRIBUTES, HospitalUrl.COMMAND_MOVE_DOCTOR_TO_DEPARTMENT,
+        HospitalUrl.COMMAND_ROLE_CONTROL,
+
+        HospitalUrl.COMMAND_REGISTER_CLIENT, HospitalUrl.COMMAND_FIND_USER_CREDENTIALS,
+
+        HospitalUrl.COMMAND_CLOSE_THERAPY, HospitalUrl.COMMAND_DIAGNOSE_DISEASE,
+        HospitalUrl.COMMAND_FIND_OPEN_DOCTOR_THERAPIES, HospitalUrl.COMMAND_FIND_PATIENT_THERAPIES,
+        HospitalUrl.COMMAND_MAKE_LAST_DIAGNOSIS_FINAL})
 public class Controller extends HttpServlet {
     private static final Logger logger = Logger.getLogger(Controller.class);
 

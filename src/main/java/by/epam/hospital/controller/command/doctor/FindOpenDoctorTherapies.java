@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FindOpenDoctorTherapies implements HttpCommand {
-    private static final String MESSAGE_WRONG_RESULT = "Therapies list empty or patient not exist.";
+    private static final String MESSAGE_WRONG_RESULT = "You don't have any open therapies.";
 
     private final DoctorService doctorService;
     private final Logger logger;
@@ -38,7 +38,7 @@ public class FindOpenDoctorTherapies implements HttpCommand {
             } else {
                 result.put(ParameterName.MESSAGE, MESSAGE_WRONG_RESULT);
             }
-            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DIAGNOSE_DISEASE);
+            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DOCTOR_THERAPIES);
         } catch (ServiceException e) {
             logger.error(e);
             result.put(ParameterName.COMMAND_EXCEPTION, e.getMessage());

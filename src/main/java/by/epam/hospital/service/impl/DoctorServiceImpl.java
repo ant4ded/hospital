@@ -62,11 +62,16 @@ public class DoctorServiceImpl implements DoctorService {
                 diagnosis.setDoctor(optionalDoctor.get());
                 Optional<Therapy> currentTherapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
 
-                int therapyId = currentTherapy.isPresent() ?
-                        currentTherapy.get().getId() :
-                        therapyDao.create(doctorLogin, patientLogin, cardType);
-                diagnosisDao.create(diagnosis, patientLogin, therapyId);
-                result = true;
+                int therapyId;
+                if (currentTherapy.isPresent() && currentTherapy.get().getFinalDiagnosis().isEmpty()) {
+                    therapyId = currentTherapy.get().getId();
+                    diagnosisDao.create(diagnosis, patientLogin, therapyId);
+                    result = true;
+                } else if (currentTherapy.isEmpty()) {
+                    therapyId = therapyDao.create(doctorLogin, patientLogin, cardType);
+                    diagnosisDao.create(diagnosis, patientLogin, therapyId);
+                    result = true;
+                }
             }
         } catch (DaoException e) {
             throw new ServiceException("DiagnoseDisease failed.", e);
@@ -134,7 +139,11 @@ public class DoctorServiceImpl implements DoctorService {
             Optional<Therapy> therapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
             boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
             if (isPresent && !therapy.get().getDiagnoses().isEmpty()) {
-                result = therapyDao.setFinalDiagnosisToTherapy(doctorLogin, patientLogin, cardType);
+                if (therapy.get().getFinalDiagnosis().isEmpty()) {
+                    result = therapyDao.setFinalDiagnosisToTherapy(doctorLogin, patientLogin, cardType);
+                } else {
+                    result = true;
+                }
             }
         } catch (DaoException e) {
             throw new ServiceException("MakeLastDiagnosisFinal failed.", e);

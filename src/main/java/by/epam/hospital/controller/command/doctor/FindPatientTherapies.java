@@ -49,7 +49,7 @@ public class FindPatientTherapies implements HttpCommand {
             } else {
                 result.put(ParameterName.MESSAGE, MESSAGE_WRONG_RESULT);
             }
-            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DIAGNOSE_DISEASE);
+            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_PATIENT_THERAPIES);
         } catch (ServiceException e) {
             logger.error(e);
             result.put(ParameterName.COMMAND_EXCEPTION, e.getMessage());

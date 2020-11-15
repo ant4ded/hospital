@@ -2,10 +2,7 @@ package by.epam.hospital.dao.impl;
 
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
-import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.DiagnosisDao;
-import by.epam.hospital.dao.IcdDao;
-import by.epam.hospital.dao.UserDao;
+import by.epam.hospital.dao.*;
 import by.epam.hospital.entity.Diagnosis;
 import by.epam.hospital.entity.table.DiagnosesFieldName;
 
@@ -72,6 +69,10 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * {@link UserDao} data access object.
      */
     private final UserDao userDao = new UserDaoImpl();
+    /**
+     * {@link UserDetailsDao} data access object.
+     */
+    private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
 
     /**
      * Create entity {@code Diagnosis} in database using {@code PreparedStatement}
@@ -203,7 +204,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 Diagnosis diagnosis = new Diagnosis();
-                setDiagnosis(new Diagnosis(), resultSet);
+                setDiagnosis(diagnosis, resultSet);
                 optionalDiagnosis = Optional.of(diagnosis);
             }
         } catch (ConnectionException e) {
@@ -235,6 +236,8 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         diagnosis.setIcd(icdDao.findById(resultSet.getInt(DiagnosesFieldName.ICD_ID))
                 .orElseThrow(DaoException::new));
         diagnosis.setDoctor(userDao.findById(resultSet.getInt(DiagnosesFieldName.DOCTOR_ID))
+                .orElseThrow(DaoException::new));
+        diagnosis.getDoctor().setUserDetails(userDetailsDao.findByUserId(diagnosis.getDoctor().getId())
                 .orElseThrow(DaoException::new));
     }
 

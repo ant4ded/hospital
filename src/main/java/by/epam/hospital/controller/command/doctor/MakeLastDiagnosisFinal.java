@@ -4,6 +4,7 @@ import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -50,12 +52,15 @@ public class MakeLastDiagnosisFinal implements HttpCommand {
                 boolean isDone = doctorService.makeLastDiagnosisFinal(doctorLogin,
                         userOptional.get().getLogin(), cardType);
                 if (isDone) {
-                    result.put(ParameterName.MESSAGE, MESSAGE_SUCCESS);
+                    List<Therapy> therapies = doctorService.findOpenDoctorTherapies(doctorLogin, cardType);
+                    if (!therapies.isEmpty()) {
+                        result.put(ParameterName.THERAPIES_LIST, therapies);
+                    }
                 } else {
                     result.put(ParameterName.MESSAGE, MESSAGE_WRONG_RESULT);
                 }
             }
-            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DIAGNOSE_DISEASE);
+            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DOCTOR_THERAPIES);
         } catch (ServiceException e) {
             logger.error(e);
             result.put(ParameterName.COMMAND_EXCEPTION, e.getMessage());

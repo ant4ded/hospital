@@ -2,10 +2,7 @@ package by.epam.hospital.dao.impl;
 
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
-import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.DiagnosisDao;
-import by.epam.hospital.dao.TherapyDao;
-import by.epam.hospital.dao.UserDao;
+import by.epam.hospital.dao.*;
 import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.table.TherapyFieldName;
@@ -160,14 +157,15 @@ public class TherapyDaoImpl implements TherapyDao {
             SET final_diagnosis_id = (
                 SELECT fdid FROM (
                   	SELECT d.id fdid
-                  	FROM ambulatory_cards
-                  	INNER JOIN therapy t ON ambulatory_cards.therapy_id = t.id
-                  	INNER JOIN users doctors ON t.doctor_id = doctors.id
-                  	INNER JOIN users patients ON ambulatory_cards.patient_id = patients.id
-                  	INNER JOIN therapy_diagnoses td ON td.therapy_id = t.id
-                  	INNER JOIN diagnoses d ON d.id = td.diagnosis_id
-                  	WHERE doctors.login = ? AND patients.login = ?
-                  	HAVING d.id = MAX(d.id))
+                    FROM therapy
+                    INNER JOIN ambulatory_cards ac ON ac.therapy_id = therapy.id
+                    INNER JOIN users patients ON patients.id = ac.patient_id
+                    INNER JOIN users doctors ON doctors.id = therapy.doctor_id
+                    INNER JOIN therapy_diagnoses td ON td.therapy_id = therapy.id
+                    INNER JOIN diagnoses d ON d.id = td.diagnosis_id
+                    WHERE doctors.login = ? AND patients.login = ?
+                    ORDER BY d.id DESC
+                    LIMIT 1)
                 as c)
             WHERE doctor_id = (
                 SELECT did FROM (
@@ -190,14 +188,15 @@ public class TherapyDaoImpl implements TherapyDao {
             SET final_diagnosis_id = (
                 SELECT fdid FROM (
                   	SELECT d.id fdid
-                  	FROM stationary_cards
-                  	INNER JOIN therapy t ON stationary_cards.therapy_id = t.id
-                  	INNER JOIN users doctors ON t.doctor_id = doctors.id
-                  	INNER JOIN users patients ON stationary_cards.patient_id = patients.id
-                  	INNER JOIN therapy_diagnoses td ON td.therapy_id = t.id
-                  	INNER JOIN diagnoses d ON d.id = td.diagnosis_id
-                  	WHERE doctors.login = ? AND patients.login = ?
-                  	HAVING d.id = MAX(d.id))
+                    FROM therapy
+                    INNER JOIN stationary_cards sc ON sc.therapy_id = therapy.id
+                    INNER JOIN users patients ON patients.id = sc.patient_id
+                    INNER JOIN users doctors ON doctors.id = therapy.doctor_id
+                    INNER JOIN therapy_diagnoses td ON td.therapy_id = therapy.id
+                    INNER JOIN diagnoses d ON d.id = td.diagnosis_id
+                    WHERE doctors.login = ? AND patients.login = ?
+                    ORDER BY d.id DESC
+                    LIMIT 1)
                 as c)
             WHERE doctor_id = (
                 SELECT did FROM (
@@ -227,14 +226,14 @@ public class TherapyDaoImpl implements TherapyDao {
      * Written for the MySQL dialect.
      */
     private static final String SQL_FIND_STATIONARY_THERAPY_BY_PATIENT_LOGIN = """
-           SELECT t.id, doctor_id, end_therapy, final_diagnosis_id
-            FROM stationary_cards
-            INNER JOIN therapy t on stationary_cards.therapy_id = t.id
-            INNER JOIN users doctors on t.doctor_id = doctors.id
-            WHERE doctor_id = (
-                SELECT doctors.id 
-                WHERE doctors.login = ?)
-                AND end_therapy IS NULL""";
+            SELECT t.id, doctor_id, end_therapy, final_diagnosis_id
+             FROM stationary_cards
+             INNER JOIN therapy t on stationary_cards.therapy_id = t.id
+             INNER JOIN users doctors on t.doctor_id = doctors.id
+             WHERE doctor_id = (
+                 SELECT doctors.id 
+                 WHERE doctors.login = ?)
+                 AND end_therapy IS NULL""";
     /**
      * Sql {@code String} object for find {@code Therapy} entity
      * where {@code Therapy.endTherapy} not present in
@@ -270,6 +269,7 @@ public class TherapyDaoImpl implements TherapyDao {
      * {@code UserDao} data access object.
      */
     private final UserDao userDao = new UserDaoImpl();
+    private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
     /**
      * {@code DiagnosisDao} data access object.
      */
@@ -445,6 +445,8 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setId(resultSet.getInt(TherapyFieldName.ID));
                 therapy.setDoctor(userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new));
                 therapy.setPatient(userDao.findByLogin(patientLogin).orElseThrow(DaoException::new));
+                therapy.getPatient().setUserDetails(userDetailsDao.findByUserId(therapy.getPatient().getId())
+                        .orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
@@ -504,6 +506,8 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setDiagnoses(diagnosisDao.findByTherapyId(id));
                 therapy.setPatient(userDao.findById(resultSet.getInt(UsersFieldName.ID))
                         .orElseThrow(DaoException::new));
+                therapy.getPatient().setUserDetails(userDetailsDao.findByUserId(therapy.getPatient().getId())
+                        .orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
                 optionalTherapy = Optional.of(therapy);
             }
@@ -552,6 +556,8 @@ public class TherapyDaoImpl implements TherapyDao {
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
                 therapy.setPatient(userDao.findByLogin(patientLogin).orElseThrow(DaoException::new));
+                therapy.getPatient().setUserDetails(userDetailsDao.findByUserId(therapy.getPatient().getId())
+                        .orElseThrow(DaoException::new));
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));
@@ -572,8 +578,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * Find open doctor {@code Therapy} entities by {@code User.login} in database.
      *
      * @param doctorLogin {@code String} value of {@code User.login} field.
-     * @param cardType     element of enum {@code CardType}
-     *                     table is selected based on this element.
+     * @param cardType    element of enum {@code CardType}
+     *                    table is selected based on this element.
      * @return {@code Optional<Therapy>} if it present
      * or an empty {@code Optional} if it isn't.
      * @throws DaoException if a database access error occurs.
@@ -603,6 +609,8 @@ public class TherapyDaoImpl implements TherapyDao {
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
                 therapy.setPatient(userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new));
+                therapy.getPatient().setUserDetails(userDetailsDao.findByUserId(therapy.getPatient().getId())
+                        .orElseThrow(DaoException::new));
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));

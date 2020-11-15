@@ -3,6 +3,7 @@
 <%@page import="by.epam.hospital.controller.HospitalUrl" %>
 <%@page import="by.epam.hospital.controller.ParameterName" %>
 <%@page import="by.epam.hospital.entity.Role" %>
+<%@page import="by.epam.hospital.entity.CardType" %>
 <%@page import="by.epam.hospital.entity.table.UsersFieldName" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -129,6 +130,21 @@
                                         <li>
                                             <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_DIAGNOSE_DISEASE}">
                                                     ${diagnoseDisease}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_FIND_OPEN_DOCTOR_THERAPIES}?${ParameterName.COMMAND}=${CommandName.FIND_OPEN_DOCTOR_THERAPIES}&${ParameterName.CARD_TYPE}=${CardType.AMBULATORY}">
+                                                    ambulatory therapies
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_FIND_OPEN_DOCTOR_THERAPIES}?${ParameterName.COMMAND}=${CommandName.FIND_OPEN_DOCTOR_THERAPIES}&${ParameterName.CARD_TYPE}=${CardType.STATIONARY}">
+                                                    stationary therapies
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.PAGE_PATIENT_THERAPIES}">
+                                                    all patient therapies
                                             </a>
                                         </li>
                                     </c:if>

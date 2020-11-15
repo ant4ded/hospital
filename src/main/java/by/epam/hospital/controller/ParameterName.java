@@ -24,6 +24,7 @@ public class ParameterName {
     public static final String DEPARTMENT = "department";
     public static final String CARD_TYPE = "card_type";
     public static final String THERAPIES_LIST = "therapies_list";
+    public static final String THERAPY = "therapy";
 
     private ParameterName() {
     }

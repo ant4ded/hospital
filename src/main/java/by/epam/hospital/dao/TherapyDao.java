@@ -34,7 +34,7 @@ public interface TherapyDao {
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @param cardType     element of enum {@code CardType}
      *                     table is selected based on this element.
-     * @return auto-generated {@code Therapy.id} field.
+     * @return {@code true} if success and {@code false} if not.
      * @throws DaoException if a database access error occurs.
      * @see CardType
      */
@@ -49,7 +49,7 @@ public interface TherapyDao {
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @param cardType     element of enum {@code CardType}
      *                     table is selected based on this element.
-     * @return auto-generated {@code Therapy.id} field.
+     * @return {@code true} if success and {@code false} if not.
      * @throws DaoException if a database access error occurs.
      * @see CardType
      */
