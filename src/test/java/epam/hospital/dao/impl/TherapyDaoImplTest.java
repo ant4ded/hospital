@@ -66,7 +66,7 @@ public class TherapyDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
-    public void closeTherapy_existingTherapy_true(User doctor, User patient) throws DaoException {
+    public void setEndTherapy_existingTherapy_true(User doctor, User patient) throws DaoException {
         userDao.create(patient);
         userDao.create(doctor);
         CardType cardType = CardType.AMBULATORY;
@@ -85,7 +85,7 @@ public class TherapyDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnMethods = "create_correctCreate_notZero")
-    public void closeTherapy_nonExistentTherapy_false(User doctor, User patient) throws DaoException {
+    public void setEndTherapy_nonExistentTherapy_false(User doctor, User patient) throws DaoException {
         userDao.create(patient);
         userDao.create(doctor);
         CardType cardType = CardType.AMBULATORY;
@@ -95,6 +95,44 @@ public class TherapyDaoImplTest {
         therapy.setId(therapyId);
         boolean isClosed = therapyDao
                 .setEndTherapy(doctor.getLogin(), patient.getLogin(), new Date(0), CardType.STATIONARY);
+
+        cleaner.delete(therapy, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertFalse(isClosed);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
+            dependsOnMethods = "create_correctCreate_notZero")
+    public void setFinalDiagnosisToTherapy_existingTherapy_true(User doctor, User patient) throws DaoException {
+        userDao.create(patient);
+        userDao.create(doctor);
+        CardType cardType = CardType.AMBULATORY;
+
+        int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
+        Therapy therapy = new Therapy();
+        therapy.setId(therapyId);
+        boolean isClosed = therapyDao.setFinalDiagnosisToTherapy(doctor.getLogin(), patient.getLogin(), cardType);
+
+        cleaner.delete(therapy, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertTrue(isClosed);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
+            dependsOnMethods = "create_correctCreate_notZero")
+    public void setFinalDiagnosisToTherapy_nonExistentTherapy_false(User doctor, User patient) throws DaoException {
+        userDao.create(patient);
+        userDao.create(doctor);
+        CardType cardType = CardType.AMBULATORY;
+
+        int therapyId = therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
+        Therapy therapy = new Therapy();
+        therapy.setId(therapyId);
+        boolean isClosed = therapyDao.setFinalDiagnosisToTherapy(doctor.getLogin(), doctor.getLogin(), cardType);
 
         cleaner.delete(therapy, cardType);
         cleaner.delete(patient);
@@ -198,7 +236,7 @@ public class TherapyDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
-            dependsOnMethods = "closeTherapy_existingTherapy_true")
+            dependsOnMethods = "setEndTherapy_existingTherapy_true")
     public void findOpenDoctorTherapies_correctFind_therapies(User doctor, User patient) throws DaoException {
         User patient1 = new User();
         patient1.setLogin(patient.getLogin() + "1");
