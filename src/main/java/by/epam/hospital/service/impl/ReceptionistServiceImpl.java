@@ -25,11 +25,7 @@ public class ReceptionistServiceImpl implements ReceptionistService {
         try {
             Optional<User> optionalUser = userDao.findByLogin(user.getLogin());
             if (optionalUser.isEmpty()) {
-                userDao.create(user);
-                user.getUserDetails().setUserId(userDao
-                        .findByLogin(user.getLogin()).orElseThrow(DaoException::new).getId());
-                userDetailsDao.create(user.getUserDetails());
-                result = true;
+                result = userDao.createClientWithUserDetails(user) > 0;
             }
         } catch (DaoException e) {
             throw new ServiceException("Registration new client failed.", e);
