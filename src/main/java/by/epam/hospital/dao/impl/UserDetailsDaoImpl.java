@@ -26,14 +26,6 @@ import java.util.Optional;
 
 public class UserDetailsDaoImpl implements UserDetailsDao {
     /**
-     * Sql {@code String} object for creating
-     * {@code UserDetails} entity in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_CREATE = """
-            INSERT INTO hospital.users_details (passport_id, user_id, gender, first_name, surname, last_name,
-                birthday, address , phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""";
-    /**
      * Sql {@code String} object for find {@code UserDetails}
      * entity by {@code userId} in data base.
      * Written for the MySQL dialect.
@@ -60,51 +52,6 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
             UPDATE users_details
             SET address = ?, phone = ?
             WHERE user_id = ?""";
-
-    /**
-     * Create entity {@code UserDetails} in database
-     * using {@code PreparedStatement}.
-     *
-     * @param userDetails an a {@code UserDetails} entity,
-     *                    that must have nonzero {@code userId}.
-     * @return {@code true} if affected one row or {@code false} if not.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
-     */
-    @Override
-    public boolean create(UserDetails userDetails) throws DaoException {
-        boolean result = false;
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_CREATE);
-            statement.setString(1, userDetails.getPassportId());
-            statement.setInt(2, userDetails.getUserId());
-            statement.setString(3, userDetails.getGender().name());
-            statement.setString(4, userDetails.getFirstName());
-            statement.setString(5, userDetails.getSurname());
-            statement.setString(6, userDetails.getLastName());
-            statement.setDate(7, userDetails.getBirthday());
-            statement.setString(8, userDetails.getAddress());
-            statement.setString(9, userDetails.getPhone());
-
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 1) {
-                result = true;
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Creating user details failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement);
-        }
-        return result;
-    }
 
     /**
      * Update entity {@code UserDetails} in database

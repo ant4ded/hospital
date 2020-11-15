@@ -32,11 +32,11 @@ import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
     /**
-     * Sql {@code String} object for creating {@code User} entity in data base.
+     * Sql {@code String} object for call stored procedure {@code CreateClientWithUserDetails}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_CREATE_USER = """
-            INSERT INTO users (login, password) VALUES (?, ?)""";
+    private static final String SP_CREATE_CLIENT_WITH_USER_DETAILS =
+            "CALL CreateClientWithUserDetails(?,?,?,?,?,?,?,?,?,?,?)";
     /**
      * Sql {@code String} object for find {@code User}
      * by {@code login} in data base.
@@ -99,9 +99,15 @@ public class UserDaoImpl implements UserDao {
             INNER JOIN roles r ON r.id = users_roles.role_id
             WHERE u.login = ? AND r.title = ?""";
 
-    private static final String SP_CREATE_CLIENT_WITH_USER_DETAILS =
-            "CALL CreateClientWithUserDetails(?,?,?,?,?,?,?,?,?,?,?)";
-
+    /**
+     * Create entity {@link User} with entity {@link by.epam.hospital.entity.UserDetails}
+     * and with {@link Role#CLIENT} in database.
+     *
+     * @param user an a {@code User} entity.
+     * @return auto-generated {@code User.id} field or zero if not success.
+     * @throws DaoException if a database access error occurs or
+     * if {@link ConnectionPool} throws {@link ConnectionException}.
+     */
     @Override
     public int createClientWithUserDetails(User user) throws DaoException {
         Connection connection = null;
@@ -132,58 +138,6 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException("CreateClientWithUserDetails failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, callableStatement);
-        }
-        return userId;
-    }
-
-    /**
-     * Create entity {@code User} in database using {@code PreparedStatement}
-     * with parameter {@code Statement.RETURN_GENERATED_KEYS}.
-     *
-     * @param user an a {@code User} entity.
-     * @return auto-generated {@code User.id} field.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
-     */
-    @Override
-    public int create(User user) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        int userId = 0;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            connection.setAutoCommit(false);
-            statement = connection.prepareStatement(SQL_CREATE_USER, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, user.getLogin());
-            statement.setString(2, user.getPassword());
-
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 0) {
-                ResultSet generatedKeys = statement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    userId = generatedKeys.getInt(1);
-                    generatedKeys.close();
-                    statement.close();
-
-                    statement = connection.prepareStatement(SQL_CREATE_USER_ROLE);
-                    statement.setString(1, user.getLogin());
-                    statement.setString(2, Role.CLIENT.name());
-                    affectedRows = statement.executeUpdate();
-                    if (affectedRows == 0) {
-                        connection.rollback();
-                    }
-                }
-            }
-            connection.setAutoCommit(true);
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Creating user failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement);
         }
         return userId;
     }

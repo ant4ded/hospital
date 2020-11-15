@@ -12,15 +12,6 @@ import java.util.Optional;
 
 public interface UserDetailsDao {
     /**
-     * Create entity {@code UserDetails} in database.
-     *
-     * @param userDetails an a {@code UserDetails} entity.
-     * @return {@code true} if it was successful or {@code false} if not.
-     * @throws DaoException if a database access error occurs.
-     */
-    boolean create(UserDetails userDetails) throws DaoException;
-
-    /**
      * Update entity {@code UserDetails} in database.
      *
      * @param newValue new value for {@code UserDetails} entity.

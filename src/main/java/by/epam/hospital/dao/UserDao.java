@@ -12,16 +12,15 @@ import java.util.Optional;
  */
 
 public interface UserDao {
-    int createClientWithUserDetails(User user) throws DaoException;
-
     /**
-     * Create entity {@code User} in database.
+     * Create entity {@link User} with entity {@link by.epam.hospital.entity.UserDetails}
+     * and with {@link Role#CLIENT} in database.
      *
      * @param user an a {@code User} entity.
-     * @return auto-generated {@code User.id} field.
+     * @return auto-generated {@code User.id} field or zero if not success.
      * @throws DaoException if a database access error occurs.
      */
-    int create(User user) throws DaoException;
+    int createClientWithUserDetails(User user) throws DaoException;
 
     /**
      * Update entity {@code User} in database.
