@@ -206,7 +206,27 @@
   </filter-mapping>
   <filter-mapping>
     <filter-name>DoctorAuthenticationFilter</filter-name>
+    <url-pattern>/doctor-therapies</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>DoctorAuthenticationFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>DoctorAuthenticationFilter</filter-name>
+    <url-pattern>/c-close-therapy</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>DoctorAuthenticationFilter</filter-name>
+    <url-pattern>/c-find-open-doctor-therapies</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>DoctorAuthenticationFilter</filter-name>
+    <url-pattern>/c-find-patient-therapies</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>DoctorAuthenticationFilter</filter-name>
+    <url-pattern>/c-make-last-diagnosis-final</url-pattern>
   </filter-mapping>
 
   <filter>
