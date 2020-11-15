@@ -34,8 +34,9 @@ public class ReceptionistServiceImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void registerClient_nonExistentUser_true(User user) throws ServiceException, DaoException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
-                .thenReturn(Optional.empty())
-                .thenReturn(Optional.of(user));
+                .thenReturn(Optional.empty());
+        Mockito.when(userDao.createClientWithUserDetails(user))
+                .thenReturn(1);
         Assert.assertTrue(receptionistService.registerClient(user));
     }
 
@@ -46,10 +47,20 @@ public class ReceptionistServiceImplTest {
         receptionistService.registerClient(user);
     }
 
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void registerClient_duplicateFields_false(User user) throws ServiceException, DaoException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenReturn(Optional.empty());
+        Mockito.when(userDao.createClientWithUserDetails(user))
+                .thenReturn(0);
+        Assert.assertFalse(receptionistService.registerClient(user));
+    }
+
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
             expectedExceptions = ServiceException.class)
     public void registerClient_daoException_serviceException(User user) throws ServiceException, DaoException {
-        Mockito.doThrow(DaoException.class).when(userDao).create(user);
+        Mockito.when(userDao.createClientWithUserDetails(user))
+                .thenThrow(DaoException.class);
         receptionistService.registerClient(user);
     }
 
