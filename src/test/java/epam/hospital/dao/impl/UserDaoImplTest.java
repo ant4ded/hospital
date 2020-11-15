@@ -26,6 +26,13 @@ public class UserDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void createClientWithUserDetails_correctCreate_nonZero(User user) throws DaoException {
+        int userId = userDao.createClientWithUserDetails(user);
+        cleaner.delete(user);
+        Assert.assertTrue(userId != 0);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void create_correctCreate_notZero(User user) throws DaoException {
         int userId = userDao.create(user);
         cleaner.delete(user);

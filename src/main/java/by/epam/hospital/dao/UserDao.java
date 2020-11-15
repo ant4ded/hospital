@@ -12,6 +12,8 @@ import java.util.Optional;
  */
 
 public interface UserDao {
+    int createClientWithUserDetails(User user) throws DaoException;
+
     /**
      * Create entity {@code User} in database.
      *

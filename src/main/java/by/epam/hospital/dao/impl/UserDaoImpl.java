@@ -99,6 +99,43 @@ public class UserDaoImpl implements UserDao {
             INNER JOIN roles r ON r.id = users_roles.role_id
             WHERE u.login = ? AND r.title = ?""";
 
+    private static final String SP_CREATE_CLIENT_WITH_USER_DETAILS =
+            "CALL CreateClientWithUserDetails(?,?,?,?,?,?,?,?,?,?,?)";
+
+    @Override
+    public int createClientWithUserDetails(User user) throws DaoException {
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+        int userId;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            callableStatement = connection.prepareCall(SP_CREATE_CLIENT_WITH_USER_DETAILS);
+
+            callableStatement.setString(1, user.getLogin());
+            callableStatement.setString(2, user.getPassword());
+            callableStatement.setString(3, user.getUserDetails().getPassportId());
+            callableStatement.setString(4, user.getUserDetails().getGender().name());
+            callableStatement.setString(5, user.getUserDetails().getFirstName());
+            callableStatement.setString(6, user.getUserDetails().getSurname());
+            callableStatement.setString(7, user.getUserDetails().getLastName());
+            callableStatement.setDate(8, user.getUserDetails().getBirthday());
+            callableStatement.setString(9, user.getUserDetails().getAddress());
+            callableStatement.setString(10, user.getUserDetails().getPhone());
+
+            callableStatement.registerOutParameter(11, Types.INTEGER);
+
+            callableStatement.execute();
+            userId = callableStatement.getInt(11);
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("CreateClientWithUserDetails failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, callableStatement);
+        }
+        return userId;
+    }
+
     /**
      * Create entity {@code User} in database using {@code PreparedStatement}
      * with parameter {@code Statement.RETURN_GENERATED_KEYS}.
