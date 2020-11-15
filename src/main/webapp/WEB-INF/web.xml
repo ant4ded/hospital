@@ -494,6 +494,31 @@
 
   <filter-mapping>
     <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-close-therapy</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>FirstNameFilter</filter-name>
+    <url-pattern>/c-close-therapy</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>SurnameFilter</filter-name>
+    <url-pattern>/c-close-therapy</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>LastNameFilter</filter-name>
+    <url-pattern>/c-close-therapy</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>BirthdayFilter</filter-name>
+    <url-pattern>/c-close-therapy</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CardTypeFilter</filter-name>
+    <url-pattern>/c-close-therapy</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>
   </filter-mapping>
   <filter-mapping>
@@ -513,12 +538,71 @@
     <url-pattern>/c-diagnose-disease</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>IcdCodeFilter</filter-name>
+    <filter-name>CardTypeFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>CardTypeFilter</filter-name>
+    <filter-name>IcdCodeFilter</filter-name>
     <url-pattern>/c-diagnose-disease</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-find-open-doctor-therapies</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CardTypeFilter</filter-name>
+    <url-pattern>/c-find-open-doctor-therapies</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-find-patient-therapies</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>FirstNameFilter</filter-name>
+    <url-pattern>/c-find-patient-therapies</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>SurnameFilter</filter-name>
+    <url-pattern>/c-find-patient-therapies</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>LastNameFilter</filter-name>
+    <url-pattern>/c-find-patient-therapies</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>BirthdayFilter</filter-name>
+    <url-pattern>/c-find-patient-therapies</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CardTypeFilter</filter-name>
+    <url-pattern>/c-find-patient-therapies</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>CommandFilter</filter-name>
+    <url-pattern>/c-make-last-diagnosis-final</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>FirstNameFilter</filter-name>
+    <url-pattern>/c-make-last-diagnosis-final</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>SurnameFilter</filter-name>
+    <url-pattern>/c-make-last-diagnosis-final</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>LastNameFilter</filter-name>
+    <url-pattern>/c-make-last-diagnosis-final</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>BirthdayFilter</filter-name>
+    <url-pattern>/c-make-last-diagnosis-final</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CardTypeFilter</filter-name>
+    <url-pattern>/c-make-last-diagnosis-final</url-pattern>
   </filter-mapping>
   <!--Validation filters declaration end-->
   <!--Filters declaration end-->
