@@ -56,8 +56,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
     private final UserDao userDao = new UserDaoImpl();
 
     /**
-     * Find head of department {@code User} entity by {@code Department.id} field
-     * in database using {@code PreparedStatement}.
+     * Find head of department {@code User} entity by {@code Department.id} field.
      *
      * @param department {@code Department} value.
      * @return {@code Optional<Diagnosis>} if it present
@@ -65,7 +64,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @throws DaoException if a database access error occurs
      *                      and if {@code ConnectionPool}
      *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
      * @see ConnectionException
      * @see Optional
      */
@@ -100,8 +98,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
     }
 
     /**
-     * Update departmentHead in table departments
-     * in database using {@code PreparedStatement}.
+     * Update departmentHead in table departments.
      *
      * @param department element of enum {@code Department}.
      * @param login      {@code String} value of {@code User.login}.
@@ -109,7 +106,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @throws DaoException if a database access error occurs
      *                      and if {@code ConnectionPool}
      *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
      * @see ConnectionException
      */
     @Override
@@ -137,8 +133,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
     }
 
     /**
-     * Find {@code Department} entity by {@code User.login} field
-     * in database using {@code PreparedStatement}.
+     * Find {@code Department} entity by {@code User.login} field.
      *
      * @param login {@code String} value of {@code User.login}.
      * @return {@code Optional<Diagnosis>} if it present
@@ -146,7 +141,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @throws DaoException if a database access error occurs
      *                      and if {@code ConnectionPool}
      *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
      * @see ConnectionException
      * @see Optional
      */
