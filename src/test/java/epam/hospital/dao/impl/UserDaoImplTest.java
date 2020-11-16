@@ -59,6 +59,22 @@ public class UserDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
             dependsOnMethods = "createClientWithUserDetails_correctCreate_nonZero")
+    public void findByLoginWithUserDetails_correctFind_userPresent(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        Optional<User> optionalUser = userDao.findByLoginWithUserDetails(user.getLogin());
+
+        cleaner.delete(user);
+
+        Assert.assertTrue(optionalUser.isPresent());
+    }
+
+    @Test
+    public void findByLoginWithUserDetails_nonExistentLogin_userEmpty() throws DaoException {
+        Assert.assertTrue(userDao.findByLoginWithUserDetails("").isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = "createClientWithUserDetails_correctCreate_nonZero")
     public void findById_correctFind_userPresent(User user) throws DaoException {
         int userId = userDao.createClientWithUserDetails(user);
         Optional<User> optionalUser = userDao.findById(userId);

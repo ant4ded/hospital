@@ -6,7 +6,9 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.RolesFieldName;
+import by.epam.hospital.entity.table.UsersDetailsFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
 
 import java.sql.*;
@@ -42,6 +44,12 @@ public class UserDaoImpl implements UserDao {
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_USER_BY_LOGIN = "CALL FindUserByLogin(?)";
+
+    /**
+     * Sql {@code String} object for call stored procedure {@code FindUserByLogin}.
+     * Written for the MySQL dialect.
+     */
+    private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_LOGIN = "CALL FindUserWithUserDetailsByLogin(?)";
 
     /**
      * Sql {@code String} object for call stored procedure {@code FindUserById}.
@@ -193,6 +201,62 @@ public class UserDaoImpl implements UserDao {
                 userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
                 userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
+                userFromDb.setRoles(findUserRoles(userFromDb.getLogin()));
+                optionalUser = Optional.of(userFromDb);
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Find user failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return optionalUser;
+    }
+
+    /**
+     * Find {@code User} entity by {@code User.login} field
+     * with {@link by.epam.hospital.entity.UserDetails}.
+     *
+     * @param login {@code String} value of {@code User.login} field.
+     * @return {@code Optional<User>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see Optional
+     */
+    @Override
+    public Optional<User> findByLoginWithUserDetails(String login) throws DaoException {
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        Optional<User> optionalUser = Optional.empty();
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_FIND_USER_WITH_USER_DETAILS_BY_LOGIN);
+            statement.setString(1, login);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                User userFromDb = new User();
+                UserDetails userDetails = new UserDetails();
+                userFromDb.setUserDetails(userDetails);
+                userFromDb.setUserDetails(userDetails);
+                userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
+                userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
+                userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
+
+                userDetails.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
+                userDetails.setUserId(resultSet.getInt(UsersDetailsFieldName.USER_ID));
+                userDetails.setGender(UserDetails.Gender
+                        .valueOf(resultSet.getString(UsersDetailsFieldName.GENDER)));
+                userDetails.setFirstName(resultSet.getString(UsersDetailsFieldName.FIRST_NAME));
+                userDetails.setSurname(resultSet.getString(UsersDetailsFieldName.SURNAME));
+                userDetails.setLastName(resultSet.getString(UsersDetailsFieldName.LAST_NAME));
+                userDetails.setBirthday(resultSet.getDate(UsersDetailsFieldName.BIRTHDAY));
+                userDetails.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
+                userDetails.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
+
                 userFromDb.setRoles(findUserRoles(userFromDb.getLogin()));
                 optionalUser = Optional.of(userFromDb);
             }
