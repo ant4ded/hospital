@@ -1,10 +1,12 @@
 package epam.hospital.dao.impl;
 
-import by.epam.hospital.dao.*;
+import by.epam.hospital.dao.DaoException;
+import by.epam.hospital.dao.DiagnosisDao;
+import by.epam.hospital.dao.TherapyDao;
+import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.DiagnosisDaoImpl;
 import by.epam.hospital.dao.impl.TherapyDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
-import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
 import by.epam.hospital.entity.*;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;

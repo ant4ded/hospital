@@ -4,7 +4,6 @@ import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.command.doctor.FindOpenDoctorTherapies;
 import by.epam.hospital.entity.CardType;
-import by.epam.hospital.entity.Diagnosis;
 import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.service.DoctorService;
@@ -63,16 +62,16 @@ public class FindOpenDoctorTherapiesTest {
         Assert.assertTrue(result.containsKey(ParameterName.THERAPIES_LIST));
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
-    public void execute_correctAuthorization_mapWithMessage(Diagnosis diagnosis, User patient)
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void execute_correctAuthorization_mapWithMessage(User user)
             throws ServiceException, IOException, ServletException {
         Mockito.when(request.getSession())
                 .thenReturn(httpSession);
         Mockito.when(httpSession.getAttribute(ParameterName.LOGIN_USERNAME))
-                .thenReturn(patient.getLogin());
+                .thenReturn(user.getLogin());
         Mockito.when(request.getParameter(ParameterName.CARD_TYPE))
                 .thenReturn(String.valueOf(CardType.AMBULATORY));
-        Mockito.when(doctorService.findOpenDoctorTherapies(patient.getLogin(), CardType.AMBULATORY))
+        Mockito.when(doctorService.findOpenDoctorTherapies(user.getLogin(), CardType.AMBULATORY))
                 .thenReturn(new ArrayList<>());
 
 

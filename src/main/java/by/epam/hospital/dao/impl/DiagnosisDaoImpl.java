@@ -2,7 +2,10 @@ package by.epam.hospital.dao.impl;
 
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
-import by.epam.hospital.dao.*;
+import by.epam.hospital.dao.DaoException;
+import by.epam.hospital.dao.DiagnosisDao;
+import by.epam.hospital.dao.IcdDao;
+import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.Diagnosis;
 import by.epam.hospital.entity.table.DiagnosesFieldName;
 
@@ -69,10 +72,6 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * {@link UserDao} data access object.
      */
     private final UserDao userDao = new UserDaoImpl();
-    /**
-     * {@link UserDetailsDao} data access object.
-     */
-    private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
 
     /**
      * Create entity {@code Diagnosis} in database using {@code PreparedStatement}

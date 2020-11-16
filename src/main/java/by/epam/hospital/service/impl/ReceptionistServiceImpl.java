@@ -2,7 +2,6 @@ package by.epam.hospital.service.impl;
 
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.service.ReceptionistService;
@@ -12,11 +11,9 @@ import java.util.Optional;
 
 public class ReceptionistServiceImpl implements ReceptionistService {
     private final UserDao userDao;
-    private final UserDetailsDao userDetailsDao;
 
-    public ReceptionistServiceImpl(UserDao userDao, UserDetailsDao userDetailsDao) {
+    public ReceptionistServiceImpl(UserDao userDao) {
         this.userDao = userDao;
-        this.userDetailsDao = userDetailsDao;
     }
 
     @Override

@@ -2,7 +2,6 @@ package epam.hospital.service.impl;
 
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.dao.UserDetailsDao;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.service.ReceptionistService;
@@ -21,14 +20,12 @@ import java.util.Optional;
 public class ReceptionistServiceImplTest {
     @Mock
     private UserDao userDao;
-    @Mock
-    private UserDetailsDao userDetailsDao;
     private ReceptionistService receptionistService;
 
     @BeforeMethod
     private void setUp() {
         MockitoAnnotations.openMocks(this);
-        receptionistService = new ReceptionistServiceImpl(userDao, userDetailsDao);
+        receptionistService = new ReceptionistServiceImpl(userDao);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")

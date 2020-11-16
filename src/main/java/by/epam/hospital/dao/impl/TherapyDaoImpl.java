@@ -2,7 +2,10 @@ package by.epam.hospital.dao.impl;
 
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
-import by.epam.hospital.dao.*;
+import by.epam.hospital.dao.DaoException;
+import by.epam.hospital.dao.DiagnosisDao;
+import by.epam.hospital.dao.TherapyDao;
+import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.table.TherapyFieldName;
@@ -269,7 +272,6 @@ public class TherapyDaoImpl implements TherapyDao {
      * {@code UserDao} data access object.
      */
     private final UserDao userDao = new UserDaoImpl();
-    private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
     /**
      * {@code DiagnosisDao} data access object.
      */

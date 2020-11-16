@@ -3,7 +3,10 @@ package epam.hospital.controller.command.doctor;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.command.doctor.FindPatientTherapies;
-import by.epam.hospital.entity.*;
+import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Therapy;
+import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
 import by.epam.hospital.service.DoctorService;
 import by.epam.hospital.service.ServiceException;
@@ -42,8 +45,8 @@ public class FindPatientTherapiesTest {
         httpCommand = new FindPatientTherapies(doctorService, logger);
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
-    public void execute_correctAuthorization_mapWithMessageSuccess(Diagnosis diagnosis, User patient)
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void execute_correctAuthorization_mapWithMessageSuccess(User patient)
             throws ServiceException, IOException, ServletException {
         UserDetails userDetails = new UserDetails();
         userDetails.setFirstName(patient.getUserDetails().getFirstName());
@@ -70,8 +73,8 @@ public class FindPatientTherapiesTest {
         Assert.assertTrue(result.containsKey(ParameterName.THERAPIES_LIST));
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
-    public void execute_correctAuthorization_mapWithMessageIncorrectIcd(Diagnosis diagnosis, User patient)
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void execute_correctAuthorization_mapWithMessageIncorrectIcd(User patient)
             throws ServiceException, IOException, ServletException {
         UserDetails userDetails = new UserDetails();
         userDetails.setFirstName(patient.getUserDetails().getFirstName());
@@ -97,26 +100,26 @@ public class FindPatientTherapiesTest {
         Assert.assertTrue(result.containsKey(ParameterName.MESSAGE));
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
-    public void execute_correctAuthorization_mapWithCommandException(Diagnosis diagnosis, User patient)
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void execute_correctAuthorization_mapWithCommandException(User user)
             throws ServiceException, IOException, ServletException {
         UserDetails userDetails = new UserDetails();
-        userDetails.setFirstName(patient.getUserDetails().getFirstName());
-        userDetails.setSurname(patient.getUserDetails().getSurname());
-        userDetails.setLastName(patient.getUserDetails().getLastName());
-        userDetails.setBirthday(patient.getUserDetails().getBirthday());
+        userDetails.setFirstName(user.getUserDetails().getFirstName());
+        userDetails.setSurname(user.getUserDetails().getSurname());
+        userDetails.setLastName(user.getUserDetails().getLastName());
+        userDetails.setBirthday(user.getUserDetails().getBirthday());
         Mockito.when(request.getParameter(UsersDetailsFieldName.FIRST_NAME))
-                .thenReturn(patient.getUserDetails().getFirstName());
+                .thenReturn(user.getUserDetails().getFirstName());
         Mockito.when(request.getParameter(UsersDetailsFieldName.SURNAME))
-                .thenReturn(patient.getUserDetails().getSurname());
+                .thenReturn(user.getUserDetails().getSurname());
         Mockito.when(request.getParameter(UsersDetailsFieldName.LAST_NAME))
-                .thenReturn(patient.getUserDetails().getLastName());
+                .thenReturn(user.getUserDetails().getLastName());
         Mockito.when(request.getParameter(UsersDetailsFieldName.BIRTHDAY))
-                .thenReturn(String.valueOf(patient.getUserDetails().getBirthday()));
+                .thenReturn(String.valueOf(user.getUserDetails().getBirthday()));
         Mockito.when(request.getParameter(ParameterName.CARD_TYPE))
                 .thenReturn(CardType.AMBULATORY.name());
-        Mockito.when(doctorService.findPatientByUserDetails(patient.getUserDetails()))
-                .thenReturn(Optional.of(patient));
+        Mockito.when(doctorService.findPatientByUserDetails(user.getUserDetails()))
+                .thenReturn(Optional.of(user));
         Mockito.when(doctorService.findPatientTherapies(userDetails, CardType.AMBULATORY))
                 .thenThrow(ServiceException.class);
 

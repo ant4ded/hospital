@@ -89,7 +89,7 @@ public class CommandProvider {
     }
 
     private ReceptionistService getReceptionistService() {
-        return new ReceptionistServiceImpl(new UserDaoImpl(), new UserDetailsDaoImpl());
+        return new ReceptionistServiceImpl(new UserDaoImpl());
     }
 
     private AdminHeadService getAdminHeadService() {
