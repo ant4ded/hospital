@@ -37,7 +37,7 @@ public class UserDaoImpl implements UserDao {
      * Written for the MySQL dialect.
      */
     private static final String SP_CREATE_CLIENT_WITH_USER_DETAILS =
-            "CALL CreateClientWithUserDetails(?,?,?,?,?,?,?,?,?,?,?)";
+            "CALL CreateClientWithUserDetails(?,?,?,?,?,?,?,?,?,?)";
     /**
      * Sql {@code String} object for call stored procedure {@code FindUserByLogin}.
      * Written for the MySQL dialect.
@@ -98,7 +98,8 @@ public class UserDaoImpl implements UserDao {
     public int createClientWithUserDetails(User user) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
-        int userId;
+        ResultSet resultSet = null;
+        int userId = 0;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_CREATE_CLIENT_WITH_USER_DETAILS);
@@ -114,16 +115,16 @@ public class UserDaoImpl implements UserDao {
             statement.setString(9, user.getUserDetails().getAddress());
             statement.setString(10, user.getUserDetails().getPhone());
 
-            statement.registerOutParameter(11, Types.INTEGER);
-
-            statement.execute();
-            userId = statement.getInt(11);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                userId = resultSet.getInt(1);
+            }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("CreateClientWithUserDetails failed.", e);
         } finally {
-            ConnectionPool.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return userId;
     }
