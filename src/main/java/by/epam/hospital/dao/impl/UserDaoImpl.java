@@ -63,6 +63,10 @@ public class UserDaoImpl implements UserDao {
      */
     private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_ID = "CALL FindUserWithUserDetailsById(?)";
 
+    /**
+     * Sql {@code String} object for call stored procedure {@code FindUserWithUserDetailsByPassportData}.
+     * Written for the MySQL dialect.
+     */
     private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_PASSPORT_DATA =
             "CALL FindUserWithUserDetailsByPassportData(?,?,?,?)";
 
