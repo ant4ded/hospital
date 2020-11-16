@@ -26,32 +26,19 @@ import java.util.Optional;
 
 public class UserDetailsDaoImpl implements UserDetailsDao {
     /**
-     * Sql {@code String} object for find {@code UserDetails}
-     * entity by {@code userId} in data base.
+     * Sql {@code String} object for call stored procedure {@code UpdateUserDetailsNonPassportData}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_BY_USER_ID = """
-            SELECT passport_id, user_id, gender, first_name, surname, last_name, birthday, address, phone
-            FROM hospital.users_details
-            WHERE user_id = ?""";
-
-    /**
-     * Sql {@code String} object for update {@code UserDetails}
-     * entity by {@code userId} field.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_UPDATE = """
-            UPDATE users_details
-            SET address = ?, phone = ?
-            WHERE user_id = ?""";
+    private static final String SP_UPDATE_USER_DETAILS_NON_PASSPORT_DATA =
+            "CALL UpdateUserDetailsNonPassportData(?,?,?)";
 
     /**
      * Update entity {@code UserDetails} in database
      * using {@code PreparedStatement}.
      *
-     * @param newValue new value for {@code UserDetails} entity,
+     * @param newValue new value of {@code UserDetails} entity,
      *                 that update {@code oldValue}.
-     * @param userId   {@code int} value for {@code User.id}.
+     * @param login    {@code String} value of {@code User.login}.
      * @return {@code newValue} if it was updated or
      * {@code oldValue} if it wasn't of {@code UserDetails} entity.
      * @throws DaoException if a database access error occurs
@@ -61,58 +48,19 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
      * @see ConnectionException
      */
     @Override
-    public Optional<UserDetails> update(UserDetails newValue, int userId) throws DaoException {
+    public Optional<UserDetails> update(UserDetails newValue, String login) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
-        Optional<UserDetails> optionalUserDetails = Optional.empty();
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_UPDATE);
-            statement.setString(1, newValue.getAddress());
-            statement.setString(2, newValue.getPhone());
-            statement.setInt(3, userId);
-
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 0) {
-                optionalUserDetails = findByUserId(userId);
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Updating user details failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement);
-        }
-        return optionalUserDetails;
-    }
-
-    /**
-     * Find {@code UserDetails} entity by {@code UserDetails.userId} field
-     * using {@code PreparedStatement}.
-     *
-     * @param id {@code int} value of {@code User.id} field.
-     * @return {@code Optional<UserDetails>} if it present
-     * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
-     * @see Optional
-     */
-    @Override
-    public Optional<UserDetails> findByUserId(int id) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         Optional<UserDetails> optionalUserDetails = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_BY_USER_ID);
-            statement.setInt(1, id);
-            statement.execute();
+            statement = connection.prepareCall(SP_UPDATE_USER_DETAILS_NON_PASSPORT_DATA);
+            statement.setString(1, login);
+            statement.setString(2, newValue.getAddress());
+            statement.setString(3, newValue.getPhone());
 
-            resultSet = statement.getResultSet();
+            resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 UserDetails userDetails = new UserDetails();
                 userDetails.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
@@ -130,7 +78,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("Find user details failed.", e);
+            throw new DaoException("Updating user details failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }

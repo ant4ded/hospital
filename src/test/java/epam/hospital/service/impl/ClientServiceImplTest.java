@@ -63,9 +63,7 @@ public class ClientServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void updateUserDetails_existingUser_userDetailsPresent(User user) throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(user.getLogin()))
-                .thenReturn(Optional.of(user));
-        Mockito.when(userDetailsDao.update(Mockito.any(UserDetails.class), Mockito.anyInt()))
+        Mockito.when(userDetailsDao.update(Mockito.any(UserDetails.class), Mockito.anyString()))
                 .thenReturn(Optional.of(user.getUserDetails()));
         Assert.assertTrue(clientService.updateUserDetails(user.getUserDetails().getPhone(),
                 user.getUserDetails().getAddress(), user.getLogin()).isPresent());
@@ -73,9 +71,7 @@ public class ClientServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void updateUserDetails_nonExistentUser_userDetailsEmpty(User user) throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(user.getLogin()))
-                .thenReturn(Optional.of(user));
-        Mockito.when(userDetailsDao.update(user.getUserDetails(), user.getId()))
+        Mockito.when(userDetailsDao.update(Mockito.any(UserDetails.class), Mockito.anyString()))
                 .thenReturn(Optional.empty());
         Assert.assertTrue(clientService.updateUserDetails(user.getUserDetails().getPhone(),
                 user.getUserDetails().getAddress(), user.getLogin()).isEmpty());
@@ -84,9 +80,7 @@ public class ClientServiceImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
             expectedExceptions = ServiceException.class)
     public void updateUserDetails_daoException_serviceException(User user) throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(user.getLogin()))
-                .thenReturn(Optional.of(user));
-        Mockito.when(userDetailsDao.update(Mockito.any(UserDetails.class), Mockito.anyInt()))
+        Mockito.when(userDetailsDao.update(Mockito.any(UserDetails.class), Mockito.anyString()))
                 .thenThrow(DaoException.class);
         clientService.updateUserDetails(user.getUserDetails().getPhone(), user.getUserDetails().getAddress(),
                 user.getLogin());

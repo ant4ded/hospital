@@ -37,19 +37,16 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Optional<UserDetails> updateUserDetails(String phone, String address, String login)
             throws ServiceException {
-        Optional<UserDetails> result = Optional.empty();
+        Optional<UserDetails> optionalUserDetails;
         UserDetails userDetails = new UserDetails();
         userDetails.setPhone(phone);
         userDetails.setAddress(address);
         try {
-            Optional<User> optionalUser = userDao.findByLogin(login);
-            if (optionalUser.isPresent()) {
-                result = userDetailsDao.update(userDetails, optionalUser.get().getId());
-            }
+            optionalUserDetails = userDetailsDao.update(userDetails, login);
         } catch (DaoException e) {
             throw new ServiceException("UpdateUserDetails failed.", e);
         }
-        return result;
+        return optionalUserDetails;
     }
 
     @Override

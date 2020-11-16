@@ -3,7 +3,6 @@ package epam.hospital.controller.command.doctor;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.controller.command.doctor.CloseTherapy;
-import by.epam.hospital.controller.command.doctor.MakeLastDiagnosisFinal;
 import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
@@ -29,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.testng.Assert.*;
 
 public class CloseTherapyTest {
     private static final String MESSAGE_WRONG_RESULT = "Patient not exist.";

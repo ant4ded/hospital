@@ -34,9 +34,8 @@ public class UserDetailsDaoImplTest {
         newUserDetails.setAddress(user.getUserDetails().getAddress() + "1");
         newUserDetails.setPhone(user.getUserDetails().getPhone());
 
-        user.getUserDetails().setUserId(userDao.createClientWithUserDetails(user));
-        newUserDetails.setUserId(user.getUserDetails().getUserId());
-        Optional<UserDetails> optionalUserDetails = userDetailsDao.update(newUserDetails, newUserDetails.getUserId());
+        userDao.createClientWithUserDetails(user);
+        Optional<UserDetails> optionalUserDetails = userDetailsDao.update(newUserDetails, user.getLogin());
         cleaner.delete(user);
 
         Assert.assertTrue(optionalUserDetails.isPresent());
@@ -45,21 +44,6 @@ public class UserDetailsDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void update_nonExistentUserId_userDetailsEmpty(User user) throws DaoException {
         Assert.assertTrue(userDetailsDao
-                .update(user.getUserDetails(), user.getUserDetails().getUserId()).isEmpty());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findByUserId_correctFind_userDetailsPresent(User user) throws DaoException {
-        user.getUserDetails().setUserId(userDao.createClientWithUserDetails(user));
-
-        Optional<UserDetails> userDetails = userDetailsDao.findByUserId(user.getUserDetails().getUserId());
-        cleaner.delete(user);
-
-        Assert.assertTrue(userDetails.isPresent());
-    }
-
-    @Test
-    public void findByUserId_nonExistentId_userDetailsEmpty() throws DaoException {
-        Assert.assertTrue(userDetailsDao.findByUserId(0).isEmpty());
+                .update(user.getUserDetails(), user.getLogin()).isEmpty());
     }
 }
