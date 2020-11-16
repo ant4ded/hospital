@@ -62,13 +62,30 @@ public class AdminHeadServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
-    public void performUserRolesAction_correctPerforming_true(User user) throws DaoException, ServiceException {
+    public void performUserRolesAction_roleClient_false(User user) throws ServiceException {
+        Assert.assertFalse(adminHeadService
+                .performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.CLIENT));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
+    public void performUserRolesAction_correctAdd_true(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
-        Mockito.when(userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.DOCTOR))
+        Mockito.when(userDao.addUserRole(user.getLogin(), Role.DOCTOR))
                 .thenReturn(true);
         Assert.assertTrue(adminHeadService
                 .performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.DOCTOR));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
+    public void performUserRolesAction_correctDelete_true(User user) throws DaoException, ServiceException {
+        user.getRoles().add(Role.DOCTOR);
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenReturn(Optional.of(user));
+        Mockito.when(userDao.deleteUserRole(user.getLogin(), Role.DOCTOR))
+                .thenReturn(true);
+        Assert.assertTrue(adminHeadService
+                .performUserRolesAction(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
@@ -88,7 +105,7 @@ public class AdminHeadServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
-    public void performUserRolesAction_removeNonExistentRole_false(User user) throws DaoException, ServiceException {
+    public void performUserRolesAction_deleteNonExistentRole_false(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
         Assert.assertFalse(adminHeadService
@@ -174,13 +191,13 @@ public class AdminHeadServiceImplTest {
                 .thenReturn(Optional.of(Department.INFECTIOUS));
         Mockito.when(userDao.findByLogin(previous.getLogin())). //5
                 thenReturn(Optional.of(previous));
-        Mockito.when(userDao.updateUserRoles(previous.getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD)) //6
+        Mockito.when(userDao.deleteUserRole(previous.getLogin(), Role.DEPARTMENT_HEAD)) //6
                 .thenReturn(true);
         Mockito.when(departmentDao.updateDepartmentHead(Department.INFECTIOUS, user.getLogin())) //7
                 .thenReturn(true);
         Mockito.when(userDao.findByLogin(user.getLogin())). //8
                 thenReturn(Optional.of(user));
-        Mockito.when(userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.DEPARTMENT_HEAD)) //9
+        Mockito.when(userDao.addUserRole(user.getLogin(), Role.DEPARTMENT_HEAD)) //9
                 .thenReturn(true);
         Assert.assertTrue(adminHeadService.appointDepartmentHead(Department.INFECTIOUS, user.getLogin()));
     }
@@ -280,7 +297,7 @@ public class AdminHeadServiceImplTest {
                 .thenReturn(true);
         Mockito.when(userDao.findByLogin(user.getLogin())). //8
                 thenReturn(Optional.of(user));
-        Mockito.when(userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.DEPARTMENT_HEAD)) //9
+        Mockito.when(userDao.addUserRole(user.getLogin(), Role.DEPARTMENT_HEAD)) //9
                 .thenReturn(true);
         Assert.assertTrue(adminHeadService.appointDepartmentHead(Department.INFECTIOUS, user.getLogin()));
     }

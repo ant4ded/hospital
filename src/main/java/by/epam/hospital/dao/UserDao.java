@@ -2,7 +2,6 @@ package by.epam.hospital.dao;
 
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.service.ServiceAction;
 
 import java.util.Optional;
 
@@ -25,13 +24,14 @@ public interface UserDao {
     /**
      * Update entity {@code User} in database.
      *
-     * @param oldValue {@code User} entity that need to be updated.
+     * @param login    {@code String} value of {@code User.login}
+     *                 for find entity that need to be updated.
      * @param newValue new value for {@code User} entity.
      * @return {@code newValue} if it was updated or
      * {@code oldValue} if it wasn't of {@code User} entity.
      * @throws DaoException if a database access error occurs.
      */
-    User update(User oldValue, User newValue) throws DaoException;
+    Optional<User> updateLoginAndPassword(String login, User newValue) throws DaoException;
 
     /**
      * Find {@code User} entity by {@code User.login} field.
@@ -56,13 +56,22 @@ public interface UserDao {
     Optional<User> findById(int id) throws DaoException;
 
     /**
-     * Update roles {@code User} entity by {@code login} field.
+     * Add {@link Role} to entity {@link User}
      *
-     * @param login         {@code String} value of {@code User.login} field.
-     * @param serviceAction enumeration element of {@link ServiceAction}.
-     * @param role          enumeration element of {@link Role}.
+     * @param login {@code String} value of {@code User.login} field.
+     * @param role  enumeration element of {@link Role}.
      * @return {@code true} if it was successful and {@code false} if it wasn't.
      * @throws DaoException if a database access error occurs.
      */
-    boolean updateUserRoles(String login, ServiceAction serviceAction, Role role) throws DaoException;
+    boolean addUserRole(String login, Role role) throws DaoException;
+
+    /**
+     * Delete {@link Role} from entity {@link User}
+     *
+     * @param login {@code String} value of {@code User.login} field.
+     * @param role  enumeration element of {@link Role}.
+     * @return {@code true} if it was successful and {@code false} if it wasn't.
+     * @throws DaoException if a database access error occurs.
+     */
+    boolean deleteUserRole(String login, Role role) throws DaoException;
 }

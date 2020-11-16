@@ -45,11 +45,20 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             throws ServiceException {
         boolean result = false;
         try {
-            Optional<User> optionalUser = userDao.findByLogin(login);
-            if (optionalUser.isPresent() && ((optionalUser.get().getRoles().contains(role)
-                    && serviceAction == ServiceAction.REMOVE) ||
-                    !optionalUser.get().getRoles().contains(role) && serviceAction == ServiceAction.ADD)) {
-                result = userDao.updateUserRoles(login, serviceAction, role);
+            if(role != Role.CLIENT) {
+                Optional<User> optionalUser = userDao.findByLogin(login);
+                boolean isActionDeleteAndUserContainsRole = optionalUser.isPresent() &&
+                        optionalUser.get().getRoles().contains(role) &&
+                        serviceAction == ServiceAction.REMOVE;
+                boolean isActionAddAndUserNotContainsRole = optionalUser.isPresent() &&
+                        !optionalUser.get().getRoles().contains(role) &&
+                        serviceAction == ServiceAction.ADD;
+                if (isActionDeleteAndUserContainsRole) {
+                    result = userDao.deleteUserRole(login, role);
+                }
+                if (isActionAddAndUserNotContainsRole) {
+                    result = userDao.addUserRole(login, role);
+                }
             }
         } catch (DaoException e) {
             throw new ServiceException("PerformUserRoles failed.", e);
@@ -61,19 +70,19 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     public boolean appointDepartmentHead(Department department, String login) throws ServiceException {
         boolean result = false;
         try {
-            Optional<User> newHead = userDao.findByLogin(login); 
-            Optional<User> previousHead = departmentDao.findHeadDepartment(department); 
-            Optional<Department> departmentOfNewHead = findDepartmentByUsername(login);  
+            Optional<User> newHead = userDao.findByLogin(login);
+            Optional<User> previousHead = departmentDao.findHeadDepartment(department);
+            Optional<Department> departmentOfNewHead = findDepartmentByUsername(login);
             boolean isNonEqualsAndNewHeadIsDoctor = newHead.isPresent() && !newHead.equals(previousHead) &&
                     newHead.get().getRoles().contains(Role.DOCTOR);
             boolean isDepartmentNewHeadEqualsThisDepartment = departmentOfNewHead.isPresent() &&
                     departmentOfNewHead.get().equals(department);
             if (isNonEqualsAndNewHeadIsDoctor && isDepartmentNewHeadEqualsThisDepartment) {
                 if (previousHead.isPresent()) {
-                    performUserRolesAction(previousHead.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD);  
+                    performUserRolesAction(previousHead.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD);
                 }
-                departmentDao.updateDepartmentHead(department, login); 
-                result = performUserRolesAction(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);  
+                departmentDao.updateDepartmentHead(department, login);
+                result = performUserRolesAction(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);
             }
         } catch (DaoException e) {
             throw new ServiceException("AppointDepartmentHead failed.", e);
@@ -114,7 +123,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             Optional<User> optionalUser = userDao.findByLogin(login);
             boolean isUserMedicalWorker = optionalUser.isPresent() &&
                     (optionalUser.get().getRoles().contains(Role.DOCTOR) ||
-                    optionalUser.get().getRoles().contains(Role.MEDICAL_ASSISTANT));
+                            optionalUser.get().getRoles().contains(Role.MEDICAL_ASSISTANT));
             if (isUserMedicalWorker) {
                 optionalDepartment = departmentDao.findDepartment(login);
             }

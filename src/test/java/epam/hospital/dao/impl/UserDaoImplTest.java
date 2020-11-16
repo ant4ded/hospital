@@ -6,7 +6,6 @@ import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.UserDetails;
-import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
@@ -86,45 +85,66 @@ public class UserDaoImplTest {
         user.setId(userDao.createClientWithUserDetails(user));
         newUser.setId(user.getId());
 
-        User updatedUser = userDao.update(user, newUser);
+        Optional<User> updatedUser = userDao.updateLoginAndPassword(user.getLogin(), newUser);
         cleaner.delete(newUser);
 
-        Assert.assertEquals(updatedUser, newUser);
+        Assert.assertTrue(updatedUser.isPresent());
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            expectedExceptions = DaoException.class)
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void update_nonExistentLogin_exception(User user) throws DaoException {
-        userDao.update(user, new User());
+        Assert.assertFalse(userDao.updateLoginAndPassword(user.getLogin(), new User()).isPresent());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero",
-                    "findByLogin_correctFind_userPresent"})
-    public void updateUserRoles_correctUpdate_true(User user) throws DaoException {
+            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero"})
+    public void addUserRole_correctAdd_true(User user) throws DaoException {
         userDao.createClientWithUserDetails(user);
-        user.getRoles().add(Role.MEDICAL_ASSISTANT);
-        boolean result = userDao.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.MEDICAL_ASSISTANT);
-        User userFromDb = userDao.findByLogin(user.getLogin()).orElseGet(User::new);
+        boolean isSuccess = userDao.addUserRole(user.getLogin(), Role.DOCTOR);
 
-        if (!userFromDb.getRoles().equals(user.getRoles()) && !result) {
-            cleaner.delete(user);
-            Assert.fail("Update users_roles failed.");
-        }
+        cleaner.delete(user);
+        Assert.assertTrue(isSuccess);
+    }
 
-        result = userDao.updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.MEDICAL_ASSISTANT);
-        userFromDb = userDao.findByLogin(user.getLogin()).orElseGet(User::new);
-
-        if (userFromDb.getRoles().contains(Role.MEDICAL_ASSISTANT) && result) {
-            cleaner.delete(user);
-            Assert.fail("Update users_roles failed.");
-        }
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero"},
+            expectedExceptions = DaoException.class)
+    public void addUserRole_addExistingRole_daoException(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        userDao.addUserRole(user.getLogin(), Role.CLIENT);
 
         cleaner.delete(user);
     }
 
-    @Test
-    public void updateUserRoles_nonExitingId_false() throws DaoException {
-        Assert.assertFalse(userDao.updateUserRoles("", ServiceAction.REMOVE, Role.MEDICAL_ASSISTANT));
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero"})
+    public void addUserRole_nonExistingUser_daoException(User user) throws DaoException {
+        Assert.assertFalse(userDao.addUserRole(user.getLogin(), Role.CLIENT));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero"})
+    public void deleteUserRole_correctDelete_true(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        boolean isSuccess = userDao.deleteUserRole(user.getLogin(), Role.CLIENT);
+
+        cleaner.delete(user);
+        Assert.assertTrue(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero"})
+    public void deleteUserRole_deleteNonExistentRole_daoException(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        boolean isSuccess = userDao.deleteUserRole(user.getLogin(), Role.DOCTOR);
+
+        cleaner.delete(user);
+        Assert.assertFalse(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero"})
+    public void deleteUserRole_nonExistingUser_daoException(User user) throws DaoException {
+        Assert.assertFalse(userDao.deleteUserRole(user.getLogin(), Role.CLIENT));
     }
 }

@@ -8,7 +8,6 @@ import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.table.RolesFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
-import by.epam.hospital.service.ServiceAction;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -37,67 +36,42 @@ public class UserDaoImpl implements UserDao {
      */
     private static final String SP_CREATE_CLIENT_WITH_USER_DETAILS =
             "CALL CreateClientWithUserDetails(?,?,?,?,?,?,?,?,?,?,?)";
+
     /**
-     * Sql {@code String} object for find {@code User}
-     * by {@code login} in data base.
+     * Sql {@code String} object for call stored procedure {@code FindUserByLogin}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_BY_LOGIN = """
-            SELECT id, password
-            FROM users
-            WHERE login = ?""";
+    private static final String SP_FIND_USER_BY_LOGIN = "CALL FindUserByLogin(?)";
+
     /**
-     * Sql {@code String} object for find {@code User}
-     * by {@code id} in data base.
+     * Sql {@code String} object for call stored procedure {@code FindUserById}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_BY_ID = """
-            SELECT login, password
-            FROM users
-            WHERE id = ?""";
+    private static final String SP_FIND_USER_BY_ID = "CALL FindUserById(?)";
+
     /**
-     * Sql {@code String} object for find {@code User} object's
-     * elements of enum {@code Role} by {@code userId} in data base.
+     * Sql {@code String} object for call stored procedure {@code FindUserRolesByLogin}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_USER_ROLES = """
-            SELECT title
-            FROM hospital.roles
-            INNER JOIN users_roles ON roles.id = users_roles.role_id
-            INNER JOIN users ON users_roles.user_id = users.id
-            WHERE users.id = ?""";
+    private static final String SP_FIND_USER_ROLES_BY_LOGIN = "CALL FindUserRolesByLogin(?)";
+
     /**
-     * Sql {@code String} object for updating {@code User} entity
-     * by {@code id} in data base.
+     * Sql {@code String} object for call stored procedure {@code AddUserRole}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_UPDATE = """
-            UPDATE users
-            SET login = ?, password = ?
-            WHERE id = ?""";
+    private static final String SP_ADD_USER_ROLE = "CALL AddUserRole(?,?)";
+
     /**
-     * Sql {@code String} object for creating {@code User} object's
-     * element of enum {@code Role} by {@code User.login}
-     * and {@code Role.title} in data base.
+     * Sql {@code String} object for call stored procedure {@code DeleteUserRole}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_CREATE_USER_ROLE = """
-            INSERT INTO users_roles (user_id, role_id)
-                SELECT users.id, roles.id
-                FROM users, roles
-                WHERE login = ? AND title = ?""";
+    private static final String SP_DELETE_USER_ROLE = "CALL DeleteUserRole(?,?)";
+
     /**
-     * Sql {@code String} object for deleting {@code User} object's
-     * element of enum {@code Role} by {@code User.login}
-     * and {@code Role.title} in data base.
+     * Sql {@code String} object for call stored procedure {@code UpdateUserLoginAndPassword}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_DELETE_USER_ROLE = """
-            DELETE users_roles
-            FROM users_roles
-            INNER JOIN users u ON u.id = users_roles.user_id
-            INNER JOIN roles r ON r.id = users_roles.role_id
-            WHERE u.login = ? AND r.title = ?""";
+    private static final String SP_UPDATE_LOGIN_AND_PASSWORD = "CALL UpdateUserLoginAndPassword(?,?,?)";
 
     /**
      * Create entity {@link User} with entity {@link by.epam.hospital.entity.UserDetails}
@@ -106,84 +80,85 @@ public class UserDaoImpl implements UserDao {
      * @param user an a {@code User} entity.
      * @return auto-generated {@code User.id} field or zero if not success.
      * @throws DaoException if a database access error occurs or
-     * if {@link ConnectionPool} throws {@link ConnectionException}.
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public int createClientWithUserDetails(User user) throws DaoException {
         Connection connection = null;
-        CallableStatement callableStatement = null;
+        CallableStatement statement = null;
         int userId;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            callableStatement = connection.prepareCall(SP_CREATE_CLIENT_WITH_USER_DETAILS);
+            statement = connection.prepareCall(SP_CREATE_CLIENT_WITH_USER_DETAILS);
 
-            callableStatement.setString(1, user.getLogin());
-            callableStatement.setString(2, user.getPassword());
-            callableStatement.setString(3, user.getUserDetails().getPassportId());
-            callableStatement.setString(4, user.getUserDetails().getGender().name());
-            callableStatement.setString(5, user.getUserDetails().getFirstName());
-            callableStatement.setString(6, user.getUserDetails().getSurname());
-            callableStatement.setString(7, user.getUserDetails().getLastName());
-            callableStatement.setDate(8, user.getUserDetails().getBirthday());
-            callableStatement.setString(9, user.getUserDetails().getAddress());
-            callableStatement.setString(10, user.getUserDetails().getPhone());
+            statement.setString(1, user.getLogin());
+            statement.setString(2, user.getPassword());
+            statement.setString(3, user.getUserDetails().getPassportId());
+            statement.setString(4, user.getUserDetails().getGender().name());
+            statement.setString(5, user.getUserDetails().getFirstName());
+            statement.setString(6, user.getUserDetails().getSurname());
+            statement.setString(7, user.getUserDetails().getLastName());
+            statement.setDate(8, user.getUserDetails().getBirthday());
+            statement.setString(9, user.getUserDetails().getAddress());
+            statement.setString(10, user.getUserDetails().getPhone());
 
-            callableStatement.registerOutParameter(11, Types.INTEGER);
+            statement.registerOutParameter(11, Types.INTEGER);
 
-            callableStatement.execute();
-            userId = callableStatement.getInt(11);
+            statement.execute();
+            userId = statement.getInt(11);
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("CreateClientWithUserDetails failed.", e);
         } finally {
-            ConnectionPool.closeConnection(connection, callableStatement);
+            ConnectionPool.closeConnection(connection, statement);
         }
         return userId;
     }
 
     /**
-     * Update entity {@code User} in database
-     * using {@code PreparedStatement}.
+     * Update entity {@code User} in database.
      *
-     * @param oldValue {@code User} entity that need to be updated.
+     * @param login    {@code String} value of {@code User.login}
+     *                 for find entity that need to be updated.
      * @param newValue new value for {@code User} entity.
      * @return {@code newValue} if it was updated or
      * {@code oldValue} if it wasn't of {@code User} entity.
      * @throws DaoException if a database access error occurs
      *                      and if {@code ConnectionPool}
      *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
      * @see ConnectionException
      */
     @Override
-    public User update(User oldValue, User newValue) throws DaoException {
+    public Optional<User> updateLoginAndPassword(String login, User newValue) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
-        User userFromDb = findByLogin(oldValue.getLogin()).orElseThrow(DaoException::new);
-        User updatedUser = new User();
-        updatedUser.setId(newValue.getId());
-        updatedUser.setLogin(newValue.getLogin());
-        updatedUser.setPassword(newValue.getPassword());
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        Optional<User> optionalUser = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_UPDATE);
-            statement.setString(1, updatedUser.getLogin());
-            statement.setString(2, updatedUser.getPassword());
-            statement.setInt(3, updatedUser.getId());
+            statement = connection.prepareCall(SP_UPDATE_LOGIN_AND_PASSWORD);
+            statement.setString(1, login);
+            statement.setString(2, newValue.getLogin());
+            statement.setString(3, newValue.getPassword());
 
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                updatedUser = userFromDb;
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                newValue.setId(resultSet.getInt(UsersFieldName.ID));
+                newValue.setLogin(resultSet.getString(UsersFieldName.LOGIN));
+                newValue.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
+                newValue.setRoles(findUserRoles(newValue.getLogin()));
+                optionalUser = Optional.of(newValue);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("Updating user failed.", e);
         } finally {
-            ConnectionPool.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return updatedUser;
+        return optionalUser;
     }
 
     /**
@@ -203,22 +178,22 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findByLogin(String login) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         Optional<User> optionalUser = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_BY_LOGIN);
+            statement = connection.prepareCall(SP_FIND_USER_BY_LOGIN);
             statement.setString(1, login);
-            statement.execute();
 
-            resultSet = statement.getResultSet();
+            resultSet = statement.executeQuery();
+
             if (resultSet.next()) {
                 User userFromDb = new User();
                 userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
-                userFromDb.setLogin(login);
+                userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-                userFromDb.setRoles(findUserRoles(userFromDb.getId()));
+                userFromDb.setRoles(findUserRoles(userFromDb.getLogin()));
                 optionalUser = Optional.of(userFromDb);
             }
         } catch (ConnectionException e) {
@@ -248,22 +223,21 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> findById(int id) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         Optional<User> optionalUser = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_BY_ID);
+            statement = connection.prepareCall(SP_FIND_USER_BY_ID);
             statement.setInt(1, id);
-            statement.execute();
 
-            resultSet = statement.getResultSet();
+            resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 User userFromDb = new User();
                 userFromDb.setId(id);
                 userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
                 userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-                userFromDb.setRoles(findUserRoles(userFromDb.getId()));
+                userFromDb.setRoles(findUserRoles(userFromDb.getLogin()));
                 optionalUser = Optional.of(userFromDb);
             }
         } catch (ConnectionException e) {
@@ -277,42 +251,75 @@ public class UserDaoImpl implements UserDao {
     }
 
     /**
-     * Update roles {@code User} entity by {@code login} field
-     * using {@code PreparedStatement}.
+     * Add {@link Role} to entity {@link User}
      *
-     * @param login         {@code String} value of {@code User.login} field.
-     * @param serviceAction enumeration element of {@link ServiceAction}.
-     * @param role          enumeration element of {@link Role}.
+     * @param login {@code String} value of {@code User.login} field.
+     * @param role  enumeration element of {@link Role}.
      * @return {@code true} if it was successful and {@code false} if it wasn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs.
      */
     @Override
-    public boolean updateUserRoles(String login, ServiceAction serviceAction, Role role) throws DaoException {
+    public boolean addUserRole(String login, Role role) throws DaoException {
         boolean result = false;
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(serviceAction == ServiceAction.ADD ?
-                    SQL_CREATE_USER_ROLE :
-                    SQL_DELETE_USER_ROLE);
+            statement = connection.prepareCall(SP_ADD_USER_ROLE);
             statement.setString(1, login);
             statement.setString(2, role.name());
 
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 0) {
-                result = true;
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int affectedRows = resultSet.getInt(1);
+                if (affectedRows != 0) {
+                    result = true;
+                }
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("Updating user roles failed.", e);
         } finally {
-            ConnectionPool.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
+    }
+
+    /**
+     * Delete {@link Role} from entity {@link User}
+     *
+     * @param login {@code String} value of {@code User.login} field.
+     * @param role  enumeration element of {@link Role}.
+     * @return {@code true} if it was successful and {@code false} if it wasn't.
+     * @throws DaoException if a database access error occurs.
+     */
+    @Override
+    public boolean deleteUserRole(String login, Role role) throws DaoException {
+        boolean result = false;
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_DELETE_USER_ROLE);
+            statement.setString(1, login);
+            statement.setString(2, role.name());
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int affectedRows = resultSet.getInt(1);
+                if (affectedRows != 0) {
+                    result = true;
+                }
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Updating user roles failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return result;
     }
@@ -321,7 +328,7 @@ public class UserDaoImpl implements UserDao {
      * Update roles {@code User} entity by {@code User.login} field
      * using {@code PreparedStatement}.
      *
-     * @param id {@code int} value of {@code User.login} field.
+     * @param login {@code int} value of {@code User.login} field.
      * @return {@code List<Role>} being a {@code ArrayList<Role>}
      * object if it present  or an empty {@code List} if it isn't.
      * @throws DaoException if a database access error occurs
@@ -332,18 +339,17 @@ public class UserDaoImpl implements UserDao {
      * @see ArrayList
      * @see ConnectionException
      */
-    private List<Role> findUserRoles(int id) throws DaoException {
+    private List<Role> findUserRoles(String login) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         ArrayList<Role> roles = new ArrayList<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_USER_ROLES);
-            statement.setInt(1, id);
-            statement.execute();
+            statement = connection.prepareCall(SP_FIND_USER_ROLES_BY_LOGIN);
+            statement.setString(1, login);
 
-            resultSet = statement.getResultSet();
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Role role = Role.valueOf(resultSet.getString(RolesFieldName.TITLE));
                 roles.add(role);
