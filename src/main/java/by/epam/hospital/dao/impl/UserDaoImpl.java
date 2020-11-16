@@ -38,56 +38,47 @@ public class UserDaoImpl implements UserDao {
      */
     private static final String SP_CREATE_CLIENT_WITH_USER_DETAILS =
             "CALL CreateClientWithUserDetails(?,?,?,?,?,?,?,?,?,?,?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code FindUserByLogin}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_USER_BY_LOGIN = "CALL FindUserByLogin(?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code FindUserByLogin}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_LOGIN = "CALL FindUserWithUserDetailsByLogin(?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code FindUserById}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_USER_BY_ID = "CALL FindUserById(?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code FindUserById}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_ID = "CALL FindUserWithUserDetailsById(?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code FindUserWithUserDetailsByPassportData}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_PASSPORT_DATA =
             "CALL FindUserWithUserDetailsByPassportData(?,?,?,?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code FindUserRolesByLogin}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_USER_ROLES_BY_LOGIN = "CALL FindUserRolesByLogin(?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code AddUserRole}.
      * Written for the MySQL dialect.
      */
     private static final String SP_ADD_USER_ROLE = "CALL AddUserRole(?,?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code DeleteUserRole}.
      * Written for the MySQL dialect.
      */
     private static final String SP_DELETE_USER_ROLE = "CALL DeleteUserRole(?,?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code UpdateUserLoginAndPassword}.
      * Written for the MySQL dialect.
