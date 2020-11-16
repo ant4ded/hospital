@@ -62,27 +62,4 @@ public class UserDetailsDaoImplTest {
     public void findByUserId_nonExistentId_userDetailsEmpty() throws DaoException {
         Assert.assertTrue(userDetailsDao.findByUserId(0).isEmpty());
     }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findByRegistrationData_correctFind_userDetailsPresent(User user) throws DaoException {
-        user.getUserDetails().setUserId(userDao.createClientWithUserDetails(user));
-
-        Optional<UserDetails> optionalUserDetails = userDetailsDao
-                .findByRegistrationData(user.getUserDetails().getFirstName(), user.getUserDetails().getSurname(),
-                        user.getUserDetails().getLastName(), user.getUserDetails().getBirthday());
-        cleaner.delete(user);
-
-        Assert.assertTrue(optionalUserDetails.isPresent());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findByRegistrationData_nonExistentUserDetails_userDetailsEmpty(User user) throws DaoException {
-        UserDetails userDetails = user.getUserDetails();
-
-        Optional<UserDetails> optionalUserDetails = userDetailsDao
-                .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
-                        userDetails.getLastName(), userDetails.getBirthday());
-
-        Assert.assertTrue(optionalUserDetails.isEmpty());
-    }
 }
