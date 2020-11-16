@@ -32,13 +32,13 @@ public class UserDaoImplTest {
         Assert.assertTrue(userId != 0);
     }
 
-    @Test
-    public void createClientWithUserDetails_nullField_zero() throws DaoException {
+    @Test(expectedExceptions = DaoException.class)
+    public void createClientWithUserDetails_nullField_daoException() throws DaoException {
         UserDetails userDetails = new UserDetails();
         userDetails.setGender(UserDetails.Gender.MALE);
         User user = new User();
         user.setUserDetails(userDetails);
-        Assert.assertEquals(userDao.createClientWithUserDetails(user), 0);
+        userDao.createClientWithUserDetails(user);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
@@ -164,9 +164,11 @@ public class UserDaoImplTest {
             expectedExceptions = DaoException.class)
     public void addUserRole_addExistingRole_daoException(User user) throws DaoException {
         userDao.createClientWithUserDetails(user);
-        userDao.addUserRole(user.getLogin(), Role.CLIENT);
-
-        cleaner.delete(user);
+        try {
+            userDao.addUserRole(user.getLogin(), Role.CLIENT);
+        } finally {
+            cleaner.delete(user);
+        }
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
