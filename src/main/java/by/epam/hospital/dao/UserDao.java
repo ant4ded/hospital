@@ -68,6 +68,18 @@ public interface UserDao {
     Optional<User> findById(int id) throws DaoException;
 
     /**
+     * Find {@code User} entity by {@code User.id} field
+     * with {@link by.epam.hospital.entity.UserDetails}.
+     *
+     * @param id {@code int} value of {@code User.id} field.
+     * @return {@code Optional<User>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see Optional
+     */
+    Optional<User> findByIdWithUserDetails(int id) throws DaoException;
+
+    /**
      * Add {@link Role} to entity {@link User}
      *
      * @param login {@code String} value of {@code User.login} field.

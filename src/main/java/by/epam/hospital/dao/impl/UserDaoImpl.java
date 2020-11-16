@@ -58,6 +58,12 @@ public class UserDaoImpl implements UserDao {
     private static final String SP_FIND_USER_BY_ID = "CALL FindUserById(?)";
 
     /**
+     * Sql {@code String} object for call stored procedure {@code FindUserById}.
+     * Written for the MySQL dialect.
+     */
+    private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_ID = "CALL FindUserWithUserDetailsById(?)";
+
+    /**
      * Sql {@code String} object for call stored procedure {@code FindUserRolesByLogin}.
      * Written for the MySQL dialect.
      */
@@ -197,12 +203,7 @@ public class UserDaoImpl implements UserDao {
             resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                User userFromDb = new User();
-                userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
-                userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
-                userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-                userFromDb.setRoles(findUserRoles(userFromDb.getLogin()));
-                optionalUser = Optional.of(userFromDb);
+                optionalUser = Optional.of(getUser(resultSet));
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -238,27 +239,7 @@ public class UserDaoImpl implements UserDao {
             resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                User userFromDb = new User();
-                UserDetails userDetails = new UserDetails();
-                userFromDb.setUserDetails(userDetails);
-                userFromDb.setUserDetails(userDetails);
-                userFromDb.setId(resultSet.getInt(UsersFieldName.ID));
-                userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
-                userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-
-                userDetails.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
-                userDetails.setUserId(resultSet.getInt(UsersDetailsFieldName.USER_ID));
-                userDetails.setGender(UserDetails.Gender
-                        .valueOf(resultSet.getString(UsersDetailsFieldName.GENDER)));
-                userDetails.setFirstName(resultSet.getString(UsersDetailsFieldName.FIRST_NAME));
-                userDetails.setSurname(resultSet.getString(UsersDetailsFieldName.SURNAME));
-                userDetails.setLastName(resultSet.getString(UsersDetailsFieldName.LAST_NAME));
-                userDetails.setBirthday(resultSet.getDate(UsersDetailsFieldName.BIRTHDAY));
-                userDetails.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
-                userDetails.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
-
-                userFromDb.setRoles(findUserRoles(userFromDb.getLogin()));
-                optionalUser = Optional.of(userFromDb);
+                optionalUser = Optional.of(getUserWithUserDetails(resultSet));
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -297,12 +278,42 @@ public class UserDaoImpl implements UserDao {
 
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                User userFromDb = new User();
-                userFromDb.setId(id);
-                userFromDb.setLogin(resultSet.getString(UsersFieldName.LOGIN));
-                userFromDb.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-                userFromDb.setRoles(findUserRoles(userFromDb.getLogin()));
-                optionalUser = Optional.of(userFromDb);
+                optionalUser = Optional.of(getUser(resultSet));
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Find user failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return optionalUser;
+    }
+
+    /**
+     * Find {@code User} entity by {@code User.id} field
+     * with {@link by.epam.hospital.entity.UserDetails}.
+     *
+     * @param id {@code int} value of {@code User.id} field.
+     * @return {@code Optional<User>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see Optional
+     */
+    @Override
+    public Optional<User> findByIdWithUserDetails(int id) throws DaoException {
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        Optional<User> optionalUser = Optional.empty();
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_FIND_USER_WITH_USER_DETAILS_BY_ID);
+            statement.setInt(1, id);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                optionalUser = Optional.of(getUserWithUserDetails(resultSet));
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -389,7 +400,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     /**
-     * Update roles {@code User} entity by {@code User.login} field
+     * Find roles {@code User} entity by {@code User.login} field
      * using {@code PreparedStatement}.
      *
      * @param login {@code int} value of {@code User.login} field.
@@ -426,5 +437,57 @@ public class UserDaoImpl implements UserDao {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return roles;
+    }
+
+
+    /**
+     * Get {@code User} fields from {@link ResultSet}.
+     *
+     * @param resultSet {@link ResultSet} entity.
+     * @return new {@code User} entity.
+     * @throws SQLException if a database access error occurs.
+     * @throws DaoException if in {@link UserDaoImpl#findUserRoles(String)}
+     *                      a database access error occurs.
+     */
+    private User getUser(ResultSet resultSet) throws SQLException, DaoException {
+        User user = new User();
+        user.setId(resultSet.getInt(UsersFieldName.ID));
+        user.setLogin(resultSet.getString(UsersFieldName.LOGIN));
+        user.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
+        user.setRoles(findUserRoles(user.getLogin()));
+        return user;
+    }
+
+    /**
+     * Get {@code User} and {@code UserDetails} fields from {@link ResultSet}.
+     *
+     * @param resultSet {@link ResultSet} entity.
+     * @return new {@code User} entity.
+     * @throws SQLException if a database access error occurs.
+     * @throws DaoException if in {@link UserDaoImpl#findUserRoles(String)}
+     *                      a database access error occurs.
+     */
+    private User getUserWithUserDetails(ResultSet resultSet) throws SQLException, DaoException {
+        User user = new User();
+        UserDetails userDetails = new UserDetails();
+        user.setUserDetails(userDetails);
+        user.setUserDetails(userDetails);
+        user.setId(resultSet.getInt(UsersFieldName.ID));
+        user.setLogin(resultSet.getString(UsersFieldName.LOGIN));
+        user.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
+
+        userDetails.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
+        userDetails.setUserId(resultSet.getInt(UsersDetailsFieldName.USER_ID));
+        userDetails.setGender(UserDetails.Gender
+                .valueOf(resultSet.getString(UsersDetailsFieldName.GENDER)));
+        userDetails.setFirstName(resultSet.getString(UsersDetailsFieldName.FIRST_NAME));
+        userDetails.setSurname(resultSet.getString(UsersDetailsFieldName.SURNAME));
+        userDetails.setLastName(resultSet.getString(UsersDetailsFieldName.LAST_NAME));
+        userDetails.setBirthday(resultSet.getDate(UsersDetailsFieldName.BIRTHDAY));
+        userDetails.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
+        userDetails.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
+
+        user.setRoles(findUserRoles(user.getLogin()));
+        return user;
     }
 }
