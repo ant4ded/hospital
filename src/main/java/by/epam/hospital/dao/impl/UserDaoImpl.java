@@ -459,7 +459,7 @@ public class UserDaoImpl implements UserDao {
      * @see ArrayList
      * @see ConnectionException
      */
-    private List<Role> findUserRoles(String login) throws DaoException {
+    public List<Role> findUserRoles(String login) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;

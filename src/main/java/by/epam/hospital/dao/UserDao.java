@@ -1,9 +1,13 @@
 package by.epam.hospital.dao;
 
+import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -120,4 +124,21 @@ public interface UserDao {
      * @throws DaoException if a database access error occurs.
      */
     boolean deleteUserRole(String login, Role role) throws DaoException;
+
+    /**
+     * Find roles {@code User} entity by {@code User.login} field
+     * using {@code PreparedStatement}.
+     *
+     * @param login {@code int} value of {@code User.login} field.
+     * @return {@code List<Role>} being a {@code ArrayList<Role>}
+     * object if it present  or an empty {@code List} if it isn't.
+     * @throws DaoException if a database access error occurs
+     *                      and if {@code ConnectionPool}
+     *                      throws {@code ConnectionException}.
+     * @see PreparedStatement
+     * @see List
+     * @see ArrayList
+     * @see ConnectionException
+     */
+    List<Role> findUserRoles(String login) throws DaoException;
 }

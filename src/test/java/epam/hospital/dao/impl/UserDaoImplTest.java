@@ -197,9 +197,28 @@ public class UserDaoImplTest {
         Assert.assertFalse(isSuccess);
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero"})
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void deleteUserRole_deleteWithNonExistentLogin_daoException(User user) throws DaoException {
+        Assert.assertFalse(userDao.deleteUserRole(user.getLogin(), Role.DOCTOR));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void deleteUserRole_nonExistingUser_daoException(User user) throws DaoException {
         Assert.assertFalse(userDao.deleteUserRole(user.getLogin(), Role.CLIENT));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = {"createClientWithUserDetails_correctCreate_nonZero"})
+    public void findUserRoles_correctFind_roleList(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        boolean isContains = userDao.findUserRoles(user.getLogin()).contains(Role.CLIENT);
+
+        cleaner.delete(user);
+        Assert.assertTrue(isContains);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void findUserRoles_nonExistentLogin_daoException(User user) throws DaoException {
+        Assert.assertFalse(userDao.findUserRoles(user.getLogin()).contains(Role.CLIENT));
     }
 }
