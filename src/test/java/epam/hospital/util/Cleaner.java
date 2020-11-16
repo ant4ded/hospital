@@ -3,27 +3,16 @@ package epam.hospital.util;
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.dao.UserDetailsDao;
-import by.epam.hospital.dao.impl.UserDaoImpl;
-import by.epam.hospital.dao.impl.UserDetailsDaoImpl;
-import by.epam.hospital.entity.*;
+import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Diagnosis;
+import by.epam.hospital.entity.Therapy;
+import by.epam.hospital.entity.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Optional;
+import java.sql.*;
 
 public class Cleaner {
-    private static final String SQL_DELETE_USER_ROLES = """
-            DELETE FROM users_roles
-            WHERE user_id = ?""";
-    private static final String SQL_DELETE_USER = """
-            DELETE FROM users
-            WHERE id = ?""";
-    private static final String SQL_DELETE_USER_DETAILS = """
-            DELETE FROM users_details
-            WHERE passport_id = ?""";
+    private static final String SP_DELETE_USER_WITH_USER_ROLES_AND_USER_DETAILS =
+            "CALL DeleteUserWithUserRolesAndUserDetails(?)";
     private static final String SQL_DELETE_DIAGNOSIS = """
             DELETE FROM diagnoses
             WHERE id = ?""";
@@ -40,35 +29,28 @@ public class Cleaner {
             DELETE FROM therapy_diagnoses
             WHERE therapy_id = ?""";
 
-    private final UserDao userDao = new UserDaoImpl();
-    private final UserDetailsDao userDetailsDao = new UserDetailsDaoImpl();
-
     public void delete(User user) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE_USER_ROLES);
+            statement = connection.prepareCall(SP_DELETE_USER_WITH_USER_ROLES_AND_USER_DETAILS);
+            statement.setString(1, user.getLogin());
 
-            user = userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new);
-            statement.setInt(1, user.getId());
-            statement.execute();
-            statement.close();
-
-            Optional<UserDetails> optionalUserDetails = userDetailsDao.findByUserId(user.getId());
-            if (optionalUserDetails.isPresent()) {
-                delete(optionalUserDetails.get());
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int affectedRows = resultSet.getInt(1);
+                if (affectedRows == 0) {
+                    throw new DaoException("Delete failed.");
+                }
             }
-
-            statement = connection.prepareStatement(SQL_DELETE_USER);
-            statement.setInt(1, user.getId());
-            statement.execute();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("Can not delete row on users table.", e);
         } finally {
-            ConnectionPool.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
     }
 
@@ -120,30 +102,6 @@ public class Cleaner {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("Can not delete row on therapy table.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement);
-        }
-    }
-
-    private void delete(UserDetails userDetails) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        UserDetails userDetailsFromDb;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE_USER_DETAILS);
-
-            userDetailsFromDb = userDetailsDao.findByUserId(userDetails.getUserId()).orElseThrow(DaoException::new);
-            statement.setString(1, userDetailsFromDb.getPassportId());
-
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 1) {
-                throw new DaoException("Affected rows != 1.");
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Can not delete row on users_details table.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }
