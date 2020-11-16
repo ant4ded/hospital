@@ -235,9 +235,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         diagnosis.setReason(resultSet.getString(DiagnosesFieldName.REASON));
         diagnosis.setIcd(icdDao.findById(resultSet.getInt(DiagnosesFieldName.ICD_ID))
                 .orElseThrow(DaoException::new));
-        diagnosis.setDoctor(userDao.findById(resultSet.getInt(DiagnosesFieldName.DOCTOR_ID))
-                .orElseThrow(DaoException::new));
-        diagnosis.getDoctor().setUserDetails(userDetailsDao.findByUserId(diagnosis.getDoctor().getId())
+        diagnosis.setDoctor(userDao.findByIdWithUserDetails(resultSet.getInt(DiagnosesFieldName.DOCTOR_ID))
                 .orElseThrow(DaoException::new));
     }
 

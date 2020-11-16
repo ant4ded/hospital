@@ -94,18 +94,14 @@ public class ClientServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findUserDetails_existingUser_userDetailsPresent(User user) throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(user.getLogin()))
+        Mockito.when(userDao.findByLoginWithUserDetails(user.getLogin()))
                 .thenReturn(Optional.of(user));
-        Mockito.when(userDetailsDao.findByUserId(Mockito.anyInt()))
-                .thenReturn(Optional.of(user.getUserDetails()));
         Assert.assertTrue(clientService.findUserDetails(user.getLogin()).isPresent());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findUserDetails_nonExistentUser_userDetailsEmpty(User user) throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(user.getLogin()))
-                .thenReturn(Optional.of(user));
-        Mockito.when(userDetailsDao.findByUserId(Mockito.anyInt()))
+        Mockito.when(userDao.findByLoginWithUserDetails(user.getLogin()))
                 .thenReturn(Optional.empty());
         Assert.assertTrue(clientService.findUserDetails(user.getLogin()).isEmpty());
     }
@@ -113,7 +109,7 @@ public class ClientServiceImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
             expectedExceptions = ServiceException.class)
     public void findUserDetails_daoException_serviceException(User user) throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(user.getLogin()))
+        Mockito.when(userDao.findByLoginWithUserDetails(user.getLogin()))
                 .thenThrow(DaoException.class);
         clientService.findUserDetails(user.getLogin());
     }

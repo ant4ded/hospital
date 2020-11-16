@@ -444,9 +444,7 @@ public class TherapyDaoImpl implements TherapyDao {
                 Therapy therapy = new Therapy();
                 therapy.setId(resultSet.getInt(TherapyFieldName.ID));
                 therapy.setDoctor(userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new));
-                therapy.setPatient(userDao.findByLogin(patientLogin).orElseThrow(DaoException::new));
-                therapy.getPatient().setUserDetails(userDetailsDao.findByUserId(therapy.getPatient().getId())
-                        .orElseThrow(DaoException::new));
+                therapy.setPatient(userDao.findByLoginWithUserDetails(patientLogin).orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
@@ -504,9 +502,7 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));
                 therapy.setDiagnoses(diagnosisDao.findByTherapyId(id));
-                therapy.setPatient(userDao.findById(resultSet.getInt(UsersFieldName.ID))
-                        .orElseThrow(DaoException::new));
-                therapy.getPatient().setUserDetails(userDetailsDao.findByUserId(therapy.getPatient().getId())
+                therapy.setPatient(userDao.findByIdWithUserDetails(resultSet.getInt(UsersFieldName.ID))
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
                 optionalTherapy = Optional.of(therapy);
@@ -555,9 +551,7 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setDoctor(userDao.findById(resultSet.getInt(TherapyFieldName.DOCTOR_ID))
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
-                therapy.setPatient(userDao.findByLogin(patientLogin).orElseThrow(DaoException::new));
-                therapy.getPatient().setUserDetails(userDetailsDao.findByUserId(therapy.getPatient().getId())
-                        .orElseThrow(DaoException::new));
+                therapy.setPatient(userDao.findByLoginWithUserDetails(patientLogin).orElseThrow(DaoException::new));
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));
@@ -608,9 +602,7 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setDoctor(userDao.findById(resultSet.getInt(TherapyFieldName.DOCTOR_ID))
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(cardType);
-                therapy.setPatient(userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new));
-                therapy.getPatient().setUserDetails(userDetailsDao.findByUserId(therapy.getPatient().getId())
-                        .orElseThrow(DaoException::new));
+                therapy.setPatient(userDao.findByLoginWithUserDetails(doctorLogin).orElseThrow(DaoException::new));
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));

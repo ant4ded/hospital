@@ -56,9 +56,9 @@ public class ClientServiceImpl implements ClientService {
     public Optional<UserDetails> findUserDetails(String login) throws ServiceException {
         Optional<UserDetails> optionalUserDetails = Optional.empty();
         try {
-            Optional<User> optionalUser = userDao.findByLogin(login);
+            Optional<User> optionalUser = userDao.findByLoginWithUserDetails(login);
             if (optionalUser.isPresent()) {
-                optionalUserDetails = userDetailsDao.findByUserId(optionalUser.get().getId());
+                optionalUserDetails = Optional.of(optionalUser.get().getUserDetails());
             }
         } catch (DaoException e) {
             throw new ServiceException("FindUserDetails failed.", e);
