@@ -1,9 +1,7 @@
 package by.epam.hospital.service;
 
-import by.epam.hospital.entity.CardType;
-
 public enum ServiceAction {
-    ADD, REMOVE;
+    ADD, DELETE;
 
     public static boolean hasValue(String value) {
         if (value != null) {

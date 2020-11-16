@@ -85,7 +85,7 @@ public class AdminHeadServiceImplTest {
         Mockito.when(userDao.deleteUserRole(user.getLogin(), Role.DOCTOR))
                 .thenReturn(true);
         Assert.assertTrue(adminHeadService
-                .updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR));
+                .updateUserRoles(user.getLogin(), ServiceAction.DELETE, Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "performUserRolesAction")
@@ -109,7 +109,7 @@ public class AdminHeadServiceImplTest {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
         Assert.assertFalse(adminHeadService
-                .updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR));
+                .updateUserRoles(user.getLogin(), ServiceAction.DELETE, Role.DOCTOR));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
@@ -117,7 +117,7 @@ public class AdminHeadServiceImplTest {
     public void performUserRolesAction_daoException_serviceException(User user) throws ServiceException, DaoException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenThrow(DaoException.class);
-        adminHeadService.updateUserRoles(user.getLogin(), ServiceAction.REMOVE, Role.DOCTOR);
+        adminHeadService.updateUserRoles(user.getLogin(), ServiceAction.DELETE, Role.DOCTOR);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "findDepartmentByUsername")

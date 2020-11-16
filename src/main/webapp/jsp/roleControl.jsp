@@ -76,7 +76,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.ADMIN.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ServiceAction.REMOVE}">
+                                               value="${ServiceAction.DELETE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${UsersFieldName.LOGIN}"
@@ -139,7 +139,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.RECEPTIONIST.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ServiceAction.REMOVE}">
+                                               value="${ServiceAction.DELETE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${UsersFieldName.LOGIN}"
@@ -203,7 +203,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.DOCTOR.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ServiceAction.REMOVE}">
+                                               value="${ServiceAction.DELETE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${UsersFieldName.LOGIN}"
@@ -360,7 +360,7 @@
                                         <input type="hidden" name="${ParameterName.ROLE}"
                                                value="${Role.MEDICAL_ASSISTANT.name()}">
                                         <input type="hidden" name="${ParameterName.ACTION}"
-                                               value="${ServiceAction.REMOVE}">
+                                               value="${ServiceAction.DELETE}">
                                         <input type="hidden" name="${ParameterName.COMMAND}"
                                                value="${CommandName.ROLE_CONTROL}">
                                         <input type="hidden" name="${UsersFieldName.LOGIN}"

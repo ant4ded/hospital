@@ -49,7 +49,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                 Optional<User> optionalUser = userDao.findByLogin(login);
                 boolean isActionDeleteAndUserContainsRole = optionalUser.isPresent() &&
                         optionalUser.get().getRoles().contains(role) &&
-                        serviceAction == ServiceAction.REMOVE;
+                        serviceAction == ServiceAction.DELETE;
                 boolean isActionAddAndUserNotContainsRole = optionalUser.isPresent() &&
                         !optionalUser.get().getRoles().contains(role) &&
                         serviceAction == ServiceAction.ADD;
@@ -79,7 +79,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                     departmentOfNewHead.get().equals(department);
             if (isNonEqualsAndNewHeadIsDoctor && isDepartmentNewHeadEqualsThisDepartment) {
                 if (previousHead.isPresent()) {
-                    updateUserRoles(previousHead.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD);
+                    updateUserRoles(previousHead.get().getLogin(), ServiceAction.DELETE, Role.DEPARTMENT_HEAD);
                 }
                 departmentDao.updateDepartmentHead(department, login);
                 result = updateUserRoles(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);
@@ -106,7 +106,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             if (isNotDepartmentHead && isUserFutureDoctorOrMedicalAssistant) {
                 updateUserRoles(login, serviceAction, role);
                 if (isUserHaveDepartmentAndActionAdd) {
-                    departmentStaffDao.updateStaffDepartment(previousDepartment.get(), ServiceAction.REMOVE, login);
+                    departmentStaffDao.updateStaffDepartment(previousDepartment.get(), ServiceAction.DELETE, login);
                 }
                 result = departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
             }

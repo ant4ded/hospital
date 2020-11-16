@@ -36,7 +36,7 @@ public class DepartmentStaffDaoImplTest {
         if (!departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin())) {
             Assert.fail("UpdateStaffDepartment work incorrect.");
         }
-        if (!departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin())) {
+        if (!departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.DELETE, user.getLogin())) {
             Assert.fail("UpdateStaffDepartment work incorrect.");
         }
 
@@ -55,7 +55,7 @@ public class DepartmentStaffDaoImplTest {
             Assert.fail("FindDepartmentStaff fail.");
         }
 
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
+        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.DELETE, user.getLogin());
         cleaner.delete(user);
     }
 }

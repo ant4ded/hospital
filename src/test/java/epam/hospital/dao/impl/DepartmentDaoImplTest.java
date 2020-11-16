@@ -64,12 +64,12 @@ public class DepartmentDaoImplTest {
 
         Optional<Department> optionalDepartment = departmentDao.findDepartment(user.getLogin());
         if (optionalDepartment.isEmpty()) {
-            departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
+            departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.DELETE, user.getLogin());
             cleaner.delete(user);
             Assert.fail("FindDepartment failed.");
         }
 
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.REMOVE, user.getLogin());
+        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.DELETE, user.getLogin());
         cleaner.delete(user);
     }
 
