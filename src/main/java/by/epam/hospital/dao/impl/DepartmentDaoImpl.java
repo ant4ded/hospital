@@ -34,25 +34,21 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * Sql {@code String} object for call stored procedure {@code FindDepartmentHeadByDepartmentId}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_DEPARTMENT_HEAD_BY_DEPARTMENT_ID = "CALL FindDepartmentHeadByDepartmentId(?)";
-
+    private static final String SP_FIND_DEPARTMENT_HEAD_BY_DEPARTMENT_ID =
+            "CALL FindDepartmentHeadByDepartmentId(?)";
     /**
      * Sql {@code String} object for call stored procedure {@code UpdateDepartmentHeadByDepartmentId}.
      * Written for the MySQL dialect.
      */
     private static final String SP_UPDATE_DEPARTMENT_HEAD_BY_DEPARTMENT_ID =
             "CALL UpdateDepartmentHeadByDepartmentId(?,?)";
+
     /**
-     * Sql {@code String} object for find title in
-     * departments table entity by {@code Department.id} in data base.
+     * Sql {@code String} object for call stored procedure {@code FindDepartmentByUserLogin}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_DEPARTMENT_BY_USERNAME = """
-            SELECT title
-            FROM departments
-            INNER JOIN departments_staff ds on departments.id = ds.department_id
-            INNER JOIN users u on ds.doctor_id = u.id
-            WHERE u.login = ?""";
+    private static final String SP_FIND_DEPARTMENT_BY_USER_LOGIN =
+            "CALL FindDepartmentByUserLogin(?)";
 
     /**
      * {@link UserDao} data access object.
@@ -118,7 +114,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
      */
     @Override
     public boolean updateDepartmentHead(Department department, String login) throws DaoException {
-        boolean result = false;
+        boolean result;
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
@@ -129,12 +125,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
             statement.setString(2, login);
 
             resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                int affectedRows = resultSet.getInt(1);
-                if (affectedRows != 0) {
-                    result = true;
-                }
-            }
+            result = resultSet.next() && resultSet.getInt(1) != 0;
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -162,15 +153,15 @@ public class DepartmentDaoImpl implements DepartmentDao {
     @Override
     public Optional<Department> findDepartment(String login) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         Optional<Department> optionalDepartment;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_BY_USERNAME);
+            statement = connection.prepareCall(SP_FIND_DEPARTMENT_BY_USER_LOGIN);
             statement.setString(1, login);
-            statement.execute();
-            resultSet = statement.getResultSet();
+
+            resultSet = statement.executeQuery();
             optionalDepartment = resultSet.next() ?
                     Optional.of(Department.valueOf(resultSet.getString(1))) :
                     Optional.empty();
