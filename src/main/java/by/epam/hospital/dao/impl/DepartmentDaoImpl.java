@@ -34,16 +34,14 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * Sql {@code String} object for call stored procedure {@code FindDepartmentHeadByDepartmentId}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_DEPARTMENT_HEAD = "CALL FindDepartmentHeadByDepartmentId(?)";
+    private static final String SP_FIND_DEPARTMENT_HEAD_BY_DEPARTMENT_ID = "CALL FindDepartmentHeadByDepartmentId(?)";
+
     /**
-     * Sql {@code String} object for update department_head_id in
-     * departments table entity by {@code Department.id} in data base.
+     * Sql {@code String} object for call stored procedure {@code UpdateDepartmentHeadByDepartmentId}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_UPDATE_DEPARTMENT_HEAD = """
-            UPDATE departments
-            SET department_head_id = ?
-            WHERE id = ?""";
+    private static final String SP_UPDATE_DEPARTMENT_HEAD_BY_DEPARTMENT_ID =
+            "CALL UpdateDepartmentHeadByDepartmentId(?,?)";
     /**
      * Sql {@code String} object for find title in
      * departments table entity by {@code Department.id} in data base.
@@ -83,7 +81,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         Optional<User> optionalUser = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_FIND_DEPARTMENT_HEAD);
+            statement = connection.prepareCall(SP_FIND_DEPARTMENT_HEAD_BY_DEPARTMENT_ID);
             statement.setInt(1, department.id);
             resultSet = statement.executeQuery();
 
@@ -122,17 +120,18 @@ public class DepartmentDaoImpl implements DepartmentDao {
     public boolean updateDepartmentHead(Department department, String login) throws DaoException {
         boolean result = false;
         Connection connection = null;
-        PreparedStatement statement = null;
-        Optional<User> user = userDao.findByLogin(login);
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
         try {
-            if (user.isPresent()) {
-                connection = ConnectionPool.getInstance().getConnection();
-                statement = connection.prepareStatement(SQL_UPDATE_DEPARTMENT_HEAD);
-                statement.setInt(1, user.get().getId());
-                statement.setInt(2, department.id);
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_UPDATE_DEPARTMENT_HEAD_BY_DEPARTMENT_ID);
+            statement.setInt(1, department.id);
+            statement.setString(2, login);
 
-                int affectedRows = statement.executeUpdate();
-                if (affectedRows == 1) {
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int affectedRows = resultSet.getInt(1);
+                if (affectedRows != 0) {
                     result = true;
                 }
             }
@@ -141,7 +140,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } catch (SQLException e) {
             throw new DaoException("Update department failed.");
         } finally {
-            ConnectionPool.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return result;
     }

@@ -8,6 +8,7 @@ import by.epam.hospital.dao.impl.DepartmentDaoImpl;
 import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
+import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
@@ -44,6 +45,7 @@ public class DepartmentDaoImplTest {
         User firstHead = departmentDao.findHeadDepartment(Department.INFECTIOUS).orElseThrow(DaoException::new);
 
         userDao.createClientWithUserDetails(user);
+        userDao.addUserRole(user.getLogin(), Role.DOCTOR);
         if (!departmentDao.updateDepartmentHead(Department.INFECTIOUS, user.getLogin())) {
             Assert.fail("UpdateDepartmentHead failed.");
         }
@@ -52,7 +54,17 @@ public class DepartmentDaoImplTest {
         cleaner.delete(user);
     }
 
-    @Test
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", expectedExceptions = DaoException.class)
+    public void updateDepartmentHead_notDoctor_daoException(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        try {
+            departmentDao.updateDepartmentHead(Department.INFECTIOUS, user.getLogin());
+        } finally {
+            cleaner.delete(user);
+        }
+    }
+
+    @Test(expectedExceptions = DaoException.class)
     public void updateDepartmentHead_nonExistentLogin_false() throws DaoException {
         Assert.assertFalse(departmentDao.updateDepartmentHead(Department.INFECTIOUS, "1"));
     }
