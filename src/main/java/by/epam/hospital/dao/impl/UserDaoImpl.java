@@ -142,7 +142,7 @@ public class UserDaoImpl implements UserDao {
      *
      * @param login    {@code String} value of {@code User.login}
      *                 for find entity that need to be updated.
-     * @param newValue new value for {@code User} entity.
+     * @param newValue new value of {@code User} entity.
      * @return {@code newValue} if it was updated or
      * {@code oldValue} if it wasn't of {@code User} entity.
      * @throws DaoException if a database access error occurs
