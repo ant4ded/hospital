@@ -41,7 +41,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public boolean performUserRolesAction(String login, ServiceAction serviceAction, Role role)
+    public boolean updateUserRoles(String login, ServiceAction serviceAction, Role role)
             throws ServiceException {
         boolean result = false;
         try {
@@ -79,10 +79,10 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                     departmentOfNewHead.get().equals(department);
             if (isNonEqualsAndNewHeadIsDoctor && isDepartmentNewHeadEqualsThisDepartment) {
                 if (previousHead.isPresent()) {
-                    performUserRolesAction(previousHead.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD);
+                    updateUserRoles(previousHead.get().getLogin(), ServiceAction.REMOVE, Role.DEPARTMENT_HEAD);
                 }
                 departmentDao.updateDepartmentHead(department, login);
-                result = performUserRolesAction(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);
+                result = updateUserRoles(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);
             }
         } catch (DaoException e) {
             throw new ServiceException("AppointDepartmentHead failed.", e);
@@ -91,8 +91,8 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public boolean performDepartmentStaffAction(Department department, ServiceAction serviceAction,
-                                                String login, Role role) throws ServiceException {
+    public boolean updateDepartmentStaff(Department department, ServiceAction serviceAction,
+                                         String login, Role role) throws ServiceException {
         boolean result = false;
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
@@ -104,7 +104,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             boolean isUserHaveDepartmentAndActionAdd = previousDepartment.isPresent() &&
                     serviceAction == ServiceAction.ADD;
             if (isNotDepartmentHead && isUserFutureDoctorOrMedicalAssistant) {
-                performUserRolesAction(login, serviceAction, role);
+                updateUserRoles(login, serviceAction, role);
                 if (isUserHaveDepartmentAndActionAdd) {
                     departmentStaffDao.updateStaffDepartment(previousDepartment.get(), ServiceAction.REMOVE, login);
                 }

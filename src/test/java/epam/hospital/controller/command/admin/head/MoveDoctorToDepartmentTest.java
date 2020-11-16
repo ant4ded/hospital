@@ -65,7 +65,7 @@ public class MoveDoctorToDepartmentTest {
                 .thenReturn(String.valueOf(Department.INFECTIOUS));
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
                 .thenReturn(roles);
-        Mockito.when(adminHeadService.performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD,
+        Mockito.when(adminHeadService.updateDepartmentStaff(Department.INFECTIOUS, ServiceAction.ADD,
                 user.getLogin(), Role.DOCTOR))
                 .thenReturn(true);
 
@@ -90,7 +90,7 @@ public class MoveDoctorToDepartmentTest {
                 .thenReturn(String.valueOf(Department.INFECTIOUS));
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
                 .thenReturn(roles);
-        Mockito.when(adminHeadService.performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD,
+        Mockito.when(adminHeadService.updateDepartmentStaff(Department.INFECTIOUS, ServiceAction.ADD,
                 user.getLogin(), Role.MEDICAL_ASSISTANT))
                 .thenReturn(true);
 
@@ -112,7 +112,7 @@ public class MoveDoctorToDepartmentTest {
                 .thenReturn(String.valueOf(Department.INFECTIOUS));
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
                 .thenReturn(roles);
-        Mockito.when(adminHeadService.performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD,
+        Mockito.when(adminHeadService.updateDepartmentStaff(Department.INFECTIOUS, ServiceAction.ADD,
                 user.getLogin(), Role.DOCTOR))
                 .thenReturn(false);
 
@@ -131,7 +131,7 @@ public class MoveDoctorToDepartmentTest {
                 .thenReturn(String.valueOf(Department.INFECTIOUS));
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
                 .thenReturn(roles);
-        Mockito.when(adminHeadService.performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD,
+        Mockito.when(adminHeadService.updateDepartmentStaff(Department.INFECTIOUS, ServiceAction.ADD,
                 user.getLogin(), Role.DOCTOR))
                 .thenThrow(ServiceException.class);
         Map<String, Object> result = httpCommand.execute(request, response);

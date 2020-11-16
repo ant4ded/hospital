@@ -65,7 +65,7 @@ public class RoleControlTest {
                 .thenReturn(String.valueOf(Role.ADMIN));
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
-        Mockito.when(adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.ADMIN))
+        Mockito.when(adminHeadService.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.ADMIN))
                 .thenReturn(true);
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
                 .thenReturn(roles);
@@ -121,7 +121,7 @@ public class RoleControlTest {
                 .thenReturn(String.valueOf(Role.DOCTOR));
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
-        Mockito.when(adminHeadService.performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD,
+        Mockito.when(adminHeadService.updateDepartmentStaff(Department.INFECTIOUS, ServiceAction.ADD,
                 user.getLogin(), Role.DOCTOR))
                 .thenReturn(true);
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
@@ -148,7 +148,7 @@ public class RoleControlTest {
                 .thenReturn(String.valueOf(Role.DOCTOR));
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
-        Mockito.when(adminHeadService.performDepartmentStaffAction(Department.INFECTIOUS, ServiceAction.ADD,
+        Mockito.when(adminHeadService.updateDepartmentStaff(Department.INFECTIOUS, ServiceAction.ADD,
                 user.getLogin(), Role.DOCTOR))
                 .thenReturn(false);
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
@@ -193,7 +193,7 @@ public class RoleControlTest {
                 .thenReturn(String.valueOf(Role.ADMIN));
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
-        Mockito.when(adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.ADMIN))
+        Mockito.when(adminHeadService.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.ADMIN))
                 .thenReturn(false);
         Map<String, Object> result = httpCommand.execute(request, response);
         Assert.assertEquals(result.get(ParameterName.MESSAGE), MESSAGE_WRONG_RESULT);
@@ -208,7 +208,7 @@ public class RoleControlTest {
                 .thenReturn(String.valueOf(Role.ADMIN));
         Mockito.when(request.getParameter(UsersFieldName.LOGIN))
                 .thenReturn(user.getLogin());
-        Mockito.when(adminHeadService.performUserRolesAction(user.getLogin(), ServiceAction.ADD, Role.ADMIN))
+        Mockito.when(adminHeadService.updateUserRoles(user.getLogin(), ServiceAction.ADD, Role.ADMIN))
                 .thenReturn(true);
         Mockito.when(adminHeadService.findUserRoles(user.getLogin()))
                 .thenThrow(ServiceException.class);

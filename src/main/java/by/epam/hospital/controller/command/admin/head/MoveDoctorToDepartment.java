@@ -43,7 +43,7 @@ public class MoveDoctorToDepartment implements HttpCommand {
             if (roles.contains(Role.MEDICAL_ASSISTANT)) {
                 currentRole = Role.MEDICAL_ASSISTANT;
             }
-            if (adminHeadService.performDepartmentStaffAction(department, ServiceAction.ADD, login, currentRole)) {
+            if (adminHeadService.updateDepartmentStaff(department, ServiceAction.ADD, login, currentRole)) {
                 result.put(UsersFieldName.LOGIN, login);
                 result.put(ParameterName.USER_ROLES, roles);
                 result.put(ParameterName.DEPARTMENT, department);
