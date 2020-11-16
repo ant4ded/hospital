@@ -7,11 +7,9 @@ import by.epam.hospital.dao.DepartmentDao;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.table.UsersFieldName;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,14 +31,10 @@ import java.util.Optional;
 
 public class DepartmentDaoImpl implements DepartmentDao {
     /**
-     * Sql {@code String} object for find department_head_id in
-     * departments table entity by {@code Department.id} in data base.
+     * Sql {@code String} object for call stored procedure {@code FindDepartmentHeadByDepartmentId}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_DEPARTMENT_HEAD = """
-            SELECT department_head_id
-            FROM departments
-            WHERE id = ?""";
+    private static final String SP_FIND_DEPARTMENT_HEAD = "CALL FindDepartmentHeadByDepartmentId(?)";
     /**
      * Sql {@code String} object for update department_head_id in
      * departments table entity by {@code Department.id} in data base.
@@ -84,19 +78,23 @@ public class DepartmentDaoImpl implements DepartmentDao {
     @Override
     public Optional<User> findHeadDepartment(Department department) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
-        Optional<User> departmentHead;
+        Optional<User> optionalUser = Optional.empty();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_HEAD);
+            statement = connection.prepareCall(SP_FIND_DEPARTMENT_HEAD);
             statement.setInt(1, department.id);
-            statement.execute();
+            resultSet = statement.executeQuery();
 
-            resultSet = statement.getResultSet();
-            departmentHead = resultSet.next() ?
-                    userDao.findById(resultSet.getInt(1)) :
-                    Optional.empty();
+            if (resultSet.next()) {
+                User user = new User();
+                user.setId(resultSet.getInt(UsersFieldName.ID));
+                user.setLogin(resultSet.getString(UsersFieldName.LOGIN));
+                user.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
+                user.setRoles(userDao.findUserRoles(user.getLogin()));
+                optionalUser = Optional.of(user);
+            }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -104,7 +102,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return departmentHead;
+        return optionalUser;
     }
 
     /**
