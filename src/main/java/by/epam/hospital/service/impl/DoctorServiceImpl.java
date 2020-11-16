@@ -16,27 +16,21 @@ public class DoctorServiceImpl implements DoctorService {
     private final UserDao userDao;
     private final TherapyDao therapyDao;
     private final DiagnosisDao diagnosisDao;
-    private final UserDetailsDao userDetailsDao;
 
     public DoctorServiceImpl(IcdDao icdDao, UserDao userDao, TherapyDao therapyDao,
-                             DiagnosisDao diagnosisDao, UserDetailsDao userDetailsDao) {
+                             DiagnosisDao diagnosisDao) {
         this.icdDao = icdDao;
         this.userDao = userDao;
         this.therapyDao = therapyDao;
         this.diagnosisDao = diagnosisDao;
-        this.userDetailsDao = userDetailsDao;
     }
 
     @Override
     public Optional<User> findPatientByUserDetails(UserDetails userDetails) throws ServiceException {
-        Optional<User> optionalUser = Optional.empty();
+        Optional<User> optionalUser;
         try {
-            Optional<UserDetails> optionalUserDetails = userDetailsDao
-                    .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
-                            userDetails.getLastName(), userDetails.getBirthday());
-            if (optionalUserDetails.isPresent()) {
-                optionalUser = userDao.findById(optionalUserDetails.get().getUserId());
-            }
+            optionalUser = userDao.findUserWithUserDetailsByPassportData(userDetails.getFirstName(),
+                    userDetails.getSurname(), userDetails.getLastName(), userDetails.getBirthday());
         } catch (DaoException e) {
             throw new ServiceException("FindByRegistrationData failed.", e);
         }
@@ -100,14 +94,11 @@ public class DoctorServiceImpl implements DoctorService {
     public List<Therapy> findPatientTherapies(UserDetails userDetails, CardType cardType) throws ServiceException {
         List<Therapy> therapies = new ArrayList<>();
         try {
-            Optional<UserDetails> optionalUserDetails = userDetailsDao
-                    .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+            Optional<User> optionalUser = userDao
+                    .findUserWithUserDetailsByPassportData(userDetails.getFirstName(), userDetails.getSurname(),
                             userDetails.getLastName(), userDetails.getBirthday());
-            if (optionalUserDetails.isPresent()) {
-                Optional<User> optionalUser = userDao.findById(optionalUserDetails.get().getUserId());
-                if (optionalUser.isPresent()) {
-                    therapies = therapyDao.findPatientTherapies(optionalUser.get().getLogin(), cardType);
-                }
+            if (optionalUser.isPresent()) {
+                therapies = therapyDao.findPatientTherapies(optionalUser.get().getLogin(), cardType);
             }
         } catch (DaoException e) {
             throw new ServiceException("FindPatientTherapies failed.", e);

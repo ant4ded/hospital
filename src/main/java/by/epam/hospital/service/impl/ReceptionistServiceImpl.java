@@ -35,18 +35,10 @@ public class ReceptionistServiceImpl implements ReceptionistService {
 
     @Override
     public Optional<User> findUserCredentials(UserDetails userDetails) throws ServiceException {
-        Optional<User> userFromDb;
-        Optional<User> optionalUser = Optional.empty();
+        Optional<User> optionalUser;
         try {
-            Optional<UserDetails> optionalUserDetails = userDetailsDao
-                    .findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
-                            userDetails.getLastName(), userDetails.getBirthday());
-            if (optionalUserDetails.isPresent()) {
-                optionalUser = Optional.of(new User());
-                userFromDb = userDao.findById(optionalUserDetails.get().getUserId());
-                optionalUser.get().setLogin(userFromDb.orElse(new User()).getLogin());
-                optionalUser.get().setPassword(userFromDb.orElse(new User()).getPassword());
-            }
+            optionalUser = userDao.findUserWithUserDetailsByPassportData(userDetails.getFirstName(),
+                    userDetails.getSurname(), userDetails.getLastName(), userDetails.getBirthday());
         } catch (DaoException e) {
             throw new ServiceException("FindUserCredentials failed.", e);
         }

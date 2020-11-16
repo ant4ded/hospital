@@ -67,10 +67,8 @@ public class ReceptionistServiceImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findUserCredentials_existingUser_userPresent(User user) throws DaoException, ServiceException {
         UserDetails userDetails = user.getUserDetails();
-        Mockito.when(userDetailsDao.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+        Mockito.when(userDao.findUserWithUserDetailsByPassportData(userDetails.getFirstName(), userDetails.getSurname(),
                 userDetails.getLastName(), userDetails.getBirthday()))
-                .thenReturn(Optional.of(userDetails));
-        Mockito.when(userDao.findById(user.getId()))
                 .thenReturn(Optional.of(user));
         Assert.assertTrue(receptionistService.findUserCredentials(userDetails).isPresent());
     }
@@ -78,7 +76,7 @@ public class ReceptionistServiceImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findUserCredentials_nonExistentUser_emptyUser(User user) throws DaoException, ServiceException {
         UserDetails userDetails = user.getUserDetails();
-        Mockito.when(userDetailsDao.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+        Mockito.when(userDao.findUserWithUserDetailsByPassportData(userDetails.getFirstName(), userDetails.getSurname(),
                 userDetails.getLastName(), userDetails.getBirthday()))
                 .thenReturn(Optional.empty());
         Assert.assertTrue(receptionistService.findUserCredentials(userDetails).isEmpty());
@@ -88,7 +86,7 @@ public class ReceptionistServiceImplTest {
             expectedExceptions = ServiceException.class)
     public void findUserCredentials_daoException_serviceException(User user) throws DaoException, ServiceException {
         UserDetails userDetails = user.getUserDetails();
-        Mockito.when(userDetailsDao.findByRegistrationData(userDetails.getFirstName(), userDetails.getSurname(),
+        Mockito.when(userDao.findUserWithUserDetailsByPassportData(userDetails.getFirstName(), userDetails.getSurname(),
                 userDetails.getLastName(), userDetails.getBirthday()))
                 .thenThrow(DaoException.class);
         Assert.assertTrue(receptionistService.findUserCredentials(userDetails).isEmpty());

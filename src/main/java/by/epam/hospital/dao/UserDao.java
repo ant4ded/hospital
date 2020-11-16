@@ -3,6 +3,7 @@ package by.epam.hospital.dao;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 
+import java.sql.Date;
 import java.util.Optional;
 
 /**
@@ -78,6 +79,27 @@ public interface UserDao {
      * @see Optional
      */
     Optional<User> findByIdWithUserDetails(int id) throws DaoException;
+
+
+    /**
+     * Find entity {@code User} with {@code UserDetails}.
+     *
+     * @param firstName {@code String} value of
+     *                  {@link by.epam.hospital.entity.UserDetails}.
+     * @param surname   {@code String} value of
+     *                  {@link by.epam.hospital.entity.UserDetails}.
+     * @param lastName  {@code String} value of
+     *                  {@link by.epam.hospital.entity.UserDetails}.
+     * @param birthday  {@code Date} value of
+     *                  {@link by.epam.hospital.entity.UserDetails}.
+     * @return {@code Optional} of {@code User} if user exist or
+     * {@link Optional#empty()} if entity {@code User} not exist.
+     * @throws DaoException if a database access error occurs.
+     * @see Date
+     * @see Optional
+     */
+    Optional<User> findUserWithUserDetailsByPassportData
+    (String firstName, String surname, String lastName, Date birthday) throws DaoException;
 
     /**
      * Add {@link Role} to entity {@link User}

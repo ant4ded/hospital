@@ -169,7 +169,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
      * @see Optional
      */
     @Override
-    public Optional<UserDetails> findByRegistrationData
+    public Optional<UserDetails> findByRegistrationData  /*by passport data*/
     (String firstName, String surname, String lastName, Date birthday) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;

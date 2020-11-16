@@ -98,7 +98,7 @@ public class CommandProvider {
 
     private DoctorService getDoctorService() {
         return new DoctorServiceImpl(new IcdDaoImpl(), new UserDaoImpl(),
-                new TherapyDaoImpl(), new DiagnosisDaoImpl(), new UserDetailsDaoImpl());
+                new TherapyDaoImpl(), new DiagnosisDaoImpl());
     }
 
 }

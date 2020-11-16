@@ -63,6 +63,9 @@ public class UserDaoImpl implements UserDao {
      */
     private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_ID = "CALL FindUserWithUserDetailsById(?)";
 
+    private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_PASSPORT_DATA =
+            "CALL FindUserWithUserDetailsByPassportData(?,?,?,?)";
+
     /**
      * Sql {@code String} object for call stored procedure {@code FindUserRolesByLogin}.
      * Written for the MySQL dialect.
@@ -310,6 +313,52 @@ public class UserDaoImpl implements UserDao {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_FIND_USER_WITH_USER_DETAILS_BY_ID);
             statement.setInt(1, id);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                optionalUser = Optional.of(getUserWithUserDetails(resultSet));
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Find user failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return optionalUser;
+    }
+
+    /**
+     * Find entity {@code User} with {@code UserDetails}.
+     *
+     * @param firstName {@code String} value of
+     *                  {@link by.epam.hospital.entity.UserDetails}.
+     * @param surname   {@code String} value of
+     *                  {@link by.epam.hospital.entity.UserDetails}.
+     * @param lastName  {@code String} value of
+     *                  {@link by.epam.hospital.entity.UserDetails}.
+     * @param birthday  {@code Date} value of
+     *                  {@link by.epam.hospital.entity.UserDetails}.
+     * @return {@code Optional} of {@code User} if user exist or
+     * {@link Optional#empty()} if entity {@code User} not exist.
+     * @throws DaoException if a database access error occurs.
+     * @see Date
+     * @see Optional
+     */
+    @Override
+    public Optional<User> findUserWithUserDetailsByPassportData
+            (String firstName, String surname, String lastName, Date birthday) throws DaoException {
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        Optional<User> optionalUser = Optional.empty();
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_FIND_USER_WITH_USER_DETAILS_BY_PASSPORT_DATA);
+            statement.setString(1, firstName);
+            statement.setString(2, surname);
+            statement.setString(3, lastName);
+            statement.setDate(4, birthday);
 
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
