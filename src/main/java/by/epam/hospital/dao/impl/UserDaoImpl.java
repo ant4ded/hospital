@@ -398,7 +398,7 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public boolean deleteUserRole(String login, Role role) throws DaoException {
-        boolean result = false;
+        boolean result;
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
