@@ -10,7 +10,6 @@ import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
@@ -72,16 +71,16 @@ public class DepartmentDaoImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findDepartment_correctFind_departmentPresent(User user) throws DaoException {
         userDao.createClientWithUserDetails(user);
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
+        departmentStaffDao.makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
 
         Optional<Department> optionalDepartment = departmentDao.findDepartment(user.getLogin());
         if (optionalDepartment.isEmpty()) {
-            departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.DELETE, user.getLogin());
+            cleaner.deleteUserFromDepartment(user);
             cleaner.delete(user);
             Assert.fail("FindDepartment failed.");
         }
 
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.DELETE, user.getLogin());
+        cleaner.deleteUserFromDepartment(user);
         cleaner.delete(user);
     }
 

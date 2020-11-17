@@ -96,19 +96,17 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         boolean result = false;
         try {
             Optional<User> optionalUser = userDao.findByLogin(login);
-            boolean isNotDepartmentHead =
-                    optionalUser.isPresent() && !optionalUser.get().getRoles().contains(Role.DEPARTMENT_HEAD);
-            boolean isUserFutureDoctorOrMedicalAssistant =
-                    role.equals(Role.MEDICAL_ASSISTANT) || role.equals(Role.DOCTOR);
             Optional<Department> previousDepartment = departmentDao.findDepartment(login);
-            boolean isUserHaveDepartmentAndActionAdd = previousDepartment.isPresent() &&
+            boolean isNotDepartmentHead = optionalUser.isPresent() &&
+                    !optionalUser.get().getRoles().contains(Role.DEPARTMENT_HEAD);
+            boolean isUserFutureDoctorOrMedicalAssistant = role.equals(Role.MEDICAL_ASSISTANT) ||
+                    role.equals(Role.DOCTOR);
+            boolean isUserDoesNotHaveDepartmentAndActionAdd = previousDepartment.isEmpty() &&
                     serviceAction == ServiceAction.ADD;
             if (isNotDepartmentHead && isUserFutureDoctorOrMedicalAssistant) {
-                updateUserRoles(login, serviceAction, role);
-                if (isUserHaveDepartmentAndActionAdd) {
-                    departmentStaffDao.updateStaffDepartment(previousDepartment.get(), ServiceAction.DELETE, login);
-                }
-                result = departmentStaffDao.updateStaffDepartment(department, serviceAction, login);
+                result = isUserDoesNotHaveDepartmentAndActionAdd ?
+                        departmentStaffDao.makeMedicalWorkerAndAddToDepartment(department, login, role) :
+                        departmentStaffDao.updateDepartmentByLogin(department, login);
             }
         } catch (DaoException e) {
             throw new ServiceException("PerformDepartmentStaff failed.", e);

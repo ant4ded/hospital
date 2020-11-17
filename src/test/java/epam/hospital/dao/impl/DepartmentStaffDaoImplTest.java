@@ -6,8 +6,8 @@ import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.dao.impl.DepartmentStaffDaoImpl;
 import by.epam.hospital.dao.impl.UserDaoImpl;
 import by.epam.hospital.entity.Department;
+import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.service.ServiceAction;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
@@ -30,32 +30,75 @@ public class DepartmentStaffDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void updateStaffDepartment_correctUpdate_true(User user) throws DaoException {
+    public void makeMedicalWorkerAndAddToDepartment_correctWork_true(User user) throws DaoException {
         userDao.createClientWithUserDetails(user);
 
-        if (!departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin())) {
-            Assert.fail("UpdateStaffDepartment work incorrect.");
-        }
-        if (!departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.DELETE, user.getLogin())) {
-            Assert.fail("UpdateStaffDepartment work incorrect.");
-        }
+        boolean isSuccess = departmentStaffDao.
+                makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
 
+        cleaner.deleteUserFromDepartment(user);
         cleaner.delete(user);
+        Assert.assertTrue(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", expectedExceptions = DaoException.class)
+    public void makeMedicalWorkerAndAddToDepartment_alreadyMedicalWorker_daoException(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        userDao.addUserRole(user.getLogin(), Role.DOCTOR);
+        try {
+            departmentStaffDao.makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
+        } finally {
+            cleaner.delete(user);
+        }
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", expectedExceptions = DaoException.class)
+    public void makeMedicalWorkerAndAddToDepartment_departmentHead_daoException(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        userDao.addUserRole(user.getLogin(), Role.DEPARTMENT_HEAD);
+        try {
+            departmentStaffDao.makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
+        } finally {
+            cleaner.delete(user);
+        }
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", expectedExceptions = DaoException.class)
+    public void makeMedicalWorkerAndAddToDepartment_nonExistentUser_daoException(User user) throws DaoException {
+        try {
+            departmentStaffDao.makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
+        } finally {
+            cleaner.deleteUserFromDepartment(user);
+            cleaner.delete(user);
+        }
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
-            dependsOnMethods = "updateStaffDepartment_correctUpdate_true")
+            dependsOnMethods = "makeMedicalWorkerAndAddToDepartment_correctWork_true")
+    public void updateDepartmentByLogin_correctUpdate_true(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        departmentStaffDao.makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
+
+        boolean isSuccess = departmentStaffDao.updateDepartmentByLogin(Department.INFECTIOUS, user.getLogin());
+
+        cleaner.deleteUserFromDepartment(user);
+        cleaner.delete(user);
+        Assert.assertTrue(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = "makeMedicalWorkerAndAddToDepartment_correctWork_true")
     public void findDepartmentStaff_correctFind_afterCreateResultWithCreatedUser(User user) throws DaoException {
         Map<String, User> userMap = departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS);
         userDao.createClientWithUserDetails(user);
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin());
+        departmentStaffDao.makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
         Map<String, User> userMapAfterCreate = departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS);
 
         if (userMap.size() == userMapAfterCreate.size() || !userMapAfterCreate.containsKey(user.getLogin())) {
             Assert.fail("FindDepartmentStaff fail.");
         }
 
-        departmentStaffDao.updateStaffDepartment(Department.INFECTIOUS, ServiceAction.DELETE, user.getLogin());
+        cleaner.deleteUserFromDepartment(user);
         cleaner.delete(user);
     }
 }

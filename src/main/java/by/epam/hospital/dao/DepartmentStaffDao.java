@@ -1,8 +1,8 @@
 package by.epam.hospital.dao;
 
 import by.epam.hospital.entity.Department;
+import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
-import by.epam.hospital.service.ServiceAction;
 
 import java.util.Map;
 
@@ -14,16 +14,28 @@ import java.util.Map;
 
 public interface DepartmentStaffDao {
     /**
+     * This method add {@link Role#DOCTOR} or {@link Role#MEDICAL_ASSISTANT}
+     * to entity {@code User} in database and add this entity to {@code Department}.
+     *
+     * @param department element of {@code Department}. In this department
+     *                   {@code User} will be added.
+     * @param login      {@code String} object of {@code User.login}.
+     * @param role       element of {@code Role}. This role wil be added to {@code User}.
+     * @return {@code true} if it was successful or false if wasn't.
+     * @throws DaoException if a database access error occurs.
+     */
+    boolean makeMedicalWorkerAndAddToDepartment(Department department, String login, Role role)
+            throws DaoException;
+
+    /**
      * Abstract update table department_staff.
      *
-     * @param department    element of enum {@code Department}.
-     * @param serviceAction element of enum {@link ServiceAction}
-     *                      action is selected based on this element.
-     * @param login         {@code String} value of {@code User.login}.
+     * @param department element of enum {@code Department}.
+     * @param login      {@code String} value of {@code User.login}.
      * @return {@code true} if it was successful or {@code false} if not.
      * @throws DaoException if a database access error occurs.
      */
-    boolean updateStaffDepartment(Department department, ServiceAction serviceAction, String login)
+    boolean updateDepartmentByLogin(Department department, String login)
             throws DaoException;
 
     /**

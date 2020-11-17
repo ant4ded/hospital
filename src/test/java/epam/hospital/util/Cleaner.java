@@ -3,16 +3,15 @@ package epam.hospital.util;
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.entity.CardType;
-import by.epam.hospital.entity.Diagnosis;
-import by.epam.hospital.entity.Therapy;
-import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.*;
 
 import java.sql.*;
 
 public class Cleaner {
     private static final String SP_DELETE_USER_WITH_USER_ROLES_AND_USER_DETAILS =
             "CALL DeleteUserWithUserRolesAndUserDetails(?)";
+    private static final String SP_DELETE_USER_FROM_DEPARTMENT =
+            "CALL DeleteMedicalWorkerFromDepartment(?)";
     private static final String SQL_DELETE_DIAGNOSIS = """
             DELETE FROM diagnoses
             WHERE id = ?""";
@@ -28,6 +27,31 @@ public class Cleaner {
     private static final String SQL_DELETE_THERAPY_DIAGNOSIS_ROW = """
             DELETE FROM therapy_diagnoses
             WHERE therapy_id = ?""";
+
+    public void deleteUserFromDepartment(User user) throws DaoException {
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_DELETE_USER_FROM_DEPARTMENT);
+            statement.setString(1, user.getLogin());
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int affectedRows = resultSet.getInt(1);
+                if (affectedRows == 0) {
+                    throw new DaoException("Delete failed.");
+                }
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Can not delete row on users table.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+    }
 
     public void delete(User user) throws DaoException {
         Connection connection = null;
