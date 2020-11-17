@@ -99,7 +99,7 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
-        int userId = 0;
+        int userId;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_CREATE_CLIENT_WITH_USER_DETAILS);
@@ -116,9 +116,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(10, user.getUserDetails().getPhone());
 
             resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                userId = resultSet.getInt(1);
-            }
+            userId = resultSet.next() ? resultSet.getInt(1) : 0;
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -193,17 +191,14 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
-        Optional<User> optionalUser = Optional.empty();
+        Optional<User> optionalUser;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_FIND_USER_BY_LOGIN);
             statement.setString(1, login);
 
             resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                optionalUser = Optional.of(getUser(resultSet));
-            }
+            optionalUser = resultSet.next() ? Optional.of(getUser(resultSet)) : Optional.empty();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -229,17 +224,14 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
-        Optional<User> optionalUser = Optional.empty();
+        Optional<User> optionalUser;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_FIND_USER_WITH_USER_DETAILS_BY_LOGIN);
             statement.setString(1, login);
 
             resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                optionalUser = Optional.of(getUserWithUserDetails(resultSet));
-            }
+            optionalUser = resultSet.next() ? Optional.of(getUserWithUserDetails(resultSet)) : Optional.empty();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -269,16 +261,14 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
-        Optional<User> optionalUser = Optional.empty();
+        Optional<User> optionalUser;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_FIND_USER_BY_ID);
             statement.setInt(1, id);
 
             resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                optionalUser = Optional.of(getUser(resultSet));
-            }
+            optionalUser = resultSet.next() ? Optional.of(getUser(resultSet)) : Optional.empty();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -304,16 +294,14 @@ public class UserDaoImpl implements UserDao {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
-        Optional<User> optionalUser = Optional.empty();
+        Optional<User> optionalUser;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_FIND_USER_WITH_USER_DETAILS_BY_ID);
             statement.setInt(1, id);
 
             resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                optionalUser = Optional.of(getUserWithUserDetails(resultSet));
-            }
+            optionalUser = resultSet.next() ? Optional.of(getUserWithUserDetails(resultSet)) : Optional.empty();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -343,11 +331,11 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public Optional<User> findUserWithUserDetailsByPassportData
-            (String firstName, String surname, String lastName, Date birthday) throws DaoException {
+    (String firstName, String surname, String lastName, Date birthday) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
-        Optional<User> optionalUser = Optional.empty();
+        Optional<User> optionalUser;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_FIND_USER_WITH_USER_DETAILS_BY_PASSPORT_DATA);
@@ -357,9 +345,7 @@ public class UserDaoImpl implements UserDao {
             statement.setDate(4, birthday);
 
             resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                optionalUser = Optional.of(getUserWithUserDetails(resultSet));
-            }
+            optionalUser = resultSet.next() ? Optional.of(getUserWithUserDetails(resultSet)) : Optional.empty();
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -380,7 +366,7 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public boolean addUserRole(String login, Role role) throws DaoException {
-        boolean result = false;
+        boolean result;
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
@@ -391,12 +377,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(2, role.name());
 
             resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                int affectedRows = resultSet.getInt(1);
-                if (affectedRows != 0) {
-                    result = true;
-                }
-            }
+            result = resultSet.next() && resultSet.getInt(1) != 0;
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -428,12 +409,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(2, role.name());
 
             resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                int affectedRows = resultSet.getInt(1);
-                if (affectedRows != 0) {
-                    result = true;
-                }
-            }
+            result = resultSet.next() && resultSet.getInt(1) != 0;
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
