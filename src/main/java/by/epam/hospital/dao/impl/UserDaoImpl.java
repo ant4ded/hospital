@@ -173,8 +173,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     /**
-     * Find {@code User} entity by {@code User.login} field
-     * using {@code PreparedStatement}.
+     * Find {@code User} entity by {@code User.login} field.
      *
      * @param login {@code String} value of {@code User.login} field.
      * @return {@code Optional<User>} if it present
@@ -182,7 +181,6 @@ public class UserDaoImpl implements UserDao {
      * @throws DaoException if a database access error occurs
      *                      and if {@code ConnectionPool}
      *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
      * @see ConnectionException
      * @see Optional
      */
@@ -243,8 +241,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     /**
-     * Find {@code User} entity by {@code User.id} field
-     * using {@code PreparedStatement}.
+     * Find {@code User} entity by {@code User.id} field.
      *
      * @param id {@code int} value of {@code User.id} field.
      * @return {@code Optional<User>} if it present
@@ -252,7 +249,6 @@ public class UserDaoImpl implements UserDao {
      * @throws DaoException if a database access error occurs
      *                      and if {@code ConnectionPool}
      *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
      * @see ConnectionException
      * @see Optional
      */
@@ -421,8 +417,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     /**
-     * Find roles {@code User} entity by {@code User.login} field
-     * using {@code PreparedStatement}.
+     * Find roles {@code User} entity by {@code User.login} field.
      *
      * @param login {@code int} value of {@code User.login} field.
      * @return {@code List<Role>} being a {@code ArrayList<Role>}
@@ -430,7 +425,6 @@ public class UserDaoImpl implements UserDao {
      * @throws DaoException if a database access error occurs
      *                      and if {@code ConnectionPool}
      *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
      * @see List
      * @see ArrayList
      * @see ConnectionException
