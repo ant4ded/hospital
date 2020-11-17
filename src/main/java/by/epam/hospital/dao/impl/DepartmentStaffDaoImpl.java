@@ -4,10 +4,11 @@ import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DepartmentStaffDao;
-import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.UserDetails;
+import by.epam.hospital.entity.table.UsersDetailsFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
 
 import java.sql.*;
@@ -43,20 +44,11 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
     private static final String SP_UPDATE_DEPARTMENT_BY_LOGIN =
             "CALL UpdateDepartmentByLogin(?,?)";
     /**
-     * Sql {@code String} object for find row in department_staff table
-     * entity by {@code Department.id} in data base.
+     * Sql {@code String} object for call stored procedure {@code MakeMedicalWorkerAndAddToDepartment}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_DEPARTMENT_STAFF = """
-            SELECT users.id, users.login, users.password
-            FROM users
-            INNER JOIN departments_staff ds on users.id = ds.doctor_id
-            WHERE department_id = ?""";
-
-    /**
-     * {@link UserDao} data access object.
-     */
-    private final UserDao userDao = new UserDaoImpl();
+    private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_DEPARTMENT_WITHOUT_ID =
+            "CALL FindUserWithUserDetailsByDepartment(?)";
 
     /**
      * This method add {@link Role#DOCTOR} or {@link Role#MEDICAL_ASSISTANT}
@@ -149,22 +141,32 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
     @Override
     public Map<String, User> findDepartmentStaff(Department department) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         Map<String, User> userMap = new HashMap<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_DEPARTMENT_STAFF);
+            statement = connection.prepareCall(SP_FIND_USER_WITH_USER_DETAILS_BY_DEPARTMENT_WITHOUT_ID);
             statement.setInt(1, department.id);
-            statement.execute();
 
-            resultSet = statement.getResultSet();
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 User user = new User();
-                user.setId(resultSet.getInt(UsersFieldName.ID));
+                UserDetails userDetails = new UserDetails();
+                user.setUserDetails(userDetails);
                 user.setLogin(resultSet.getString(UsersFieldName.LOGIN));
                 user.setPassword(resultSet.getString(UsersFieldName.PASSWORD));
-                user.setRoles(userDao.findByLogin(user.getLogin()).orElseThrow(DaoException::new).getRoles());
+
+                userDetails.setPassportId(resultSet.getString(UsersDetailsFieldName.PASSPORT_ID));
+                userDetails.setGender(UserDetails.Gender
+                        .valueOf(resultSet.getString(UsersDetailsFieldName.GENDER)));
+                userDetails.setFirstName(resultSet.getString(UsersDetailsFieldName.FIRST_NAME));
+                userDetails.setSurname(resultSet.getString(UsersDetailsFieldName.SURNAME));
+                userDetails.setLastName(resultSet.getString(UsersDetailsFieldName.LAST_NAME));
+                userDetails.setBirthday(resultSet.getDate(UsersDetailsFieldName.BIRTHDAY));
+                userDetails.setAddress(resultSet.getString(UsersDetailsFieldName.ADDRESS));
+                userDetails.setPhone(resultSet.getString(UsersDetailsFieldName.PHONE));
+
                 userMap.put(user.getLogin(), user);
             }
         } catch (ConnectionException e) {
