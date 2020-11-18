@@ -29,10 +29,16 @@ import java.util.Optional;
  */
 
 public class DiagnosisDaoImpl implements DiagnosisDao {
-
+    /**
+     * Sql {@code String} object for call stored procedure {@code CreateAmbulatoryDiagnosis}.
+     * Written for the MySQL dialect.
+     */
     private static final String SP_CREATE_AMBULATORY_DIAGNOSIS =
             "CALL CreateAmbulatoryDiagnosis(?,?,?,?,?)";
-
+    /**
+     * Sql {@code String} object for call stored procedure {@code CreateStationaryDiagnosis}.
+     * Written for the MySQL dialect.
+     */
     private static final String SP_CREATE_STATIONARY_DIAGNOSIS =
             "CALL CreateStationaryDiagnosis(?,?,?,?,?)";
     /**
