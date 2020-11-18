@@ -45,27 +45,6 @@ public class TherapyDaoImpl implements TherapyDao {
     private static final String SP_CREATE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
             "CALL CreateStationaryTherapyWithDiagnosis(?,?,?,?,?)";
     /**
-     * Sql {@code String} object for creating
-     * {@code Therapy} entity in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_CREATE_THERAPY = """
-            INSERT INTO therapy (doctor_id) VALUES (?)""";
-    /**
-     * Sql {@code String} object for adding {@code Therapy} entity to
-     * ambulatory card table in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_CREATE_AMBULATORY_THERAPY = """
-            INSERT INTO ambulatory_cards (patient_id, therapy_id) VALUES (?, ?)""";
-    /**
-     * Sql {@code String} object for adding {@code Therapy} entity to
-     * stationary card table in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_CREATE_STATIONARY_THERAPY = """
-            INSERT INTO stationary_cards (patient_id, therapy_id) VALUES (?, ?)""";
-    /**
      * Sql {@code String} object for find {@code Therapy} entity in
      * ambulatory card table by {@code Therapy.id} in data base.
      * Written for the MySQL dialect.
@@ -356,66 +335,6 @@ public class TherapyDaoImpl implements TherapyDao {
             throw new DaoException("CreateStationaryTherapyWithDiagnosis failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return therapyId;
-    }
-
-    /**
-     * Create entity {@code Therapy} in database using {@code PreparedStatement}
-     * with parameter {@code Statement.RETURN_GENERATED_KEYS}.
-     *
-     * @param doctorLogin  {@code String} value of {@code User.login} field.
-     * @param patientLogin {@code String} value of {@code User.login} field.
-     * @param cardType     element of enum {@code CardType}
-     *                     table is selected based on this element.
-     * @return auto-generated {@code Therapy.id} field.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
-     * @see CardType
-     */
-    @Override
-    public int create(String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        int therapyId = 0;
-        int doctorId = userDao.findByLogin(doctorLogin).orElseThrow(DaoException::new).getId();
-        int patientId = userDao.findByLogin(patientLogin).orElseThrow(DaoException::new).getId();
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            connection.setAutoCommit(false);
-            statement = connection.prepareStatement(SQL_CREATE_THERAPY, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, doctorId);
-
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 0) {
-                ResultSet generatedKeys = statement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    therapyId = generatedKeys.getInt(1);
-                    generatedKeys.close();
-                    statement.close();
-
-                    statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
-                            SQL_CREATE_AMBULATORY_THERAPY :
-                            SQL_CREATE_STATIONARY_THERAPY);
-                    statement.setInt(1, patientId);
-                    statement.setInt(2, therapyId);
-
-                    affectedRows = statement.executeUpdate();
-                    if (affectedRows == 0) {
-                        connection.rollback();
-                    }
-                }
-            }
-            connection.setAutoCommit(true);
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Creating therapy failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement);
         }
         return therapyId;
     }

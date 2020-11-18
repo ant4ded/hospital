@@ -37,19 +37,6 @@ public interface TherapyDao {
     int createStationaryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException;
 
     /**
-     * Create entity {@code Therapy} in database.
-     *
-     * @param doctorLogin  {@code String} value of {@code User.login} field.
-     * @param patientLogin {@code String} value of {@code User.login} field.
-     * @param cardType     element of enum {@code CardType}
-     *                     table is selected based on this element.
-     * @return auto-generated {@code Therapy.id} field.
-     * @throws DaoException if a database access error occurs.
-     * @see CardType
-     */
-    int create(String doctorLogin, String patientLogin, CardType cardType) throws DaoException;
-
-    /**
      * Set {@code Therapy.endTherapy} field to entity {@code Therapy}
      * table by doctor {@code User.login} and patient {@code User.login} in data base.
      *

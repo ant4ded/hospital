@@ -36,18 +36,6 @@ public interface DiagnosisDao {
     int createStationaryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException;
 
     /**
-     * Create entity {@code Diagnosis} in database.
-     *
-     * @param diagnosis    an a {@code Diagnosis} entity.
-     * @param patientLogin {@code String} value of patient
-     *                     {@code User.login} field.
-     * @param therapyId    {@code int} value of {@code Therapy.id}.
-     * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs.
-     */
-    int create(Diagnosis diagnosis, String patientLogin, int therapyId) throws DaoException;
-
-    /**
      * Find all {@code Diagnosis} entity by {@code Therapy.id} field.
      *
      * @param id {@code int} value of {@code Therapy.id} field.

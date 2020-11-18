@@ -42,13 +42,6 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
     private static final String SP_CREATE_STATIONARY_DIAGNOSIS =
             "CALL CreateStationaryDiagnosis(?,?,?,?,?)";
     /**
-     * Sql {@code String} object for creating {@code Diagnosis}
-     * entity in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_CREATE_DIAGNOSIS = """
-            INSERT INTO diagnoses (icd_id, doctor_id, diagnosis_date, reason) VALUES (?, ?, ?, ?)""";
-    /**
      * Sql {@code String} object for find {@code Diagnosis}
      * entity by {@code Diagnosis.id} in data base.
      * Written for the MySQL dialect.
@@ -68,13 +61,6 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             INNER JOIN therapy_diagnoses td on diagnoses.id = td.diagnosis_id
             INNER JOIN therapy t on td.therapy_id = t.id
             WHERE t.id = ?""";
-    /**
-     * Sql {@code String} object for add {@code Diagnosis}
-     * entity in therapy_diagnoses table in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_CREATE_THERAPY_DIAGNOSES = """
-            INSERT INTO therapy_diagnoses (therapy_id, diagnosis_id) VALUES (?, ?)""";
 
     /**
      * {@link IcdDao} data access object.
@@ -161,63 +147,6 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             throw new DaoException("CreateStationaryDiagnosis failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return diagnosisId;
-    }
-
-    /**
-     * Create entity {@code Diagnosis} in database using {@code PreparedStatement}
-     * with parameter {@code Statement.RETURN_GENERATED_KEYS}.
-     *
-     * @param diagnosis    an a {@code Diagnosis} entity.
-     * @param patientLogin {@code String} value of patient
-     *                     {@code User.login} field.
-     * @param therapyId    {@code int} value of {@code Therapy.id}.
-     * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
-     */
-    @Override
-    public int create(Diagnosis diagnosis, String patientLogin, int therapyId) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet generatedKeys = null;
-        int diagnosisId = 0;
-        if (diagnosis.getDoctor().getId() == 0) {
-            diagnosis.setDoctor(userDao.findByLogin(diagnosis.getDoctor().getLogin()).orElseThrow(DaoException::new));
-        }
-        if (diagnosis.getIcd().getId() == 0) {
-            diagnosis.setIcd(icdDao.findByCode(diagnosis.getIcd().getCode()).orElseThrow(DaoException::new));
-        }
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            connection.setAutoCommit(false);
-            statement = connection.prepareStatement(SQL_CREATE_DIAGNOSIS, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, diagnosis.getIcd().getId());
-            statement.setInt(2, diagnosis.getDoctor().getId());
-            statement.setDate(3, diagnosis.getDiagnosisDate());
-            statement.setString(4, diagnosis.getReason());
-
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 0) {
-                generatedKeys = statement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    diagnosisId = generatedKeys.getInt(1);
-                    generatedKeys.close();
-                    statement.close();
-                    addDiagnosisToTherapy(connection, therapyId, diagnosisId);
-                }
-            }
-            connection.setAutoCommit(true);
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Creating diagnosis failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement, generatedKeys);
         }
         return diagnosisId;
     }
@@ -328,26 +257,5 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
                 .orElseThrow(DaoException::new));
         diagnosis.setDoctor(userDao.findByIdWithUserDetails(resultSet.getInt(DiagnosesFieldName.DOCTOR_ID))
                 .orElseThrow(DaoException::new));
-    }
-
-    /**
-     * Add {@code Diagnosis} to {@code Therapy} table using {@code PreparedStatement}.
-     *
-     * @param connection  {@code Connection} object for executing sql string.
-     * @param therapyId   {@code int} value of {@code Therapy.id} field.
-     * @param diagnosisId {@code int} value of {@code Diagnosis.id} field.
-     * @throws SQLException throws when adding {@code Diagnosis} to
-     *                      {@code Therapy} table throws
-     *                      {@code SQLException}.
-     * @see PreparedStatement
-     * @see Connection
-     * @see SQLException
-     */
-    private void addDiagnosisToTherapy(Connection connection, int therapyId, int diagnosisId) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(SQL_CREATE_THERAPY_DIAGNOSES);
-        statement.setInt(1, therapyId);
-        statement.setInt(2, diagnosisId);
-        statement.execute();
-        statement.close();
     }
 }
