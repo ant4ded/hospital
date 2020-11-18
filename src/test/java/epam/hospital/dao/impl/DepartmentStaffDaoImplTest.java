@@ -65,12 +65,7 @@ public class DepartmentStaffDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", expectedExceptions = DaoException.class)
     public void makeMedicalWorkerAndAddToDepartment_nonExistentUser_daoException(User user) throws DaoException {
-        try {
-            departmentStaffDao.makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
-        } finally {
-            cleaner.deleteUserFromDepartment(user);
-            cleaner.delete(user);
-        }
+        departmentStaffDao.makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
