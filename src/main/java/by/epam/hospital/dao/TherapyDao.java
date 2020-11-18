@@ -1,6 +1,7 @@
 package by.epam.hospital.dao;
 
 import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Diagnosis;
 import by.epam.hospital.entity.Therapy;
 
 import java.sql.Date;
@@ -13,6 +14,10 @@ import java.util.Optional;
  */
 
 public interface TherapyDao {
+
+    int createAmbulatoryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException;
+
+    int createStationaryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException;
     /**
      * Create entity {@code Therapy} in database.
      *

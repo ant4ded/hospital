@@ -3,7 +3,10 @@ package epam.hospital.util;
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.entity.*;
+import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Diagnosis;
+import by.epam.hospital.entity.Therapy;
+import by.epam.hospital.entity.User;
 
 import java.sql.*;
 
@@ -12,6 +15,10 @@ public class Cleaner {
             "CALL DeleteUserWithUserRolesAndUserDetails(?)";
     private static final String SP_DELETE_USER_FROM_DEPARTMENT =
             "CALL DeleteMedicalWorkerFromDepartment(?)";
+    private static final String SP_DELETE_AMBULATORY_THERAPY_WITH_DIAGNOSIS =
+            "CALL DeleteAmbulatoryTherapyWithDiagnosis(?,?)";
+    private static final String SP_DELETE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
+            "CALL DeleteStationaryTherapyWithDiagnosis(?,?)";
     private static final String SQL_DELETE_DIAGNOSIS = """
             DELETE FROM diagnoses
             WHERE id = ?""";
@@ -93,6 +100,30 @@ public class Cleaner {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("Can not delete row on diagnoses table.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement);
+        }
+    }
+
+    public void deleteTherapyWithDiagnosis(Therapy therapy, CardType cardType) throws DaoException {
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(cardType.equals(CardType.AMBULATORY) ?
+                    SP_DELETE_AMBULATORY_THERAPY_WITH_DIAGNOSIS :
+                    SP_DELETE_STATIONARY_THERAPY_WITH_DIAGNOSIS);
+            statement.setString(1, therapy.getPatient().getLogin());
+            statement.setString(2, therapy.getDoctor().getLogin());
+            resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                throw new DaoException("DeleteTherapyWithDiagnosis failed.");
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("DeleteTherapyWithDiagnosis failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement);
         }

@@ -7,6 +7,7 @@ import by.epam.hospital.dao.DiagnosisDao;
 import by.epam.hospital.dao.TherapyDao;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Diagnosis;
 import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.table.TherapyFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
@@ -31,6 +32,12 @@ import java.util.Optional;
  */
 
 public class TherapyDaoImpl implements TherapyDao {
+
+    private static final String SP_CREATE_AMBULATORY_THERAPY_WITH_DIAGNOSIS =
+            "CALL CreateAmbulatoryTherapyWithDiagnosis(?,?,?,?,?)";
+
+    private static final String SP_CREATE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
+            "CALL CreateStationaryTherapyWithDiagnosis(?,?,?,?,?)";
     /**
      * Sql {@code String} object for creating
      * {@code Therapy} entity in data base.
@@ -276,6 +283,58 @@ public class TherapyDaoImpl implements TherapyDao {
      * {@code DiagnosisDao} data access object.
      */
     private final DiagnosisDao diagnosisDao = new DiagnosisDaoImpl();
+
+    public int createAmbulatoryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException {
+        int therapyId;
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_CREATE_AMBULATORY_THERAPY_WITH_DIAGNOSIS);
+            statement.setString(1, therapy.getPatient().getLogin());
+            statement.setString(2, therapy.getDoctor().getLogin());
+            statement.setString(3, diagnosis.getIcd().getCode());
+            statement.setDate(4, diagnosis.getDiagnosisDate());
+            statement.setString(5, diagnosis.getReason());
+
+            resultSet = statement.executeQuery();
+            therapyId = resultSet.next() ? resultSet.getInt(1) : 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("CreateStationaryTherapyWithDiagnosis failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return therapyId;
+    }
+
+    public int createStationaryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException {
+        int therapyId;
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_CREATE_STATIONARY_THERAPY_WITH_DIAGNOSIS);
+            statement.setString(1, therapy.getPatient().getLogin());
+            statement.setString(2, therapy.getDoctor().getLogin());
+            statement.setString(3, diagnosis.getIcd().getCode());
+            statement.setDate(4, diagnosis.getDiagnosisDate());
+            statement.setString(5, diagnosis.getReason());
+
+            resultSet = statement.executeQuery();
+            therapyId = resultSet.next() ? resultSet.getInt(1) : 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("CreateStationaryTherapyWithDiagnosis failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return therapyId;
+    }
 
     /**
      * Create entity {@code Therapy} in database using {@code PreparedStatement}
