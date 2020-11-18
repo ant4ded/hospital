@@ -57,11 +57,15 @@ public class DoctorServiceImpl implements DoctorService {
                 Optional<Therapy> currentTherapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
 
                 int therapyId;
-                if (currentTherapy.isPresent() && currentTherapy.get().getFinalDiagnosis().isEmpty()) {
-                    therapyId = currentTherapy.get().getId();
-                    diagnosisDao.create(diagnosis, patientLogin, therapyId);
-                    result = true;
-                } else if (currentTherapy.isEmpty()) {
+                if (currentTherapy.isPresent()) {
+                    int diagnosisId;
+                    if (cardType == CardType.AMBULATORY) {
+                        diagnosisId = diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patientLogin);
+                    } else {
+                        diagnosisId = diagnosisDao.createStationaryDiagnosis(diagnosis, patientLogin);
+                    }
+                    result = diagnosisId != 0;
+                } else {
                     therapyId = therapyDao.create(doctorLogin, patientLogin, cardType);
                     diagnosisDao.create(diagnosis, patientLogin, therapyId);
                     result = true;

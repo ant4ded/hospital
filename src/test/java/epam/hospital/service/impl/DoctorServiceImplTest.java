@@ -116,19 +116,40 @@ public class DoctorServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnGroups = "findCurrentPatientTherapy")
-    public void diagnoseDisease_currentTherapyPresent_true(Diagnosis diagnosis, User patient)
+    public void diagnoseDisease_ambulatoryTherapyPresent_true(Diagnosis diagnosis, User patient)
             throws DaoException, ServiceException {
         User doctor = diagnosis.getDoctor();
-        Mockito.when(userDao.findByLogin(doctor.getLogin()))
-                .thenReturn(Optional.of(doctor));
-        Mockito.when(userDao.findByLogin(patient.getLogin()))
+        CardType cardType = CardType.AMBULATORY;
+        Mockito.when(userDao.findByLogin(Mockito.anyString()))
+                .thenReturn(Optional.of(doctor))
                 .thenReturn(Optional.of(patient));
         Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
                 .thenReturn(Optional.of(diagnosis.getIcd()));
-        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType))
                 .thenReturn(Optional.of(new Therapy()));
+        Mockito.when(diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin()))
+                .thenReturn(1);
         Assert.assertTrue(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
-                doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
+                doctor.getLogin(), patient.getLogin(), cardType));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "findCurrentPatientTherapy")
+    public void diagnoseDisease_stationaryTherapyPresent_true(Diagnosis diagnosis, User patient)
+            throws DaoException, ServiceException {
+        User doctor = diagnosis.getDoctor();
+        CardType cardType = CardType.STATIONARY;
+        Mockito.when(userDao.findByLogin(Mockito.anyString()))
+                .thenReturn(Optional.of(doctor))
+                .thenReturn(Optional.of(patient));
+        Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
+                .thenReturn(Optional.of(diagnosis.getIcd()));
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType))
+                .thenReturn(Optional.of(new Therapy()));
+        Mockito.when(diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin()))
+                .thenReturn(1);
+        Assert.assertTrue(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
+                doctor.getLogin(), patient.getLogin(), cardType));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
