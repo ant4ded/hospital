@@ -14,10 +14,28 @@ import java.util.Optional;
  */
 
 public interface TherapyDao {
-
+    /**
+     * Create ambulatory entity {@code Therapy} and
+     * entity {@code Diagnosis} for this ambulatory {@code Therapy}.
+     *
+     * @param therapy entity {@code Therapy} that wil be created.
+     * @param diagnosis entity {@code Diagnosis} that wil be created.
+     * @return {@code id} created entity {@code Therapy}.
+     * @throws DaoException if a database access error occurs.
+     */
     int createAmbulatoryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException;
 
+    /**
+     * Create stationary entity {@code Therapy} and
+     * entity {@code Diagnosis} for this stationary {@code Therapy}.
+     *
+     * @param therapy entity {@code Therapy} that wil be created.
+     * @param diagnosis entity {@code Diagnosis} that wil be created.
+     * @return {@code id} created entity {@code Therapy}.
+     * @throws DaoException if a database access error occurs.
+     */
     int createStationaryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException;
+
     /**
      * Create entity {@code Therapy} in database.
      *

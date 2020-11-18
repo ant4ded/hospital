@@ -32,10 +32,16 @@ import java.util.Optional;
  */
 
 public class TherapyDaoImpl implements TherapyDao {
-
+    /**
+     * Sql {@code String} object for call stored procedure {@code CreateAmbulatoryTherapyWithDiagnosis}.
+     * Written for the MySQL dialect.
+     */
     private static final String SP_CREATE_AMBULATORY_THERAPY_WITH_DIAGNOSIS =
             "CALL CreateAmbulatoryTherapyWithDiagnosis(?,?,?,?,?)";
-
+    /**
+     * Sql {@code String} object for call stored procedure {@code CreateStationaryTherapyWithDiagnosis}.
+     * Written for the MySQL dialect.
+     */
     private static final String SP_CREATE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
             "CALL CreateStationaryTherapyWithDiagnosis(?,?,?,?,?)";
     /**
@@ -284,6 +290,15 @@ public class TherapyDaoImpl implements TherapyDao {
      */
     private final DiagnosisDao diagnosisDao = new DiagnosisDaoImpl();
 
+    /**
+     * Create ambulatory entity {@code Therapy} and
+     * entity {@code Diagnosis} for this ambulatory {@code Therapy}.
+     *
+     * @param therapy entity {@code Therapy} that wil be created.
+     * @param diagnosis entity {@code Diagnosis} that wil be created.
+     * @return {@code id} created entity {@code Therapy}.
+     * @throws DaoException if a database access error occurs.
+     */
     public int createAmbulatoryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException {
         int therapyId;
         Connection connection = null;
@@ -310,6 +325,15 @@ public class TherapyDaoImpl implements TherapyDao {
         return therapyId;
     }
 
+    /**
+     * Create stationary entity {@code Therapy} and
+     * entity {@code Diagnosis} for this stationary {@code Therapy}.
+     *
+     * @param therapy entity {@code Therapy} that wil be created.
+     * @param diagnosis entity {@code Diagnosis} that wil be created.
+     * @return {@code id} created entity {@code Therapy}.
+     * @throws DaoException if a database access error occurs.
+     */
     public int createStationaryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException {
         int therapyId;
         Connection connection = null;
