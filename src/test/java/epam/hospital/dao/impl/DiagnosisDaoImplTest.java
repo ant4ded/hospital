@@ -34,7 +34,8 @@ public class DiagnosisDaoImplTest {
         cleaner = new Cleaner();
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            groups = "createDiagnosis")
     public void createAmbulatoryDiagnosis_correctCreate_notZero(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -42,26 +43,25 @@ public class DiagnosisDaoImplTest {
         Therapy therapy = new Therapy();
         therapy.setDoctor(doctor);
         therapy.setPatient(patient);
-        therapy.setCardType(cardType);
 
         userDao.createClientWithUserDetails(doctor);
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
 
-        therapy.setId(therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType));
+        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
 
         int diagnosisId = diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
         diagnosis.setId(diagnosisId);
         therapy.setDiagnoses(List.of(diagnosis));
 
-        cleaner.delete(therapy, cardType);
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
         cleaner.delete(doctor);
         cleaner.delete(patient);
         Assert.assertTrue(diagnosisId != 0);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
+            expectedExceptions = DaoException.class, groups = "createDiagnosis")
     public void createAmbulatoryDiagnosis_nonExistentDoctor_exception(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -75,7 +75,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType));
+        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
 
         String doctorLogin = doctor.getLogin();
         doctor.setLogin("1");
@@ -83,14 +83,14 @@ public class DiagnosisDaoImplTest {
             diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
         } finally {
             doctor.setLogin(doctorLogin);
-            cleaner.delete(therapy, cardType);
+            cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(doctor);
             cleaner.delete(patient);
         }
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
+            expectedExceptions = DaoException.class, groups = "createDiagnosis")
     public void createAmbulatoryDiagnosis_DoctorWithoutDoctorRole_exception(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -104,19 +104,19 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType));
+        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
         userDao.deleteUserRole(doctor.getLogin(), Role.DOCTOR);
         try {
             diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
         } finally {
-            cleaner.delete(therapy, cardType);
+            cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(doctor);
             cleaner.delete(patient);
         }
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
+            expectedExceptions = DaoException.class, groups = "createDiagnosis")
     public void createAmbulatoryDiagnosis_nonExistentPatient_exception(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -130,18 +130,18 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType));
+        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
         try {
             diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin() + "1");
         } finally {
-            cleaner.delete(therapy, cardType);
+            cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(diagnosis.getDoctor());
             cleaner.delete(patient);
         }
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
+            expectedExceptions = DaoException.class, groups = "createDiagnosis")
     public void createAmbulatoryDiagnosis_nonExistentTherapy_exception(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -163,7 +163,8 @@ public class DiagnosisDaoImplTest {
         }
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            groups = "createDiagnosis")
     public void createStationaryDiagnosis_correctCreate_notZero(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -177,20 +178,20 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
 
-        therapy.setId(therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType));
+        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
 
         int diagnosisId = diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
         diagnosis.setId(diagnosisId);
         therapy.setDiagnoses(List.of(diagnosis));
 
-        cleaner.delete(therapy, cardType);
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
         cleaner.delete(doctor);
         cleaner.delete(patient);
         Assert.assertTrue(diagnosisId != 0);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
+            expectedExceptions = DaoException.class, groups = "createDiagnosis")
     public void createStationaryDiagnosis_nonExistentDoctor_exception(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -204,7 +205,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType));
+        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
 
         String doctorLogin = doctor.getLogin();
         doctor.setLogin("1");
@@ -212,14 +213,14 @@ public class DiagnosisDaoImplTest {
             diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
         } finally {
             doctor.setLogin(doctorLogin);
-            cleaner.delete(therapy, cardType);
+            cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(doctor);
             cleaner.delete(patient);
         }
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
+            expectedExceptions = DaoException.class, groups = "createDiagnosis")
     public void createStationaryDiagnosis_DoctorWithoutDoctorRole_exception(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -233,19 +234,19 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType));
+        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
         userDao.deleteUserRole(doctor.getLogin(), Role.DOCTOR);
         try {
             diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
         } finally {
-            cleaner.delete(therapy, cardType);
+            cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(doctor);
             cleaner.delete(patient);
         }
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
+            expectedExceptions = DaoException.class, groups = "createDiagnosis")
     public void createStationaryDiagnosis_nonExistentPatient_exception(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -259,18 +260,18 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType));
+        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
         try {
             diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin() + "1");
         } finally {
-            cleaner.delete(therapy, cardType);
+            cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(diagnosis.getDoctor());
             cleaner.delete(patient);
         }
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
+            expectedExceptions = DaoException.class, groups = "createDiagnosis")
     public void createStationaryDiagnosis_nonExistentTherapy_exception(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
@@ -292,83 +293,24 @@ public class DiagnosisDaoImplTest {
         }
     }
 
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
-    public void create_correctCreate_notZero(Diagnosis diagnosis, User patient) throws DaoException {
-        User doctor = diagnosis.getDoctor();
-        CardType cardType = CardType.AMBULATORY;
-
-        userDao.createClientWithUserDetails(doctor);
-        userDao.createClientWithUserDetails(patient);
-
-        therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
-        Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
-                .orElseThrow(DaoException::new);
-
-        int diagnosisId = diagnosisDao.create(diagnosis, patient.getLogin(), therapy.getId());
-        diagnosis.setId(diagnosisId);
-        List<Diagnosis> diagnoses = new ArrayList<>(List.of(diagnosis));
-        therapy.setDiagnoses(diagnoses);
-
-        cleaner.delete(therapy, cardType);
-        cleaner.delete(doctor);
-        cleaner.delete(patient);
-        Assert.assertTrue(diagnosisId != 0);
-    }
-
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
-    public void create_incorrectDoctor_exception(Diagnosis diagnosis, User patient) throws DaoException {
-        diagnosisDao.create(diagnosis, patient.getLogin(), 0);
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
-    public void create_incorrectIcd_exception(Diagnosis diagnosis, User patient) throws DaoException {
-        Icd icd = diagnosis.getIcd();
-        icd.setId(0);
-        icd.setCode("");
-        diagnosisDao.create(diagnosis, patient.getLogin(), 0);
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class)
-    public void create_incorrectTherapyId_exception(Diagnosis diagnosis, User patient) throws DaoException {
-        User doctor = diagnosis.getDoctor();
-
-        userDao.createClientWithUserDetails(doctor);
-        userDao.createClientWithUserDetails(patient);
-
-        try {
-            diagnosisDao.create(diagnosis, patient.getLogin(), 0);
-        } catch (DaoException e) {
-            throw new DaoException(e);
-        } finally {
-            cleaner.delete(doctor);
-            cleaner.delete(patient);
-        }
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            dependsOnMethods = "create_correctCreate_notZero")
+            dependsOnGroups = "createDiagnosis")
     public void findById_correctFind_diagnosisPresent(Diagnosis diagnosis, User patient) throws DaoException {
         User doctor = diagnosis.getDoctor();
         CardType cardType = CardType.AMBULATORY;
+        Therapy therapy = new Therapy();
+        therapy.setPatient(patient);
+        therapy.setDoctor(doctor);
 
-        userDao.createClientWithUserDetails(doctor);
         userDao.createClientWithUserDetails(patient);
-
-        therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
-        Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
-                .orElseThrow(DaoException::new);
-
-        int diagnosisId = diagnosisDao.create(diagnosis, patient.getLogin(), therapy.getId());
-        diagnosis.setId(diagnosisId);
-        List<Diagnosis> diagnoses = new ArrayList<>(List.of(diagnosis));
-        therapy.setDiagnoses(diagnoses);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
+        int diagnosisId = diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
 
         Optional<Diagnosis> optionalDiagnosis = diagnosisDao.findById(diagnosisId);
 
-        cleaner.delete(therapy, cardType);
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
         cleaner.delete(doctor);
         cleaner.delete(patient);
 
@@ -381,32 +323,28 @@ public class DiagnosisDaoImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            dependsOnMethods = "create_correctCreate_notZero")
+            dependsOnGroups = "createDiagnosis")
     public void findByTherapyId_correctFind_afterCreateResultWithCreatedDiagnosis(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
         CardType cardType = CardType.AMBULATORY;
+        Therapy therapy = new Therapy();
+        therapy.setPatient(patient);
+        therapy.setDoctor(doctor);
 
         userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
 
-        therapyDao.create(doctor.getLogin(), patient.getLogin(), cardType);
-        Therapy therapy = therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType)
-                .orElseThrow(DaoException::new);
+        int therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
+        diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
 
-        List<Diagnosis> diagnoses = diagnosisDao.findByTherapyId(therapy.getId());
-        if (diagnoses.size() != 0) {
+        List<Diagnosis> diagnoses = diagnosisDao.findByTherapyId(therapyId);
+        if (diagnoses.size() != 2) {
             throw new DaoException("FindByTherapyId failed.");
         }
-        int diagnosisId = diagnosisDao.create(diagnosis, patient.getLogin(), therapy.getId());
-        diagnosis.setId(diagnosisId);
-        diagnoses = diagnosisDao.findByTherapyId(therapy.getId());
-        if (diagnoses.size() == 0 || !diagnoses.get(0).equals(diagnosis)) {
-            throw new DaoException("FindByTherapyId failed.");
-        }
-        therapy.setDiagnoses(diagnoses);
 
-        cleaner.delete(therapy, cardType);
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
         cleaner.delete(doctor);
         cleaner.delete(patient);
     }

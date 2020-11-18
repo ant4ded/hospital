@@ -125,7 +125,7 @@ public class Cleaner {
         } catch (SQLException e) {
             throw new DaoException("DeleteTherapyWithDiagnosis failed.", e);
         } finally {
-            ConnectionPool.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
     }
 
