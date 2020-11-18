@@ -4,6 +4,7 @@ import by.epam.hospital.entity.*;
 import org.testng.annotations.DataProvider;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @SuppressWarnings("deprecation")
@@ -37,7 +38,7 @@ public class Provider {
         ArrayList<Role> doctorRoles = getUserRoles();
         doctorRoles.add(Role.DOCTOR);
         diagnosis.setDoctor(new User(0, STRING_VALUE, STRING_VALUE, doctorRoles, getUserDetails(STRING_VALUE)));
-        diagnosis.setDiagnosisDate(new Date(2000, 1, 1));
+        diagnosis.setDiagnosisDate(Date.valueOf(LocalDate.now()));
         diagnosis.setReason(STRING_VALUE);
 
         User user = new User(0, STRING_VALUE + STRING_VALUE, STRING_VALUE + STRING_VALUE,
