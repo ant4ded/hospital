@@ -441,7 +441,7 @@ public class TherapyDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnGroups = "createTherapy")
-    public void setFinalDiagnosisToTherapy_existingTherapy_true(Diagnosis diagnosis, User patient)
+    public void setFinalDiagnosisToAmbulatoryTherapy_existingTherapy_true(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
         userDao.createClientWithUserDetails(patient);
@@ -453,13 +453,172 @@ public class TherapyDaoImplTest {
         therapy.setPatient(patient);
 
         therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
-        boolean isClosed = therapyDao.setFinalDiagnosisToTherapy(doctor.getLogin(), patient.getLogin(), cardType);
+        boolean isSuccess = therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctor.getLogin(), patient.getLogin());
 
         cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
         cleaner.delete(patient);
         cleaner.delete(doctor);
 
-        Assert.assertTrue(isClosed);
+        Assert.assertTrue(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void setFinalDiagnosisToAmbulatoryTherapy_nonExistentTherapy_false(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(doctor);
+        therapy.setPatient(patient);
+
+        boolean isSuccess = therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctor.getLogin(), patient.getLogin());
+
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertFalse(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void setFinalDiagnosisToAmbulatoryTherapy_nonExistentDoctor_false(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        CardType cardType = CardType.AMBULATORY;
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(doctor);
+        therapy.setPatient(patient);
+
+        therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
+        boolean isSuccess = therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctor.getLogin().concat("x"),
+                patient.getLogin());
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertFalse(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void setFinalDiagnosisToAmbulatoryTherapy_nonExistentPatient_false(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        CardType cardType = CardType.AMBULATORY;
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(doctor);
+        therapy.setPatient(patient);
+
+        therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
+        boolean isSuccess = therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctor.getLogin(),
+                patient.getLogin().concat("x"));
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertFalse(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void setFinalDiagnosisToStationaryTherapy_existingTherapy_true(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        CardType cardType = CardType.STATIONARY;
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(doctor);
+        therapy.setPatient(patient);
+
+        therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
+        boolean isSuccess = therapyDao.setFinalDiagnosisToStationaryTherapy(doctor.getLogin(), patient.getLogin());
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertTrue(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void setFinalDiagnosisToStationaryTherapy_nonExistentTherapy_false(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(doctor);
+        therapy.setPatient(patient);
+
+        boolean isSuccess = therapyDao.setFinalDiagnosisToStationaryTherapy(doctor.getLogin(), patient.getLogin());
+
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertFalse(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void setFinalDiagnosisToStationaryTherapy_nonExistentDoctor_false(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        CardType cardType = CardType.STATIONARY;
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(doctor);
+        therapy.setPatient(patient);
+
+        therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
+        boolean isSuccess = therapyDao.setFinalDiagnosisToStationaryTherapy(doctor.getLogin().concat("x"),
+                patient.getLogin());
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertFalse(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void setFinalDiagnosisToStationaryTherapy_nonExistentPatient_false(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        CardType cardType = CardType.STATIONARY;
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(doctor);
+        therapy.setPatient(patient);
+
+        therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
+        boolean isSuccess = therapyDao.setFinalDiagnosisToStationaryTherapy(doctor.getLogin(),
+                patient.getLogin().concat("x"));
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertFalse(isSuccess);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",

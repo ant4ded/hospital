@@ -132,7 +132,9 @@ public class DoctorServiceImpl implements DoctorService {
             boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
             if (isPresent && !therapy.get().getDiagnoses().isEmpty()) {
                 if (therapy.get().getFinalDiagnosis().isEmpty()) {
-                    result = therapyDao.setFinalDiagnosisToTherapy(doctorLogin, patientLogin, cardType);
+                    result = cardType == CardType.AMBULATORY ?
+                        therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctorLogin,patientLogin) :
+                        therapyDao.setFinalDiagnosisToStationaryTherapy(doctorLogin, patientLogin);
                 } else {
                     result = true;
                 }

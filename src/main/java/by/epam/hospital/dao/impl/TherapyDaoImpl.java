@@ -70,67 +70,19 @@ public class TherapyDaoImpl implements TherapyDao {
     private static final String SP_SET_STATIONARY_THERAPY_END_DATE_BY_DOCTOR_AND_PATIENT =
             "CALL SetStationaryTherapyEndDateByDoctorAndPatient(?,?,?)";
     /**
-     * Sql {@code String} object for set {@code Therapy.finalDiagnosis}
-     * field to entity {@code Therapy} in
-     * ambulatory card table by doctor {@code User.login}
-     * and patient {@code User.login} in data base.
+     * Sql {@code String} object for call stored procedure
+     * {@code SetFinalDiagnosisToAmbulatoryTherapyByDoctorAndPatient}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_SET_FINAL_DIAGNOSIS_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
-            UPDATE therapy
-            SET final_diagnosis_id = (
-                SELECT fdid FROM (
-                  	SELECT d.id fdid
-                    FROM therapy
-                    INNER JOIN ambulatory_cards ac ON ac.therapy_id = therapy.id
-                    INNER JOIN users patients ON patients.id = ac.patient_id
-                    INNER JOIN users doctors ON doctors.id = therapy.doctor_id
-                    INNER JOIN therapy_diagnoses td ON td.therapy_id = therapy.id
-                    INNER JOIN diagnoses d ON d.id = td.diagnosis_id
-                    WHERE doctors.login = ? AND patients.login = ?
-                    ORDER BY d.id DESC
-                    LIMIT 1)
-                as c)
-            WHERE doctor_id = (
-                SELECT did FROM (
-                  	SELECT doctors.id did
-                  	FROM ambulatory_cards
-                  	INNER JOIN therapy t ON ambulatory_cards.therapy_id = t.id
-                  	INNER JOIN users doctors ON t.doctor_id = doctors.id
-                  	INNER JOIN users patients ON ambulatory_cards.patient_id = patients.id
-                  	WHERE doctors.login = ? AND patients.login = ?)
-                as c)""";
+    private static final String SP_SET_FINAL_DIAGNOSIS_TO_AMBULATORY_THERAPY =
+            "CALL SetFinalDiagnosisToAmbulatoryTherapyByDoctorAndPatient(?,?)";
     /**
-     * Sql {@code String} object for set {@code Therapy.finalDiagnosis}
-     * field to entity {@code Therapy} in
-     * stationary card table by doctor {@code User.login}
-     * and patient {@code User.login} in data base.
+     * Sql {@code String} object for call stored procedure
+     * {@code SetFinalDiagnosisToStationaryTherapyByDoctorAndPatient}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_SET_FINAL_DIAGNOSIS_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
-            UPDATE therapy
-            SET final_diagnosis_id = (
-                SELECT fdid FROM (
-                  	SELECT d.id fdid
-                    FROM therapy
-                    INNER JOIN stationary_cards sc ON sc.therapy_id = therapy.id
-                    INNER JOIN users patients ON patients.id = sc.patient_id
-                    INNER JOIN users doctors ON doctors.id = therapy.doctor_id
-                    INNER JOIN therapy_diagnoses td ON td.therapy_id = therapy.id
-                    INNER JOIN diagnoses d ON d.id = td.diagnosis_id
-                    WHERE doctors.login = ? AND patients.login = ?
-                    ORDER BY d.id DESC
-                    LIMIT 1)
-                as c)
-            WHERE doctor_id = (
-                SELECT did FROM (
-                  	SELECT doctors.id did
-                  	FROM stationary_cards
-                  	INNER JOIN therapy t ON stationary_cards.therapy_id = t.id
-                  	INNER JOIN users doctors ON t.doctor_id = doctors.id
-                  	INNER JOIN users patients ON stationary_cards.patient_id = patients.id
-                  	WHERE doctors.login = ? AND patients.login = ?)
-                as c)""";
+    private static final String SP_SET_FINAL_DIAGNOSIS_TO_STATIONARY_THERAPY =
+            "CALL SetFinalDiagnosisToStationaryTherapyByDoctorAndPatient(?,?)";
     /**
      * Sql {@code String} object for find {@code Therapy} entity in
      * ambulatory card table by patient {@code User.login} in data base.
@@ -437,44 +389,71 @@ public class TherapyDaoImpl implements TherapyDao {
     }
 
     /**
-     * Set {@code Therapy.finalDiagnosis} field to entity {@code Therapy} in
-     * stationary card table by doctor {@code User.login} and patient
+     * Set {@code Therapy.finalDiagnosis} field to ambulatory entity
+     * {@code Therapy} in by doctor {@code User.login} and patient
      * {@code User.login} in data base.
      *
      * @param doctorLogin  {@code String} value of {@code User.login} field.
      * @param patientLogin {@code String} value of {@code User.login} field.
-     * @param cardType     element of enum {@code CardType}
-     *                     table is selected based on this element.
      * @return {@code true} if success and {@code false} if not.
      * @throws DaoException if a database access error occurs.
      * @see CardType
      */
     @Override
-    public boolean setFinalDiagnosisToTherapy(String doctorLogin, String patientLogin, CardType cardType)
-            throws DaoException {
+    public boolean setFinalDiagnosisToAmbulatoryTherapy(String doctorLogin, String patientLogin) throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
-        boolean result = false;
+        ResultSet resultSet = null;
+        boolean result;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
-                    SQL_SET_FINAL_DIAGNOSIS_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN :
-                    SQL_SET_FINAL_DIAGNOSIS_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN);
-            statement.setString(1, doctorLogin);
-            statement.setString(2, patientLogin);
-            statement.setString(3, doctorLogin);
-            statement.setString(4, patientLogin);
+            statement = connection.prepareStatement(SP_SET_FINAL_DIAGNOSIS_TO_AMBULATORY_THERAPY);
+            statement.setString(1, patientLogin);
+            statement.setString(2, doctorLogin);
 
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 0) {
-                result = true;
-            }
+            resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("Close therapy failed.", e);
         } finally {
-            ConnectionPool.closeConnection(connection, statement);
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
+    }
+
+    /**
+     * Set {@code Therapy.finalDiagnosis} field to stationary entity
+     * {@code Therapy} in by doctor {@code User.login} and patient
+     * {@code User.login} in data base.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code true} if success and {@code false} if not.
+     * @throws DaoException if a database access error occurs.
+     * @see CardType
+     */
+    @Override
+    public boolean setFinalDiagnosisToStationaryTherapy(String doctorLogin, String patientLogin) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        boolean result;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SP_SET_FINAL_DIAGNOSIS_TO_STATIONARY_THERAPY);
+            statement.setString(1, patientLogin);
+            statement.setString(2, doctorLogin);
+
+            resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Close therapy failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return result;
     }

@@ -87,20 +87,30 @@ public interface TherapyDao {
     boolean setStationaryTherapyEndDate(String doctorLogin, String patientLogin, Date date) throws DaoException;
 
     /**
-     * Set {@code Therapy.finalDiagnosis} field to entity {@code Therapy} in
-     * stationary card table by doctor {@code User.login} and patient
+     * Set {@code Therapy.finalDiagnosis} field to ambulatory entity
+     * {@code Therapy} in by doctor {@code User.login} and patient
      * {@code User.login} in data base.
      *
      * @param doctorLogin  {@code String} value of {@code User.login} field.
      * @param patientLogin {@code String} value of {@code User.login} field.
-     * @param cardType     element of enum {@code CardType}
-     *                     table is selected based on this element.
      * @return {@code true} if success and {@code false} if not.
      * @throws DaoException if a database access error occurs.
      * @see CardType
      */
-    boolean setFinalDiagnosisToTherapy(String doctorLogin, String patientLogin, CardType cardType)
-            throws DaoException;
+    boolean setFinalDiagnosisToAmbulatoryTherapy(String doctorLogin, String patientLogin) throws DaoException;
+
+    /**
+     * Set {@code Therapy.finalDiagnosis} field to stationary entity
+     * {@code Therapy} in by doctor {@code User.login} and patient
+     * {@code User.login} in data base.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code true} if success and {@code false} if not.
+     * @throws DaoException if a database access error occurs.
+     * @see CardType
+     */
+    boolean setFinalDiagnosisToStationaryTherapy(String doctorLogin, String patientLogin) throws DaoException;
 
     /**
      * Find patient {@code Therapy} entities by {@code User.login} in database.
