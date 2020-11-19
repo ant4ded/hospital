@@ -1,6 +1,5 @@
 package by.epam.hospital.dao;
 
-import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
 
@@ -132,13 +131,10 @@ public interface UserDao {
      * @param login {@code int} value of {@code User.login} field.
      * @return {@code List<Role>} being a {@code ArrayList<Role>}
      * object if it present  or an empty {@code List} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
+     * @throws DaoException if a database access error occurs.
      * @see PreparedStatement
      * @see List
      * @see ArrayList
-     * @see ConnectionException
      */
     List<Role> findUserRoles(String login) throws DaoException;
 }

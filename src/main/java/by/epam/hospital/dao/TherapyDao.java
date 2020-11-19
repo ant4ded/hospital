@@ -43,7 +43,6 @@ public interface TherapyDao {
      * or an empty {@code Optional} if it isn't.
      * @throws DaoException if a database access error occurs.
      * @see Optional
-     * @see CardType
      */
     Optional<Therapy> findCurrentPatientAmbulatoryTherapy(String doctorLogin, String patientLogin)
             throws DaoException;
@@ -57,7 +56,6 @@ public interface TherapyDao {
      * or an empty {@code Optional} if it isn't.
      * @throws DaoException if a database access error occurs.
      * @see Optional
-     * @see CardType
      */
     Optional<Therapy> findCurrentPatientStationaryTherapy(String doctorLogin, String patientLogin)
             throws DaoException;
@@ -93,7 +91,6 @@ public interface TherapyDao {
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @return {@code true} if success and {@code false} if not.
      * @throws DaoException if a database access error occurs.
-     * @see CardType
      */
     boolean setFinalDiagnosisToAmbulatoryTherapy(String doctorLogin, String patientLogin) throws DaoException;
 
@@ -106,7 +103,6 @@ public interface TherapyDao {
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @return {@code true} if success and {@code false} if not.
      * @throws DaoException if a database access error occurs.
-     * @see CardType
      */
     boolean setFinalDiagnosisToStationaryTherapy(String doctorLogin, String patientLogin) throws DaoException;
 

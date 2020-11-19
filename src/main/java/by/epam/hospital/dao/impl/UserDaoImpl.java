@@ -33,33 +33,43 @@ import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
     /**
-     * Sql {@code String} object for call stored procedure {@code CreateClientWithUserDetails}.
+     * Sql {@code String} object for call stored procedure
+     * {@code CreateClientWithUserDetails}.
      * Written for the MySQL dialect.
      */
     private static final String SP_CREATE_CLIENT_WITH_USER_DETAILS =
             "CALL CreateClientWithUserDetails(?,?,?,?,?,?,?,?,?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindUserByLogin}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindUserByLogin}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_USER_BY_LOGIN = "CALL FindUserByLogin(?)";
+    private static final String SP_FIND_USER_BY_LOGIN =
+            "CALL FindUserByLogin(?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindUserByLogin}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindUserWithUserDetailsByLogin}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_LOGIN = "CALL FindUserWithUserDetailsByLogin(?)";
+    private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_LOGIN =
+            "CALL FindUserWithUserDetailsByLogin(?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindUserById}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindUserById}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_USER_BY_ID = "CALL FindUserById(?)";
+    private static final String SP_FIND_USER_BY_ID =
+            "CALL FindUserById(?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindUserById}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindUserWithUserDetailsById}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_ID = "CALL FindUserWithUserDetailsById(?)";
+    private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_ID =
+            "CALL FindUserWithUserDetailsById(?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindUserWithUserDetailsByPassportData}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindUserWithUserDetailsByPassportData}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_USER_WITH_USER_DETAILS_BY_PASSPORT_DATA =
@@ -68,22 +78,29 @@ public class UserDaoImpl implements UserDao {
      * Sql {@code String} object for call stored procedure {@code FindUserRolesByLogin}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_USER_ROLES_BY_LOGIN = "CALL FindUserRolesByLogin(?)";
+    private static final String SP_FIND_USER_ROLES_BY_LOGIN =
+            "CALL FindUserRolesByLogin(?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code AddUserRole}.
+     * Sql {@code String} object for call stored procedure
+     * {@code AddUserRole}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_ADD_USER_ROLE = "CALL AddUserRole(?,?)";
+    private static final String SP_ADD_USER_ROLE =
+            "CALL AddUserRole(?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code DeleteUserRole}.
+     * Sql {@code String} object for call stored procedure
+     * {@code DeleteUserRole}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_DELETE_USER_ROLE = "CALL DeleteUserRole(?,?)";
+    private static final String SP_DELETE_USER_ROLE =
+            "CALL DeleteUserRole(?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code UpdateUserLoginAndPassword}.
+     * Sql {@code String} object for call stored procedure
+     * {@code UpdateUserLoginAndPassword}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_UPDATE_LOGIN_AND_PASSWORD = "CALL UpdateUserLoginAndPassword(?,?,?)";
+    private static final String SP_UPDATE_LOGIN_AND_PASSWORD =
+            "CALL UpdateUserLoginAndPassword(?,?,?)";
 
     /**
      * Create entity {@link User} with entity {@link by.epam.hospital.entity.UserDetails}
@@ -135,10 +152,8 @@ public class UserDaoImpl implements UserDao {
      * @param newValue new value of {@code User} entity.
      * @return {@code newValue} if it was updated or
      * {@code oldValue} if it wasn't of {@code User} entity.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public Optional<User> updateLoginAndPassword(String login, User newValue) throws DaoException {
@@ -178,10 +193,8 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code String} value of {@code User.login} field.
      * @return {@code Optional<User>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -214,7 +227,8 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code String} value of {@code User.login} field.
      * @return {@code Optional<User>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -246,10 +260,8 @@ public class UserDaoImpl implements UserDao {
      * @param id {@code int} value of {@code User.id} field.
      * @return {@code Optional<User>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -282,7 +294,8 @@ public class UserDaoImpl implements UserDao {
      * @param id {@code int} value of {@code User.id} field.
      * @return {@code Optional<User>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -321,7 +334,8 @@ public class UserDaoImpl implements UserDao {
      *                  {@link by.epam.hospital.entity.UserDetails}.
      * @return {@code Optional} of {@code User} if user exist or
      * {@link Optional#empty()} if entity {@code User} not exist.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Date
      * @see Optional
      */
@@ -358,7 +372,8 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code String} value of {@code User.login} field.
      * @param role  enumeration element of {@link Role}.
      * @return {@code true} if it was successful and {@code false} if it wasn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public boolean addUserRole(String login, Role role) throws DaoException {
@@ -390,7 +405,8 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code String} value of {@code User.login} field.
      * @param role  enumeration element of {@link Role}.
      * @return {@code true} if it was successful and {@code false} if it wasn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public boolean deleteUserRole(String login, Role role) throws DaoException {
@@ -422,9 +438,8 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code int} value of {@code User.login} field.
      * @return {@code List<Role>} being a {@code ArrayList<Role>}
      * object if it present  or an empty {@code List} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see List
      * @see ArrayList
      * @see ConnectionException

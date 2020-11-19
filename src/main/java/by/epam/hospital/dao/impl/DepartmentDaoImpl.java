@@ -34,19 +34,22 @@ import java.util.Optional;
 
 public class DepartmentDaoImpl implements DepartmentDao {
     /**
-     * Sql {@code String} object for call stored procedure {@code FindDepartmentHeadByDepartmentId}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindDepartmentHeadByDepartmentId}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_DEPARTMENT_HEAD_BY_DEPARTMENT_ID =
             "CALL FindDepartmentHeadByDepartmentId(?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code UpdateDepartmentHeadByDepartmentId}.
+     * Sql {@code String} object for call stored procedure
+     * {@code UpdateDepartmentHeadByDepartmentId}.
      * Written for the MySQL dialect.
      */
     private static final String SP_UPDATE_DEPARTMENT_HEAD_BY_DEPARTMENT_ID =
             "CALL UpdateDepartmentHeadByDepartmentId(?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindDepartmentByUserLogin}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindDepartmentByUserLogin}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_DEPARTMENT_BY_USER_LOGIN =
@@ -63,10 +66,8 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @param department {@code Department} value.
      * @return {@code Optional<Diagnosis>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -105,10 +106,8 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @param department element of enum {@code Department}.
      * @param login      {@code String} value of {@code User.login}.
      * @return {@code true} if it was successful or {@code false} if not.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public boolean updateDepartmentHead(Department department, String login) throws DaoException {
@@ -140,10 +139,8 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @param login {@code String} value of {@code User.login}.
      * @return {@code Optional<Diagnosis>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -177,7 +174,8 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @return {@code Map<Department, String>} being a
      * {@code HashMap<Department, String>} object if it present
      * or an empty {@code Map} if it isn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Map
      * @see HashMap
      */

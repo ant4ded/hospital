@@ -31,25 +31,29 @@ import java.util.Optional;
 
 public class DiagnosisDaoImpl implements DiagnosisDao {
     /**
-     * Sql {@code String} object for call stored procedure {@code CreateAmbulatoryDiagnosis}.
+     * Sql {@code String} object for call stored procedure
+     * {@code CreateAmbulatoryDiagnosis}.
      * Written for the MySQL dialect.
      */
     private static final String SP_CREATE_AMBULATORY_DIAGNOSIS =
             "CALL CreateAmbulatoryDiagnosis(?,?,?,?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code CreateStationaryDiagnosis}.
+     * Sql {@code String} object for call stored procedure
+     * {@code CreateStationaryDiagnosis}.
      * Written for the MySQL dialect.
      */
     private static final String SP_CREATE_STATIONARY_DIAGNOSIS =
             "CALL CreateStationaryDiagnosis(?,?,?,?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindDiagnosesByTherapyId}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindDiagnosesByTherapyId}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_DIAGNOSES_BY_THERAPY_ID =
             "CALL FindDiagnosesByTherapyId(?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindDiagnosisWithIcdById}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindDiagnosisWithIcdById}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_DIAGNOSIS_WITH_ICD_BY_ID =
@@ -68,10 +72,8 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @param patientLogin {@code String} value of patient
      *                     {@code User.login} field.
      * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public int createAmbulatoryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException {
@@ -108,10 +110,8 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @param patientLogin {@code String} value of patient
      *                     {@code User.login} field.
      * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public int createStationaryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException {
@@ -147,10 +147,8 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @return {@code List<Diagnosis>} being a
      * {@code ArrayList<Diagnosis>} object if it present
      * or an empty {@code List} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see ArrayList
      * @see List
      */
@@ -182,17 +180,13 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
     }
 
     /**
-     * Find {@code Diagnosis} entity by {@code Diagnosis.id} field
-     * using {@code PreparedStatement}.
+     * Find {@code Diagnosis} entity by {@code Diagnosis.id} field.
      *
      * @param id {@code int} value of {@code Therapy.id} field.
      * @return {@code Optional<Diagnosis>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Optional
      */
     @Override

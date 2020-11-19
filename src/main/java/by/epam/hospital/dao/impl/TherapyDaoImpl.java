@@ -30,25 +30,29 @@ import java.util.Optional;
 
 public class TherapyDaoImpl implements TherapyDao {
     /**
-     * Sql {@code String} object for call stored procedure {@code CreateAmbulatoryTherapyWithDiagnosis}.
+     * Sql {@code String} object for call stored procedure
+     * {@code CreateAmbulatoryTherapyWithDiagnosis}.
      * Written for the MySQL dialect.
      */
     private static final String SP_CREATE_AMBULATORY_THERAPY_WITH_DIAGNOSIS =
             "CALL CreateAmbulatoryTherapyWithDiagnosis(?,?,?,?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code CreateStationaryTherapyWithDiagnosis}.
+     * Sql {@code String} object for call stored procedure
+     * {@code CreateStationaryTherapyWithDiagnosis}.
      * Written for the MySQL dialect.
      */
     private static final String SP_CREATE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
             "CALL CreateStationaryTherapyWithDiagnosis(?,?,?,?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindCurrentPatientAmbulatoryTherapy}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindCurrentPatientAmbulatoryTherapy}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_CURRENT_PATIENT_AMBULATORY_THERAPY =
             "CALL FindCurrentPatientAmbulatoryTherapy(?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindCurrentPatientStationaryTherapy}.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindCurrentPatientStationaryTherapy}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_CURRENT_PATIENT_STATIONARY_THERAPY =
@@ -126,7 +130,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param therapy   entity {@code Therapy} that wil be created.
      * @param diagnosis entity {@code Diagnosis} that wil be created.
      * @return {@code id} created entity {@code Therapy}.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     public int createAmbulatoryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException {
         int therapyId;
@@ -161,7 +166,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param therapy   entity {@code Therapy} that wil be created.
      * @param diagnosis entity {@code Diagnosis} that wil be created.
      * @return {@code id} created entity {@code Therapy}.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     public int createStationaryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException {
         int therapyId;
@@ -196,9 +202,9 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @return {@code Optional<Therapy>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Optional
-     * @see CardType
      */
     @Override
     public Optional<Therapy> findCurrentPatientAmbulatoryTherapy(String doctorLogin, String patientLogin)
@@ -245,9 +251,9 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @return {@code Optional<Therapy>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see Optional
-     * @see CardType
      */
     @Override
     public Optional<Therapy> findCurrentPatientStationaryTherapy(String doctorLogin, String patientLogin)
@@ -294,7 +300,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param doctorLogin  {@code String} value of {@code User.login} field.
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @return {@code true} if success and {@code false} if not.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public boolean setAmbulatoryTherapyEndDate(String doctorLogin, String patientLogin, Date date)
@@ -329,7 +336,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param doctorLogin  {@code String} value of {@code User.login} field.
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @return {@code true} if success and {@code false} if not.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public boolean setStationaryTherapyEndDate(String doctorLogin, String patientLogin, Date date)
@@ -365,8 +373,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param doctorLogin  {@code String} value of {@code User.login} field.
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @return {@code true} if success and {@code false} if not.
-     * @throws DaoException if a database access error occurs.
-     * @see CardType
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public boolean setFinalDiagnosisToAmbulatoryTherapy(String doctorLogin, String patientLogin) throws DaoException {
@@ -400,8 +408,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param doctorLogin  {@code String} value of {@code User.login} field.
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @return {@code true} if success and {@code false} if not.
-     * @throws DaoException if a database access error occurs.
-     * @see CardType
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      */
     @Override
     public boolean setFinalDiagnosisToStationaryTherapy(String doctorLogin, String patientLogin) throws DaoException {
@@ -433,7 +441,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param patientUserDetails {@code UserDetails} object for find.
      * @return {@code List<Therapy>} if it present
      * or an empty {@code List<Therapy>} if it isn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see List
      */
     @Override
@@ -483,7 +492,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param patientUserDetails {@code UserDetails} object for find.
      * @return {@code List<Therapy>} if it present
      * or an empty {@code List<Therapy>} if it isn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see List
      */
     @Override
@@ -534,7 +544,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param doctorLogin {@code String} value of {@code User.login} field.
      * @return {@code Optional<Therapy>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see List
      */
     @Override
@@ -579,7 +590,8 @@ public class TherapyDaoImpl implements TherapyDao {
      * @param doctorLogin {@code String} value of {@code User.login} field.
      * @return {@code Optional<Therapy>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs.
+     * @throws DaoException if a database access error occurs or
+     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
      * @see List
      */
     @Override
