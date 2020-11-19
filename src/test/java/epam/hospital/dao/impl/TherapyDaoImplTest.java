@@ -13,7 +13,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -165,9 +164,193 @@ public class TherapyDaoImplTest {
         try {
             therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
         } finally {
-            cleaner.delete(patient);
             cleaner.delete(diagnosis.getDoctor());
+            cleaner.delete(patient);
         }
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findCurrentPatientAmbulatoryTherapy_correctFind_therapyPresent(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+
+        therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
+
+        Optional<Therapy> optionalTherapy = therapyDao
+                .findCurrentPatientAmbulatoryTherapy(diagnosis.getDoctor().getLogin(), patient.getLogin());
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, CardType.AMBULATORY);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+
+        Assert.assertTrue(optionalTherapy.isPresent());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findCurrentPatientAmbulatoryTherapy_nonExistentTherapy_emptyTherapy(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+
+        Optional<Therapy> optionalTherapy = therapyDao
+                .findCurrentPatientAmbulatoryTherapy(diagnosis.getDoctor().getLogin(), patient.getLogin());
+
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+
+        Assert.assertTrue(optionalTherapy.isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findCurrentPatientAmbulatoryTherapy_nonExistentDoctor_emptyTherapy(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+
+        therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
+
+        Optional<Therapy> optionalTherapy = therapyDao
+                .findCurrentPatientAmbulatoryTherapy(diagnosis.getDoctor().getLogin().concat("x"),
+                        patient.getLogin());
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, CardType.AMBULATORY);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+
+        Assert.assertTrue(optionalTherapy.isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findCurrentPatientAmbulatoryTherapy_nonExistentPatient_emptyTherapy(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+
+        therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
+
+        Optional<Therapy> optionalTherapy = therapyDao
+                .findCurrentPatientAmbulatoryTherapy(diagnosis.getDoctor().getLogin(),
+                        patient.getLogin().concat("x"));
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, CardType.AMBULATORY);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+
+        Assert.assertTrue(optionalTherapy.isEmpty());
+    }
+
+//////////////////////////////////////////////////////
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findCurrentPatientStationaryTherapy_correctFind_therapyPresent(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+
+        therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
+
+        Optional<Therapy> optionalTherapy = therapyDao
+                .findCurrentPatientStationaryTherapy(diagnosis.getDoctor().getLogin(), patient.getLogin());
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, CardType.STATIONARY);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+
+        Assert.assertTrue(optionalTherapy.isPresent());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findCurrentPatientStationaryTherapy_nonExistentTherapy_emptyTherapy(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+
+        Optional<Therapy> optionalTherapy = therapyDao
+                .findCurrentPatientStationaryTherapy(diagnosis.getDoctor().getLogin(), patient.getLogin());
+
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+
+        Assert.assertTrue(optionalTherapy.isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findCurrentPatientStationaryTherapy_nonExistentDoctor_emptyTherapy(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+
+        therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
+
+        Optional<Therapy> optionalTherapy = therapyDao
+                .findCurrentPatientStationaryTherapy(diagnosis.getDoctor().getLogin().concat("x"),
+                        patient.getLogin());
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, CardType.STATIONARY);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+
+        Assert.assertTrue(optionalTherapy.isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findCurrentPatientStationaryTherapy_nonExistentPatient_emptyTherapy(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+
+        therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
+
+        Optional<Therapy> optionalTherapy = therapyDao
+                .findCurrentPatientStationaryTherapy(diagnosis.getDoctor().getLogin(),
+                        patient.getLogin().concat("x"));
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, CardType.STATIONARY);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+
+        Assert.assertTrue(optionalTherapy.isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",

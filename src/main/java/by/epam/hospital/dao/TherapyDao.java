@@ -37,6 +37,34 @@ public interface TherapyDao {
     int createStationaryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException;
 
     /**
+     * Find current patient entity {@code Therapy} in ambulatory cards database.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code Optional<Therapy>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see Optional
+     * @see CardType
+     */
+    Optional<Therapy> findCurrentPatientAmbulatoryTherapy(String doctorLogin, String patientLogin)
+            throws DaoException;
+
+    /**
+     * Find current patient entity {@code Therapy} in stationary cards database.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code Optional<Therapy>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see Optional
+     * @see CardType
+     */
+    Optional<Therapy> findCurrentPatientStationaryTherapy(String doctorLogin, String patientLogin)
+            throws DaoException;
+
+    /**
      * Set {@code Therapy.endTherapy} field to entity {@code Therapy}
      * table by doctor {@code User.login} and patient {@code User.login} in data base.
      *

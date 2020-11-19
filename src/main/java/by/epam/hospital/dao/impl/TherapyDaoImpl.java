@@ -45,6 +45,18 @@ public class TherapyDaoImpl implements TherapyDao {
     private static final String SP_CREATE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
             "CALL CreateStationaryTherapyWithDiagnosis(?,?,?,?,?)";
     /**
+     * Sql {@code String} object for call stored procedure {@code FindCurrentPatientAmbulatoryTherapy}.
+     * Written for the MySQL dialect.
+     */
+    private static final String SP_FIND_CURRENT_PATIENT_AMBULATORY_THERAPY =
+            "CALL FindCurrentPatientAmbulatoryTherapy(?,?)";
+    /**
+     * Sql {@code String} object for call stored procedure {@code FindCurrentPatientAmbulatoryTherapy}.
+     * Written for the MySQL dialect.
+     */
+    private static final String SP_FIND_CURRENT_PATIENT_STATIONARY_THERAPY =
+            "CALL FindCurrentPatientStationaryTherapy(?,?)";
+    /**
      * Sql {@code String} object for find {@code Therapy} entity in
      * ambulatory card table by {@code Therapy.id} in data base.
      * Written for the MySQL dialect.
@@ -337,6 +349,104 @@ public class TherapyDaoImpl implements TherapyDao {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return therapyId;
+    }
+
+    /**
+     * Find current patient entity {@code Therapy} in ambulatory cards database.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code Optional<Therapy>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see Optional
+     * @see CardType
+     */
+    @Override
+    public Optional<Therapy> findCurrentPatientAmbulatoryTherapy(String doctorLogin, String patientLogin)
+            throws DaoException {
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        Optional<Therapy> optionalTherapy = Optional.empty();
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_FIND_CURRENT_PATIENT_AMBULATORY_THERAPY);
+            statement.setString(1, doctorLogin);
+            statement.setString(2, patientLogin);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                Therapy therapy = new Therapy();
+                therapy.setId(resultSet.getInt(TherapyFieldName.ID));
+                therapy.setDoctor(userDao.findByLoginWithUserDetails(doctorLogin)
+                        .orElseThrow(DaoException::new));
+                therapy.setPatient(userDao.findByLoginWithUserDetails(patientLogin)
+                        .orElseThrow(DaoException::new));
+                therapy.setCardType(CardType.AMBULATORY);
+                therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
+                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
+                        .orElse(null));
+                therapy.setDiagnoses(diagnosisDao.findByTherapyId(therapy.getId()));
+                optionalTherapy = Optional.of(therapy);
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("FindCurrentPatientTherapy failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return optionalTherapy;
+    }
+
+    /**
+     * Find current patient entity {@code Therapy} in stationary cards database.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code Optional<Therapy>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see Optional
+     * @see CardType
+     */
+    @Override
+    public Optional<Therapy> findCurrentPatientStationaryTherapy(String doctorLogin, String patientLogin)
+            throws DaoException {
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        Optional<Therapy> optionalTherapy = Optional.empty();
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_FIND_CURRENT_PATIENT_STATIONARY_THERAPY);
+            statement.setString(1, doctorLogin);
+            statement.setString(2, patientLogin);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                Therapy therapy = new Therapy();
+                therapy.setId(resultSet.getInt(TherapyFieldName.ID));
+                therapy.setDoctor(userDao.findByLoginWithUserDetails(doctorLogin)
+                        .orElseThrow(DaoException::new));
+                therapy.setPatient(userDao.findByLoginWithUserDetails(patientLogin)
+                        .orElseThrow(DaoException::new));
+                therapy.setCardType(CardType.STATIONARY);
+                therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
+                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
+                        .orElse(null));
+                therapy.setDiagnoses(diagnosisDao.findByTherapyId(therapy.getId()));
+                optionalTherapy = Optional.of(therapy);
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("FindCurrentPatientTherapy failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return optionalTherapy;
     }
 
     /**
