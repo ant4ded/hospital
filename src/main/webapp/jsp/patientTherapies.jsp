@@ -17,13 +17,8 @@
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="locale" var="local"/>
 
-<fmt:message bundle="${local}" key="page.department_control" var="page"/>
-<fmt:message bundle="${local}" key="department_control.title" var="title"/>
-<fmt:message bundle="${local}" key="department_control.message.department_head.part1" var="messagePart1"/>
-<fmt:message bundle="${local}" key="department_control.message.department_head.part2" var="messagePart2"/>
-<fmt:message bundle="${local}" key="department_control.message.nullLogin" var="messageNullLogin"/>
-<fmt:message bundle="${local}" key="department_control.btn.change_head" var="btnChangeHead"/>
-<fmt:message bundle="${local}" key="department_control.btn.move_to_department" var="btnMoveToDepartment"/>
+<fmt:message bundle="${local}" key="page.patient_therapies" var="page"/>
+<fmt:message bundle="${local}" key="patient_therapies.title" var="title"/>
 <!-- Banner Area Starts -->
 <section class="banner-area other-page">
     <div class="container">
@@ -42,15 +37,15 @@
     <c:when test="<%=therapies != null && !therapies.isEmpty()%>">
         <div class="container-fluid">
             <div class="section-top-border">
-                <h3 class="mb-30 title_color">Therapies of your patients</h3>
+                <h3 class="mb-30 title_color">Therapies of this patient</h3>
                 <div class="progress-table-wrap">
                     <div class="progress-table">
                         <div class="table-head">
                             <div class="serial">#</div>
-                            <div class="user-details">Patient</div>
-                            <div class="diagnosis-code">ICD ICD</div>
-                            <div class="diagnosis-title">Final Diagnosis Title</div>
-                            <div class="table-date">End Therapy</div>
+                            <div class="user-details">${mainHeadPatient}</div>
+                            <div class="diagnosis-code">${mainHeadIcd}</div>
+                            <div class="diagnosis-title">${mainHeadFinalDiagnosis}</div>
+                            <div class="table-date">${mainHeadEndTherapy}</div>
                         </div>
                         <c:forEach items="<%=therapies%>" var="therapy" varStatus="loop">
                             <div class="table-row">
@@ -69,37 +64,37 @@
                                     <c:when test="${therapy.finalDiagnosis.orElse(null) != null && therapy.endTherapy.orElse(null) == null}">
                                         <div class="diagnosis-code">${therapy.finalDiagnosis.get().icd.code}</div>
                                         <div class="diagnosis-title">${therapy.finalDiagnosis.get().icd.title}</div>
-                                        <div class="table-date">Open</div>
+                                        <div class="table-date">${mainStatusTherapy}</div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="diagnosis-code">Status:</div>
-                                        <div class="diagnosis-title">In the process of identification</div>
-                                        <div class="table-date">Open</div>
+                                        <div class="diagnosis-code">${mainStatus}</div>
+                                        <div class="diagnosis-title">${mainStatusFinalDiagnosis}</div>
+                                        <div class="table-date">${mainStatusTherapy}</div>
                                     </c:otherwise>
                                 </c:choose>
                                 <div class="table-row-wrapper">
                                     <c:forEach items="${therapy.diagnoses}" var="diagnosis" varStatus="loop">
                                         <div class="table-row">
                                             <div class="table-group">
-                                                <div class="table-parameter">Attending doctor</div>
+                                                <div class="table-parameter">${innerHeadDoctor}</div>
                                                 <div class="table-value">
                                                         ${diagnosis.doctor.userDetails.firstName} ${diagnosis.doctor.userDetails.surname} ${diagnosis.doctor.userDetails.lastName}
                                                 </div>
                                             </div>
                                             <div class="table-group">
-                                                <div class="table-parameter">Icd code</div>
+                                                <div class="table-parameter">${innerHeadIcd}</div>
                                                 <div class="table-value">${diagnosis.icd.code}</div>
                                             </div>
                                             <div class="table-group">
-                                                <div class="table-parameter">Diagnosis</div>
+                                                <div class="table-parameter">${innerHeadDiagnosis}</div>
                                                 <div class="table-value">${diagnosis.icd.title}</div>
                                             </div>
                                             <div class="table-group">
-                                                <div class="table-parameter">Attending date</div>
+                                                <div class="table-parameter">${innerHeadDate}</div>
                                                 <div class="table-value">${diagnosis.diagnosisDate}</div>
                                             </div>
                                             <div class="table-group">
-                                                <div class="table-parameter">Reason</div>
+                                                <div class="table-parameter">${innerHeadReason}</div>
                                                 <div class="table-value">${diagnosis.reason}</div>
                                             </div>
                                         </div>

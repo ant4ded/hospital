@@ -19,18 +19,6 @@
 
 <fmt:message bundle="${local}" key="page.doctor_therapies" var="page"/>
 <fmt:message bundle="${local}" key="doctor_therapies.title" var="title"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.main.head.patient" var="mainHeadPatient"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.main.head.icd" var="mainHeadIcd"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.main.head.final_diagnosis" var="mainHeadFinalDiagnosis"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.main.head.therapy_end_date" var="mainHeadEndTherapy"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.main.status" var="mainStatus"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.main.status.final_diagnosis" var="mainStatusFinalDiagnosis"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.main.status.therapy" var="mainStatusTherapy"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.doctor" var="innerHeadDoctor"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.icd" var="innerHeadIcd"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.diagnosis" var="innerHeadDiagnosis"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.date" var="innerHeadDate"/>
-<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.reason" var="innerHeadReason"/>
 <fmt:message bundle="${local}" key="doctor_therapies.btn.make_last_final" var="btnMakeLastFinal"/>
 <fmt:message bundle="${local}" key="doctor_therapies.btn.discharge_patient" var="btnDischargePatient"/>
 <!-- Banner Area Starts -->
