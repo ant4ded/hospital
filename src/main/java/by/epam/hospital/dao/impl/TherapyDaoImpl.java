@@ -10,7 +10,6 @@ import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Diagnosis;
 import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.table.TherapyFieldName;
-import by.epam.hospital.entity.table.UsersFieldName;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -56,28 +55,6 @@ public class TherapyDaoImpl implements TherapyDao {
      */
     private static final String SP_FIND_CURRENT_PATIENT_STATIONARY_THERAPY =
             "CALL FindCurrentPatientStationaryTherapy(?,?)";
-    /**
-     * Sql {@code String} object for find {@code Therapy} entity in
-     * ambulatory card table by {@code Therapy.id} in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_FIND_AMBULATORY_THERAPY_BY_THERAPY_ID = """
-            SELECT doctor_id, end_therapy, final_diagnosis_id, patient_id, patients.id
-            FROM therapy
-            INNER JOIN ambulatory_cards ac on therapy.id = ac.therapy_id
-            INNER JOIN users patients on ac.patient_id = patients.id
-            WHERE therapy.id = ?""";
-    /**
-     * Sql {@code String} object for find {@code Therapy} entity in
-     * stationary card table by {@code Therapy.id} in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_FIND_STATIONARY_THERAPY_BY_THERAPY_ID = """
-            SELECT doctor_id, end_therapy, final_diagnosis_id, patient_id
-            FROM therapy
-            INNER JOIN stationary_cards sc on therapy.id = sc.therapy_id
-            INNER JOIN users patients on sc.patient_id = patients.id
-            WHERE therapy.id = ?""";
     /**
      * Sql {@code String} object for set {@code Therapy.endTherapy}
      * field to entity {@code Therapy} in
@@ -249,7 +226,7 @@ public class TherapyDaoImpl implements TherapyDao {
      * Create ambulatory entity {@code Therapy} and
      * entity {@code Diagnosis} for this ambulatory {@code Therapy}.
      *
-     * @param therapy entity {@code Therapy} that wil be created.
+     * @param therapy   entity {@code Therapy} that wil be created.
      * @param diagnosis entity {@code Diagnosis} that wil be created.
      * @return {@code id} created entity {@code Therapy}.
      * @throws DaoException if a database access error occurs.
@@ -284,7 +261,7 @@ public class TherapyDaoImpl implements TherapyDao {
      * Create stationary entity {@code Therapy} and
      * entity {@code Diagnosis} for this stationary {@code Therapy}.
      *
-     * @param therapy entity {@code Therapy} that wil be created.
+     * @param therapy   entity {@code Therapy} that wil be created.
      * @param diagnosis entity {@code Diagnosis} that wil be created.
      * @return {@code id} created entity {@code Therapy}.
      * @throws DaoException if a database access error occurs.
@@ -482,61 +459,6 @@ public class TherapyDaoImpl implements TherapyDao {
             ConnectionPool.closeConnection(connection, statement);
         }
         return result;
-    }
-
-    /**
-     * Find {@code Therapy} entity by {@code id} in database
-     * using {@code PreparedStatement}.
-     *
-     * @param id       {@code int} value of {@code User.id} field.
-     * @param cardType element of enum {@code CardType}
-     *                 table is selected based on this element.
-     * @return {@code Optional<Therapy>} if it present
-     * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
-     * @see CardType
-     */
-    @Override
-    public Optional<Therapy> findById(int id, CardType cardType) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Optional<Therapy> optionalTherapy = Optional.empty();
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
-                    SQL_FIND_AMBULATORY_THERAPY_BY_THERAPY_ID :
-                    SQL_FIND_STATIONARY_THERAPY_BY_THERAPY_ID);
-            statement.setInt(1, id);
-            statement.execute();
-
-            resultSet = statement.getResultSet();
-            if (resultSet.next()) {
-                Therapy therapy = new Therapy();
-                therapy.setId(id);
-                therapy.setDoctor(userDao.findById(resultSet.getInt(TherapyFieldName.DOCTOR_ID))
-                        .orElseThrow(DaoException::new));
-                therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
-                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
-                        .orElse(null));
-                therapy.setDiagnoses(diagnosisDao.findByTherapyId(id));
-                therapy.setPatient(userDao.findByIdWithUserDetails(resultSet.getInt(UsersFieldName.ID))
-                        .orElseThrow(DaoException::new));
-                therapy.setCardType(cardType);
-                optionalTherapy = Optional.of(therapy);
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("findById therapy failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return optionalTherapy;
     }
 
     /**

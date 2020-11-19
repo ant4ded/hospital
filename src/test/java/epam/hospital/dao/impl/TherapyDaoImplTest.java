@@ -422,33 +422,6 @@ public class TherapyDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnGroups = "createTherapy")
-    public void findById_correctFind_therapyPresent(Diagnosis diagnosis, User patient) throws DaoException {
-        User doctor = diagnosis.getDoctor();
-        userDao.createClientWithUserDetails(patient);
-        userDao.createClientWithUserDetails(doctor);
-        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
-        CardType cardType = CardType.AMBULATORY;
-        Therapy therapy = new Therapy();
-        therapy.setDoctor(doctor);
-        therapy.setPatient(patient);
-
-        int therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
-        Optional<Therapy> optionalTherapy = therapyDao.findById(therapyId, cardType);
-
-        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
-        cleaner.delete(patient);
-        cleaner.delete(doctor);
-
-        Assert.assertTrue(optionalTherapy.isPresent());
-    }
-
-    @Test
-    public void findById_incorrectLogins_therapyPresent() throws DaoException {
-        Assert.assertTrue(therapyDao.findById(0, CardType.AMBULATORY).isEmpty());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            dependsOnGroups = "createTherapy")
     public void findPatientTherapies_correctFind_ListWithCreatedTherapies(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
