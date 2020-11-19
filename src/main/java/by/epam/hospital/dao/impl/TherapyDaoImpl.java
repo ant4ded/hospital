@@ -70,44 +70,6 @@ public class TherapyDaoImpl implements TherapyDao {
     private static final String SP_SET_STATIONARY_THERAPY_END_DATE_BY_DOCTOR_AND_PATIENT =
             "CALL SetStationaryTherapyEndDateByDoctorAndPatient(?,?,?)";
     /**
-     * Sql {@code String} object for set {@code Therapy.endTherapy}
-     * field to entity {@code Therapy} in
-     * ambulatory card table by doctor {@code User.login}
-     * and patient {@code User.login} in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_SET_END_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
-            UPDATE therapy
-            SET end_therapy = ?
-            WHERE doctor_id = (
-            	SELECT did FROM (
-            		SELECT doctors.id did
-            		FROM ambulatory_cards
-            		INNER JOIN therapy t ON ambulatory_cards.therapy_id = t.id
-            		INNER JOIN users doctors ON t.doctor_id = doctors.id
-            		INNER JOIN users patients ON ambulatory_cards.patient_id = patients.id
-            		WHERE doctors.login = ? AND patients.login = ?) 
-            	as c)""";
-    /**
-     * Sql {@code String} object for set {@code Therapy.endTherapy}
-     * field to entity {@code Therapy} in
-     * stationary card table by doctor {@code User.login}
-     * and patient {@code User.login} in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_SET_END_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN = """
-            UPDATE therapy
-            SET end_therapy = ?
-            WHERE doctor_id = (
-            	SELECT did FROM (
-            		SELECT doctors.id did
-            		FROM stationary_cards
-            		INNER JOIN therapy t ON stationary_cards.therapy_id = t.id
-            		INNER JOIN users doctors ON t.doctor_id = doctors.id
-            		INNER JOIN users patients ON stationary_cards.patient_id = patients.id
-            		WHERE doctors.login = ? AND patients.login = ?) 
-            	as c)""";
-    /**
      * Sql {@code String} object for set {@code Therapy.finalDiagnosis}
      * field to entity {@code Therapy} in
      * ambulatory card table by doctor {@code User.login}
@@ -475,46 +437,18 @@ public class TherapyDaoImpl implements TherapyDao {
     }
 
     /**
-     * Set {@code Therapy.endTherapy} field to entity {@code Therapy}
-     * table by doctor {@code User.login} and patient {@code User.login} in data base.
+     * Set {@code Therapy.finalDiagnosis} field to entity {@code Therapy} in
+     * stationary card table by doctor {@code User.login} and patient
+     * {@code User.login} in data base.
      *
      * @param doctorLogin  {@code String} value of {@code User.login} field.
      * @param patientLogin {@code String} value of {@code User.login} field.
      * @param cardType     element of enum {@code CardType}
      *                     table is selected based on this element.
-     * @return auto-generated {@code Therapy.id} field.
+     * @return {@code true} if success and {@code false} if not.
      * @throws DaoException if a database access error occurs.
      * @see CardType
      */
-    @Override
-    public boolean setEndTherapy(String doctorLogin, String patientLogin, Date date, CardType cardType)
-            throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        boolean result = false;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
-                    SQL_SET_END_AMBULATORY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN :
-                    SQL_SET_END_STATIONARY_THERAPY_BY_DOCTOR_AND_PATIENT_LOGIN);
-            statement.setDate(1, date);
-            statement.setString(2, doctorLogin);
-            statement.setString(3, patientLogin);
-
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 0) {
-                result = true;
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Close therapy failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement);
-        }
-        return result;
-    }
-
     @Override
     public boolean setFinalDiagnosisToTherapy(String doctorLogin, String patientLogin, CardType cardType)
             throws DaoException {
