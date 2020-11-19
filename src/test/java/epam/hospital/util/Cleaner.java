@@ -4,11 +4,13 @@ import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.entity.CardType;
-import by.epam.hospital.entity.Diagnosis;
 import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.User;
 
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Cleaner {
     private static final String SP_DELETE_USER_WITH_USER_ROLES_AND_USER_DETAILS =
@@ -19,21 +21,6 @@ public class Cleaner {
             "CALL DeleteAmbulatoryTherapyWithDiagnosis(?,?)";
     private static final String SP_DELETE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
             "CALL DeleteStationaryTherapyWithDiagnosis(?,?)";
-    private static final String SQL_DELETE_DIAGNOSIS = """
-            DELETE FROM diagnoses
-            WHERE id = ?""";
-    private static final String SQL_DELETE_THERAPY = """
-            DELETE FROM therapy
-            WHERE id = ?""";
-    private static final String SQL_DELETE_AMBULATORY_ROW = """
-            DELETE FROM ambulatory_cards
-            WHERE therapy_id = ?""";
-    private static final String SQL_DELETE_STATIONARY_ROW = """
-            DELETE FROM stationary_cards
-            WHERE therapy_id = ?""";
-    private static final String SQL_DELETE_THERAPY_DIAGNOSIS_ROW = """
-            DELETE FROM therapy_diagnoses
-            WHERE therapy_id = ?""";
 
     public void deleteUserFromDepartment(User user) throws DaoException {
         Connection connection = null;
@@ -85,26 +72,6 @@ public class Cleaner {
         }
     }
 
-    public void delete(Diagnosis diagnosis) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_DELETE_DIAGNOSIS);
-            statement.setInt(1, diagnosis.getId());
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows != 1) {
-                throw new DaoException("Affected rows != 1.");
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Can not delete row on diagnoses table.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement);
-        }
-    }
-
     public void deleteTherapyWithDiagnosis(Therapy therapy, CardType cardType) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
@@ -126,39 +93,6 @@ public class Cleaner {
             throw new DaoException("DeleteTherapyWithDiagnosis failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-    }
-
-    public void delete(Therapy therapy, CardType cardType) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(cardType.equals(CardType.AMBULATORY) ?
-                    SQL_DELETE_AMBULATORY_ROW :
-                    SQL_DELETE_STATIONARY_ROW);
-            statement.setInt(1, therapy.getId());
-            statement.execute();
-            statement.close();
-
-            statement = connection.prepareStatement(SQL_DELETE_THERAPY_DIAGNOSIS_ROW);
-            statement.setInt(1, therapy.getId());
-            statement.execute();
-            statement.close();
-
-            statement = connection.prepareStatement(SQL_DELETE_THERAPY);
-            statement.setInt(1, therapy.getId());
-            statement.execute();
-
-            for (int i = 0; i < therapy.getDiagnoses().size(); i++) {
-                delete(therapy.getDiagnoses().get(i));
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Can not delete row on therapy table.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement);
         }
     }
 }
