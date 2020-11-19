@@ -89,48 +89,4 @@ public class IcdDaoImpl implements IcdDao {
         }
         return Optional.ofNullable(icd);
     }
-
-    /**
-     * Find {@code Icd} entity by {@code Icd.id} field
-     * using {@code PreparedStatement}.
-     *
-     * @param id {@code int} value of {@code Icd.id} field.
-     * @return {@code Optional<Icd>} if it present
-     * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
-     * @see Optional
-     */
-    @Override
-    public Optional<Icd> findById(int id) throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Optional<Icd> optionalIcd = Optional.empty();
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_BY_ID);
-            statement.setInt(1, id);
-            statement.execute();
-
-            resultSet = statement.getResultSet();
-            if (resultSet.next()) {
-                Icd icd = new Icd();
-                icd.setId(id);
-                icd.setCode(resultSet.getString(IcdFieldName.CODE));
-                icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
-                optionalIcd = Optional.of(icd);
-            }
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("Find optionalIcd failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return optionalIcd;
-    }
 }

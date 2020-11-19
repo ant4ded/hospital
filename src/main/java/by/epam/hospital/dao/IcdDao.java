@@ -20,15 +20,4 @@ public interface IcdDao {
      * @see Optional
      */
     Optional<Icd> findByCode(String code) throws DaoException;
-
-    /**
-     * Find {@code Icd} entity by {@code Icd.id} field.
-     *
-     * @param id {@code int} value of {@code Icd.id} field.
-     * @return {@code Optional<Icd>} if it present
-     * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs.
-     * @see Optional
-     */
-    Optional<Icd> findById(int id) throws DaoException;
 }
