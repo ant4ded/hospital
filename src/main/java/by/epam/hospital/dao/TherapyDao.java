@@ -95,22 +95,6 @@ public interface TherapyDao {
             throws DaoException;
 
     /**
-     * Find current patient entity {@code Therapy} in database.
-     *
-     * @param doctorLogin  {@code String} value of {@code User.login} field.
-     * @param patientLogin {@code String} value of {@code User.login} field.
-     * @param cardType     element of enum {@code CardType}
-     *                     table is selected based on this element.
-     * @return {@code Optional<Therapy>} if it present
-     * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs.
-     * @see Optional
-     * @see CardType
-     */
-    Optional<Therapy> findCurrentPatientTherapy(String doctorLogin, String patientLogin, CardType cardType)
-            throws DaoException;
-
-    /**
      * Find {@code Therapy} entity by {@code id} in database.
      *
      * @param id       {@code int} value of {@code User.id} field.
