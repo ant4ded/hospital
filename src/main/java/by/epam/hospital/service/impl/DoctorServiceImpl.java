@@ -129,14 +129,10 @@ public class DoctorServiceImpl implements DoctorService {
             Optional<User> patient = userDao.findByLogin(patientLogin);
             Optional<Therapy> therapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
             boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
-            if (isPresent && !therapy.get().getDiagnoses().isEmpty()) {
-                if (therapy.get().getFinalDiagnosis().isEmpty()) {
+            if (isPresent && !therapy.get().getDiagnoses().isEmpty() && therapy.get().getFinalDiagnosis().isEmpty()) {
                     result = cardType == CardType.AMBULATORY ?
-                        therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctorLogin,patientLogin) :
-                        therapyDao.setFinalDiagnosisToStationaryTherapy(doctorLogin, patientLogin);
-                } else {
-                    result = true;
-                }
+                            therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctorLogin, patientLogin) :
+                            therapyDao.setFinalDiagnosisToStationaryTherapy(doctorLogin, patientLogin);
             }
         } catch (DaoException e) {
             throw new ServiceException("MakeLastDiagnosisFinal failed.", e);
