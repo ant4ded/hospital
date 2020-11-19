@@ -72,8 +72,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @param patientLogin {@code String} value of patient
      *                     {@code User.login} field.
      * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public int createAmbulatoryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException {
@@ -110,8 +111,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @param patientLogin {@code String} value of patient
      *                     {@code User.login} field.
      * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public int createStationaryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException {
@@ -147,8 +149,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @return {@code List<Diagnosis>} being a
      * {@code ArrayList<Diagnosis>} object if it present
      * or an empty {@code List} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see ArrayList
      * @see List
      */
@@ -185,8 +188,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @param id {@code int} value of {@code Therapy.id} field.
      * @return {@code Optional<Diagnosis>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Optional
      */
     @Override

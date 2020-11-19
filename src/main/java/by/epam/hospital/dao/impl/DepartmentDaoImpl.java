@@ -66,8 +66,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @param department {@code Department} value.
      * @return {@code Optional<Diagnosis>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -106,8 +107,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @param department element of enum {@code Department}.
      * @param login      {@code String} value of {@code User.login}.
      * @return {@code true} if it was successful or {@code false} if not.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public boolean updateDepartmentHead(Department department, String login) throws DaoException {
@@ -139,8 +141,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @param login {@code String} value of {@code User.login}.
      * @return {@code Optional<Diagnosis>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -174,8 +177,9 @@ public class DepartmentDaoImpl implements DepartmentDao {
      * @return {@code Map<Department, String>} being a
      * {@code HashMap<Department, String>} object if it present
      * or an empty {@code Map} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Map
      * @see HashMap
      */

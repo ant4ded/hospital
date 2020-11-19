@@ -40,8 +40,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao {
      * @param login    {@code String} value of {@code User.login}.
      * @return {@code newValue} if it was updated or
      * {@code oldValue} if it wasn't of {@code UserDetails} entity.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public Optional<UserDetails> update(UserDetails newValue, String login) throws DaoException {

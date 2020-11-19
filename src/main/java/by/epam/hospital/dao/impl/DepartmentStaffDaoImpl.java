@@ -62,8 +62,9 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
      * @param login      {@code String} object of {@code User.login}.
      * @param role       element of {@code Role}. This role wil be added to {@code User}.
      * @return {@code true} if it was successful or false if wasn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public boolean makeMedicalWorkerAndAddToDepartment(Department department, String login, Role role)
@@ -97,8 +98,9 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
      *
      * @param department element of enum {@code Department}.
      * @return {@code true} if it was successful or {@code false} if not.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public boolean updateDepartmentByLogin(Department department, String login)
@@ -132,8 +134,9 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
      * @return {@code Map<String, User>} being a
      * {@code HashMap<String, User>} object if it present
      * or an empty {@code Map} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Map
      * @see HashMap
      */

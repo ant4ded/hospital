@@ -108,8 +108,9 @@ public class UserDaoImpl implements UserDao {
      *
      * @param user an a {@code User} entity.
      * @return auto-generated {@code User.id} field or zero if not success.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public int createClientWithUserDetails(User user) throws DaoException {
@@ -152,8 +153,9 @@ public class UserDaoImpl implements UserDao {
      * @param newValue new value of {@code User} entity.
      * @return {@code newValue} if it was updated or
      * {@code oldValue} if it wasn't of {@code User} entity.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public Optional<User> updateLoginAndPassword(String login, User newValue) throws DaoException {
@@ -193,8 +195,9 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code String} value of {@code User.login} field.
      * @return {@code Optional<User>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -227,8 +230,9 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code String} value of {@code User.login} field.
      * @return {@code Optional<User>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -260,8 +264,9 @@ public class UserDaoImpl implements UserDao {
      * @param id {@code int} value of {@code User.id} field.
      * @return {@code Optional<User>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -294,8 +299,9 @@ public class UserDaoImpl implements UserDao {
      * @param id {@code int} value of {@code User.id} field.
      * @return {@code Optional<User>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Optional
      */
     @Override
@@ -334,8 +340,9 @@ public class UserDaoImpl implements UserDao {
      *                  {@link by.epam.hospital.entity.UserDetails}.
      * @return {@code Optional} of {@code User} if user exist or
      * {@link Optional#empty()} if entity {@code User} not exist.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Date
      * @see Optional
      */
@@ -372,8 +379,9 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code String} value of {@code User.login} field.
      * @param role  enumeration element of {@link Role}.
      * @return {@code true} if it was successful and {@code false} if it wasn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public boolean addUserRole(String login, Role role) throws DaoException {
@@ -405,8 +413,9 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code String} value of {@code User.login} field.
      * @param role  enumeration element of {@link Role}.
      * @return {@code true} if it was successful and {@code false} if it wasn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      */
     @Override
     public boolean deleteUserRole(String login, Role role) throws DaoException {
@@ -438,8 +447,9 @@ public class UserDaoImpl implements UserDao {
      * @param login {@code int} value of {@code User.login} field.
      * @return {@code List<Role>} being a {@code ArrayList<Role>}
      * object if it present  or an empty {@code List} if it isn't.
-     * @throws DaoException if a database access error occurs or
-     *                      if {@link ConnectionPool} throws {@link ConnectionException}.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see List
      * @see ArrayList
      * @see ConnectionException
