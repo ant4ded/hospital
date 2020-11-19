@@ -65,6 +65,28 @@ public interface TherapyDao {
             throws DaoException;
 
     /**
+     * Set {@code Therapy.endTherapy} field to ambulatory entity {@code Therapy}
+     * table by doctor {@code User.login} and patient {@code User.login} in data base.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code true} if success and {@code false} if not.
+     * @throws DaoException if a database access error occurs.
+     */
+    boolean setAmbulatoryTherapyEndDate(String doctorLogin, String patientLogin, Date date) throws DaoException;
+
+    /**
+     * Set {@code Therapy.endTherapy} field to stationary entity {@code Therapy}
+     * table by doctor {@code User.login} and patient {@code User.login} in data base.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code true} if success and {@code false} if not.
+     * @throws DaoException if a database access error occurs.
+     */
+    boolean setStationaryTherapyEndDate(String doctorLogin, String patientLogin, Date date) throws DaoException;
+
+    /**
      * Set {@code Therapy.endTherapy} field to entity {@code Therapy}
      * table by doctor {@code User.login} and patient {@code User.login} in data base.
      *

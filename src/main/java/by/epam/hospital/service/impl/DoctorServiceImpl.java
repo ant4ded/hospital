@@ -153,7 +153,11 @@ public class DoctorServiceImpl implements DoctorService {
             Optional<Therapy> therapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
             boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
             if (isPresent && therapy.get().getFinalDiagnosis().isPresent()) {
-                result = therapyDao.setEndTherapy(doctorLogin, patientLogin, Date.valueOf(LocalDate.now()), cardType);
+                result = cardType == CardType.AMBULATORY ?
+                        therapyDao.setAmbulatoryTherapyEndDate(doctorLogin, patientLogin,
+                                Date.valueOf(LocalDate.now())) :
+                        therapyDao.setStationaryTherapyEndDate(doctorLogin, patientLogin,
+                                Date.valueOf(LocalDate.now()));
             }
         } catch (DaoException e) {
             throw new ServiceException("SetEndDate failed.", e);

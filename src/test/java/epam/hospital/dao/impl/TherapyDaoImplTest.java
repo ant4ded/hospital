@@ -355,20 +355,20 @@ public class TherapyDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnGroups = "createTherapy")
-    public void setEndTherapy_existingTherapy_true(Diagnosis diagnosis, User patient) throws DaoException {
+    public void setAmbulatoryTherapyEndDate_existingAmbulatoryTherapy_true(Diagnosis diagnosis, User patient)
+            throws DaoException {
         User doctor = diagnosis.getDoctor();
         userDao.createClientWithUserDetails(patient);
         userDao.createClientWithUserDetails(doctor);
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
-        CardType cardType = CardType.AMBULATORY;
         Therapy therapy = new Therapy();
         therapy.setDoctor(doctor);
         therapy.setPatient(patient);
 
         therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
-        boolean isClosed = therapyDao.setEndTherapy(doctor.getLogin(), patient.getLogin(), new Date(0), cardType);
+        boolean isClosed = therapyDao.setAmbulatoryTherapyEndDate(doctor.getLogin(), patient.getLogin(), new Date(0));
 
-        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.deleteTherapyWithDiagnosis(therapy, CardType.AMBULATORY);
         cleaner.delete(patient);
         cleaner.delete(doctor);
 
@@ -377,20 +377,62 @@ public class TherapyDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnGroups = "createTherapy")
-    public void setEndTherapy_nonExistentTherapy_false(Diagnosis diagnosis, User patient) throws DaoException {
+    public void setStationaryTherapyEndDate_existingStationaryTherapy_true(Diagnosis diagnosis, User patient)
+            throws DaoException {
         User doctor = diagnosis.getDoctor();
         userDao.createClientWithUserDetails(patient);
         userDao.createClientWithUserDetails(doctor);
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
-        CardType cardType = CardType.AMBULATORY;
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(doctor);
+        therapy.setPatient(patient);
+
+        therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
+        boolean isClosed = therapyDao.setStationaryTherapyEndDate(doctor.getLogin(), patient.getLogin(), new Date(0));
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, CardType.STATIONARY);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertTrue(isClosed);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void setAmbulatoryTherapyEndDate_nonExistentTherapy_false(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         Therapy therapy = new Therapy();
         therapy.setDoctor(doctor);
         therapy.setPatient(patient);
 
         boolean isClosed = therapyDao
-                .setEndTherapy(doctor.getLogin(), patient.getLogin(), new Date(0), CardType.AMBULATORY);
+                .setAmbulatoryTherapyEndDate(doctor.getLogin(), patient.getLogin(), new Date(0));
 
-        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertFalse(isClosed);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void setStationaryTherapyEndDate_nonExistentTherapy_false(Diagnosis diagnosis, User patient)
+            throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(doctor);
+        therapy.setPatient(patient);
+
+        boolean isClosed = therapyDao
+                .setStationaryTherapyEndDate(doctor.getLogin(), patient.getLogin(), new Date(0));
+
         cleaner.delete(patient);
         cleaner.delete(doctor);
 
@@ -436,7 +478,7 @@ public class TherapyDaoImplTest {
         first.setDoctor(doctor);
         int therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(first, diagnosis);
         first.setId(therapyId);
-        therapyDao.setEndTherapy(doctor.getLogin(), patient.getLogin(), new Date(0), CardType.AMBULATORY);
+        therapyDao.setAmbulatoryTherapyEndDate(doctor.getLogin(), patient.getLogin(), new Date(0));
         Therapy second = new Therapy();
         second.setCardType(cardType);
         second.setPatient(patient);
@@ -503,7 +545,7 @@ public class TherapyDaoImplTest {
         therapy1.setPatient(patient1);
         therapy1.setDoctor(doctor);
         therapy1.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy1, diagnosis));
-        therapyDao.setEndTherapy(doctor.getLogin(), patient1.getLogin(), new Date(0), cardType);
+        therapyDao.setAmbulatoryTherapyEndDate(doctor.getLogin(), patient1.getLogin(), new Date(0));
         Therapy therapy2 = new Therapy();
         therapy2.setPatient(patient2);
         therapy2.setDoctor(doctor);

@@ -50,11 +50,25 @@ public class TherapyDaoImpl implements TherapyDao {
     private static final String SP_FIND_CURRENT_PATIENT_AMBULATORY_THERAPY =
             "CALL FindCurrentPatientAmbulatoryTherapy(?,?)";
     /**
-     * Sql {@code String} object for call stored procedure {@code FindCurrentPatientAmbulatoryTherapy}.
+     * Sql {@code String} object for call stored procedure {@code FindCurrentPatientStationaryTherapy}.
      * Written for the MySQL dialect.
      */
     private static final String SP_FIND_CURRENT_PATIENT_STATIONARY_THERAPY =
             "CALL FindCurrentPatientStationaryTherapy(?,?)";
+    /**
+     * Sql {@code String} object for call stored procedure
+     * {@code SetAmbulatoryTherapyEndDateByDoctorAndPatient}.
+     * Written for the MySQL dialect.
+     */
+    private static final String SP_SET_AMBULATORY_THERAPY_END_DATE_BY_DOCTOR_AND_PATIENT =
+            "CALL SetAmbulatoryTherapyEndDateByDoctorAndPatient(?,?,?)";
+    /**
+     * Sql {@code String} object for call stored procedure
+     * {@code SetStationaryTherapyEndDateByDoctorAndPatient}.
+     * Written for the MySQL dialect.
+     */
+    private static final String SP_SET_STATIONARY_THERAPY_END_DATE_BY_DOCTOR_AND_PATIENT =
+            "CALL SetStationaryTherapyEndDateByDoctorAndPatient(?,?,?)";
     /**
      * Sql {@code String} object for set {@code Therapy.endTherapy}
      * field to entity {@code Therapy} in
@@ -388,6 +402,76 @@ public class TherapyDaoImpl implements TherapyDao {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return optionalTherapy;
+    }
+
+    /**
+     * Set {@code Therapy.endTherapy} field to ambulatory entity {@code Therapy}
+     * table by doctor {@code User.login} and patient {@code User.login} in data base.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code true} if success and {@code false} if not.
+     * @throws DaoException if a database access error occurs.
+     */
+    @Override
+    public boolean setAmbulatoryTherapyEndDate(String doctorLogin, String patientLogin, Date date)
+            throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        boolean result;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SP_SET_AMBULATORY_THERAPY_END_DATE_BY_DOCTOR_AND_PATIENT);
+            statement.setString(1, patientLogin);
+            statement.setString(2, doctorLogin);
+            statement.setDate(3, date);
+
+            resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Close therapy failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
+    }
+
+    /**
+     * Set {@code Therapy.endTherapy} field to stationary entity {@code Therapy}
+     * table by doctor {@code User.login} and patient {@code User.login} in data base.
+     *
+     * @param doctorLogin  {@code String} value of {@code User.login} field.
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code true} if success and {@code false} if not.
+     * @throws DaoException if a database access error occurs.
+     */
+    @Override
+    public boolean setStationaryTherapyEndDate(String doctorLogin, String patientLogin, Date date)
+            throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        boolean result;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SP_SET_STATIONARY_THERAPY_END_DATE_BY_DOCTOR_AND_PATIENT);
+            statement.setString(1, patientLogin);
+            statement.setString(2, doctorLogin);
+            statement.setDate(3, date);
+
+            resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Close therapy failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
     }
 
     /**

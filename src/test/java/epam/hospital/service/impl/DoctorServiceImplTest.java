@@ -416,7 +416,7 @@ public class DoctorServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnGroups = "findCurrentPatientTherapy")
-    public void setEndDate_doctorAndPatientExistAmbulatoryCard_true(User doctor, User patient)
+    public void closeTherapy_doctorAndPatientExistAmbulatoryCard_true(User doctor, User patient)
             throws DaoException, ServiceException {
         Diagnosis diagnosis = new Diagnosis();
         Therapy therapy = new Therapy();
@@ -427,15 +427,15 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(therapyDao.findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
                 .thenReturn(Optional.of(therapy));
-        Mockito.when(therapyDao.setEndTherapy(doctor.getLogin(), patient.getLogin(),
-                Date.valueOf(LocalDate.now()), CardType.AMBULATORY))
+        Mockito.when(therapyDao.setAmbulatoryTherapyEndDate(doctor.getLogin(), patient.getLogin(),
+                Date.valueOf(LocalDate.now())))
                 .thenReturn(true);
         Assert.assertTrue(doctorService.closeTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnGroups = "findCurrentPatientTherapy")
-    public void setEndDate_doctorAndPatientExistStationaryCard_true(User doctor, User patient)
+    public void closeTherapy_doctorAndPatientExistStationaryCard_true(User doctor, User patient)
             throws DaoException, ServiceException {
         Diagnosis diagnosis = new Diagnosis();
         Therapy therapy = new Therapy();
@@ -446,15 +446,15 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(therapyDao.findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
                 .thenReturn(Optional.of(therapy));
-        Mockito.when(therapyDao.setEndTherapy(doctor.getLogin(), patient.getLogin(),
-                Date.valueOf(LocalDate.now()), CardType.STATIONARY))
+        Mockito.when(therapyDao.setStationaryTherapyEndDate(doctor.getLogin(), patient.getLogin(),
+                Date.valueOf(LocalDate.now())))
                 .thenReturn(true);
         Assert.assertTrue(doctorService.closeTherapy(doctor.getLogin(), patient.getLogin(), CardType.STATIONARY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnGroups = "findCurrentPatientTherapy")
-    public void setEndDate_finalDiagnosisEmptyAmbulatoryCard_false(User doctor, User patient)
+    public void closeTherapy_finalDiagnosisEmptyAmbulatoryCard_false(User doctor, User patient)
             throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(doctor.getLogin()))
                 .thenReturn(Optional.of(doctor));
@@ -467,7 +467,7 @@ public class DoctorServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             dependsOnGroups = "findCurrentPatientTherapy")
-    public void setEndDate_finalDiagnosisEmptyStationaryCard_false(User doctor, User patient)
+    public void closeTherapy_finalDiagnosisEmptyStationaryCard_false(User doctor, User patient)
             throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(doctor.getLogin()))
                 .thenReturn(Optional.of(doctor));
@@ -480,7 +480,7 @@ public class DoctorServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
             expectedExceptions = ServiceException.class)
-    public void setEndDate_daoException_serviceException(User doctor, User patient)
+    public void closeTherapy_daoException_serviceException(User doctor, User patient)
             throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(doctor.getLogin()))
                 .thenThrow(DaoException.class);
