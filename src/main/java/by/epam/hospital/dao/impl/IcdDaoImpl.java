@@ -7,10 +7,7 @@ import by.epam.hospital.dao.IcdDao;
 import by.epam.hospital.entity.Icd;
 import by.epam.hospital.entity.table.IcdFieldName;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 
 /**
@@ -33,42 +30,36 @@ public class IcdDaoImpl implements IcdDao {
      * by {@code id} in data base.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_BY_CODE = """
-            SELECT id, title
-            FROM icd
-            WHERE code = ?""";
+    private static final String SP_FIND_BY_CODE =
+            "CALL FindIcdByCode(?)";
 
     /**
      * Find {@code Icd} entity by {@code Icd.code} field.
-     * using {@code PreparedStatement}.
      *
      * @param code {@code String} value unique {@code Icd.code} field.
      * @return {@code Optional<Icd>} if it present
      * or an empty {@code Optional} if it isn't.
-     * @throws DaoException if a database access error occurs
-     *                      and if {@code ConnectionPool}
-     *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
-     * @see ConnectionException
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
      * @see Optional
      */
     @Override
     public Optional<Icd> findByCode(String code) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         Icd icd = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_BY_CODE);
+            statement = connection.prepareCall(SP_FIND_BY_CODE);
             statement.setString(1, code);
-            statement.execute();
 
-            resultSet = statement.getResultSet();
+            resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 icd = new Icd();
                 icd.setId(resultSet.getInt(IcdFieldName.ID));
-                icd.setCode(code);
+                icd.setCode(resultSet.getString(IcdFieldName.CODE));
                 icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
             }
         } catch (ConnectionException e) {
