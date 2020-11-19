@@ -17,13 +17,22 @@
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="locale" var="local"/>
 
-<fmt:message bundle="${local}" key="page.department_control" var="page"/>
-<fmt:message bundle="${local}" key="department_control.title" var="title"/>
-<fmt:message bundle="${local}" key="department_control.message.department_head.part1" var="messagePart1"/>
-<fmt:message bundle="${local}" key="department_control.message.department_head.part2" var="messagePart2"/>
-<fmt:message bundle="${local}" key="department_control.message.nullLogin" var="messageNullLogin"/>
-<fmt:message bundle="${local}" key="department_control.btn.change_head" var="btnChangeHead"/>
-<fmt:message bundle="${local}" key="department_control.btn.move_to_department" var="btnMoveToDepartment"/>
+<fmt:message bundle="${local}" key="page.doctor_therapies" var="page"/>
+<fmt:message bundle="${local}" key="doctor_therapies.title" var="title"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.main.head.patient" var="mainHeadPatient"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.main.head.icd" var="mainHeadIcd"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.main.head.final_diagnosis" var="mainHeadFinalDiagnosis"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.main.head.therapy_end_date" var="mainHeadEndTherapy"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.main.status" var="mainStatus"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.main.status.final_diagnosis" var="mainStatusFinalDiagnosis"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.main.status.therapy" var="mainStatusTherapy"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.doctor" var="innerHeadDoctor"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.icd" var="innerHeadIcd"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.diagnosis" var="innerHeadDiagnosis"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.date" var="innerHeadDate"/>
+<fmt:message bundle="${local}" key="doctor_therapies.table.inner.head.reason" var="innerHeadReason"/>
+<fmt:message bundle="${local}" key="doctor_therapies.btn.make_last_final" var="btnMakeLastFinal"/>
+<fmt:message bundle="${local}" key="doctor_therapies.btn.discharge_patient" var="btnDischargePatient"/>
 <!-- Banner Area Starts -->
 <section class="banner-area other-page">
     <div class="container">
@@ -42,15 +51,15 @@
     <c:when test="<%=therapies != null && !therapies.isEmpty()%>">
         <div class="container-fluid">
             <div class="section-top-border">
-                <h3 class="mb-30 title_color">Therapies of your patients</h3>
+                <h3 class="mb-30 title_color">${title}</h3>
                 <div class="progress-table-wrap">
                     <div class="progress-table">
                         <div class="table-head">
                             <div class="serial">#</div>
-                            <div class="user-details">Patient</div>
-                            <div class="diagnosis-code">ICD ICD</div>
-                            <div class="diagnosis-title">Final Diagnosis Title</div>
-                            <div class="table-date">End Therapy</div>
+                            <div class="user-details">${mainHeadPatient}</div>
+                            <div class="diagnosis-code">${mainHeadIcd}</div>
+                            <div class="diagnosis-title">${mainHeadFinalDiagnosis}</div>
+                            <div class="table-date">${mainHeadEndTherapy}</div>
                         </div>
                         <c:forEach items="<%=therapies%>" var="therapy" varStatus="loop">
                             <div class="table-row">
@@ -61,40 +70,41 @@
                                         ${therapy.patient.userDetails.lastName}
                                 </div>
                                 <c:choose>
-                                    <c:when test="${therapy.finalDiagnosis.orElse(null) == null && therapy.endTherapy.orElse(null) == null}">
-                                        <div class="diagnosis-code">Status:</div>
-                                        <div class="diagnosis-title">In the process of identification</div>
-                                        <div class="table-date">Open</div>
+                                    <c:when test="${therapy.finalDiagnosis.orElse(null) == null &&
+                                        therapy.endTherapy.orElse(null) == null}">
+                                        <div class="diagnosis-code">${mainStatus}</div>
+                                        <div class="diagnosis-title">${mainStatusFinalDiagnosis}</div>
+                                        <div class="table-date">${mainStatusTherapy}</div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="diagnosis-code">${therapy.finalDiagnosis.get().icd.code}</div>
                                         <div class="diagnosis-title">${therapy.finalDiagnosis.get().icd.title}</div>
-                                        <div class="table-date">Open</div>
+                                        <div class="table-date">${mainStatusTherapy}</div>
                                     </c:otherwise>
                                 </c:choose>
                                 <div class="table-row-wrapper">
                                     <c:forEach items="${therapy.diagnoses}" var="diagnosis" varStatus="loop">
                                         <div class="table-row">
                                             <div class="table-group">
-                                                <div class="table-parameter">Attending doctor</div>
+                                                <div class="table-parameter">${innerHeadDoctor}</div>
                                                 <div class="table-value">
                                                         ${diagnosis.doctor.userDetails.firstName} ${diagnosis.doctor.userDetails.surname} ${diagnosis.doctor.userDetails.lastName}
                                                 </div>
                                             </div>
                                             <div class="table-group">
-                                                <div class="table-parameter">Icd code</div>
+                                                <div class="table-parameter">${innerHeadIcd}</div>
                                                 <div class="table-value">${diagnosis.icd.code}</div>
                                             </div>
                                             <div class="table-group">
-                                                <div class="table-parameter">Diagnosis</div>
+                                                <div class="table-parameter">${innerHeadDiagnosis}</div>
                                                 <div class="table-value">${diagnosis.icd.title}</div>
                                             </div>
                                             <div class="table-group">
-                                                <div class="table-parameter">Attending date</div>
+                                                <div class="table-parameter">${innerHeadDate}</div>
                                                 <div class="table-value">${diagnosis.diagnosisDate}</div>
                                             </div>
                                             <div class="table-group">
-                                                <div class="table-parameter">Reason</div>
+                                                <div class="table-parameter">${innerHeadReason}</div>
                                                 <div class="table-value">${diagnosis.reason}</div>
                                             </div>
                                         </div>
@@ -116,7 +126,8 @@
                                                        value="${therapy.patient.userDetails.birthday}">
                                                 <input type="hidden" name="${ParameterName.CARD_TYPE}"
                                                        value="<%=request.getParameter(ParameterName.CARD_TYPE)%>">
-                                                <button type="submit" class="template-btn form-btn">Make last final
+                                                <button type="submit" class="template-btn form-btn">
+                                                        ${btnMakeLastFinal}
                                                 </button>
                                             </form>
                                             <form action="${HospitalUrl.APP_NAME_URL}${HospitalUrl.COMMAND_CLOSE_THERAPY}">
@@ -135,7 +146,7 @@
                                                 <input type="hidden" name="${ParameterName.CARD_TYPE}"
                                                        value="<%=request.getParameter(ParameterName.CARD_TYPE)%>">
                                                 <button type="submit" class="template-btn form-btn">
-                                                    Discharge a patient
+                                                    ${btnDischargePatient}
                                                 </button>
                                             </form>
                                         </div>
