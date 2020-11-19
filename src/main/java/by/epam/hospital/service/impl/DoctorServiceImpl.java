@@ -82,12 +82,9 @@ public class DoctorServiceImpl implements DoctorService {
             throws ServiceException {
         Optional<Therapy> optionalTherapy;
         try {
-            optionalTherapy = therapyDao.findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
-            if (optionalTherapy.isPresent()) {
-                optionalTherapy = optionalTherapy.get().getEndTherapy().isPresent() ?
-                        Optional.empty() :
-                        optionalTherapy;
-            }
+            optionalTherapy = cardType == CardType.AMBULATORY ?
+                    therapyDao.findCurrentPatientAmbulatoryTherapy(doctorLogin, patientLogin) :
+                    therapyDao.findCurrentPatientStationaryTherapy(doctorLogin, patientLogin);
         } catch (DaoException e) {
             throw new ServiceException("Find therapy failed.", e);
         }
