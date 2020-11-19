@@ -33,15 +33,6 @@ public class IcdDaoImpl implements IcdDao {
      * by {@code id} in data base.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_BY_ID = """
-            SELECT code, title
-            FROM icd
-            WHERE id = ?""";
-    /**
-     * Sql {@code String} object for find {@code Icd} entity
-     * by {@code id} in data base.
-     * Written for the MySQL dialect.
-     */
     private static final String SQL_FIND_BY_CODE = """
             SELECT id, title
             FROM icd

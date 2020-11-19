@@ -9,7 +9,10 @@ import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.User;
 import by.epam.hospital.entity.table.UsersFieldName;
 
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -42,7 +45,6 @@ public class DepartmentDaoImpl implements DepartmentDao {
      */
     private static final String SP_UPDATE_DEPARTMENT_HEAD_BY_DEPARTMENT_ID =
             "CALL UpdateDepartmentHeadByDepartmentId(?,?)";
-
     /**
      * Sql {@code String} object for call stored procedure {@code FindDepartmentByUserLogin}.
      * Written for the MySQL dialect.
