@@ -1,8 +1,6 @@
 package by.epam.hospital.dao;
 
-import by.epam.hospital.entity.CardType;
-import by.epam.hospital.entity.Diagnosis;
-import by.epam.hospital.entity.Therapy;
+import by.epam.hospital.entity.*;
 
 import java.sql.Date;
 import java.util.List;
@@ -18,7 +16,7 @@ public interface TherapyDao {
      * Create ambulatory entity {@code Therapy} and
      * entity {@code Diagnosis} for this ambulatory {@code Therapy}.
      *
-     * @param therapy entity {@code Therapy} that wil be created.
+     * @param therapy   entity {@code Therapy} that wil be created.
      * @param diagnosis entity {@code Diagnosis} that wil be created.
      * @return {@code id} created entity {@code Therapy}.
      * @throws DaoException if a database access error occurs.
@@ -29,7 +27,7 @@ public interface TherapyDao {
      * Create stationary entity {@code Therapy} and
      * entity {@code Diagnosis} for this stationary {@code Therapy}.
      *
-     * @param therapy entity {@code Therapy} that wil be created.
+     * @param therapy   entity {@code Therapy} that wil be created.
      * @param diagnosis entity {@code Diagnosis} that wil be created.
      * @return {@code id} created entity {@code Therapy}.
      * @throws DaoException if a database access error occurs.
@@ -113,25 +111,35 @@ public interface TherapyDao {
     boolean setFinalDiagnosisToStationaryTherapy(String doctorLogin, String patientLogin) throws DaoException;
 
     /**
-     * Find patient {@code Therapy} entities by {@code User.login} in database.
+     * Find ambulatory patient {@code Therapy} entities by {@code User.login} in database.
      *
      * @param patientLogin {@code String} value of {@code User.login} field.
-     * @param cardType     element of enum {@code CardType}
-     *                     table is selected based on this element.
-     * @return {@code Optional<Therapy>} if it present
-     * or an empty {@code Optional} if it isn't.
+     * @return {@code List<Therapy>} if it present
+     * or an empty {@code List<Therapy>} if it isn't.
      * @throws DaoException if a database access error occurs.
      * @see CardType
      * @see List
      */
-    List<Therapy> findPatientTherapies(String patientLogin, CardType cardType) throws DaoException;
+    List<Therapy> findAmbulatoryPatientTherapies(UserDetails patientUserDetails) throws DaoException;
+
+    /**
+     * Find stationary patient {@code Therapy} entities by {@code User.login} in database.
+     *
+     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @return {@code List<Therapy>} if it present
+     * or an empty {@code List<Therapy>} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see CardType
+     * @see List
+     */
+    List<Therapy> findStationaryPatientTherapies(UserDetails patientUserDetails) throws DaoException;
 
     /**
      * Find open doctor {@code Therapy} entities by {@code User.login} in database.
      *
      * @param doctorLogin {@code String} value of {@code User.login} field.
-     * @param cardType     element of enum {@code CardType}
-     *                     table is selected based on this element.
+     * @param cardType    element of enum {@code CardType}
+     *                    table is selected based on this element.
      * @return {@code Optional<Therapy>} if it present
      * or an empty {@code Optional} if it isn't.
      * @throws DaoException if a database access error occurs.

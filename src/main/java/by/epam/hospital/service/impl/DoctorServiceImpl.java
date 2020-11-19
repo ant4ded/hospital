@@ -93,14 +93,11 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public List<Therapy> findPatientTherapies(UserDetails userDetails, CardType cardType) throws ServiceException {
-        List<Therapy> therapies = new ArrayList<>();
+        List<Therapy> therapies;
         try {
-            Optional<User> optionalUser = userDao
-                    .findUserWithUserDetailsByPassportData(userDetails.getFirstName(), userDetails.getSurname(),
-                            userDetails.getLastName(), userDetails.getBirthday());
-            if (optionalUser.isPresent()) {
-                therapies = therapyDao.findPatientTherapies(optionalUser.get().getLogin(), cardType);
-            }
+            therapies = cardType == CardType.AMBULATORY ?
+                    therapyDao.findAmbulatoryPatientTherapies(userDetails) :
+                    therapyDao.findStationaryPatientTherapies(userDetails);
         } catch (DaoException e) {
             throw new ServiceException("FindPatientTherapies failed.", e);
         }

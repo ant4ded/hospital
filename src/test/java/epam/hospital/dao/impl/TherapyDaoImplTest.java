@@ -623,7 +623,7 @@ public class TherapyDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnGroups = "createTherapy")
-    public void findPatientTherapies_correctFind_ListWithCreatedTherapies(Diagnosis diagnosis, User patient)
+    public void findAmbulatoryPatientTherapies_correctFind_ListWithCreatedTherapies(Diagnosis diagnosis, User patient)
             throws DaoException {
         User doctor = diagnosis.getDoctor();
         userDao.createClientWithUserDetails(patient);
@@ -637,7 +637,6 @@ public class TherapyDaoImplTest {
         first.setDoctor(doctor);
         int therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(first, diagnosis);
         first.setId(therapyId);
-        therapyDao.setAmbulatoryTherapyEndDate(doctor.getLogin(), patient.getLogin(), new Date(0));
         Therapy second = new Therapy();
         second.setCardType(cardType);
         second.setPatient(patient);
@@ -645,7 +644,7 @@ public class TherapyDaoImplTest {
         therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(second, diagnosis);
         second.setId(therapyId);
 
-        List<Therapy> actual = therapyDao.findPatientTherapies(patient.getLogin(), cardType);
+        List<Therapy> actual = therapyDao.findAmbulatoryPatientTherapies(patient.getUserDetails());
 
         cleaner.deleteTherapyWithDiagnosis(first, cardType);
         cleaner.deleteTherapyWithDiagnosis(second, cardType);
@@ -655,6 +654,131 @@ public class TherapyDaoImplTest {
         Assert.assertEquals(actual.size(), 2);
     }
 
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", dependsOnGroups = "createTherapy")
+    public void findAmbulatoryPatientTherapies_therapiesNotExist_ListWithCreatedTherapies(User patient)
+            throws DaoException {
+        userDao.createClientWithUserDetails(patient);
+
+        List<Therapy> actual = therapyDao.findAmbulatoryPatientTherapies(patient.getUserDetails());
+
+        cleaner.delete(patient);
+
+        Assert.assertTrue(actual.isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findAmbulatoryPatientTherapies_patientNotExist_ListWithCreatedTherapies
+            (Diagnosis diagnosis, User patient) throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        CardType cardType = CardType.AMBULATORY;
+
+        Therapy first = new Therapy();
+        first.setCardType(cardType);
+        first.setPatient(patient);
+        first.setDoctor(doctor);
+        int therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(first, diagnosis);
+        first.setId(therapyId);
+        Therapy second = new Therapy();
+        second.setCardType(cardType);
+        second.setPatient(patient);
+        second.setDoctor(doctor);
+        therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(second, diagnosis);
+        second.setId(therapyId);
+
+        patient.getUserDetails().setFirstName("qwe");
+        List<Therapy> actual = therapyDao.findAmbulatoryPatientTherapies(patient.getUserDetails());
+
+        cleaner.deleteTherapyWithDiagnosis(first, cardType);
+        cleaner.deleteTherapyWithDiagnosis(second, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertTrue(actual.isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findStationaryPatientTherapies_correctFind_ListWithCreatedTherapies
+            (Diagnosis diagnosis, User patient) throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        CardType cardType = CardType.STATIONARY;
+
+        Therapy first = new Therapy();
+        first.setCardType(cardType);
+        first.setPatient(patient);
+        first.setDoctor(doctor);
+        int therapyId = therapyDao.createStationaryTherapyWithDiagnosis(first, diagnosis);
+        first.setId(therapyId);
+        Therapy second = new Therapy();
+        second.setCardType(cardType);
+        second.setPatient(patient);
+        second.setDoctor(doctor);
+        therapyId = therapyDao.createStationaryTherapyWithDiagnosis(second, diagnosis);
+        second.setId(therapyId);
+
+        List<Therapy> actual = therapyDao.findStationaryPatientTherapies(patient.getUserDetails());
+
+        cleaner.deleteTherapyWithDiagnosis(first, cardType);
+        cleaner.deleteTherapyWithDiagnosis(second, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertEquals(actual.size(), 2);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", dependsOnGroups = "createTherapy")
+    public void findStationaryPatientTherapies_therapiesNotExist_ListWithCreatedTherapies(User patient)
+            throws DaoException {
+        userDao.createClientWithUserDetails(patient);
+
+        List<Therapy> actual = therapyDao.findStationaryPatientTherapies(patient.getUserDetails());
+
+        cleaner.delete(patient);
+
+        Assert.assertTrue(actual.isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
+            dependsOnGroups = "createTherapy")
+    public void findStationaryPatientTherapies_patientNotExist_ListWithCreatedTherapies
+            (Diagnosis diagnosis, User patient) throws DaoException {
+        User doctor = diagnosis.getDoctor();
+        userDao.createClientWithUserDetails(patient);
+        userDao.createClientWithUserDetails(doctor);
+        userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
+        CardType cardType = CardType.STATIONARY;
+
+        Therapy first = new Therapy();
+        first.setCardType(cardType);
+        first.setPatient(patient);
+        first.setDoctor(doctor);
+        int therapyId = therapyDao.createStationaryTherapyWithDiagnosis(first, diagnosis);
+        first.setId(therapyId);
+        Therapy second = new Therapy();
+        second.setCardType(cardType);
+        second.setPatient(patient);
+        second.setDoctor(doctor);
+        therapyId = therapyDao.createStationaryTherapyWithDiagnosis(second, diagnosis);
+        second.setId(therapyId);
+
+        patient.getUserDetails().setFirstName("qwe");
+        List<Therapy> actual = therapyDao.findStationaryPatientTherapies(patient.getUserDetails());
+
+        cleaner.deleteTherapyWithDiagnosis(first, cardType);
+        cleaner.deleteTherapyWithDiagnosis(second, cardType);
+        cleaner.delete(patient);
+        cleaner.delete(doctor);
+
+        Assert.assertTrue(actual.isEmpty());
+    }
+
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnGroups = "createTherapy")
     public void findOpenDoctorTherapies_correctFind_therapies(Diagnosis diagnosis, User patient) throws DaoException {
@@ -662,7 +786,8 @@ public class TherapyDaoImplTest {
         User doctor = diagnosis.getDoctor();
         patient1.setLogin(patient.getLogin() + "1");
         patient1.setPassword(patient.getLogin() + "1");
-        patient1.getUserDetails().setPassportId(patient.getUserDetails().getPassportId().replace("T", "1"));
+        patient1.getUserDetails().setPassportId(patient.getUserDetails().getPassportId()
+                .replace("T", "1"));
         patient1.getUserDetails().setGender(patient.getUserDetails().getGender());
         patient1.getUserDetails().setFirstName(patient.getUserDetails().getFirstName() + "1");
         patient1.getUserDetails().setSurname(patient.getUserDetails().getSurname());
@@ -673,7 +798,8 @@ public class TherapyDaoImplTest {
         User patient2 = new User();
         patient2.setLogin(patient.getLogin() + "2");
         patient2.setPassword(patient.getLogin() + "2");
-        patient2.getUserDetails().setPassportId(patient.getUserDetails().getPassportId().replace("T", "2"));
+        patient2.getUserDetails().setPassportId(patient.getUserDetails()
+                .getPassportId().replace("T", "2"));
         patient2.getUserDetails().setGender(patient.getUserDetails().getGender());
         patient2.getUserDetails().setFirstName(patient.getUserDetails().getFirstName() + "2");
         patient2.getUserDetails().setSurname(patient.getUserDetails().getSurname());
@@ -684,7 +810,8 @@ public class TherapyDaoImplTest {
         User patient3 = new User();
         patient3.setLogin(patient.getLogin() + "3");
         patient3.setPassword(patient.getLogin() + "3");
-        patient3.getUserDetails().setPassportId(patient.getUserDetails().getPassportId().replace("T", "3"));
+        patient3.getUserDetails().setPassportId(patient.getUserDetails()
+                .getPassportId().replace("T", "3"));
         patient3.getUserDetails().setGender(patient.getUserDetails().getGender());
         patient3.getUserDetails().setFirstName(patient.getUserDetails().getFirstName() + "3");
         patient3.getUserDetails().setSurname(patient.getUserDetails().getSurname());
