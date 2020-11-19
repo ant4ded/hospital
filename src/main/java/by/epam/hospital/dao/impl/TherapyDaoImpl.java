@@ -96,35 +96,19 @@ public class TherapyDaoImpl implements TherapyDao {
     private static final String SP_FIND_STATIONARY_THERAPIES_BY_PATIENT_LOGIN =
             "CALL FindStationaryTherapiesByPatient(?,?,?,?)";
     /**
-     * Sql {@code String} object for find {@code Therapy} entity
-     * where {@code Therapy.endTherapy} not present in
-     * ambulatory card table by doctor {@code User.login} in data base.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindOpenAmbulatoryTherapiesByDoctor}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_OPEN_AMBULATORY_THERAPY_BY_DOCTOR_LOGIN = """
-            SELECT t.id, doctor_id, end_therapy, final_diagnosis_id
-            FROM ambulatory_cards
-            INNER JOIN therapy t on ambulatory_cards.therapy_id = t.id
-            INNER JOIN users doctors on t.doctor_id = doctors.id
-            WHERE doctor_id = (
-                SELECT doctors.id
-                WHERE doctors.login = ?)
-                AND end_therapy IS NULL""";
+    private static final String SP_FIND_OPEN_AMBULATORY_THERAPY_BY_DOCTOR_LOGIN =
+            "CALL FindOpenAmbulatoryTherapiesByDoctor(?)";
     /**
-     * Sql {@code String} object for find {@code Therapy} entity
-     * where {@code Therapy.endTherapy} not present in
-     * stationary card table by doctor {@code User.login} in data base.
+     * Sql {@code String} object for call stored procedure
+     * {@code FindOpenStationaryTherapiesByDoctor}.
      * Written for the MySQL dialect.
      */
-    private static final String SQL_FIND_OPEN_STATIONARY_THERAPY_BY_DOCTOR_LOGIN = """
-            SELECT therapy.id, doctor_id, end_therapy, final_diagnosis_id
-            FROM therapy
-            INNER JOIN users doctors on therapy.doctor_id = doctors.id
-            INNER JOIN stationary_cards sc on therapy.id = sc.therapy_id
-            INNER JOIN users patients on sc.patient_id = patients.id
-            WHERE patient_id = (
-                SELECT patients.id
-                WHERE patients.login = ?)""";
+    private static final String SP_FIND_OPEN_STATIONARY_THERAPY_BY_DOCTOR_LOGIN =
+            "CALL FindOpenStationaryTherapiesByDoctor(?)";
 
     /**
      * {@code UserDao} data access object.
@@ -450,7 +434,6 @@ public class TherapyDaoImpl implements TherapyDao {
      * @return {@code List<Therapy>} if it present
      * or an empty {@code List<Therapy>} if it isn't.
      * @throws DaoException if a database access error occurs.
-     * @see CardType
      * @see List
      */
     @Override
@@ -501,7 +484,6 @@ public class TherapyDaoImpl implements TherapyDao {
      * @return {@code List<Therapy>} if it present
      * or an empty {@code List<Therapy>} if it isn't.
      * @throws DaoException if a database access error occurs.
-     * @see CardType
      * @see List
      */
     @Override
@@ -546,39 +528,78 @@ public class TherapyDaoImpl implements TherapyDao {
     }
 
     /**
-     * Find open doctor {@code Therapy} entities by {@code User.login} in database.
+     * Find open ambulatory doctor {@code Therapy}
+     * entities by {@code User.login} in database.
      *
      * @param doctorLogin {@code String} value of {@code User.login} field.
-     * @param cardType    element of enum {@code CardType}
-     *                    table is selected based on this element.
      * @return {@code Optional<Therapy>} if it present
      * or an empty {@code Optional} if it isn't.
      * @throws DaoException if a database access error occurs.
-     * @see CardType
      * @see List
-     * @see ArrayList
      */
     @Override
-    public List<Therapy> findOpenDoctorTherapies(String doctorLogin, CardType cardType) throws DaoException {
+    public List<Therapy> findOpenDoctorAmbulatoryTherapies(String doctorLogin) throws DaoException {
         List<Therapy> therapies = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(cardType == CardType.AMBULATORY ?
-                    SQL_FIND_OPEN_AMBULATORY_THERAPY_BY_DOCTOR_LOGIN :
-                    SQL_FIND_OPEN_STATIONARY_THERAPY_BY_DOCTOR_LOGIN);
+            statement = connection.prepareStatement(SP_FIND_OPEN_AMBULATORY_THERAPY_BY_DOCTOR_LOGIN);
             statement.setString(1, doctorLogin);
-            statement.execute();
 
-            resultSet = statement.getResultSet();
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Therapy therapy = new Therapy();
                 therapy.setId(resultSet.getInt(TherapyFieldName.ID));
                 therapy.setDoctor(userDao.findById(resultSet.getInt(TherapyFieldName.DOCTOR_ID))
                         .orElseThrow(DaoException::new));
-                therapy.setCardType(cardType);
+                therapy.setCardType(CardType.AMBULATORY);
+                therapy.setPatient(userDao.findByLoginWithUserDetails(doctorLogin).orElseThrow(DaoException::new));
+                therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
+                therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
+                        .orElse(null));
+                therapy.setDiagnoses(diagnosisDao.findByTherapyId(therapy.getId()));
+                therapies.add(therapy);
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("FindOpenDoctorTherapies failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return therapies;
+    }
+
+    /**
+     * Find open stationary doctor {@code Therapy}
+     * entities by {@code User.login} in database.
+     *
+     * @param doctorLogin {@code String} value of {@code User.login} field.
+     * @return {@code Optional<Therapy>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see List
+     */
+    @Override
+    public List<Therapy> findOpenDoctorStationaryTherapies(String doctorLogin) throws DaoException {
+        List<Therapy> therapies = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SP_FIND_OPEN_STATIONARY_THERAPY_BY_DOCTOR_LOGIN);
+            statement.setString(1, doctorLogin);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Therapy therapy = new Therapy();
+                therapy.setId(resultSet.getInt(TherapyFieldName.ID));
+                therapy.setDoctor(userDao.findById(resultSet.getInt(TherapyFieldName.DOCTOR_ID))
+                        .orElseThrow(DaoException::new));
+                therapy.setCardType(CardType.STATIONARY);
                 therapy.setPatient(userDao.findByLoginWithUserDetails(doctorLogin).orElseThrow(DaoException::new));
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))

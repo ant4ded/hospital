@@ -328,14 +328,25 @@ public class DoctorServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findOpenDoctorTherapies_existingDoctorAndTherapies_therapies(User user)
+    public void findOpenDoctorTherapies_existingDoctorAndAmbulatoryTherapies_therapies(User user)
             throws DaoException, ServiceException {
         List<Therapy> therapies = new ArrayList<>(List.of(new Therapy()));
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
-        Mockito.when(therapyDao.findOpenDoctorTherapies(user.getLogin(), CardType.AMBULATORY))
+        Mockito.when(therapyDao.findOpenDoctorAmbulatoryTherapies(user.getLogin()))
                 .thenReturn(therapies);
         Assert.assertFalse(doctorService.findOpenDoctorTherapies(user.getLogin(), CardType.AMBULATORY).isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
+    public void findOpenDoctorTherapies_existingDoctorAndStationaryTherapies_therapies(User user)
+            throws DaoException, ServiceException {
+        List<Therapy> therapies = new ArrayList<>(List.of(new Therapy()));
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenReturn(Optional.of(user));
+        Mockito.when(therapyDao.findOpenDoctorStationaryTherapies(user.getLogin()))
+                .thenReturn(therapies);
+        Assert.assertFalse(doctorService.findOpenDoctorTherapies(user.getLogin(), CardType.STATIONARY).isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")

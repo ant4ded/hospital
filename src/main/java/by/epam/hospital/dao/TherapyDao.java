@@ -113,11 +113,10 @@ public interface TherapyDao {
     /**
      * Find ambulatory patient {@code Therapy} entities by {@code User.login} in database.
      *
-     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @param patientUserDetails {@code UserDetails} object for find.
      * @return {@code List<Therapy>} if it present
      * or an empty {@code List<Therapy>} if it isn't.
      * @throws DaoException if a database access error occurs.
-     * @see CardType
      * @see List
      */
     List<Therapy> findAmbulatoryPatientTherapies(UserDetails patientUserDetails) throws DaoException;
@@ -125,26 +124,35 @@ public interface TherapyDao {
     /**
      * Find stationary patient {@code Therapy} entities by {@code User.login} in database.
      *
-     * @param patientLogin {@code String} value of {@code User.login} field.
+     * @param patientUserDetails {@code UserDetails} object for find.
      * @return {@code List<Therapy>} if it present
      * or an empty {@code List<Therapy>} if it isn't.
      * @throws DaoException if a database access error occurs.
-     * @see CardType
      * @see List
      */
     List<Therapy> findStationaryPatientTherapies(UserDetails patientUserDetails) throws DaoException;
 
     /**
-     * Find open doctor {@code Therapy} entities by {@code User.login} in database.
+     * Find open ambulatory doctor {@code Therapy}
+     * entities by {@code User.login} in database.
      *
      * @param doctorLogin {@code String} value of {@code User.login} field.
-     * @param cardType    element of enum {@code CardType}
-     *                    table is selected based on this element.
      * @return {@code Optional<Therapy>} if it present
      * or an empty {@code Optional} if it isn't.
      * @throws DaoException if a database access error occurs.
-     * @see CardType
      * @see List
      */
-    List<Therapy> findOpenDoctorTherapies(String doctorLogin, CardType cardType) throws DaoException;
+    List<Therapy> findOpenDoctorAmbulatoryTherapies(String doctorLogin) throws DaoException;
+
+    /**
+     * Find open stationary doctor {@code Therapy}
+     * entities by {@code User.login} in database.
+     *
+     * @param doctorLogin {@code String} value of {@code User.login} field.
+     * @return {@code Optional<Therapy>} if it present
+     * or an empty {@code Optional} if it isn't.
+     * @throws DaoException if a database access error occurs.
+     * @see List
+     */
+    List<Therapy> findOpenDoctorStationaryTherapies(String doctorLogin) throws DaoException;
 }
