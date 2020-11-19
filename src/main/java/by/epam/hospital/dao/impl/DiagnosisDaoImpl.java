@@ -41,6 +41,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      */
     private static final String SP_CREATE_STATIONARY_DIAGNOSIS =
             "CALL CreateStationaryDiagnosis(?,?,?,?,?)";
+
+    private static final String SP_FIND_DIAGNOSES_BY_THERAPY_ID =
+            "CALL FindDiagnosesByTherapyId(?)";
     /**
      * Sql {@code String} object for find {@code Diagnosis}
      * entity by {@code Diagnosis.id} in data base.
@@ -50,17 +53,6 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             SELECT id, icd_id, doctor_id, diagnosis_date, reason
             FROM diagnoses
             WHERE id = ?""";
-    /**
-     * Sql {@code String} object for find {@code Diagnosis}
-     * entity by {@code Therapy.id} of therapy in data base.
-     * Written for the MySQL dialect.
-     */
-    private static final String SQL_FIND_BY_THERAPY_ID = """
-            SELECT diagnoses.id, icd_id, diagnoses.doctor_id, diagnosis_date, reason
-            FROM diagnoses
-            INNER JOIN therapy_diagnoses td on diagnoses.id = td.diagnosis_id
-            INNER JOIN therapy t on td.therapy_id = t.id
-            WHERE t.id = ?""";
 
     /**
      * {@link IcdDao} data access object.
@@ -152,8 +144,7 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
     }
 
     /**
-     * Find all {@code Diagnosis} entity by {@code Therapy.id} field
-     * using {@code PreparedStatement}.
+     * Find all {@code Diagnosis} entity by {@code Therapy.id} field.
      *
      * @param id {@code int} value of {@code Therapy.id} field.
      * @return {@code List<Diagnosis>} being a
@@ -162,7 +153,6 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * @throws DaoException if a database access error occurs
      *                      and if {@code ConnectionPool}
      *                      throws {@code ConnectionException}.
-     * @see PreparedStatement
      * @see ConnectionException
      * @see ArrayList
      * @see List
@@ -170,16 +160,15 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
     @Override
     public List<Diagnosis> findByTherapyId(int id) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         List<Diagnosis> diagnoses = new ArrayList<>();
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SQL_FIND_BY_THERAPY_ID);
+            statement = connection.prepareCall(SP_FIND_DIAGNOSES_BY_THERAPY_ID);
             statement.setInt(1, id);
-            statement.execute();
 
-            resultSet = statement.getResultSet();
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Diagnosis diagnosis = new Diagnosis();
                 setDiagnosis(diagnosis, resultSet);
