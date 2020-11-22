@@ -260,8 +260,6 @@ public class TherapyDaoImplTest {
         Assert.assertTrue(optionalTherapy.isEmpty());
     }
 
-//////////////////////////////////////////////////////
-
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnGroups = "createTherapy")
     public void findCurrentPatientStationaryTherapy_correctFind_therapyPresent(Diagnosis diagnosis, User patient)
