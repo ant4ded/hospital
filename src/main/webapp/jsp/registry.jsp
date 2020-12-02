@@ -78,7 +78,7 @@
                                        class="form-control">
                             </div>
                             <div class="switch-wrap d-flex justify-content-between">
-                                <p class="radio-p">${Gender.MALE}</p>
+                                <p class="radio-p">${UsersDetailsFieldName.GENDER_MALE}</p>
                                 <div class="confirm-radio">
                                     <input type="radio" id="confirm-radio" name="${UsersDetailsFieldName.GENDER}"
                                            value="${UsersDetailsFieldName.GENDER_MALE}">
@@ -86,7 +86,7 @@
                                 </div>
                             </div>
                             <div class="switch-wrap d-flex justify-content-between">
-                                <p class="radio-p">${Gender.FEMALE}</p>
+                                <p class="radio-p">${UsersDetailsFieldName.GENDER_FEMALE}</p>
                                 <div class="primary-radio">
                                     <input type="radio" id="primary-radio" name="${UsersDetailsFieldName.GENDER}"
                                            value="${UsersDetailsFieldName.GENDER_FEMALE}">
