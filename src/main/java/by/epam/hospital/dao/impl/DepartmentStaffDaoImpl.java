@@ -11,7 +11,10 @@ import by.epam.hospital.entity.UserDetails;
 import by.epam.hospital.entity.table.UsersDetailsFieldName;
 import by.epam.hospital.entity.table.UsersFieldName;
 
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +48,13 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
      */
     private static final String SP_UPDATE_DEPARTMENT_BY_LOGIN =
             "CALL UpdateDepartmentByLogin(?,?)";
+    /**
+     * Sql {@code String} object for call stored procedure
+     * {@code DeleteMedicalWorkerFromDepartment}.
+     * Written for the MySQL dialect.
+     */
+    private static final String SP_DELETE_MEDICAL_WORKER_FROM_DEPARTMENT =
+            "CALL DeleteMedicalWorkerFromDepartment(?)";
     /**
      * Sql {@code String} object for call stored procedure
      * {@code FindUserWithUserDetailsByDepartment}.
@@ -97,6 +107,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
      * in database using {@code PreparedStatement}.
      *
      * @param department element of enum {@code Department}.
+     * @param login      {@code String} object of {@code User.login}.
      * @return {@code true} if it was successful or {@code false} if not.
      * @throws DaoException if a database access error occurs or if
      *                      {@link ConnectionPool} throws
@@ -114,6 +125,39 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
             statement = connection.prepareCall(SP_UPDATE_DEPARTMENT_BY_LOGIN);
             statement.setInt(1, department.id);
             statement.setString(2, login);
+
+            resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("Updating department staff failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
+    }
+
+    /**
+     * Abstract update table department_staff
+     * in database using {@code PreparedStatement}.
+     *
+     * @param login {@code String} object of {@code User.login}.
+     * @return {@code true} if it was successful or {@code false} if not.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
+     */
+    @Override
+    public boolean deleteMedicalWorkerFromDepartment(String login) throws DaoException {
+        boolean result;
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_DELETE_MEDICAL_WORKER_FROM_DEPARTMENT);
+            statement.setString(1, login);
 
             resultSet = statement.executeQuery();
             result = resultSet.next() && resultSet.getInt(1) != 0;

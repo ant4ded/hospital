@@ -339,6 +339,20 @@ public class AdminHeadServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "updateDepartmentStaff",
             dependsOnGroups = "updateUserRoles")
+    public void updateDepartmentStaff_removeFromDepartment_true(User user) throws DaoException, ServiceException {
+        Mockito.when(userDao.findByLogin(user.getLogin()))
+                .thenReturn(Optional.of(user));
+        Mockito.when(departmentDao.findDepartment(user.getLogin()))
+                .thenReturn(Optional.empty());
+        Mockito.when(departmentStaffDao
+                .deleteMedicalWorkerFromDepartment(user.getLogin()))
+                .thenReturn(true);
+        Assert.assertTrue(adminHeadService
+                .updateDepartmentStaff(Department.INFECTIOUS, ServiceAction.DELETE, user.getLogin(), Role.DOCTOR));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "updateDepartmentStaff",
+            dependsOnGroups = "updateUserRoles")
     public void updateDepartmentStaff_nonExistentUser_false(User user) throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.empty());

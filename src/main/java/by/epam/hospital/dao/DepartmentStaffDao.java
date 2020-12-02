@@ -1,5 +1,7 @@
 package by.epam.hospital.dao;
 
+import by.epam.hospital.connection.ConnectionException;
+import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.User;
@@ -37,6 +39,18 @@ public interface DepartmentStaffDao {
      */
     boolean updateDepartmentByLogin(Department department, String login)
             throws DaoException;
+
+    /**
+     * Abstract update table department_staff
+     * in database using {@code PreparedStatement}.
+     *
+     * @param login {@code String} object of {@code User.login}.
+     * @return {@code true} if it was successful or {@code false} if not.
+     * @throws DaoException if a database access error occurs or if
+     *                      {@link ConnectionPool} throws
+     *                      {@link ConnectionException}.
+     */
+    boolean deleteMedicalWorkerFromDepartment(String login) throws DaoException;
 
     /**
      * Find department staff.

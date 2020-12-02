@@ -101,12 +101,15 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                     !optionalUser.get().getRoles().contains(Role.DEPARTMENT_HEAD);
             boolean isUserFutureDoctorOrMedicalAssistant = role.equals(Role.MEDICAL_ASSISTANT) ||
                     role.equals(Role.DOCTOR);
-            boolean isUserDoesNotHaveDepartmentAndActionAdd = previousDepartment.isEmpty() &&
-                    serviceAction == ServiceAction.ADD;
+            boolean isUserDoesNotHaveDepartment = previousDepartment.isEmpty();
             if (isNotDepartmentHead && isUserFutureDoctorOrMedicalAssistant) {
-                result = isUserDoesNotHaveDepartmentAndActionAdd ?
-                        departmentStaffDao.makeMedicalWorkerAndAddToDepartment(department, login, role) :
-                        departmentStaffDao.updateDepartmentByLogin(department, login);
+                if (serviceAction == ServiceAction.ADD) {
+                    result = isUserDoesNotHaveDepartment ?
+                            departmentStaffDao.makeMedicalWorkerAndAddToDepartment(department, login, role) :
+                            departmentStaffDao.updateDepartmentByLogin(department, login);
+                } else {
+                    result = departmentStaffDao.deleteMedicalWorkerFromDepartment(login);
+                }
             }
         } catch (DaoException e) {
             throw new ServiceException("PerformDepartmentStaff failed.", e);

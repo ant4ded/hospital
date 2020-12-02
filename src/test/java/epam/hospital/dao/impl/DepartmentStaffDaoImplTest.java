@@ -83,6 +83,30 @@ public class DepartmentStaffDaoImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
             dependsOnMethods = "makeMedicalWorkerAndAddToDepartment_correctWork_true")
+    public void updateDepartmentByLogin_nonExistentDoctor_false(User user) throws DaoException {
+        Assert.assertFalse(departmentStaffDao.updateDepartmentByLogin(Department.INFECTIOUS, user.getLogin()));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = "makeMedicalWorkerAndAddToDepartment_correctWork_true")
+    public void deleteMedicalWorkerFromDepartment_correctDelete_true(User user) throws DaoException {
+        userDao.createClientWithUserDetails(user);
+        departmentStaffDao.makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR);
+
+        boolean isSuccess = departmentStaffDao.deleteMedicalWorkerFromDepartment(user.getLogin());
+
+        cleaner.delete(user);
+        Assert.assertTrue(isSuccess);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = "makeMedicalWorkerAndAddToDepartment_correctWork_true")
+    public void deleteMedicalWorkerFromDepartment_nonExistentDoctor_false(User user) throws DaoException {
+        Assert.assertFalse(departmentStaffDao.deleteMedicalWorkerFromDepartment(user.getLogin()));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
+            dependsOnMethods = "makeMedicalWorkerAndAddToDepartment_correctWork_true")
     public void findDepartmentStaff_correctFind_afterCreateResultWithCreatedUser(User user) throws DaoException {
         Map<String, User> userMap = departmentStaffDao.findDepartmentStaff(Department.INFECTIOUS);
         userDao.createClientWithUserDetails(user);
