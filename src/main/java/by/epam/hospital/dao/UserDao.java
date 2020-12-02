@@ -125,8 +125,7 @@ public interface UserDao {
     boolean deleteUserRole(String login, Role role) throws DaoException;
 
     /**
-     * Find roles {@code User} entity by {@code User.login} field
-     * using {@code PreparedStatement}.
+     * Find roles {@code User} entity by {@code User.login} field.
      *
      * @param login {@code int} value of {@code User.login} field.
      * @return {@code List<Role>} being a {@code ArrayList<Role>}

@@ -103,8 +103,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
     }
 
     /**
-     * Abstract update table department_staff
-     * in database using {@code PreparedStatement}.
+     * Abstract update table department_staff.
      *
      * @param department element of enum {@code Department}.
      * @param login      {@code String} object of {@code User.login}.
@@ -139,8 +138,7 @@ public class DepartmentStaffDaoImpl implements DepartmentStaffDao {
     }
 
     /**
-     * Abstract update table department_staff
-     * in database using {@code PreparedStatement}.
+     * Delete doctor or medical assistant from department.
      *
      * @param login {@code String} object of {@code User.login}.
      * @return {@code true} if it was successful or {@code false} if not.

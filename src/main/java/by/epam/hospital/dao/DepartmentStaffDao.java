@@ -41,8 +41,7 @@ public interface DepartmentStaffDao {
             throws DaoException;
 
     /**
-     * Abstract update table department_staff
-     * in database using {@code PreparedStatement}.
+     * Delete doctor or medical assistant from department.
      *
      * @param login {@code String} object of {@code User.login}.
      * @return {@code true} if it was successful or {@code false} if not.
