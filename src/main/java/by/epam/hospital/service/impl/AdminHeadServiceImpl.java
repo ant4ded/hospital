@@ -78,11 +78,7 @@ public class AdminHeadServiceImpl implements AdminHeadService {
             boolean isDepartmentNewHeadEqualsThisDepartment = departmentOfNewHead.isPresent() &&
                     departmentOfNewHead.get().equals(department);
             if (isNonEqualsAndNewHeadIsDoctor && isDepartmentNewHeadEqualsThisDepartment) {
-                if (previousHead.isPresent()) {
-                    updateUserRoles(previousHead.get().getLogin(), ServiceAction.DELETE, Role.DEPARTMENT_HEAD);
-                }
-                departmentDao.updateDepartmentHead(department, login);
-                result = updateUserRoles(login, ServiceAction.ADD, Role.DEPARTMENT_HEAD);
+                result = departmentDao.updateDepartmentHead(department, login);
             }
         } catch (DaoException e) {
             throw new ServiceException("AppointDepartmentHead failed.", e);
