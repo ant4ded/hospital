@@ -7,6 +7,8 @@ import by.epam.hospital.dao.DiagnosisDao;
 import by.epam.hospital.dao.TherapyDao;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.*;
+import by.epam.hospital.entity.table.AmbulatoryCardsFieldName;
+import by.epam.hospital.entity.table.StationaryCardsFieldName;
 import by.epam.hospital.entity.table.TherapyFieldName;
 
 import java.sql.*;
@@ -577,7 +579,9 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setDoctor(userDao.findById(resultSet.getInt(TherapyFieldName.DOCTOR_ID))
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(CardType.AMBULATORY);
-                therapy.setPatient(userDao.findByLoginWithUserDetails(doctorLogin).orElseThrow(DaoException::new));
+                therapy.setPatient(userDao
+                        .findByIdWithUserDetails(resultSet.getInt(AmbulatoryCardsFieldName.PATIENT_ID))
+                        .orElseThrow(DaoException::new));
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));
@@ -624,7 +628,9 @@ public class TherapyDaoImpl implements TherapyDao {
                 therapy.setDoctor(userDao.findById(resultSet.getInt(TherapyFieldName.DOCTOR_ID))
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(CardType.STATIONARY);
-                therapy.setPatient(userDao.findByLoginWithUserDetails(doctorLogin).orElseThrow(DaoException::new));
+                therapy.setPatient(userDao
+                        .findByIdWithUserDetails(resultSet.getInt(StationaryCardsFieldName.PATIENT_ID))
+                        .orElseThrow(DaoException::new));
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
                         .orElse(null));
