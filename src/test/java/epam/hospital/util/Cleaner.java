@@ -3,9 +3,7 @@ package epam.hospital.util;
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.entity.CardType;
-import by.epam.hospital.entity.Therapy;
-import by.epam.hospital.entity.User;
+import by.epam.hospital.entity.*;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -21,6 +19,8 @@ public class Cleaner {
             "CALL DeleteAmbulatoryTherapyWithDiagnosis(?,?)";
     private static final String SP_DELETE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
             "CALL DeleteStationaryTherapyWithDiagnosis(?,?)";
+    private static final String SP_DELETE_PROCEDURE = "CALL DeleteProcedure(?)";
+    private static final String SP_DELETE_MEDICATION = "CALL DeleteMedication(?)";
 
     public void deleteUserFromDepartment(User user) throws DaoException {
         Connection connection = null;
@@ -72,6 +72,7 @@ public class Cleaner {
         }
     }
 
+    // TODO: 28.04.2021 delete with procedures and medications
     public void deleteTherapyWithDiagnosis(Therapy therapy, CardType cardType) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
@@ -91,6 +92,48 @@ public class Cleaner {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("DeleteTherapyWithDiagnosis failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+    }
+
+    public void delete(Procedure procedure) throws DaoException {
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_DELETE_PROCEDURE);
+            statement.setString(1, procedure.getName());
+            resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                throw new DaoException("DeleteTherapyWithDiagnosis failed.");
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("DeleteProcedure failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+    }
+
+    public void delete(Medication medication) throws DaoException {
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_DELETE_MEDICATION);
+            statement.setString(1, medication.getName());
+            resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                throw new DaoException("DeleteTherapyWithDiagnosis failed.");
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("DeleteProcedure failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
