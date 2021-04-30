@@ -4,6 +4,7 @@ import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.ProceduresDao;
+import by.epam.hospital.entity.PageResult;
 import by.epam.hospital.entity.Procedure;
 import by.epam.hospital.entity.table.ProceduresFieldName;
 
@@ -142,8 +143,8 @@ public class ProceduresDaoImpl implements ProceduresDao {
     }
 
     @Override
-    public List<Procedure> findAllByNamePartPaging(String namePart, int page) throws DaoException {
-        List<Procedure> procedures = new LinkedList<>();
+    public PageResult<Procedure> findAllByNamePartPaging(String namePart, int page) throws DaoException {
+        PageResult<Procedure> pageResult;
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
@@ -154,10 +155,9 @@ public class ProceduresDaoImpl implements ProceduresDao {
             statement.setInt(2, page);
             statement.registerOutParameter(3, Types.INTEGER);
 
-
             resultSet = statement.executeQuery();
-            // TODO: 01.05.2021 page result
-            System.out.println(statement.getInt(3));
+
+            List<Procedure> procedures = new LinkedList<>();
             while (resultSet.next()) {
                 Procedure procedure = new Procedure();
                 procedure.setId(resultSet.getInt(ProceduresFieldName.ID));
@@ -166,6 +166,7 @@ public class ProceduresDaoImpl implements ProceduresDao {
                 procedure.setEnabled(resultSet.getBoolean(ProceduresFieldName.IS_ENABLED));
                 procedures.add(procedure);
             }
+            pageResult = PageResult.from(procedures, statement.getInt(3));
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -173,7 +174,7 @@ public class ProceduresDaoImpl implements ProceduresDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return procedures;
+        return pageResult;
     }
 
     private Procedure getProcedure(ResultSet resultSet) throws SQLException {

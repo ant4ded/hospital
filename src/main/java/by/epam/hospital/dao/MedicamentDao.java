@@ -1,8 +1,8 @@
 package by.epam.hospital.dao;
 
 import by.epam.hospital.entity.Medicament;
+import by.epam.hospital.entity.PageResult;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface MedicamentDao {
@@ -14,5 +14,5 @@ public interface MedicamentDao {
 
     Optional<Medicament> updateEnabledStatus(int id, boolean isEnabled) throws DaoException;
 
-    List<Medicament> findAllByNamePartPaging(String namePart, int page) throws DaoException;
+    PageResult<Medicament> findAllByNamePartPaging(String namePart, int page) throws DaoException;
 }

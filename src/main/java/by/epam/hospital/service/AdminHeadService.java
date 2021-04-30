@@ -1,12 +1,11 @@
 package by.epam.hospital.service;
 
 import by.epam.hospital.entity.Department;
-import by.epam.hospital.entity.Medicament;
+import by.epam.hospital.entity.PageResult;
 import by.epam.hospital.entity.Procedure;
 import by.epam.hospital.entity.Role;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,7 +29,5 @@ public interface AdminHeadService {
 
     boolean updateProcedureCost(Procedure procedure, int cost) throws ServiceException;
 
-    List<Procedure> findAllProceduresByNamePartPaging(String namePart, int page) throws ServiceException;
-
-    List<Medicament> findAllMedicationsByNamePartPaging(String namePart, int page) throws ServiceException;
+    PageResult<?> findAllByNamePartPaging(Class<?> type, String namePart, int page) throws ServiceException;
 }

@@ -3,6 +3,7 @@ package epam.hospital.dao.impl;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.ProceduresDao;
 import by.epam.hospital.dao.impl.ProceduresDaoImpl;
+import by.epam.hospital.entity.PageResult;
 import by.epam.hospital.entity.Procedure;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
@@ -10,7 +11,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.List;
 import java.util.Optional;
 
 public class ProceduresDaoImplTest {
@@ -70,10 +70,10 @@ public class ProceduresDaoImplTest {
         for (Procedure procedure : procedures) {
             dao.create(procedure);
         }
-        List<Procedure> proceduresFromDb = dao.findAllByNamePartPaging("thre", 1);
+        PageResult<Procedure> pageResult = dao.findAllByNamePartPaging("thre", 1);
         for (Procedure procedure : procedures) {
             cleaner.delete(procedure);
         }
-        Assert.assertEquals(proceduresFromDb.size(), 4);
+        Assert.assertEquals(pageResult.getList().size(), 4);
     }
 }

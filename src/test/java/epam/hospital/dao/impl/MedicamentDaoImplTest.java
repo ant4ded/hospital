@@ -4,13 +4,13 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.MedicamentDao;
 import by.epam.hospital.dao.impl.MedicamentDaoImpl;
 import by.epam.hospital.entity.Medicament;
+import by.epam.hospital.entity.PageResult;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.List;
 import java.util.Optional;
 
 public class MedicamentDaoImplTest {
@@ -60,10 +60,10 @@ public class MedicamentDaoImplTest {
         for (Medicament medicament : medicaments) {
             dao.create(medicament);
         }
-        List<Medicament> medicationsFromDb = dao.findAllByNamePartPaging("thre", 1);
+        PageResult<Medicament> pageResult = dao.findAllByNamePartPaging("thre", 1);
         for (Medicament medicament : medicaments) {
             cleaner.delete(medicament);
         }
-        Assert.assertEquals(medicationsFromDb.size(), 4);
+        Assert.assertEquals(pageResult.getList().size(), 4);
     }
 }

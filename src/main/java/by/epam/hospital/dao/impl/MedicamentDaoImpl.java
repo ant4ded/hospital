@@ -5,6 +5,7 @@ import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.MedicamentDao;
 import by.epam.hospital.entity.Medicament;
+import by.epam.hospital.entity.PageResult;
 import by.epam.hospital.entity.table.MedicationsFieldName;
 
 import java.sql.*;
@@ -115,8 +116,8 @@ public class MedicamentDaoImpl implements MedicamentDao {
     }
 
     @Override
-    public List<Medicament> findAllByNamePartPaging(String namePart, int page) throws DaoException {
-        List<Medicament> procedures = new LinkedList<>();
+    public PageResult<Medicament> findAllByNamePartPaging(String namePart, int page) throws DaoException {
+        PageResult<Medicament> pageResult;
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
@@ -127,17 +128,17 @@ public class MedicamentDaoImpl implements MedicamentDao {
             statement.setInt(2, page);
             statement.registerOutParameter(3, Types.INTEGER);
 
-
             resultSet = statement.executeQuery();
-            // TODO: 01.05.2021 page result
-            System.out.println(statement.getInt(3));
+
+            List<Medicament> medications = new LinkedList<>();
             while (resultSet.next()) {
                 Medicament medicament = new Medicament();
                 medicament.setId(resultSet.getInt(MedicationsFieldName.ID));
                 medicament.setName(resultSet.getString(MedicationsFieldName.NAME));
                 medicament.setEnabled(resultSet.getBoolean(MedicationsFieldName.IS_ENABLED));
-                procedures.add(medicament);
+                medications.add(medicament);
             }
+            pageResult = PageResult.from(medications, statement.getInt(3));
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -145,7 +146,7 @@ public class MedicamentDaoImpl implements MedicamentDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return procedures;
+        return pageResult;
     }
 
     private Medicament getMedicament(ResultSet resultSet) throws SQLException {

@@ -205,33 +205,50 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         return result.get();
     }
 
-    @Override
-    public List<Procedure> findAllProceduresByNamePartPaging(String namePart, int page) throws ServiceException {
-        if (page < 1) {
-            throw new ServiceException("Can not find procedures, page less than one.");
-        }
+//    @Override
+//    public List<Procedure> findAllProceduresByNamePartPaging(String namePart, int page) throws ServiceException {
+//        if (page < 1) {
+//            throw new ServiceException("Can not find procedures, page less than one.");
+//        }
+//
+//        List<Procedure> procedures;
+//        try {
+//            procedures = procedureDao.findAllByNamePartPaging(namePart, page);
+//        } catch (DaoException e) {
+//            throw new ServiceException("Can not find procedures, something wrong.", e);
+//        }
+//        return procedures;
+//    }
 
-        List<Procedure> procedures;
+    @Override
+    public PageResult<?> findAllByNamePartPaging(Class<?> type, String namePart, int page) throws ServiceException {
+        PageResult<?> pageResult;
         try {
-            procedures = procedureDao.findAllByNamePartPaging(namePart, page);
+            if (type == Procedure.class) {
+                pageResult = procedureDao.findAllByNamePartPaging(namePart, page);
+            } else if (type == Medicament.class) {
+                pageResult = medicamentDao.findAllByNamePartPaging(namePart, page);
+            } else {
+                throw new ServiceException("Invalid class type.");
+            }
         } catch (DaoException e) {
             throw new ServiceException("Can not find procedures, something wrong.", e);
         }
-        return procedures;
+        return pageResult;
     }
 
-    @Override
-    public List<Medicament> findAllMedicationsByNamePartPaging(String namePart, int page) throws ServiceException {
-        if (page < 1) {
-            throw new ServiceException("Can not find procedures, page less than one.");
-        }
-
-        List<Medicament> medications;
-        try {
-            medications = medicamentDao.findAllByNamePartPaging(namePart, page);
-        } catch (DaoException e) {
-            throw new ServiceException("Can not find medications, something wrong.", e);
-        }
-        return medications;
-    }
+//    @Override
+//    public List<Medicament> findAllMedicationsByNamePartPaging(String namePart, int page) throws ServiceException {
+//        if (page < 1) {
+//            throw new ServiceException("Can not find procedures, page less than one.");
+//        }
+//
+//        List<Medicament> medications;
+//        try {
+//            medications = medicamentDao.findAllByNamePartPaging(namePart, page);
+//        } catch (DaoException e) {
+//            throw new ServiceException("Can not find medications, something wrong.", e);
+//        }
+//        return medications;
+//    }
 }
