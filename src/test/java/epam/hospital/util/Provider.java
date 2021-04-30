@@ -99,9 +99,9 @@ public class Provider {
     }
 
     @DataProvider
-    public Object[][] getCorrectMedication() {
+    public Object[][] getCorrectMedicament() {
         return new Object[][]{{
-                new Medication(STRING_VALUE)
+                new Medicament(STRING_VALUE)
         }};
     }
 
@@ -110,13 +110,13 @@ public class Provider {
         Object[][] objects = new Object[1][10];
         for (int i = 0; i < 10; i++) {
             if (i % 2 == 0) {
-                objects[0][i] = new Medication(i + SPACE + STRING_VALUE + " two ");
+                objects[0][i] = new Medicament(i + SPACE + STRING_VALUE + " two ");
             }
             if (i % 2 != 0) {
-                objects[0][i] = new Medication(i + SPACE + STRING_VALUE + " not two ");
+                objects[0][i] = new Medicament(i + SPACE + STRING_VALUE + " not two ");
             }
             if (i % 3 == 0) {
-                objects[0][i] = new Medication(i + SPACE + STRING_VALUE + " three ");
+                objects[0][i] = new Medicament(i + SPACE + STRING_VALUE + " three ");
             }
         }
         return objects;

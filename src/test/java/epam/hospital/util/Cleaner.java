@@ -20,7 +20,7 @@ public class Cleaner {
     private static final String SP_DELETE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
             "CALL DeleteStationaryTherapyWithDiagnosis(?,?)";
     private static final String SP_DELETE_PROCEDURE = "CALL DeleteProcedure(?)";
-    private static final String SP_DELETE_MEDICATION = "CALL DeleteMedication(?)";
+    private static final String SP_DELETE_MEDICAMENT = "CALL DeleteMedicament(?)";
 
     public void deleteUserFromDepartment(User user) throws DaoException {
         Connection connection = null;
@@ -118,14 +118,14 @@ public class Cleaner {
         }
     }
 
-    public void delete(Medication medication) throws DaoException {
+    public void delete(Medicament medicament) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_DELETE_MEDICATION);
-            statement.setString(1, medication.getName());
+            statement = connection.prepareCall(SP_DELETE_MEDICAMENT);
+            statement.setString(1, medicament.getName());
             resultSet = statement.executeQuery();
             if (!resultSet.next()) {
                 throw new DaoException("DeleteTherapyWithDiagnosis failed.");

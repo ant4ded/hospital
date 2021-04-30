@@ -2,15 +2,15 @@ package by.epam.hospital.entity;
 
 import java.util.StringJoiner;
 
-public class Medication {
+public class Medicament {
     private int id;
     private String name;
     private boolean isEnabled;
 
-    public Medication() {
+    public Medicament() {
     }
 
-    public Medication(String name) {
+    public Medicament(String name) {
         this.name = name;
     }
 
@@ -43,7 +43,7 @@ public class Medication {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Medication that = (Medication) o;
+        Medicament that = (Medicament) o;
 
         if (id != that.id) return false;
         return name.equals(that.name);
@@ -58,7 +58,7 @@ public class Medication {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Medication.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", Medicament.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
                 .add("name='" + name + "'")
                 .add("isEnabled=" + isEnabled)

@@ -3,8 +3,8 @@ package by.epam.hospital.dao.impl;
 import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.MedicationsDao;
-import by.epam.hospital.entity.Medication;
+import by.epam.hospital.dao.MedicamentDao;
+import by.epam.hospital.entity.Medicament;
 import by.epam.hospital.entity.table.MedicationsFieldName;
 
 import java.sql.*;
@@ -12,31 +12,31 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class MedicationsDaoImpl implements MedicationsDao {
-    private static final String SP_CREATE_MEDICATION = "CALL CreateMedication(?)";
-    private static final String SP_FIND_MEDICATION_BY_ID = "CALL FindMedicationById(?)";
-    private static final String SP_FIND_MEDICATION_BY_NAME = "CALL FindMedicationByName(?)";
-    private static final String SP_UPDATE_MEDICATION_ENABLED_STATUS = "CALL UpdateMedicationEnabledStatus(?,?)";
+public class MedicamentDaoImpl implements MedicamentDao {
+    private static final String SP_CREATE_MEDICAMENT = "CALL CreateMedicament(?)";
+    private static final String SP_FIND_MEDICAMENT_BY_ID = "CALL FindMedicamentById(?)";
+    private static final String SP_FIND_MEDICAMENT_BY_NAME = "CALL FindMedicamentByName(?)";
+    private static final String SP_UPDATE_MEDICAMENT_ENABLED_STATUS = "CALL UpdateMedicamentEnabledStatus(?,?)";
     private static final String SP_FIND_ALL_MEDICATIONS_BY_NAME_PAGING = "CALL FindAllMedicationsByNamePaging(?,?,?)";
 
     @Override
-    public int create(Medication medication) throws DaoException {
+    public int create(Medicament medicament) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
         int userId;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_CREATE_MEDICATION);
+            statement = connection.prepareCall(SP_CREATE_MEDICAMENT);
 
-            statement.setString(1, medication.getName());
+            statement.setString(1, medicament.getName());
 
             resultSet = statement.executeQuery();
             userId = resultSet.next() ? resultSet.getInt(1) : 0;
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("CreateMedication failed.", e);
+            throw new DaoException("CreateMedicament failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -44,79 +44,79 @@ public class MedicationsDaoImpl implements MedicationsDao {
     }
 
     @Override
-    public Optional<Medication> findById(int id) throws DaoException {
+    public Optional<Medicament> findById(int id) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
-        Optional<Medication> optionalMedication;
+        Optional<Medicament> optionalMedicament;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_FIND_MEDICATION_BY_ID);
+            statement = connection.prepareCall(SP_FIND_MEDICAMENT_BY_ID);
             statement.setString(1, String.valueOf(id));
 
             resultSet = statement.executeQuery();
-            optionalMedication = Optional.ofNullable(getMedication(resultSet));
+            optionalMedicament = Optional.ofNullable(getMedicament(resultSet));
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("FindMedicationById failed.", e);
+            throw new DaoException("FindMedicamentById failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return optionalMedication;
+        return optionalMedicament;
     }
 
     @Override
-    public Optional<Medication> findByName(String name) throws DaoException {
+    public Optional<Medicament> findByName(String name) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
-        Optional<Medication> optionalMedication;
+        Optional<Medicament> optionalMedicament;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_FIND_MEDICATION_BY_NAME);
+            statement = connection.prepareCall(SP_FIND_MEDICAMENT_BY_NAME);
             statement.setString(1, name);
 
             resultSet = statement.executeQuery();
-            optionalMedication = Optional.ofNullable(getMedication(resultSet));
+            optionalMedicament = Optional.ofNullable(getMedicament(resultSet));
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("FindMedicationByName failed.", e);
+            throw new DaoException("FindMedicamentByName failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return optionalMedication;
+        return optionalMedicament;
     }
 
     @Override
-    public Optional<Medication> updateEnabledStatus(int id, boolean isEnabled) throws DaoException {
+    public Optional<Medicament> updateEnabledStatus(int id, boolean isEnabled) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
-        Optional<Medication> optionalMedication;
+        Optional<Medicament> optionalMedicament;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_UPDATE_MEDICATION_ENABLED_STATUS);
+            statement = connection.prepareCall(SP_UPDATE_MEDICAMENT_ENABLED_STATUS);
 
             statement.setString(1, String.valueOf(id));
             statement.setBoolean(2, isEnabled);
 
             resultSet = statement.executeQuery();
-            optionalMedication = Optional.ofNullable(getMedication(resultSet));
+            optionalMedicament = Optional.ofNullable(getMedicament(resultSet));
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
-            throw new DaoException("UpdateMedicationEnabledStatus failed.", e);
+            throw new DaoException("UpdateMedicamentEnabledStatus failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return optionalMedication;
+        return optionalMedicament;
     }
 
     @Override
-    public List<Medication> findAllByNamePartPaging(String namePart, int from, int to) throws DaoException {
-        List<Medication> procedures = new LinkedList<>();
+    public List<Medicament> findAllByNamePartPaging(String namePart, int from, int to) throws DaoException {
+        List<Medicament> procedures = new LinkedList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -129,11 +129,11 @@ public class MedicationsDaoImpl implements MedicationsDao {
 
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                Medication medication = new Medication();
-                medication.setId(resultSet.getInt(MedicationsFieldName.ID));
-                medication.setName(resultSet.getString(MedicationsFieldName.NAME));
-                medication.setEnabled(resultSet.getBoolean(MedicationsFieldName.IS_ENABLED));
-                procedures.add(medication);
+                Medicament medicament = new Medicament();
+                medicament.setId(resultSet.getInt(MedicationsFieldName.ID));
+                medicament.setName(resultSet.getString(MedicationsFieldName.NAME));
+                medicament.setEnabled(resultSet.getBoolean(MedicationsFieldName.IS_ENABLED));
+                procedures.add(medicament);
             }
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
@@ -145,13 +145,13 @@ public class MedicationsDaoImpl implements MedicationsDao {
         return procedures;
     }
 
-    private Medication getMedication(ResultSet resultSet) throws SQLException {
+    private Medicament getMedicament(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
-            Medication medication = new Medication();
-            medication.setId(resultSet.getInt(MedicationsFieldName.ID));
-            medication.setName(resultSet.getString(MedicationsFieldName.NAME));
-            medication.setEnabled(resultSet.getBoolean(MedicationsFieldName.IS_ENABLED));
-            return medication;
+            Medicament medicament = new Medicament();
+            medicament.setId(resultSet.getInt(MedicationsFieldName.ID));
+            medicament.setName(resultSet.getString(MedicationsFieldName.NAME));
+            medicament.setEnabled(resultSet.getBoolean(MedicationsFieldName.IS_ENABLED));
+            return medicament;
         }
         return null;
     }
