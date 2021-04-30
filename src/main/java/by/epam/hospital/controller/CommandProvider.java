@@ -85,7 +85,8 @@ public class CommandProvider {
     }
 
     private ClientService getClientService() {
-        return new ClientServiceImpl(new UserDaoImpl(), new UserDetailsDaoImpl());
+        return new ClientServiceImpl(new UserDaoImpl(),
+                new UserDetailsDaoImpl());
     }
 
     private ReceptionistService getReceptionistService() {
@@ -93,11 +94,17 @@ public class CommandProvider {
     }
 
     private AdminHeadService getAdminHeadService() {
-        return new AdminHeadServiceImpl(new UserDaoImpl(), new DepartmentDaoImpl(), new DepartmentStaffDaoImpl());
+        return new AdminHeadServiceImpl(new UserDaoImpl(),
+                new DepartmentDaoImpl(),
+                new DepartmentStaffDaoImpl(),
+                new ProceduresDaoImpl(),
+                new MedicamentDaoImpl());
     }
 
     private DoctorService getDoctorService() {
-        return new DoctorServiceImpl(new IcdDaoImpl(), new UserDaoImpl(),
-                new TherapyDaoImpl(), new DiagnosisDaoImpl());
+        return new DoctorServiceImpl(new IcdDaoImpl(),
+                new UserDaoImpl(),
+                new TherapyDaoImpl(),
+                new DiagnosisDaoImpl());
     }
 }
