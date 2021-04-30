@@ -51,7 +51,7 @@ public class ProceduresDaoImplTest {
         int id = dao.create(procedure);
         procedure.setId(id);
         procedure.setCost(200);
-        Optional<Procedure> procedureFromDb = dao.updateCost(200, id);
+        Optional<Procedure> procedureFromDb = dao.updateCost(id, 200);
         cleaner.delete(procedureFromDb.orElseThrow(() -> new DaoException("Update failed")));
         Assert.assertEquals(procedureFromDb.get(), procedure);
     }

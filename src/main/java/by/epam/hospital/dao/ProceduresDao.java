@@ -12,7 +12,7 @@ public interface ProceduresDao {
 
     Optional<Procedure> findById(int id) throws DaoException;
 
-    Optional<Procedure> updateCost(int cost, int id) throws DaoException;
+    Optional<Procedure> updateCost(int id, int cost) throws DaoException;
 
     Optional<Procedure> updateEnabledStatus(int id, boolean isEnabled) throws DaoException;
 

@@ -92,7 +92,7 @@ public class ProceduresDaoImpl implements ProceduresDao {
     }
 
     @Override
-    public Optional<Procedure> updateCost(int cost, int id) throws DaoException {
+    public Optional<Procedure> updateCost(int id, int cost) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
