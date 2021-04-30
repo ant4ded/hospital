@@ -459,7 +459,7 @@ public class AdminHeadServiceImplTest {
     @Test
     public void findAllProceduresByNamePartPaging_existingNamePart_listProcedures()
             throws ServiceException, DaoException {
-        Mockito.when(procedureDao.findAllByNamePartPaging("qwe", 10, 19))
+        Mockito.when(procedureDao.findAllByNamePartPaging("qwe", 2))
                 .thenReturn(Collections.singletonList(new Procedure()));
         Assert.assertFalse(adminHeadService.findAllProceduresByNamePartPaging("qwe", 2).isEmpty());
     }
@@ -467,7 +467,7 @@ public class AdminHeadServiceImplTest {
     @Test
     public void findAllMedicationsByNamePartPaging_existingNamePart_listProcedures()
             throws ServiceException, DaoException {
-        Mockito.when(medicamentDao.findAllByNamePartPaging("qwe", 10, 19))
+        Mockito.when(medicamentDao.findAllByNamePartPaging("qwe", 2))
                 .thenReturn(Collections.singletonList(new Medicament()));
         Assert.assertFalse(adminHeadService.findAllMedicationsByNamePartPaging("qwe", 2).isEmpty());
     }

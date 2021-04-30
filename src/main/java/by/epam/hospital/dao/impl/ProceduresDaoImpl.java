@@ -142,19 +142,22 @@ public class ProceduresDaoImpl implements ProceduresDao {
     }
 
     @Override
-    public List<Procedure> findAllByNamePartPaging(String namePart, int from, int to) throws DaoException {
+    public List<Procedure> findAllByNamePartPaging(String namePart, int page) throws DaoException {
         List<Procedure> procedures = new LinkedList<>();
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SP_FIND_ALL_PROCEDURES_BY_NAME_PAGING);
+            statement = connection.prepareCall(SP_FIND_ALL_PROCEDURES_BY_NAME_PAGING);
             statement.setString(1, namePart);
-            statement.setInt(2, from);
-            statement.setInt(3, to);
+            statement.setInt(2, page);
+            statement.registerOutParameter(3, Types.INTEGER);
+
 
             resultSet = statement.executeQuery();
+            // TODO: 01.05.2021 page result
+            System.out.println(statement.getInt(3));
             while (resultSet.next()) {
                 Procedure procedure = new Procedure();
                 procedure.setId(resultSet.getInt(ProceduresFieldName.ID));

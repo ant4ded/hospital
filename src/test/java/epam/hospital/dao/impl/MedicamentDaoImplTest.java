@@ -60,7 +60,7 @@ public class MedicamentDaoImplTest {
         for (Medicament medicament : medicaments) {
             dao.create(medicament);
         }
-        List<Medicament> medicationsFromDb = dao.findAllByNamePartPaging("thre", 0, 10);
+        List<Medicament> medicationsFromDb = dao.findAllByNamePartPaging("thre", 1);
         for (Medicament medicament : medicaments) {
             cleaner.delete(medicament);
         }

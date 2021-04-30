@@ -70,7 +70,7 @@ public class ProceduresDaoImplTest {
         for (Procedure procedure : procedures) {
             dao.create(procedure);
         }
-        List<Procedure> proceduresFromDb = dao.findAllByNamePartPaging("thre", 0, 10);
+        List<Procedure> proceduresFromDb = dao.findAllByNamePartPaging("thre", 1);
         for (Procedure procedure : procedures) {
             cleaner.delete(procedure);
         }

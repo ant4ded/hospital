@@ -207,11 +207,13 @@ public class AdminHeadServiceImpl implements AdminHeadService {
 
     @Override
     public List<Procedure> findAllProceduresByNamePartPaging(String namePart, int page) throws ServiceException {
-        int from = page == 1 ? 0 : PAGING_SIZE * page - PAGING_SIZE;
-        int to = page == 1 ? 9 : PAGING_SIZE * page - 1;
+        if (page < 1) {
+            throw new ServiceException("Can not find procedures, page less than one.");
+        }
+
         List<Procedure> procedures;
         try {
-            procedures = procedureDao.findAllByNamePartPaging(namePart, from, to);
+            procedures = procedureDao.findAllByNamePartPaging(namePart, page);
         } catch (DaoException e) {
             throw new ServiceException("Can not find procedures, something wrong.", e);
         }
@@ -220,11 +222,13 @@ public class AdminHeadServiceImpl implements AdminHeadService {
 
     @Override
     public List<Medicament> findAllMedicationsByNamePartPaging(String namePart, int page) throws ServiceException {
-        int from = page == 1 ? 0 : PAGING_SIZE * page - PAGING_SIZE;
-        int to = page == 1 ? 9 : PAGING_SIZE * page - 1;
+        if (page < 1) {
+            throw new ServiceException("Can not find procedures, page less than one.");
+        }
+
         List<Medicament> medications;
         try {
-            medications = medicamentDao.findAllByNamePartPaging(namePart, from, to);
+            medications = medicamentDao.findAllByNamePartPaging(namePart, page);
         } catch (DaoException e) {
             throw new ServiceException("Can not find medications, something wrong.", e);
         }

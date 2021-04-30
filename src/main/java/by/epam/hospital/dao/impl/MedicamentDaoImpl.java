@@ -115,19 +115,22 @@ public class MedicamentDaoImpl implements MedicamentDao {
     }
 
     @Override
-    public List<Medicament> findAllByNamePartPaging(String namePart, int from, int to) throws DaoException {
+    public List<Medicament> findAllByNamePartPaging(String namePart, int page) throws DaoException {
         List<Medicament> procedures = new LinkedList<>();
         Connection connection = null;
-        PreparedStatement statement = null;
+        CallableStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareStatement(SP_FIND_ALL_MEDICATIONS_BY_NAME_PAGING);
+            statement = connection.prepareCall(SP_FIND_ALL_MEDICATIONS_BY_NAME_PAGING);
             statement.setString(1, namePart);
-            statement.setInt(2, from);
-            statement.setInt(3, to);
+            statement.setInt(2, page);
+            statement.registerOutParameter(3, Types.INTEGER);
+
 
             resultSet = statement.executeQuery();
+            // TODO: 01.05.2021 page result
+            System.out.println(statement.getInt(3));
             while (resultSet.next()) {
                 Medicament medicament = new Medicament();
                 medicament.setId(resultSet.getInt(MedicationsFieldName.ID));

@@ -14,5 +14,5 @@ public interface MedicamentDao {
 
     Optional<Medicament> updateEnabledStatus(int id, boolean isEnabled) throws DaoException;
 
-    List<Medicament> findAllByNamePartPaging(String namePart, int from, int to) throws DaoException;
+    List<Medicament> findAllByNamePartPaging(String namePart, int page) throws DaoException;
 }

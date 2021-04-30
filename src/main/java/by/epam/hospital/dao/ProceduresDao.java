@@ -16,5 +16,5 @@ public interface ProceduresDao {
 
     Optional<Procedure> updateEnabledStatus(int id, boolean isEnabled) throws DaoException;
 
-    List<Procedure> findAllByNamePartPaging(String namePart, int from, int to) throws DaoException;
+    List<Procedure> findAllByNamePartPaging(String namePart, int page) throws DaoException;
 }
