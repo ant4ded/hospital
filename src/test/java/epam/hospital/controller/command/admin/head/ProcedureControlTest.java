@@ -47,7 +47,7 @@ public class ProcedureControlTest {
             throws ServiceException, IOException, ServletException {
         Mockito.when(request.getParameter(ParameterName.ACTION))
                 .thenReturn(String.valueOf(ServiceAction.ADD));
-        Mockito.when(request.getParameter(ProceduresFieldName.NAME))
+        Mockito.when(request.getParameter(ParameterName.PROCEDURE_OR_MEDICAMENT_NAME))
                 .thenReturn(procedure.getName());
         Mockito.when(request.getParameter(ProceduresFieldName.COST))
                 .thenReturn(String.valueOf(procedure.getCost()));

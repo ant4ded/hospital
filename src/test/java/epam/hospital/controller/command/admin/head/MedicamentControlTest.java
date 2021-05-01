@@ -47,7 +47,7 @@ public class MedicamentControlTest {
             throws ServiceException, IOException, ServletException {
         Mockito.when(request.getParameter(ParameterName.ACTION))
                 .thenReturn(String.valueOf(ServiceAction.ADD));
-        Mockito.when(request.getParameter(ProceduresFieldName.NAME))
+        Mockito.when(request.getParameter(ParameterName.PROCEDURE_OR_MEDICAMENT_NAME))
                 .thenReturn(medicament.getName());
         Mockito.when(request.getParameter(ProceduresFieldName.IS_ENABLED))
                 .thenReturn(String.valueOf(medicament.isEnabled()));

@@ -30,7 +30,7 @@ public class ProcedureControl implements HttpCommand {
     @Override
     public Map<String, Object> execute(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
-        String name = request.getParameter(ProceduresFieldName.NAME);
+        String name = request.getParameter(ParameterName.PROCEDURE_OR_MEDICAMENT_NAME);
         int cost = Integer.parseInt(request.getParameter(ProceduresFieldName.COST));
         boolean isEnabled = Boolean.parseBoolean(request.getParameter(ProceduresFieldName.IS_ENABLED));
         ServiceAction serviceAction = ServiceAction.valueOf(request.getParameter(ParameterName.ACTION));
