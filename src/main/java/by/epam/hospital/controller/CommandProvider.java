@@ -55,6 +55,12 @@ public class CommandProvider {
         map.put(CommandName.ROLE_CONTROL,
                 new RoleControl(getAdminHeadService(),
                         Logger.getLogger(RoleControl.class)));
+        map.put(CommandName.PROCEDURE_CONTROL,
+                new ProcedureControl(getAdminHeadService(),
+                        Logger.getLogger(ProcedureControl.class)));
+        map.put(CommandName.MEDICAMENT_CONTROL,
+                new MedicamentControl(getAdminHeadService(),
+                        Logger.getLogger(MedicamentControl.class)));
 
         map.put(CommandName.FIND_USER_DETAILS,
                 new FindUserDetails(getClientService(),
