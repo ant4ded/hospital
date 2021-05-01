@@ -7,15 +7,12 @@ import by.epam.hospital.service.ServiceAction;
 import by.epam.hospital.service.ServiceException;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AdminHeadServiceImpl implements AdminHeadService {
-    private static final int PAGING_SIZE = 10;
-
     private final UserDao userDao;
     private final DepartmentDao departmentDao;
     private final DepartmentStaffDao departmentStaffDao;
@@ -171,19 +168,13 @@ public class AdminHeadServiceImpl implements AdminHeadService {
                 Optional<Procedure> optionalFromDb = procedureDao.findByName(((Procedure) o).getName());
                 optionalFromDb.ifPresent(fromDb -> idEntityForUpdate.set(fromDb.getId()));
                 Optional<Procedure> optionalUpdated = procedureDao.updateEnabledStatus(idEntityForUpdate.get(), isEnabled);
-
-                if (optionalUpdated.isPresent() && optionalFromDb.isPresent()) {
-                    result = optionalFromDb.get().isEnabled() != optionalUpdated.get().isEnabled();
-                }
+                result = optionalUpdated.isPresent();
             }
             if (type == Medicament.class) {
                 Optional<Medicament> optionalFromDb = medicamentDao.findByName(((Medicament) o).getName());
                 optionalFromDb.ifPresent(fromDb -> idEntityForUpdate.set(fromDb.getId()));
                 Optional<Medicament> optionalUpdated = medicamentDao.updateEnabledStatus(idEntityForUpdate.get(), isEnabled);
-
-                if (optionalUpdated.isPresent() && optionalFromDb.isPresent()) {
-                    result = optionalFromDb.get().isEnabled() != optionalUpdated.get().isEnabled();
-                }
+                result = optionalUpdated.isPresent();
             }
         } catch (DaoException e) {
             throw new ServiceException("Can not update enabled status on " + type.getSimpleName() + ".", e);
@@ -205,21 +196,6 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         return result.get();
     }
 
-//    @Override
-//    public List<Procedure> findAllProceduresByNamePartPaging(String namePart, int page) throws ServiceException {
-//        if (page < 1) {
-//            throw new ServiceException("Can not find procedures, page less than one.");
-//        }
-//
-//        List<Procedure> procedures;
-//        try {
-//            procedures = procedureDao.findAllByNamePartPaging(namePart, page);
-//        } catch (DaoException e) {
-//            throw new ServiceException("Can not find procedures, something wrong.", e);
-//        }
-//        return procedures;
-//    }
-
     @Override
     public PageResult<?> findAllByNamePartPaging(Class<?> type, String namePart, int page) throws ServiceException {
         PageResult<?> pageResult;
@@ -236,19 +212,4 @@ public class AdminHeadServiceImpl implements AdminHeadService {
         }
         return pageResult;
     }
-
-//    @Override
-//    public List<Medicament> findAllMedicationsByNamePartPaging(String namePart, int page) throws ServiceException {
-//        if (page < 1) {
-//            throw new ServiceException("Can not find procedures, page less than one.");
-//        }
-//
-//        List<Medicament> medications;
-//        try {
-//            medications = medicamentDao.findAllByNamePartPaging(namePart, page);
-//        } catch (DaoException e) {
-//            throw new ServiceException("Can not find medications, something wrong.", e);
-//        }
-//        return medications;
-//    }
 }
