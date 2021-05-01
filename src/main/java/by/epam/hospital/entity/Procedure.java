@@ -13,7 +13,12 @@ public class Procedure {
     }
 
     public Procedure() {
+    }
 
+    public Procedure(String name, int cost, boolean isEnabled) {
+        this.name = name;
+        this.cost = cost;
+        this.isEnabled = isEnabled;
     }
 
     public int getId() {

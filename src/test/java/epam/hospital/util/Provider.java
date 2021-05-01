@@ -77,7 +77,7 @@ public class Provider {
     @DataProvider
     public Object[][] getCorrectProcedure() {
         return new Object[][]{{
-                new Procedure(STRING_VALUE)
+                new Procedure(STRING_VALUE, 10, true)
         }};
     }
 
@@ -101,7 +101,7 @@ public class Provider {
     @DataProvider
     public Object[][] getCorrectMedicament() {
         return new Object[][]{{
-                new Medicament(STRING_VALUE)
+                new Medicament(STRING_VALUE, true)
         }};
     }
 

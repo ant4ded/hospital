@@ -14,6 +14,11 @@ public class Medicament {
         this.name = name;
     }
 
+    public Medicament(String name, boolean isEnabled) {
+        this.name = name;
+        this.isEnabled = isEnabled;
+    }
+
     public int getId() {
         return id;
     }
