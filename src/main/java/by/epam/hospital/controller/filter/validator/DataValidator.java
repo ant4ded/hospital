@@ -10,6 +10,7 @@ public class DataValidator {
     private static final String PHONE_REGEX = "\\d{12}";
     private static final String LOGIN_REGEX = "\\p{Ll}{3,15}_\\p{Ll}_\\p{Ll}{3,15}";
     private static final String ICD_CODE_REGEX = "[\\d-\\p{Lu}]{7}";
+    private static final String ONLY_NUMBERS_REGEX = "^\\d+$";
     private static final int YEAR_LENGTH = 4;
     private static final int MULTIPLICITY_LEAP_YEAR = 4;
     private static final int MONTH_LENGTH = 2;
@@ -19,6 +20,8 @@ public class DataValidator {
     private static final int MAX_AGE = 120;
     private static final int LEAP_YEAR_DAY = 29;
     private static final int NON_LEAP_YEAR_DAY = 28;
+    private static final int PROCEDURE_OR_MEDICAMENT_MAX_NAME_LENGTH = 100;
+    private static final int MAX_COST = 10_000;
 
     private final int minYearBirth = LocalDate.now().getYear() - MAX_AGE;
 
@@ -108,5 +111,13 @@ public class DataValidator {
             result = icdCode.matches(ICD_CODE_REGEX);
         }
         return result;
+    }
+
+    public boolean isValidProcedureOrMedicamentName(String name) {
+        return name.length() < PROCEDURE_OR_MEDICAMENT_MAX_NAME_LENGTH;
+    }
+
+    public boolean isValidCost(String cost) {
+        return cost.matches(ONLY_NUMBERS_REGEX) && Integer.parseInt(cost) > 0 && Integer.parseInt(cost) < MAX_COST;
     }
 }

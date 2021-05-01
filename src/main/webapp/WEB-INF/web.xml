@@ -363,6 +363,22 @@
       <param-value>gender</param-value>
     </init-param>
   </filter>
+  <filter>
+    <filter-name>ProcedureOrMedicamentNameFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>procedure_or_medicament_name</param-value>
+    </init-param>
+  </filter>
+  <filter>
+    <filter-name>ProcedureCostFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>cost</param-value>
+    </init-param>
+  </filter>
 
   <filter-mapping>
     <filter-name>CommandFilter</filter-name>
@@ -603,6 +619,28 @@
   <filter-mapping>
     <filter-name>CardTypeFilter</filter-name>
     <url-pattern>/c-make-last-diagnosis-final</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>ActionFilter</filter-name>
+    <url-pattern>/c-procedure-control</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ProcedureOrMedicamentNameFilter</filter-name>
+    <url-pattern>/c-procedure-control</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ProcedureCostFilter</filter-name>
+    <url-pattern>/c-procedure-control</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>ActionFilter</filter-name>
+    <url-pattern>/c-medicament-control</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ProcedureOrMedicamentNameFilter</filter-name>
+    <url-pattern>/c-medicament-control</url-pattern>
   </filter-mapping>
   <!--Validation filters declaration end-->
   <!--Filters declaration end-->
