@@ -44,6 +44,7 @@ public class RequestParametersFilter implements Filter {
             case ParameterName.PROCEDURE_OR_MEDICAMENT_NAME -> dataValidator
                     .isValidProcedureOrMedicamentName(parameterValue);
             case ProceduresFieldName.COST -> dataValidator.isValidCost(parameterValue);
+            case ParameterName.PAGE_NUMBER -> dataValidator.isNumber(parameterValue);
             case UsersDetailsFieldName.GENDER -> !UserDetails.Gender.hasValue(parameterValue);
             case IcdFieldName.CODE -> !dataValidator.isValidIcdCode(parameterValue);
             case UsersFieldName.LOGIN -> !dataValidator.isValidLogin(parameterValue);

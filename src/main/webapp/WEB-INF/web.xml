@@ -379,6 +379,14 @@
       <param-value>cost</param-value>
     </init-param>
   </filter>
+  <filter>
+    <filter-name>PageNumberFilter</filter-name>
+    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
+    <init-param>
+      <param-name>parameter_name</param-name>
+      <param-value>page_number</param-value>
+    </init-param>
+  </filter>
 
   <filter-mapping>
     <filter-name>CommandFilter</filter-name>
@@ -641,6 +649,15 @@
   <filter-mapping>
     <filter-name>ProcedureOrMedicamentNameFilter</filter-name>
     <url-pattern>/c-medicament-control</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
+    <filter-name>PageNumberFilter</filter-name>
+    <url-pattern>/c-find-all-medications</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>PageNumberFilter</filter-name>
+    <url-pattern>/c-find-all-procedures</url-pattern>
   </filter-mapping>
   <!--Validation filters declaration end-->
   <!--Filters declaration end-->

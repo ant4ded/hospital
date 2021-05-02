@@ -120,4 +120,8 @@ public class DataValidator {
     public boolean isValidCost(String cost) {
         return cost.matches(ONLY_NUMBERS_REGEX) && Integer.parseInt(cost) > 0 && Integer.parseInt(cost) < MAX_COST;
     }
+
+    public boolean isNumber(String number) {
+        return number.matches(ONLY_NUMBERS_REGEX);
+    }
 }
