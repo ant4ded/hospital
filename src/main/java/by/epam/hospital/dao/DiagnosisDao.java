@@ -1,5 +1,6 @@
 package by.epam.hospital.dao;
 
+import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Diagnosis;
 
 import java.util.List;
@@ -11,29 +12,8 @@ import java.util.Optional;
  */
 
 public interface DiagnosisDao {
-    /**
-     * Create entity {@code Diagnosis} for ambulatory
-     * {@code Therapy} entity in database.
-     *
-     * @param diagnosis    an a {@code Diagnosis} entity.
-     * @param patientLogin {@code String} value of patient
-     *                     {@code User.login} field.
-     * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs.
-     */
-    int createAmbulatoryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException;
 
-    /**
-     * Create entity {@code Diagnosis} for stationary
-     * {@code Therapy} entity in database.
-     *
-     * @param diagnosis    an a {@code Diagnosis} entity.
-     * @param patientLogin {@code String} value of patient
-     *                     {@code User.login} field.
-     * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs.
-     */
-    int createStationaryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException;
+    int createDiagnosis(Diagnosis diagnosis, String patientLogin, CardType cardType) throws DaoException;
 
     /**
      * Find all {@code Diagnosis} entity by {@code Therapy.id} field.

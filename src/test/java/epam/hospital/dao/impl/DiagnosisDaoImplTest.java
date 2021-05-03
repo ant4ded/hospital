@@ -50,7 +50,7 @@ public class DiagnosisDaoImplTest {
 
         therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
 
-        int diagnosisId = diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+        int diagnosisId = diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         diagnosis.setId(diagnosisId);
         therapy.setDiagnoses(List.of(diagnosis));
 
@@ -80,7 +80,7 @@ public class DiagnosisDaoImplTest {
         String doctorLogin = doctor.getLogin();
         doctor.setLogin("1");
         try {
-            diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         } finally {
             doctor.setLogin(doctorLogin);
             cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
@@ -107,7 +107,7 @@ public class DiagnosisDaoImplTest {
         therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
         userDao.deleteUserRole(doctor.getLogin(), Role.DOCTOR);
         try {
-            diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         } finally {
             cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(doctor);
@@ -132,7 +132,7 @@ public class DiagnosisDaoImplTest {
 
         therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
         try {
-            diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin() + "1");
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin() + "1", cardType);
         } finally {
             cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(diagnosis.getDoctor());
@@ -156,7 +156,7 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
         try {
-            diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         } finally {
             cleaner.delete(diagnosis.getDoctor());
             cleaner.delete(patient);
@@ -180,7 +180,7 @@ public class DiagnosisDaoImplTest {
 
         therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
 
-        int diagnosisId = diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
+        int diagnosisId = diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         diagnosis.setId(diagnosisId);
         therapy.setDiagnoses(List.of(diagnosis));
 
@@ -210,7 +210,7 @@ public class DiagnosisDaoImplTest {
         String doctorLogin = doctor.getLogin();
         doctor.setLogin("1");
         try {
-            diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         } finally {
             doctor.setLogin(doctorLogin);
             cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
@@ -237,7 +237,7 @@ public class DiagnosisDaoImplTest {
         therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
         userDao.deleteUserRole(doctor.getLogin(), Role.DOCTOR);
         try {
-            diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         } finally {
             cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(doctor);
@@ -262,7 +262,7 @@ public class DiagnosisDaoImplTest {
 
         therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
         try {
-            diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin() + "1");
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin() + "1", cardType);
         } finally {
             cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(diagnosis.getDoctor());
@@ -286,7 +286,7 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
         try {
-            diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         } finally {
             cleaner.delete(diagnosis.getDoctor());
             cleaner.delete(patient);
@@ -306,7 +306,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(doctor);
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
-        int diagnosisId = diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+        int diagnosisId = diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
 
         Optional<Diagnosis> optionalDiagnosis = diagnosisDao.findById(diagnosisId);
 
@@ -337,7 +337,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(patient);
 
         int therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
-        diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+        diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
 
         List<Diagnosis> diagnoses = diagnosisDao.findByTherapyId(therapyId);
         if (diagnoses.size() != 2) {

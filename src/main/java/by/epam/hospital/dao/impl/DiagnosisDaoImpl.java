@@ -5,6 +5,7 @@ import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DiagnosisDao;
 import by.epam.hospital.dao.UserDao;
+import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Diagnosis;
 import by.epam.hospital.entity.Icd;
 import by.epam.hospital.entity.table.DiagnosesFieldName;
@@ -30,20 +31,7 @@ import java.util.Optional;
  */
 
 public class DiagnosisDaoImpl implements DiagnosisDao {
-    /**
-     * Sql {@code String} object for call stored procedure
-     * {@code CreateAmbulatoryDiagnosis}.
-     * Written for the MySQL dialect.
-     */
-    private static final String SP_CREATE_AMBULATORY_DIAGNOSIS =
-            "CALL CreateAmbulatoryDiagnosis(?,?,?,?,?)";
-    /**
-     * Sql {@code String} object for call stored procedure
-     * {@code CreateStationaryDiagnosis}.
-     * Written for the MySQL dialect.
-     */
-    private static final String SP_CREATE_STATIONARY_DIAGNOSIS =
-            "CALL CreateStationaryDiagnosis(?,?,?,?,?)";
+    private static final String SP_CREATE_DIAGNOSIS = "CALL CreateDiagnosis(?,?,?,?,?,?)";
     /**
      * Sql {@code String} object for call stored procedure
      * {@code FindDiagnosesByTherapyId}.
@@ -64,32 +52,21 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      */
     private final UserDao userDao = new UserDaoImpl();
 
-    /**
-     * Create entity {@code Diagnosis} for ambulatory
-     * {@code Therapy} entity in database.
-     *
-     * @param diagnosis    an a {@code Diagnosis} entity.
-     * @param patientLogin {@code String} value of patient
-     *                     {@code User.login} field.
-     * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs or if
-     *                      {@link ConnectionPool} throws
-     *                      {@link ConnectionException}.
-     */
     @Override
-    public int createAmbulatoryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException {
+    public int createDiagnosis(Diagnosis diagnosis, String patientLogin, CardType cardType) throws DaoException {
         int diagnosisId;
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_CREATE_AMBULATORY_DIAGNOSIS);
+            statement = connection.prepareCall(SP_CREATE_DIAGNOSIS);
             statement.setString(1, patientLogin);
             statement.setString(2, diagnosis.getDoctor().getLogin());
             statement.setString(3, diagnosis.getIcd().getCode());
             statement.setDate(4, diagnosis.getDiagnosisDate());
             statement.setString(5, diagnosis.getReason());
+            statement.setString(6, cardType.name());
 
             resultSet = statement.executeQuery();
             diagnosisId = resultSet.next() ? resultSet.getInt(1) : 0;
@@ -97,45 +74,6 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("CreateAmbulatoryDiagnosis failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return diagnosisId;
-    }
-
-    /**
-     * Create entity {@code Diagnosis} for stationary
-     * {@code Therapy} entity in database.
-     *
-     * @param diagnosis    an a {@code Diagnosis} entity.
-     * @param patientLogin {@code String} value of patient
-     *                     {@code User.login} field.
-     * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs or if
-     *                      {@link ConnectionPool} throws
-     *                      {@link ConnectionException}.
-     */
-    @Override
-    public int createStationaryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException {
-        int diagnosisId;
-        Connection connection = null;
-        CallableStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_CREATE_STATIONARY_DIAGNOSIS);
-            statement.setString(1, patientLogin);
-            statement.setString(2, diagnosis.getDoctor().getLogin());
-            statement.setString(3, diagnosis.getIcd().getCode());
-            statement.setDate(4, diagnosis.getDiagnosisDate());
-            statement.setString(5, diagnosis.getReason());
-
-            resultSet = statement.executeQuery();
-            diagnosisId = resultSet.next() ? resultSet.getInt(1) : 0;
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("CreateStationaryDiagnosis failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
