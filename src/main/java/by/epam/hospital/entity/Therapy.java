@@ -11,9 +11,9 @@ public class Therapy implements Serializable {
     private User doctor;
     private User patient;
     private CardType cardType;
-    private transient Optional<Date> endTherapy;
-    private transient Optional<Diagnosis> finalDiagnosis;
-    private List<Diagnosis> diagnoses;
+    private transient Optional<Date> endTherapy = Optional.empty();
+    private transient Optional<Diagnosis> finalDiagnosis = Optional.empty();
+    private List<Diagnosis> diagnoses = Collections.emptyList();
 
     public Therapy() {
     }
