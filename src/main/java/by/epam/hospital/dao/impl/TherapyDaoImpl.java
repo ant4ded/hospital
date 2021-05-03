@@ -10,7 +10,6 @@ import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Diagnosis;
 import by.epam.hospital.entity.Therapy;
 import by.epam.hospital.entity.UserDetails;
-import by.epam.hospital.entity.table.AmbulatoryCardsFieldName;
 import by.epam.hospital.entity.table.TherapyFieldName;
 
 import java.sql.*;
@@ -38,7 +37,7 @@ public class TherapyDaoImpl implements TherapyDao {
     private static final String SP_FIND_CURRENT_PATIENT_THERAPY =
             "CALL FindCurrentPatientTherapy(?,?,?)";
     private static final String SP_FIND_OPEN_THERAPY_BY_DOCTOR_LOGIN =
-            "CALL FindOpenTherapiesByDoctor(?,?)";
+            "CALL FindOpenDoctorTherapies(?,?)";
     private static final String SP_SET_THERAPY_END_DATE =
             "CALL SetTherapyEndDate(?,?,?,?)";
     private static final String SP_SET_FINAL_DIAGNOSIS_TO_THERAPY =
@@ -123,6 +122,7 @@ public class TherapyDaoImpl implements TherapyDao {
 
     @Override
     public List<Therapy> findOpenDoctorTherapies(String doctorLogin, CardType cardType) throws DaoException {
+        String patientId = "patient_id";
         List<Therapy> therapies = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -141,7 +141,7 @@ public class TherapyDaoImpl implements TherapyDao {
                         .orElseThrow(DaoException::new));
                 therapy.setCardType(CardType.AMBULATORY);
                 therapy.setPatient(userDao
-                        .findByIdWithUserDetails(resultSet.getInt(AmbulatoryCardsFieldName.PATIENT_ID))
+                        .findByIdWithUserDetails(resultSet.getInt(patientId))
                         .orElseThrow(DaoException::new));
                 therapy.setEndTherapy(resultSet.getDate(TherapyFieldName.END_THERAPY));
                 therapy.setFinalDiagnosis(diagnosisDao.findById(resultSet.getInt(TherapyFieldName.FINAL_DIAGNOSIS_ID))
