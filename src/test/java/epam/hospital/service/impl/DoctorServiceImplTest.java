@@ -73,7 +73,7 @@ public class DoctorServiceImplTest {
     public void findCurrentPatientTherapy_ambulatoryPatientTherapy_therapyPresent(User doctor, User patient)
             throws DaoException, ServiceException {
         Mockito.when(therapyDao
-                .findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+                .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.of(new Therapy()));
         Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
                 patient.getLogin(), CardType.AMBULATORY).isPresent());
@@ -84,7 +84,7 @@ public class DoctorServiceImplTest {
     public void findCurrentPatientTherapy_stationaryPatientTherapy_therapyPresent(User doctor, User patient)
             throws DaoException, ServiceException {
         Mockito.when(therapyDao
-                .findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
+                .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.STATIONARY))
                 .thenReturn(Optional.of(new Therapy()));
         Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
                 patient.getLogin(), CardType.STATIONARY).isPresent());
@@ -95,21 +95,10 @@ public class DoctorServiceImplTest {
     public void findCurrentPatientTherapy_ambulatoryPatientTherapyEmpty_therapyEmpty(User doctor, User patient)
             throws DaoException, ServiceException {
         Mockito.when(therapyDao
-                .findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+                .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.empty());
         Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
                 patient.getLogin(), CardType.AMBULATORY).isEmpty());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
-            groups = "findCurrentPatientTherapy")
-    public void findCurrentPatientTherapy_stationaryPatientTherapyEmpty_therapyEmpty(User doctor, User patient)
-            throws DaoException, ServiceException {
-        Mockito.when(therapyDao
-                .findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
-                .thenReturn(Optional.empty());
-        Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
-                patient.getLogin(), CardType.STATIONARY).isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
@@ -117,7 +106,7 @@ public class DoctorServiceImplTest {
     public void findCurrentPatientTherapy_daoException_serviceException(User doctor, User patient)
             throws DaoException, ServiceException {
         Mockito.when(therapyDao
-                .findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+                .findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenThrow(new DaoException());
         Assert.assertTrue(doctorService.findCurrentPatientTherapy(doctor.getLogin(),
                 patient.getLogin(), CardType.AMBULATORY).isPresent());
@@ -134,7 +123,7 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
                 .thenReturn(Optional.of(diagnosis.getIcd()));
-        Mockito.when(therapyDao.findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType))
                 .thenReturn(Optional.of(new Therapy()));
         Mockito.when(diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType))
                 .thenReturn(1);
@@ -153,7 +142,7 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
                 .thenReturn(Optional.of(diagnosis.getIcd()));
-        Mockito.when(therapyDao.findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), cardType))
                 .thenReturn(Optional.of(new Therapy()));
         Mockito.when(diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType))
                 .thenReturn(1);
@@ -175,7 +164,7 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(patient));
         Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
                 .thenReturn(Optional.of(diagnosis.getIcd()));
-        Mockito.when(therapyDao.findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.empty());
         Mockito.when(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, CardType.AMBULATORY))
                 .thenReturn(1);
@@ -259,7 +248,7 @@ public class DoctorServiceImplTest {
         Therapy first = new Therapy();
         Therapy second = new Therapy();
         List<Therapy> therapies = new ArrayList<>(Arrays.asList(first, second));
-        Mockito.when(therapyDao.findAmbulatoryPatientTherapies(user.getUserDetails()))
+        Mockito.when(therapyDao.findPatientTherapies(user.getUserDetails(), CardType.AMBULATORY))
                 .thenReturn(therapies);
         Assert.assertEquals(doctorService.
                 findPatientTherapies(user.getUserDetails(), CardType.AMBULATORY), therapies);
@@ -271,7 +260,7 @@ public class DoctorServiceImplTest {
         Therapy first = new Therapy();
         Therapy second = new Therapy();
         List<Therapy> therapies = new ArrayList<>(Arrays.asList(first, second));
-        Mockito.when(therapyDao.findStationaryPatientTherapies(user.getUserDetails()))
+        Mockito.when(therapyDao.findPatientTherapies(user.getUserDetails(), CardType.STATIONARY))
                 .thenReturn(therapies);
         Assert.assertEquals(doctorService.
                 findPatientTherapies(user.getUserDetails(), CardType.STATIONARY), therapies);
@@ -280,26 +269,17 @@ public class DoctorServiceImplTest {
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
     public void findPatientTherapies_nonExistentUserDetailsAmbulatoryCard_emptyList(User user)
             throws DaoException, ServiceException {
-        Mockito.when(therapyDao.findAmbulatoryPatientTherapies(user.getUserDetails()))
+        Mockito.when(therapyDao.findPatientTherapies(user.getUserDetails(), CardType.AMBULATORY))
                 .thenReturn(new ArrayList<>());
         Assert.assertTrue(doctorService.
                 findPatientTherapies(user.getUserDetails(), CardType.AMBULATORY).isEmpty());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findPatientTherapies_nonExistentUserDetailsStationaryCard_emptyList(User user)
-            throws DaoException, ServiceException {
-        Mockito.when(therapyDao.findStationaryPatientTherapies(user.getUserDetails()))
-                .thenReturn(new ArrayList<>());
-        Assert.assertTrue(doctorService.
-                findPatientTherapies(user.getUserDetails(), CardType.STATIONARY).isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser",
             expectedExceptions = ServiceException.class)
     public void findPatientTherapies_daoException_serviceException(User user)
             throws DaoException, ServiceException {
-        Mockito.when(therapyDao.findAmbulatoryPatientTherapies(user.getUserDetails()))
+        Mockito.when(therapyDao.findPatientTherapies(user.getUserDetails(), CardType.AMBULATORY))
                 .thenThrow(DaoException.class);
         Assert.assertEquals(doctorService.
                 findPatientTherapies(user.getUserDetails(), CardType.AMBULATORY), new ArrayList<>());
@@ -311,20 +291,9 @@ public class DoctorServiceImplTest {
         List<Therapy> therapies = new ArrayList<>(List.of(new Therapy()));
         Mockito.when(userDao.findByLogin(user.getLogin()))
                 .thenReturn(Optional.of(user));
-        Mockito.when(therapyDao.findOpenDoctorAmbulatoryTherapies(user.getLogin()))
+        Mockito.when(therapyDao.findOpenDoctorTherapies(user.getLogin(), CardType.AMBULATORY))
                 .thenReturn(therapies);
         Assert.assertFalse(doctorService.findOpenDoctorTherapies(user.getLogin(), CardType.AMBULATORY).isEmpty());
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
-    public void findOpenDoctorTherapies_existingDoctorAndStationaryTherapies_therapies(User user)
-            throws DaoException, ServiceException {
-        List<Therapy> therapies = new ArrayList<>(List.of(new Therapy()));
-        Mockito.when(userDao.findByLogin(user.getLogin()))
-                .thenReturn(Optional.of(user));
-        Mockito.when(therapyDao.findOpenDoctorStationaryTherapies(user.getLogin()))
-                .thenReturn(therapies);
-        Assert.assertFalse(doctorService.findOpenDoctorTherapies(user.getLogin(), CardType.STATIONARY).isEmpty());
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser")
@@ -355,29 +324,11 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(doctor));
         Mockito.when(userDao.findByLogin(patient.getLogin()))
                 .thenReturn(Optional.of(patient));
-        Mockito.when(therapyDao.findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.of(therapy));
-        Mockito.when(therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+        Mockito.when(therapyDao.setFinalDiagnosisToTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(true);
         Assert.assertTrue(doctorService.makeLastDiagnosisFinal(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
-            dependsOnGroups = "findCurrentPatientTherapy")
-    public void makeLastDiagnosisFinal_doctorAndPatientExistStationaryCard_true(User doctor, User patient)
-            throws DaoException, ServiceException {
-        Diagnosis diagnosis = new Diagnosis();
-        Therapy therapy = new Therapy();
-        therapy.setDiagnoses(List.of(diagnosis));
-        Mockito.when(userDao.findByLogin(doctor.getLogin()))
-                .thenReturn(Optional.of(doctor));
-        Mockito.when(userDao.findByLogin(patient.getLogin()))
-                .thenReturn(Optional.of(patient));
-        Mockito.when(therapyDao.findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
-                .thenReturn(Optional.of(therapy));
-        Mockito.when(therapyDao.setFinalDiagnosisToStationaryTherapy(doctor.getLogin(), patient.getLogin()))
-                .thenReturn(true);
-        Assert.assertTrue(doctorService.makeLastDiagnosisFinal(doctor.getLogin(), patient.getLogin(), CardType.STATIONARY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
@@ -388,22 +339,9 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(doctor));
         Mockito.when(userDao.findByLogin(patient.getLogin()))
                 .thenReturn(Optional.of(patient));
-        Mockito.when(therapyDao.findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.of(new Therapy()));
         Assert.assertFalse(doctorService.makeLastDiagnosisFinal(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
-            dependsOnGroups = "findCurrentPatientTherapy")
-    public void makeLastDiagnosisFinal_diagnosisEmptyStationaryCard_false(User doctor, User patient)
-            throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(doctor.getLogin()))
-                .thenReturn(Optional.of(doctor));
-        Mockito.when(userDao.findByLogin(patient.getLogin()))
-                .thenReturn(Optional.of(patient));
-        Mockito.when(therapyDao.findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
-                .thenReturn(Optional.of(new Therapy()));
-        Assert.assertFalse(doctorService.makeLastDiagnosisFinal(doctor.getLogin(), patient.getLogin(), CardType.STATIONARY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
@@ -427,10 +365,10 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(doctor));
         Mockito.when(userDao.findByLogin(patient.getLogin()))
                 .thenReturn(Optional.of(patient));
-        Mockito.when(therapyDao.findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.of(therapy));
-        Mockito.when(therapyDao.setAmbulatoryTherapyEndDate(doctor.getLogin(), patient.getLogin(),
-                Date.valueOf(LocalDate.now())))
+        Mockito.when(therapyDao.setTherapyEndDate(doctor.getLogin(), patient.getLogin(),
+                Date.valueOf(LocalDate.now()), CardType.AMBULATORY))
                 .thenReturn(true);
         Assert.assertTrue(doctorService.closeTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
     }
@@ -446,10 +384,10 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(doctor));
         Mockito.when(userDao.findByLogin(patient.getLogin()))
                 .thenReturn(Optional.of(patient));
-        Mockito.when(therapyDao.findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.STATIONARY))
                 .thenReturn(Optional.of(therapy));
-        Mockito.when(therapyDao.setStationaryTherapyEndDate(doctor.getLogin(), patient.getLogin(),
-                Date.valueOf(LocalDate.now())))
+        Mockito.when(therapyDao.setTherapyEndDate(doctor.getLogin(), patient.getLogin(),
+                Date.valueOf(LocalDate.now()), CardType.STATIONARY))
                 .thenReturn(true);
         Assert.assertTrue(doctorService.closeTherapy(doctor.getLogin(), patient.getLogin(), CardType.STATIONARY));
     }
@@ -462,22 +400,9 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(doctor));
         Mockito.when(userDao.findByLogin(patient.getLogin()))
                 .thenReturn(Optional.of(patient));
-        Mockito.when(therapyDao.findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
+        Mockito.when(therapyDao.findCurrentPatientTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY))
                 .thenReturn(Optional.of(new Therapy()));
         Assert.assertFalse(doctorService.closeTherapy(doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",
-            dependsOnGroups = "findCurrentPatientTherapy")
-    public void closeTherapy_finalDiagnosisEmptyStationaryCard_false(User doctor, User patient)
-            throws DaoException, ServiceException {
-        Mockito.when(userDao.findByLogin(doctor.getLogin()))
-                .thenReturn(Optional.of(doctor));
-        Mockito.when(userDao.findByLogin(patient.getLogin()))
-                .thenReturn(Optional.of(patient));
-        Mockito.when(therapyDao.findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
-                .thenReturn(Optional.of(new Therapy()));
-        Assert.assertFalse(doctorService.closeTherapy(doctor.getLogin(), patient.getLogin(), CardType.STATIONARY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDoctorAndPatient",

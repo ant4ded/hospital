@@ -54,7 +54,8 @@ public class DoctorServiceImpl implements DoctorService {
             if (isParametersPresent && optionalDoctor.get().getRoles().contains(Role.DOCTOR)) {
                 diagnosis.setIcd(optionalIcd.get());
                 diagnosis.setDoctor(optionalDoctor.get());
-                Optional<Therapy> currentTherapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
+                Optional<Therapy> currentTherapy = therapyDao
+                        .findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
 
                 if (currentTherapy.isPresent()) {
                     result = diagnosisDao.createDiagnosis(diagnosis, patientLogin, cardType) != 0;
@@ -76,9 +77,7 @@ public class DoctorServiceImpl implements DoctorService {
             throws ServiceException {
         Optional<Therapy> optionalTherapy;
         try {
-            optionalTherapy = cardType == CardType.AMBULATORY ?
-                    therapyDao.findCurrentPatientAmbulatoryTherapy(doctorLogin, patientLogin) :
-                    therapyDao.findCurrentPatientStationaryTherapy(doctorLogin, patientLogin);
+            optionalTherapy = therapyDao.findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
         } catch (DaoException e) {
             throw new ServiceException("Find therapy failed.", e);
         }
@@ -89,9 +88,7 @@ public class DoctorServiceImpl implements DoctorService {
     public List<Therapy> findPatientTherapies(UserDetails userDetails, CardType cardType) throws ServiceException {
         List<Therapy> therapies;
         try {
-            therapies = cardType == CardType.AMBULATORY ?
-                    therapyDao.findAmbulatoryPatientTherapies(userDetails) :
-                    therapyDao.findStationaryPatientTherapies(userDetails);
+            therapies = therapyDao.findPatientTherapies(userDetails, cardType);
         } catch (DaoException e) {
             throw new ServiceException("FindPatientTherapies failed.", e);
         }
@@ -104,9 +101,7 @@ public class DoctorServiceImpl implements DoctorService {
         try {
             Optional<User> optionalUser = userDao.findByLogin(doctorLogin);
             if (optionalUser.isPresent()) {
-                therapies = cardType == CardType.AMBULATORY ?
-                        therapyDao.findOpenDoctorAmbulatoryTherapies(doctorLogin) :
-                        therapyDao.findOpenDoctorStationaryTherapies(doctorLogin);
+                therapies = therapyDao.findOpenDoctorTherapies(doctorLogin, cardType);
             }
         } catch (DaoException e) {
             throw new ServiceException("FindPatientTherapies failed.", e);
@@ -121,12 +116,10 @@ public class DoctorServiceImpl implements DoctorService {
         try {
             Optional<User> doctor = userDao.findByLogin(doctorLogin);
             Optional<User> patient = userDao.findByLogin(patientLogin);
-            Optional<Therapy> therapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
+            Optional<Therapy> therapy = therapyDao.findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
             boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
             if (isPresent && !therapy.get().getDiagnoses().isEmpty() && therapy.get().getFinalDiagnosis().isEmpty()) {
-                result = cardType == CardType.AMBULATORY ?
-                        therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctorLogin, patientLogin) :
-                        therapyDao.setFinalDiagnosisToStationaryTherapy(doctorLogin, patientLogin);
+                result = therapyDao.setFinalDiagnosisToTherapy(doctorLogin, patientLogin, cardType);
             }
         } catch (DaoException e) {
             throw new ServiceException("MakeLastDiagnosisFinal failed.", e);
@@ -141,14 +134,10 @@ public class DoctorServiceImpl implements DoctorService {
         try {
             Optional<User> doctor = userDao.findByLogin(doctorLogin);
             Optional<User> patient = userDao.findByLogin(patientLogin);
-            Optional<Therapy> therapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
+            Optional<Therapy> therapy = therapyDao.findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
             boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
             if (isPresent && therapy.get().getFinalDiagnosis().isPresent()) {
-                result = cardType == CardType.AMBULATORY ?
-                        therapyDao.setAmbulatoryTherapyEndDate(doctorLogin, patientLogin,
-                                Date.valueOf(LocalDate.now())) :
-                        therapyDao.setStationaryTherapyEndDate(doctorLogin, patientLogin,
-                                Date.valueOf(LocalDate.now()));
+                result = therapyDao.setTherapyEndDate(doctorLogin, patientLogin, Date.valueOf(LocalDate.now()), cardType);
             }
         } catch (DaoException e) {
             throw new ServiceException("SetEndDate failed.", e);
