@@ -185,28 +185,6 @@ public class DoctorServiceImplTest {
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
             dependsOnGroups = "findCurrentPatientTherapy")
-    public void diagnoseDisease_currentTherapyEmptyStationaryCardType_true(Diagnosis diagnosis, User patient)
-            throws DaoException, ServiceException {
-        User doctor = diagnosis.getDoctor();
-        Therapy therapy = new Therapy();
-        therapy.setDoctor(doctor);
-        therapy.setPatient(patient);
-        Mockito.when(userDao.findByLogin(doctor.getLogin()))
-                .thenReturn(Optional.of(doctor));
-        Mockito.when(userDao.findByLogin(patient.getLogin()))
-                .thenReturn(Optional.of(patient));
-        Mockito.when(icdDao.findByCode(diagnosis.getIcd().getCode()))
-                .thenReturn(Optional.of(diagnosis.getIcd()));
-        Mockito.when(therapyDao.findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
-                .thenReturn(Optional.empty());
-        Mockito.when(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, CardType.STATIONARY))
-                .thenReturn(1);
-        Assert.assertTrue(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
-                doctor.getLogin(), patient.getLogin(), CardType.STATIONARY));
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            dependsOnGroups = "findCurrentPatientTherapy")
     public void diagnoseDisease_doctorEmpty_false(Diagnosis diagnosis, User patient)
             throws DaoException, ServiceException {
         Mockito.when(userDao.findByLogin(diagnosis.getDoctor().getLogin()))
