@@ -1,6 +1,9 @@
 package by.epam.hospital.dao;
 
-import by.epam.hospital.entity.*;
+import by.epam.hospital.entity.CardType;
+import by.epam.hospital.entity.Diagnosis;
+import by.epam.hospital.entity.Therapy;
+import by.epam.hospital.entity.UserDetails;
 
 import java.sql.Date;
 import java.util.List;
@@ -12,27 +15,7 @@ import java.util.Optional;
  */
 
 public interface TherapyDao {
-    /**
-     * Create ambulatory entity {@code Therapy} and
-     * entity {@code Diagnosis} for this ambulatory {@code Therapy}.
-     *
-     * @param therapy   entity {@code Therapy} that wil be created.
-     * @param diagnosis entity {@code Diagnosis} that wil be created.
-     * @return {@code id} created entity {@code Therapy}.
-     * @throws DaoException if a database access error occurs.
-     */
-    int createAmbulatoryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException;
-
-    /**
-     * Create stationary entity {@code Therapy} and
-     * entity {@code Diagnosis} for this stationary {@code Therapy}.
-     *
-     * @param therapy   entity {@code Therapy} that wil be created.
-     * @param diagnosis entity {@code Diagnosis} that wil be created.
-     * @return {@code id} created entity {@code Therapy}.
-     * @throws DaoException if a database access error occurs.
-     */
-    int createStationaryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException;
+    int createTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis, CardType cardType) throws DaoException;
 
     /**
      * Find current patient entity {@code Therapy} in ambulatory cards database.

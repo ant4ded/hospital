@@ -57,19 +57,12 @@ public class DoctorServiceImpl implements DoctorService {
                 Optional<Therapy> currentTherapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
 
                 if (currentTherapy.isPresent()) {
-////                    int diagnosisId = cardType == CardType.AMBULATORY ?
-////                            diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patientLogin) :
-////                            diagnosisDao.createStationaryDiagnosis(diagnosis, patientLogin);
-//                    int diagnosisId = ;
                     result = diagnosisDao.createDiagnosis(diagnosis, patientLogin, cardType) != 0;
                 } else {
                     Therapy therapy = new Therapy();
                     therapy.setPatient(optionalPatient.get());
                     therapy.setDoctor(optionalDoctor.get());
-                    int therapyId = cardType == CardType.AMBULATORY ?
-                            therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis) :
-                            therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
-                    result = therapyId != 0;
+                    result = therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType) != 0;
                 }
             }
         } catch (DaoException e) {
@@ -131,9 +124,9 @@ public class DoctorServiceImpl implements DoctorService {
             Optional<Therapy> therapy = findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
             boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
             if (isPresent && !therapy.get().getDiagnoses().isEmpty() && therapy.get().getFinalDiagnosis().isEmpty()) {
-                    result = cardType == CardType.AMBULATORY ?
-                            therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctorLogin, patientLogin) :
-                            therapyDao.setFinalDiagnosisToStationaryTherapy(doctorLogin, patientLogin);
+                result = cardType == CardType.AMBULATORY ?
+                        therapyDao.setFinalDiagnosisToAmbulatoryTherapy(doctorLogin, patientLogin) :
+                        therapyDao.setFinalDiagnosisToStationaryTherapy(doctorLogin, patientLogin);
             }
         } catch (DaoException e) {
             throw new ServiceException("MakeLastDiagnosisFinal failed.", e);

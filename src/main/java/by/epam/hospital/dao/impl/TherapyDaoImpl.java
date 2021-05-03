@@ -31,20 +31,8 @@ import java.util.Optional;
  */
 
 public class TherapyDaoImpl implements TherapyDao {
-    /**
-     * Sql {@code String} object for call stored procedure
-     * {@code CreateAmbulatoryTherapyWithDiagnosis}.
-     * Written for the MySQL dialect.
-     */
-    private static final String SP_CREATE_AMBULATORY_THERAPY_WITH_DIAGNOSIS =
-            "CALL CreateAmbulatoryTherapyWithDiagnosis(?,?,?,?,?)";
-    /**
-     * Sql {@code String} object for call stored procedure
-     * {@code CreateStationaryTherapyWithDiagnosis}.
-     * Written for the MySQL dialect.
-     */
-    private static final String SP_CREATE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
-            "CALL CreateStationaryTherapyWithDiagnosis(?,?,?,?,?)";
+    private static final String SP_CREATE_THERAPY_WITH_DIAGNOSIS =
+            "CALL CreateTherapyWithDiagnosis(?,?,?,?,?,?)";
     /**
      * Sql {@code String} object for call stored procedure
      * {@code FindCurrentPatientAmbulatoryTherapy}.
@@ -125,67 +113,21 @@ public class TherapyDaoImpl implements TherapyDao {
      */
     private final DiagnosisDao diagnosisDao = new DiagnosisDaoImpl();
 
-    /**
-     * Create ambulatory entity {@code Therapy} and
-     * entity {@code Diagnosis} for this ambulatory {@code Therapy}.
-     *
-     * @param therapy   entity {@code Therapy} that wil be created.
-     * @param diagnosis entity {@code Diagnosis} that wil be created.
-     * @return {@code id} created entity {@code Therapy}.
-     * @throws DaoException if a database access error occurs or if
-     *                      {@link ConnectionPool} throws
-     *                      {@link ConnectionException}.
-     */
-    public int createAmbulatoryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException {
+    @Override
+    public int createTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis, CardType cardType) throws DaoException {
         int therapyId;
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_CREATE_AMBULATORY_THERAPY_WITH_DIAGNOSIS);
+            statement = connection.prepareCall(SP_CREATE_THERAPY_WITH_DIAGNOSIS);
             statement.setString(1, therapy.getPatient().getLogin());
             statement.setString(2, therapy.getDoctor().getLogin());
             statement.setString(3, diagnosis.getIcd().getCode());
             statement.setDate(4, diagnosis.getDiagnosisDate());
             statement.setString(5, diagnosis.getReason());
-
-            resultSet = statement.executeQuery();
-            therapyId = resultSet.next() ? resultSet.getInt(1) : 0;
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("CreateStationaryTherapyWithDiagnosis failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return therapyId;
-    }
-
-    /**
-     * Create stationary entity {@code Therapy} and
-     * entity {@code Diagnosis} for this stationary {@code Therapy}.
-     *
-     * @param therapy   entity {@code Therapy} that wil be created.
-     * @param diagnosis entity {@code Diagnosis} that wil be created.
-     * @return {@code id} created entity {@code Therapy}.
-     * @throws DaoException if a database access error occurs or if
-     *                      {@link ConnectionPool} throws
-     *                      {@link ConnectionException}.
-     */
-    public int createStationaryTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis) throws DaoException {
-        int therapyId;
-        Connection connection = null;
-        CallableStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_CREATE_STATIONARY_THERAPY_WITH_DIAGNOSIS);
-            statement.setString(1, therapy.getPatient().getLogin());
-            statement.setString(2, therapy.getDoctor().getLogin());
-            statement.setString(3, diagnosis.getIcd().getCode());
-            statement.setDate(4, diagnosis.getDiagnosisDate());
-            statement.setString(5, diagnosis.getReason());
+            statement.setString(6, cardType.name());
 
             resultSet = statement.executeQuery();
             therapyId = resultSet.next() ? resultSet.getInt(1) : 0;

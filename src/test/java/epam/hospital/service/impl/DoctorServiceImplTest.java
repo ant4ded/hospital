@@ -177,7 +177,7 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(diagnosis.getIcd()));
         Mockito.when(therapyDao.findCurrentPatientAmbulatoryTherapy(doctor.getLogin(), patient.getLogin()))
                 .thenReturn(Optional.empty());
-        Mockito.when(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis))
+        Mockito.when(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, CardType.AMBULATORY))
                 .thenReturn(1);
         Assert.assertTrue(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
                 doctor.getLogin(), patient.getLogin(), CardType.AMBULATORY));
@@ -199,7 +199,7 @@ public class DoctorServiceImplTest {
                 .thenReturn(Optional.of(diagnosis.getIcd()));
         Mockito.when(therapyDao.findCurrentPatientStationaryTherapy(doctor.getLogin(), patient.getLogin()))
                 .thenReturn(Optional.empty());
-        Mockito.when(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis))
+        Mockito.when(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, CardType.STATIONARY))
                 .thenReturn(1);
         Assert.assertTrue(doctorService.diagnoseDisease(diagnosis.getIcd().getCode(), diagnosis.getReason(),
                 doctor.getLogin(), patient.getLogin(), CardType.STATIONARY));

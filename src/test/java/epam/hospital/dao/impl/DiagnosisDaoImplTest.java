@@ -48,7 +48,7 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
 
-        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
 
         int diagnosisId = diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         diagnosis.setId(diagnosisId);
@@ -75,7 +75,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
 
         String doctorLogin = doctor.getLogin();
         doctor.setLogin("1");
@@ -104,7 +104,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
         userDao.deleteUserRole(doctor.getLogin(), Role.DOCTOR);
         try {
             diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
@@ -130,7 +130,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
         try {
             diagnosisDao.createDiagnosis(diagnosis, patient.getLogin() + "1", cardType);
         } finally {
@@ -178,7 +178,7 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
 
-        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
 
         int diagnosisId = diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         diagnosis.setId(diagnosisId);
@@ -205,7 +205,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
 
         String doctorLogin = doctor.getLogin();
         doctor.setLogin("1");
@@ -234,7 +234,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
         userDao.deleteUserRole(doctor.getLogin(), Role.DOCTOR);
         try {
             diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
@@ -260,7 +260,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
         try {
             diagnosisDao.createDiagnosis(diagnosis, patient.getLogin() + "1", cardType);
         } finally {
@@ -305,7 +305,7 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(patient);
         userDao.createClientWithUserDetails(doctor);
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
-        therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
         int diagnosisId = diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
 
         Optional<Diagnosis> optionalDiagnosis = diagnosisDao.findById(diagnosisId);
@@ -336,7 +336,7 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
 
-        int therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
+        int therapyId = therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
         diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
 
         List<Diagnosis> diagnoses = diagnosisDao.findByTherapyId(therapyId);

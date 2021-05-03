@@ -104,7 +104,7 @@ public class ProceduresDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
-        therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
         proceduresDao.create(p);
 
         boolean result = proceduresDao.assignProcedureToDiagnosis(p.getName(), LocalDateTime.now(), temp,

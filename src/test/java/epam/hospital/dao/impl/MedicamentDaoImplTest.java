@@ -89,7 +89,7 @@ public class MedicamentDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
-        therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
         medicamentDao.create(m);
 
         boolean result = medicamentDao.assignMedicamentToDiagnosis(m.getName(), LocalDateTime.now(), temp,
