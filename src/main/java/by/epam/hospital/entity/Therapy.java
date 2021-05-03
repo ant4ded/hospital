@@ -3,10 +3,7 @@ package by.epam.hospital.entity;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.StringJoiner;
+import java.util.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Therapy implements Serializable {
@@ -19,11 +16,17 @@ public class Therapy implements Serializable {
     private List<Diagnosis> diagnoses;
 
     public Therapy() {
-        doctor = new User();
-        patient = new User();
-        diagnoses = new ArrayList<>();
-        endTherapy = Optional.empty();
-        finalDiagnosis = Optional.empty();
+    }
+
+    public Therapy(int id, User doctor, User patient, CardType cardType, Optional<Date> endTherapy,
+                   Optional<Diagnosis> finalDiagnosis, List<Diagnosis> diagnoses) {
+        this.id = id;
+        this.doctor = doctor;
+        this.patient = patient;
+        this.cardType = cardType;
+        this.endTherapy = endTherapy;
+        this.finalDiagnosis = finalDiagnosis;
+        this.diagnoses = diagnoses;
     }
 
     public int getId() {

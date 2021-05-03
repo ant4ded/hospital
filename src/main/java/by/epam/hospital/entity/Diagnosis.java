@@ -12,8 +12,14 @@ public class Diagnosis implements Serializable {
     private String reason;
 
     public Diagnosis() {
-        icd = new Icd();
-        doctor = new User();
+    }
+
+    public Diagnosis(int id, Icd icd, User doctor, Date diagnosisDate, String reason) {
+        this.id = id;
+        this.icd = icd;
+        this.doctor = doctor;
+        this.diagnosisDate = diagnosisDate;
+        this.reason = reason;
     }
 
     public int getId() {
