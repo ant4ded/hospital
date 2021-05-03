@@ -15,12 +15,9 @@ public class Cleaner {
             "CALL DeleteUserWithUserRolesAndUserDetails(?)";
     private static final String SP_DELETE_USER_FROM_DEPARTMENT =
             "CALL DeleteMedicalWorkerFromDepartment(?)";
-    private static final String SP_DELETE_AMBULATORY_THERAPY_WITH_DIAGNOSIS =
-            "CALL DeleteAmbulatoryTherapyWithDiagnosis(?,?)";
-    private static final String SP_DELETE_STATIONARY_THERAPY_WITH_DIAGNOSIS =
-            "CALL DeleteStationaryTherapyWithDiagnosis(?,?)";
     private static final String SP_DELETE_PROCEDURE = "CALL DeleteProcedure(?)";
     private static final String SP_DELETE_MEDICAMENT = "CALL DeleteMedicament(?)";
+    private static final String SP_DELETE_THERAPY_WITH_ALL_FK = "CALL DeleteTherapyWithAllFK(?,?,?)";
 
     public void deleteUserFromDepartment(User user) throws DaoException {
         Connection connection = null;
@@ -72,18 +69,16 @@ public class Cleaner {
         }
     }
 
-    // TODO: 28.04.2021 delete with procedures and medications
     public void deleteTherapyWithDiagnosis(Therapy therapy, CardType cardType) throws DaoException {
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(cardType.equals(CardType.AMBULATORY) ?
-                    SP_DELETE_AMBULATORY_THERAPY_WITH_DIAGNOSIS :
-                    SP_DELETE_STATIONARY_THERAPY_WITH_DIAGNOSIS);
+            statement = connection.prepareCall(SP_DELETE_THERAPY_WITH_ALL_FK);
             statement.setString(1, therapy.getPatient().getLogin());
             statement.setString(2, therapy.getDoctor().getLogin());
+            statement.setString(3, cardType.name());
             resultSet = statement.executeQuery();
             if (!resultSet.next()) {
                 throw new DaoException("DeleteTherapyWithDiagnosis failed.");
