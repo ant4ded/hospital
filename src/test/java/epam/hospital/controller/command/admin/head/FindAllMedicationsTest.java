@@ -48,7 +48,7 @@ public class FindAllMedicationsTest {
                 .thenReturn("qwe");
         Mockito.when(request.getParameter(ParameterName.PAGE_NUMBER))
                 .thenReturn(String.valueOf(3));
-        Mockito.when(service.findAllByNamePartPaging(Medicament.class, "qwe", 3))
+        Mockito.when(service.findAllMedicationsByNamePartPaging("qwe", 3))
                 .thenReturn(PageResult.from(Collections.emptyList(), 3));
 
         Map<String, Object> result = httpCommand.execute(request, response);

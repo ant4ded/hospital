@@ -47,7 +47,7 @@ public class FindAllProceduresTest {
                 .thenReturn("qwe");
         Mockito.when(request.getParameter(ParameterName.PAGE_NUMBER))
                 .thenReturn(String.valueOf(3));
-        Mockito.when(service.findAllByNamePartPaging(Procedure.class, "qwe", 3))
+        Mockito.when(service.findAllProceduresByNamePartPaging("qwe", 3))
                 .thenReturn(PageResult.from(Collections.emptyList(), 3));
 
         Map<String, Object> result = httpCommand.execute(request, response);
