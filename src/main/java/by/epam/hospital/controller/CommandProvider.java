@@ -90,6 +90,18 @@ public class CommandProvider {
         map.put(CommandName.MAKE_LAST_DIAGNOSIS_FINAL,
                 new MakeLastDiagnosisFinal(getDoctorService(),
                         Logger.getLogger(MakeLastDiagnosisFinal.class)));
+        map.put(CommandName.DOCTOR_FIND_MEDICATIONS_PAGING,
+                new MakeLastDiagnosisFinal(getDoctorService(),
+                        Logger.getLogger(MakeLastDiagnosisFinal.class)));
+        map.put(CommandName.DOCTOR_FIND_PROCEDURES_PAGING,
+                new MakeLastDiagnosisFinal(getDoctorService(),
+                        Logger.getLogger(MakeLastDiagnosisFinal.class)));
+        map.put(CommandName.FIND_ASSIGNMENT_MEDICATIONS,
+                new MakeLastDiagnosisFinal(getDoctorService(),
+                        Logger.getLogger(MakeLastDiagnosisFinal.class)));
+        map.put(CommandName.FIND_ASSIGNMENT_PROCEDURES,
+                new MakeLastDiagnosisFinal(getDoctorService(),
+                        Logger.getLogger(MakeLastDiagnosisFinal.class)));
     }
 
     public HttpCommand getCommand(CommandName command) {

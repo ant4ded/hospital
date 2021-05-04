@@ -30,6 +30,9 @@ public class ParameterName {
     public static final String PAGE_NUMBER = "page_number";
     public static final String TOTAL_PAGES = "total_pages";
     public static final String PROCEDURE_LIST = "procedure_list";
+    public static final String ASSIGNMENT_MEDICATIONS = "assignment_medications";
+    public static final String ASSIGNMENT_PROCEDURES = "assignment_procedures";
+    public static final String DIAGNOSIS_ID = "diagnosis_id";
 
     private ParameterName() {
     }

@@ -7,10 +7,7 @@ import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Department;
 import by.epam.hospital.entity.Role;
 import by.epam.hospital.entity.UserDetails;
-import by.epam.hospital.entity.table.IcdFieldName;
-import by.epam.hospital.entity.table.ProceduresFieldName;
-import by.epam.hospital.entity.table.UsersDetailsFieldName;
-import by.epam.hospital.entity.table.UsersFieldName;
+import by.epam.hospital.entity.table.*;
 import by.epam.hospital.service.ServiceAction;
 
 import javax.servlet.*;
@@ -43,8 +40,8 @@ public class RequestParametersFilter implements Filter {
             case ParameterName.ROLE -> !Role.hasValue(parameterValue);
             case ParameterName.PROCEDURE_OR_MEDICAMENT_NAME -> dataValidator
                     .isValidProcedureOrMedicamentName(parameterValue);
+            case ParameterName.PAGE_NUMBER, ParameterName.DIAGNOSIS_ID -> dataValidator.isNumber(parameterValue);
             case ProceduresFieldName.COST -> dataValidator.isValidCost(parameterValue);
-            case ParameterName.PAGE_NUMBER -> dataValidator.isNumber(parameterValue);
             case UsersDetailsFieldName.GENDER -> !UserDetails.Gender.hasValue(parameterValue);
             case IcdFieldName.CODE -> !dataValidator.isValidIcdCode(parameterValue);
             case UsersFieldName.LOGIN -> !dataValidator.isValidLogin(parameterValue);
