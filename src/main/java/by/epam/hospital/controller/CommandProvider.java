@@ -117,6 +117,8 @@ public class CommandProvider {
         return new DoctorServiceImpl(new IcdDaoImpl(),
                 new UserDaoImpl(),
                 new TherapyDaoImpl(),
-                new DiagnosisDaoImpl());
+                new DiagnosisDaoImpl(),
+                new ProceduresDaoImpl(),
+                new MedicamentDaoImpl());
     }
 }

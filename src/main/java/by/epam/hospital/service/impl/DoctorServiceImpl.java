@@ -16,13 +16,17 @@ public class DoctorServiceImpl implements DoctorService {
     private final UserDao userDao;
     private final TherapyDao therapyDao;
     private final DiagnosisDao diagnosisDao;
+    private final ProceduresDao procedureDao;
+    private final MedicamentDao medicamentDao;
 
     public DoctorServiceImpl(IcdDao icdDao, UserDao userDao, TherapyDao therapyDao,
-                             DiagnosisDao diagnosisDao) {
+                             DiagnosisDao diagnosisDao, ProceduresDao procedureDao, MedicamentDao medicamentDao) {
         this.icdDao = icdDao;
         this.userDao = userDao;
         this.therapyDao = therapyDao;
         this.diagnosisDao = diagnosisDao;
+        this.procedureDao = procedureDao;
+        this.medicamentDao = medicamentDao;
     }
 
     @Override
@@ -167,5 +171,49 @@ public class DoctorServiceImpl implements DoctorService {
             throw new ServiceException("Can not assign medicament to diagnosis.", e);
         }
         return result;
+    }
+
+    @Override
+    public List<ProcedureAssignment> findAllAssignmentProceduresToDiagnosis(int diagnosisId) throws ServiceException {
+        List<ProcedureAssignment> assignments;
+        try {
+            assignments = diagnosisDao.findAllAssignmentProcedures(diagnosisId);
+        } catch (DaoException e) {
+            throw new ServiceException("Can not find assign procedures to diagnosis.", e);
+        }
+        return assignments;
+    }
+
+    @Override
+    public List<MedicamentAssignment> findAllAssignmentMedicationsToDiagnosis(int diagnosisId) throws ServiceException {
+        List<MedicamentAssignment> assignments;
+        try {
+            assignments = diagnosisDao.findAllAssignmentMedications(diagnosisId);
+        } catch (DaoException e) {
+            throw new ServiceException("Can not find assign procedures to diagnosis.", e);
+        }
+        return assignments;
+    }
+
+    @Override
+    public PageResult<Procedure> findAllProceduresByNamePartPaging(String namePart, int page) throws ServiceException {
+        PageResult<Procedure> pageResult;
+        try {
+            pageResult = procedureDao.findAllByNamePartPaging(namePart, page);
+        } catch (DaoException e) {
+            throw new ServiceException("Can not find procedures, something wrong.", e);
+        }
+        return pageResult;
+    }
+
+    @Override
+    public PageResult<Medicament> findAllMedicationsByNamePartPaging(String namePart, int page) throws ServiceException {
+        PageResult<Medicament> pageResult;
+        try {
+            pageResult = medicamentDao.findAllByNamePartPaging(namePart, page);
+        } catch (DaoException e) {
+            throw new ServiceException("Can not find procedures, something wrong.", e);
+        }
+        return pageResult;
     }
 }
