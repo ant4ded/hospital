@@ -197,16 +197,21 @@ public class AdminHeadServiceImpl implements AdminHeadService {
     }
 
     @Override
-    public PageResult<?> findAllByNamePartPaging(Class<?> type, String namePart, int page) throws ServiceException {
-        PageResult<?> pageResult;
+    public PageResult<Procedure> findAllProceduresByNamePartPaging(String namePart, int page) throws ServiceException {
+        PageResult<Procedure> pageResult;
         try {
-            if (type == Procedure.class) {
-                pageResult = procedureDao.findAllByNamePartPaging(namePart, page);
-            } else if (type == Medicament.class) {
-                pageResult = medicamentDao.findAllByNamePartPaging(namePart, page);
-            } else {
-                throw new ServiceException("Invalid class type.");
-            }
+            pageResult = procedureDao.findAllByNamePartPaging(namePart, page);
+        } catch (DaoException e) {
+            throw new ServiceException("Can not find procedures, something wrong.", e);
+        }
+        return pageResult;
+    }
+
+    @Override
+    public PageResult<Medicament> findAllMedicationsByNamePartPaging(String namePart, int page) throws ServiceException {
+        PageResult<Medicament> pageResult;
+        try {
+            pageResult = medicamentDao.findAllByNamePartPaging(namePart, page);
         } catch (DaoException e) {
             throw new ServiceException("Can not find procedures, something wrong.", e);
         }

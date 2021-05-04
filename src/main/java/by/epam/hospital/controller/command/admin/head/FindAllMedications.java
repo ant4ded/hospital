@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class FindAllMedications implements HttpCommand {
@@ -23,17 +22,17 @@ public class FindAllMedications implements HttpCommand {
         this.logger = logger;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, Object> execute(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
         String namePart = request.getParameter(ParameterName.NAME_PART);
         int pageNumber = Integer.parseInt(request.getParameter(ParameterName.PAGE_NUMBER));
         try {
-            PageResult<?> pageResult = service.findAllByNamePartPaging(Medicament.class, namePart, pageNumber);
+            PageResult<Medicament> pageResult = service.findAllMedicationsByNamePartPaging(namePart, pageNumber);
             result.put(ParameterName.TOTAL_PAGES, pageResult.getTotalPages());
             result.put(ParameterName.PAGE_NUMBER, pageNumber);
-            result.put(ParameterName.PROCEDURE_LIST, (List<Medicament>) pageResult.getList());
+            result.put(ParameterName.PROCEDURE_LIST, pageResult.getList());
+            // TODO: 02.05.2021 page forward
 //            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DEPARTMENT_CONTROL);
         } catch (ServiceException e) {
             logger.error(e);
