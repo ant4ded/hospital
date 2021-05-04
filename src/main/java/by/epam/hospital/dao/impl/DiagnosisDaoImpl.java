@@ -306,7 +306,5 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         icd.setCode(resultSet.getString(IcdFieldName.CODE));
         icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
         diagnosis.setIcd(icd);
-        diagnosis.setAssignmentProcedures(findAllAssignmentProcedures(diagnosis.getId()));
-        diagnosis.setAssignmentMedications(findAllAssignmentMedications(diagnosis.getId()));
     }
 }
