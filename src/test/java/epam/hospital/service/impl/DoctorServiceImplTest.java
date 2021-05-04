@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -413,5 +414,31 @@ public class DoctorServiceImplTest {
                 .thenThrow(DaoException.class);
         Assert.assertFalse(doctorService.closeTherapy(doctor.getLogin(),
                 patient.getLogin(), CardType.AMBULATORY));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectProcedure")
+    public void assignToDiagnosis_procedure_true(Procedure procedure) throws DaoException, ServiceException {
+        LocalDateTime time = LocalDateTime.now();
+        String description = "description";
+        String doctorLogin = "doctorLogin";
+        String patientLogin = "patientLogin";
+        Mockito.when(diagnosisDao.assignProcedureToDiagnosis(procedure.getName(),
+                time, description, doctorLogin, patientLogin, CardType.AMBULATORY))
+                .thenReturn(true);
+        Assert.assertTrue(doctorService.assignToDiagnosis(procedure.getName(), time, description, doctorLogin,
+                patientLogin, CardType.AMBULATORY, Procedure.class));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectMedicament")
+    public void assignToDiagnosis_medicament_true(Medicament medicament) throws DaoException, ServiceException {
+        LocalDateTime time = LocalDateTime.now();
+        String description = "description";
+        String doctorLogin = "doctorLogin";
+        String patientLogin = "patientLogin";
+        Mockito.when(diagnosisDao.assignMedicamentToDiagnosis(medicament.getName(),
+                time, description, doctorLogin, patientLogin, CardType.AMBULATORY))
+                .thenReturn(true);
+        Assert.assertTrue(doctorService.assignToDiagnosis(medicament.getName(), time, description, doctorLogin,
+                patientLogin, CardType.AMBULATORY, Medicament.class));
     }
 }

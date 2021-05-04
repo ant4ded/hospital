@@ -7,6 +7,7 @@ import by.epam.hospital.service.ServiceException;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -141,6 +142,25 @@ public class DoctorServiceImpl implements DoctorService {
             }
         } catch (DaoException e) {
             throw new ServiceException("SetEndDate failed.", e);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean assignToDiagnosis(String name, LocalDateTime assignDateTime, String description, String doctorLogin,
+                                     String patientLogin, CardType cardType, Class<?> type) throws ServiceException {
+        boolean result = false;
+        try {
+            if (type == Procedure.class) {
+                result = diagnosisDao.assignProcedureToDiagnosis(name, assignDateTime, description,
+                        doctorLogin, patientLogin, cardType);
+            }
+            if (type == Medicament.class) {
+                result = diagnosisDao.assignMedicamentToDiagnosis(name, assignDateTime, description,
+                        doctorLogin, patientLogin, cardType);
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("Can not assign " + type.getSimpleName() + " to diagnosis.", e);
         }
         return result;
     }
