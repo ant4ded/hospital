@@ -2,12 +2,10 @@ package epam.hospital.controller.command.admin.head;
 
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
-import by.epam.hospital.controller.command.admin.head.FindAllProcedures;
+import by.epam.hospital.controller.command.admin.head.FindProceduresPaging;
 import by.epam.hospital.entity.PageResult;
-import by.epam.hospital.entity.Procedure;
 import by.epam.hospital.service.AdminHeadService;
 import by.epam.hospital.service.ServiceException;
-import epam.hospital.util.Provider;
 import org.apache.log4j.Logger;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -23,7 +21,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-public class FindAllProceduresTest {
+public class FindProceduresPagingTest {
     @Mock
     private Logger logger;
     @Mock
@@ -37,7 +35,7 @@ public class FindAllProceduresTest {
     @BeforeMethod
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        httpCommand = new FindAllProcedures(service, logger);
+        httpCommand = new FindProceduresPaging(service, logger);
     }
 
     @Test

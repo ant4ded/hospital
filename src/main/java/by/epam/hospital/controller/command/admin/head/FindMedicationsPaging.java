@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FindAllMedications implements HttpCommand {
+public class FindMedicationsPaging implements HttpCommand {
     private final AdminHeadService service;
     private final Logger logger;
 
-    public FindAllMedications(AdminHeadService service, Logger logger) {
+    public FindMedicationsPaging(AdminHeadService service, Logger logger) {
         this.service = service;
         this.logger = logger;
     }

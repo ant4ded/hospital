@@ -61,10 +61,10 @@ public class CommandProvider {
         map.put(CommandName.MEDICAMENT_CONTROL,
                 new MedicamentControl(getAdminHeadService(),
                         Logger.getLogger(MedicamentControl.class)));
-        map.put(CommandName.FIND_ALL_PROCEDURES,
+        map.put(CommandName.ADMIN_FIND_PROCEDURES_PAGING,
                 new MedicamentControl(getAdminHeadService(),
                         Logger.getLogger(MedicamentControl.class)));
-        map.put(CommandName.FIND_ALL_MEDICATIONS,
+        map.put(CommandName.ADMIN_FIND_MEDICATIONS_PAGING,
                 new MedicamentControl(getAdminHeadService(),
                         Logger.getLogger(MedicamentControl.class)));
 
