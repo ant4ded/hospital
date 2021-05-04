@@ -43,6 +43,7 @@ public class MedicamentControl implements HttpCommand {
                         isEnabled, Medicament.class);
             }
             result.put(ParameterName.MESSAGE, isSuccess ? MESSAGE_SUCCESS : MESSAGE_WRONG_RESULT);
+            // TODO: 02.05.2021 page forward
 //            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DEPARTMENT_CONTROL);
         } catch (ServiceException e) {
             logger.error(e);

@@ -45,6 +45,7 @@ public class ProcedureControl implements HttpCommand {
                 isSuccess = isSuccess && service.updateProcedureCost(new Procedure(name, cost, isEnabled), cost);
             }
             result.put(ParameterName.MESSAGE, isSuccess ? MESSAGE_SUCCESS : MESSAGE_WRONG_RESULT);
+            // TODO: 02.05.2021 page forward
 //            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DEPARTMENT_CONTROL);
         } catch (ServiceException e) {
             logger.error(e);
