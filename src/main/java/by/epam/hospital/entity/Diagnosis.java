@@ -2,6 +2,7 @@ package by.epam.hospital.entity;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 import java.util.StringJoiner;
 
 public class Diagnosis implements Serializable {
@@ -10,6 +11,8 @@ public class Diagnosis implements Serializable {
     private User doctor;
     private Date diagnosisDate;
     private String reason;
+    private transient List<ProcedureAssignment> assignmentProcedures;
+    private transient List<MedicamentAssignment> assignmentMedications;
 
     public Diagnosis() {
     }
@@ -62,6 +65,22 @@ public class Diagnosis implements Serializable {
         this.reason = reason;
     }
 
+    public void setAssignmentProcedures(List<ProcedureAssignment> assignmentProcedures) {
+        this.assignmentProcedures = assignmentProcedures;
+    }
+
+    public List<ProcedureAssignment> getAssignmentProcedures() {
+        return assignmentProcedures;
+    }
+
+    public void setAssignmentMedications(List<MedicamentAssignment> assignmentMedications) {
+        this.assignmentMedications = assignmentMedications;
+    }
+
+    public List<MedicamentAssignment> getAssignmentMedications() {
+        return assignmentMedications;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,7 +92,7 @@ public class Diagnosis implements Serializable {
         if (!icd.equals(diagnosis.icd)) return false;
         if (!doctor.equals(diagnosis.doctor)) return false;
         if (!diagnosisDate.equals(diagnosis.diagnosisDate)) return false;
-        return reason.equals(diagnosis.reason);
+        return reason != null ? reason.equals(diagnosis.reason) : diagnosis.reason == null;
     }
 
     @Override
@@ -82,7 +101,7 @@ public class Diagnosis implements Serializable {
         result = 31 * result + icd.hashCode();
         result = 31 * result + doctor.hashCode();
         result = 31 * result + diagnosisDate.hashCode();
-        result = 31 * result + reason.hashCode();
+        result = 31 * result + (reason != null ? reason.hashCode() : 0);
         return result;
     }
 
@@ -94,6 +113,8 @@ public class Diagnosis implements Serializable {
                 .add("doctor=" + doctor)
                 .add("diagnosisDate=" + diagnosisDate)
                 .add("reason='" + reason + "'")
+                .add("assignmentProcedures=" + assignmentProcedures)
+                .add("assignmentMedications=" + assignmentMedications)
                 .toString();
     }
 }

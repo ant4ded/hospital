@@ -157,30 +157,6 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         return optionalDiagnosis;
     }
 
-    /**
-     * Set {@code Diagnosis} fields.
-     *
-     * @param diagnosis empty {@code Diagnosis} entity.
-     * @param resultSet {@code ResultSet} object with result
-     *                  of execute sql string.
-     * @throws SQLException when db send error.
-     * @throws DaoException when {@code IcdDao} or {@code UserDao}
-     *                      throws exception.
-     * @see ResultSet
-     * @see SQLException
-     */
-    private void setDiagnosis(Diagnosis diagnosis, ResultSet resultSet) throws SQLException, DaoException {
-        Icd icd = new Icd();
-        diagnosis.setId(resultSet.getInt(DiagnosesFieldName.ID));
-        diagnosis.setDiagnosisDate(resultSet.getDate(DiagnosesFieldName.DIAGNOSIS_DATE));
-        diagnosis.setReason(resultSet.getString(DiagnosesFieldName.REASON));
-        diagnosis.setDoctor(userDao.findByIdWithUserDetails(resultSet.getInt(DiagnosesFieldName.DOCTOR_ID))
-                .orElseThrow(DaoException::new));
-        icd.setCode(resultSet.getString(IcdFieldName.CODE));
-        icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
-        diagnosis.setIcd(icd);
-    }
-
     @Override
     public boolean assignProcedureToLastDiagnosis(ProcedureAssignment assignment, String doctorLogin,
                                                   String patientLogin, CardType cardType) throws DaoException {
@@ -306,5 +282,31 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return assignments;
+    }
+
+    /**
+     * Set {@code Diagnosis} fields.
+     *
+     * @param diagnosis empty {@code Diagnosis} entity.
+     * @param resultSet {@code ResultSet} object with result
+     *                  of execute sql string.
+     * @throws SQLException when db send error.
+     * @throws DaoException when {@code IcdDao} or {@code UserDao}
+     *                      throws exception.
+     * @see ResultSet
+     * @see SQLException
+     */
+    private void setDiagnosis(Diagnosis diagnosis, ResultSet resultSet) throws SQLException, DaoException {
+        Icd icd = new Icd();
+        diagnosis.setId(resultSet.getInt(DiagnosesFieldName.ID));
+        diagnosis.setDiagnosisDate(resultSet.getDate(DiagnosesFieldName.DIAGNOSIS_DATE));
+        diagnosis.setReason(resultSet.getString(DiagnosesFieldName.REASON));
+        diagnosis.setDoctor(userDao.findByIdWithUserDetails(resultSet.getInt(DiagnosesFieldName.DOCTOR_ID))
+                .orElseThrow(DaoException::new));
+        icd.setCode(resultSet.getString(IcdFieldName.CODE));
+        icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
+        diagnosis.setIcd(icd);
+        diagnosis.setAssignmentProcedures(findAllAssignmentProcedures(diagnosis.getId()));
+        diagnosis.setAssignmentMedications(findAllAssignmentMedications(diagnosis.getId()));
     }
 }

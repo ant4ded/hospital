@@ -1,9 +1,10 @@
 package by.epam.hospital.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.StringJoiner;
 
-public class MedicamentAssignment {
+public class MedicamentAssignment implements Serializable {
     private Medicament medicament;
     private String description;
     private LocalDateTime time;

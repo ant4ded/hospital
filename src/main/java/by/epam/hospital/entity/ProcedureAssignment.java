@@ -1,9 +1,10 @@
 package by.epam.hospital.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.StringJoiner;
 
-public class ProcedureAssignment {
+public class ProcedureAssignment implements Serializable {
     private Procedure procedure;
     private String description;
     private LocalDateTime time;
