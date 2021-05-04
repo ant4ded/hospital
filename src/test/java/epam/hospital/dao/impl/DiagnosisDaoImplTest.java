@@ -256,11 +256,14 @@ public class DiagnosisDaoImplTest {
         String temp = "temp";
         String procedure = "procedure";
         CardType cardType = CardType.STATIONARY;
+        String description = "description";
+        LocalDateTime time = LocalDateTime.now();
 
         Therapy therapy = new Therapy();
         therapy.setDoctor(diagnosis.getDoctor());
         therapy.setPatient(patient);
         Procedure p = new Procedure(temp + procedure, 200, true);
+        ProcedureAssignment assignment = new ProcedureAssignment(p, description, time);
 
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
@@ -268,8 +271,8 @@ public class DiagnosisDaoImplTest {
         therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
         proceduresDao.create(p);
 
-        boolean result = diagnosisDao.assignProcedureToDiagnosis(p.getName(), LocalDateTime.now(), temp,
-                diagnosis.getDoctor().getLogin(), patient.getLogin(), cardType);
+        boolean result = diagnosisDao.assignProcedureToLastDiagnosis(assignment, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
 
         cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
         cleaner.delete(p);
@@ -283,11 +286,14 @@ public class DiagnosisDaoImplTest {
         String temp = "temp";
         String medicament = "medicament";
         CardType cardType = CardType.STATIONARY;
+        String description = "description";
+        LocalDateTime time = LocalDateTime.now();
 
         Therapy therapy = new Therapy();
         therapy.setDoctor(diagnosis.getDoctor());
         therapy.setPatient(patient);
         Medicament m = new Medicament(temp + medicament, true);
+        MedicamentAssignment assignment = new MedicamentAssignment(m, description, time);
 
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
@@ -295,11 +301,41 @@ public class DiagnosisDaoImplTest {
         therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
         medicamentDao.create(m);
 
-        boolean result = diagnosisDao.assignMedicamentToDiagnosis(m.getName(), LocalDateTime.now(), temp,
-                diagnosis.getDoctor().getLogin(), patient.getLogin(), cardType);
+        boolean result = diagnosisDao.assignMedicamentToLastDiagnosis(assignment, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
 
         cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
         cleaner.delete(m);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+        Assert.assertTrue(result);
+    }
+
+//    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void findAllProcedureAssignment_existentDiagnosisId_listAssignment(Diagnosis diagnosis, User patient) throws DaoException {
+        String temp = "temp";
+        String procedure = "procedure";
+        CardType cardType = CardType.STATIONARY;
+        String description = "description";
+        LocalDateTime time = LocalDateTime.now();
+
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        Procedure p = new Procedure(temp + procedure, 200,true);
+        ProcedureAssignment procedureAssignment = new ProcedureAssignment(p, description, time);
+
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+        userDao.createClientWithUserDetails(patient);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
+        proceduresDao.create(p);
+
+        boolean result = diagnosisDao.assignProcedureToLastDiagnosis(procedureAssignment,
+                diagnosis.getDoctor().getLogin(), patient.getLogin(), cardType);
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(p);
         cleaner.delete(diagnosis.getDoctor());
         cleaner.delete(patient);
         Assert.assertTrue(result);

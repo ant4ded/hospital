@@ -7,7 +7,6 @@ import by.epam.hospital.service.ServiceException;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -147,20 +146,25 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public boolean assignToDiagnosis(String name, LocalDateTime assignDateTime, String description, String doctorLogin,
-                                     String patientLogin, CardType cardType, Class<?> type) throws ServiceException {
-        boolean result = false;
+    public boolean assignProcedureToLastDiagnosis(ProcedureAssignment assignment, String doctorLogin,
+                                                  String patientLogin, CardType cardType) throws ServiceException {
+        boolean result;
         try {
-            if (type == Procedure.class) {
-                result = diagnosisDao.assignProcedureToDiagnosis(name, assignDateTime, description,
-                        doctorLogin, patientLogin, cardType);
-            }
-            if (type == Medicament.class) {
-                result = diagnosisDao.assignMedicamentToDiagnosis(name, assignDateTime, description,
-                        doctorLogin, patientLogin, cardType);
-            }
+            result = diagnosisDao.assignProcedureToLastDiagnosis(assignment, doctorLogin, patientLogin, cardType);
         } catch (DaoException e) {
-            throw new ServiceException("Can not assign " + type.getSimpleName() + " to diagnosis.", e);
+            throw new ServiceException("Can not assign procedure to diagnosis.", e);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean assignMedicamentToLastDiagnosis(MedicamentAssignment assignment, String doctorLogin,
+                                                   String patientLogin, CardType cardType) throws ServiceException {
+        boolean result;
+        try {
+            result = diagnosisDao.assignMedicamentToLastDiagnosis(assignment, doctorLogin, patientLogin, cardType);
+        } catch (DaoException e) {
+            throw new ServiceException("Can not assign medicament to diagnosis.", e);
         }
         return result;
     }

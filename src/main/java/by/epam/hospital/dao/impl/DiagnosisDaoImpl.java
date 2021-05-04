@@ -5,14 +5,11 @@ import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DiagnosisDao;
 import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.entity.CardType;
-import by.epam.hospital.entity.Diagnosis;
-import by.epam.hospital.entity.Icd;
+import by.epam.hospital.entity.*;
 import by.epam.hospital.entity.table.DiagnosesFieldName;
 import by.epam.hospital.entity.table.IcdFieldName;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -184,8 +181,8 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
     }
 
     @Override
-    public boolean assignProcedureToDiagnosis(String procedureName, LocalDateTime assignDateTime, String description,
-                                              String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
+    public boolean assignProcedureToLastDiagnosis(ProcedureAssignment assignment, String doctorLogin,
+                                                  String patientLogin, CardType cardType) throws DaoException {
         boolean result;
         Connection connection = null;
         CallableStatement statement = null;
@@ -194,9 +191,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_ASSIGN_PROCEDURE_TO_DIAGNOSIS);
 
-            statement.setString(1, procedureName);
-            statement.setTimestamp(2, Timestamp.valueOf(assignDateTime));
-            statement.setString(3, description);
+            statement.setString(1, assignment.getProcedure().getName());
+            statement.setTimestamp(2, Timestamp.valueOf(assignment.getTime()));
+            statement.setString(3, assignment.getDescription());
             statement.setString(4, doctorLogin);
             statement.setString(5, patientLogin);
             statement.setString(6, cardType.name());
@@ -214,8 +211,8 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
     }
 
     @Override
-    public boolean assignMedicamentToDiagnosis(String medicamentName, LocalDateTime assignDateTime, String description,
-                                               String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
+    public boolean assignMedicamentToLastDiagnosis(MedicamentAssignment assignment, String doctorLogin,
+                                                   String patientLogin, CardType cardType) throws DaoException {
         boolean result;
         Connection connection = null;
         CallableStatement statement = null;
@@ -224,9 +221,9 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_ASSIGN_MEDICAMENT_TO_DIAGNOSIS);
 
-            statement.setString(1, medicamentName);
-            statement.setTimestamp(2, Timestamp.valueOf(assignDateTime));
-            statement.setString(3, description);
+            statement.setString(1, assignment.getMedicament().getName());
+            statement.setTimestamp(2, Timestamp.valueOf(assignment.getTime()));
+            statement.setString(3, assignment.getDescription());
             statement.setString(4, doctorLogin);
             statement.setString(5, patientLogin);
             statement.setString(6, cardType.name());

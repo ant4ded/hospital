@@ -417,28 +417,28 @@ public class DoctorServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectProcedure")
-    public void assignToDiagnosis_procedure_true(Procedure procedure) throws DaoException, ServiceException {
+    public void assignProcedureToDiagnosis_procedure_true(Procedure procedure) throws DaoException, ServiceException {
         LocalDateTime time = LocalDateTime.now();
         String description = "description";
         String doctorLogin = "doctorLogin";
         String patientLogin = "patientLogin";
-        Mockito.when(diagnosisDao.assignProcedureToDiagnosis(procedure.getName(),
-                time, description, doctorLogin, patientLogin, CardType.AMBULATORY))
+        ProcedureAssignment assignment = new ProcedureAssignment(procedure, description, time);
+        Mockito.when(diagnosisDao.assignProcedureToLastDiagnosis(assignment, doctorLogin, patientLogin, CardType.AMBULATORY))
                 .thenReturn(true);
-        Assert.assertTrue(doctorService.assignToDiagnosis(procedure.getName(), time, description, doctorLogin,
-                patientLogin, CardType.AMBULATORY, Procedure.class));
+        Assert.assertTrue(doctorService.assignProcedureToLastDiagnosis(assignment, doctorLogin, patientLogin,
+                CardType.AMBULATORY));
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectMedicament")
-    public void assignToDiagnosis_medicament_true(Medicament medicament) throws DaoException, ServiceException {
+    public void assignMedicamentToDiagnosis_medicament_true(Medicament medicament) throws DaoException, ServiceException {
         LocalDateTime time = LocalDateTime.now();
         String description = "description";
         String doctorLogin = "doctorLogin";
         String patientLogin = "patientLogin";
-        Mockito.when(diagnosisDao.assignMedicamentToDiagnosis(medicament.getName(),
-                time, description, doctorLogin, patientLogin, CardType.AMBULATORY))
+        MedicamentAssignment assignment = new MedicamentAssignment(medicament, description, time);
+        Mockito.when(diagnosisDao.assignMedicamentToLastDiagnosis(assignment, doctorLogin, patientLogin, CardType.AMBULATORY))
                 .thenReturn(true);
-        Assert.assertTrue(doctorService.assignToDiagnosis(medicament.getName(), time, description, doctorLogin,
-                patientLogin, CardType.AMBULATORY, Medicament.class));
+        Assert.assertTrue(doctorService.assignMedicamentToLastDiagnosis(assignment, doctorLogin, patientLogin,
+                CardType.AMBULATORY));
     }
 }
