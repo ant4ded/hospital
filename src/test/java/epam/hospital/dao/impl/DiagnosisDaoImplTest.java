@@ -1,12 +1,7 @@
 package epam.hospital.dao.impl;
 
-import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.DiagnosisDao;
-import by.epam.hospital.dao.TherapyDao;
-import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.dao.impl.DiagnosisDaoImpl;
-import by.epam.hospital.dao.impl.TherapyDaoImpl;
-import by.epam.hospital.dao.impl.UserDaoImpl;
+import by.epam.hospital.dao.*;
+import by.epam.hospital.dao.impl.*;
 import by.epam.hospital.entity.*;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
@@ -14,6 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +21,16 @@ public class DiagnosisDaoImplTest {
     private TherapyDao therapyDao;
     private UserDao userDao;
     private Cleaner cleaner;
+    private ProceduresDao proceduresDao;
+    private MedicamentDao medicamentDao;
 
     @BeforeMethod
     private void setUp() {
         diagnosisDao = new DiagnosisDaoImpl();
         therapyDao = new TherapyDaoImpl();
         userDao = new UserDaoImpl();
+        proceduresDao = new ProceduresDaoImpl();
+        medicamentDao = new MedicamentDaoImpl();
         cleaner = new Cleaner();
     }
 
@@ -249,5 +249,59 @@ public class DiagnosisDaoImplTest {
     @Test
     public void findByTherapyId_incorrectTherapyId_emptyList() throws DaoException {
         Assert.assertTrue(diagnosisDao.findByTherapyId(0).isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void assignProcedureToDiagnosis_validParameters_true(Diagnosis diagnosis, User patient) throws DaoException {
+        String temp = "temp";
+        String procedure = "procedure";
+        CardType cardType = CardType.STATIONARY;
+
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        Procedure p = new Procedure(temp + procedure, 200, true);
+
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+        userDao.createClientWithUserDetails(patient);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
+        proceduresDao.create(p);
+
+        boolean result = diagnosisDao.assignProcedureToDiagnosis(p.getName(), LocalDateTime.now(), temp,
+                diagnosis.getDoctor().getLogin(), patient.getLogin(), cardType);
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(p);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+        Assert.assertTrue(result);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void assignMedicamentToDiagnosis_validParameters_true(Diagnosis diagnosis, User patient) throws DaoException {
+        String temp = "temp";
+        String medicament = "medicament";
+        CardType cardType = CardType.STATIONARY;
+
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        Medicament m = new Medicament(temp + medicament, true);
+
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+        userDao.createClientWithUserDetails(patient);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
+        medicamentDao.create(m);
+
+        boolean result = diagnosisDao.assignMedicamentToDiagnosis(m.getName(), LocalDateTime.now(), temp,
+                diagnosis.getDoctor().getLogin(), patient.getLogin(), cardType);
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(m);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+        Assert.assertTrue(result);
     }
 }

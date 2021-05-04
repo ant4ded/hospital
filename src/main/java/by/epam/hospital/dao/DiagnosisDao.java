@@ -3,6 +3,7 @@ package by.epam.hospital.dao;
 import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Diagnosis;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,4 +37,10 @@ public interface DiagnosisDao {
      * @see Optional
      */
     Optional<Diagnosis> findById(int id) throws DaoException;
+
+    boolean assignProcedureToDiagnosis(String procedureName, LocalDateTime assignDateTime, String description,
+                                       String doctorLogin, String patientLogin, CardType cardType) throws DaoException;
+
+    boolean assignMedicamentToDiagnosis(String medicamentName, LocalDateTime assignDateTime, String description,
+                                        String doctorLogin, String patientLogin, CardType cardType) throws DaoException;
 }

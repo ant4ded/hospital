@@ -1,10 +1,8 @@
 package by.epam.hospital.dao;
 
-import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.PageResult;
 import by.epam.hospital.entity.Procedure;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ProceduresDao {
@@ -19,7 +17,4 @@ public interface ProceduresDao {
     Optional<Procedure> updateEnabledStatus(int id, boolean isEnabled) throws DaoException;
 
     PageResult<Procedure> findAllByNamePartPaging(String namePart, int page) throws DaoException;
-
-    boolean assignProcedureToDiagnosis(String procedureName, LocalDateTime assignDateTime, String description,
-                                       String doctorLogin, String patientLogin, CardType cardType) throws DaoException;
 }

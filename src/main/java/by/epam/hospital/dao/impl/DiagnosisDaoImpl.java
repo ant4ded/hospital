@@ -12,6 +12,7 @@ import by.epam.hospital.entity.table.DiagnosesFieldName;
 import by.epam.hospital.entity.table.IcdFieldName;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,15 +38,15 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
      * {@code FindDiagnosesByTherapyId}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_DIAGNOSES_BY_THERAPY_ID =
-            "CALL FindDiagnosesByTherapyId(?)";
+    private static final String SP_FIND_DIAGNOSES_BY_THERAPY_ID = "CALL FindDiagnosesByTherapyId(?)";
     /**
      * Sql {@code String} object for call stored procedure
      * {@code FindDiagnosisWithIcdById}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_DIAGNOSIS_WITH_ICD_BY_ID =
-            "CALL FindDiagnosisWithIcdById(?)";
+    private static final String SP_FIND_DIAGNOSIS_WITH_ICD_BY_ID = "CALL FindDiagnosisWithIcdById(?)";
+    private static final String SP_ASSIGN_PROCEDURE_TO_DIAGNOSIS = "CALL AssignProcedureToDiagnosis(?,?,?,?,?,?)";
+    private static final String SP_ASSIGN_MEDICAMENT_TO_DIAGNOSIS = "CALL AssignMedicamentToDiagnosis(?,?,?,?,?,?)";
 
     /**
      * {@link UserDao} data access object.
@@ -180,5 +181,65 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
         icd.setCode(resultSet.getString(IcdFieldName.CODE));
         icd.setTitle(resultSet.getString(IcdFieldName.TITLE));
         diagnosis.setIcd(icd);
+    }
+
+    @Override
+    public boolean assignProcedureToDiagnosis(String procedureName, LocalDateTime assignDateTime, String description,
+                                              String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
+        boolean result;
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_ASSIGN_PROCEDURE_TO_DIAGNOSIS);
+
+            statement.setString(1, procedureName);
+            statement.setTimestamp(2, Timestamp.valueOf(assignDateTime));
+            statement.setString(3, description);
+            statement.setString(4, doctorLogin);
+            statement.setString(5, patientLogin);
+            statement.setString(6, cardType.name());
+
+            resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("CreateProcedure failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean assignMedicamentToDiagnosis(String medicamentName, LocalDateTime assignDateTime, String description,
+                                               String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
+        boolean result;
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_ASSIGN_MEDICAMENT_TO_DIAGNOSIS);
+
+            statement.setString(1, medicamentName);
+            statement.setTimestamp(2, Timestamp.valueOf(assignDateTime));
+            statement.setString(3, description);
+            statement.setString(4, doctorLogin);
+            statement.setString(5, patientLogin);
+            statement.setString(6, cardType.name());
+
+            resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("CreateProcedure failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
     }
 }

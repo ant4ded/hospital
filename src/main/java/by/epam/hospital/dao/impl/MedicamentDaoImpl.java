@@ -4,13 +4,11 @@ import by.epam.hospital.connection.ConnectionException;
 import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.MedicamentDao;
-import by.epam.hospital.entity.CardType;
 import by.epam.hospital.entity.Medicament;
 import by.epam.hospital.entity.PageResult;
 import by.epam.hospital.entity.table.MedicationsFieldName;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +19,6 @@ public class MedicamentDaoImpl implements MedicamentDao {
     private static final String SP_FIND_MEDICAMENT_BY_NAME = "CALL FindMedicamentByName(?)";
     private static final String SP_UPDATE_MEDICAMENT_ENABLED_STATUS = "CALL UpdateMedicamentEnabledStatus(?,?)";
     private static final String SP_FIND_ALL_MEDICATIONS_BY_NAME_PAGING = "CALL FindAllMedicationsByNamePaging(?,?,?)";
-    private static final String SP_ASSIGN_MEDICAMENT_TO_DIAGNOSIS = "CALL AssignMedicamentToDiagnosis(?,?,?,?,?,?)";
 
     @Override
     public int create(Medicament medicament) throws DaoException {
@@ -150,36 +147,6 @@ public class MedicamentDaoImpl implements MedicamentDao {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return pageResult;
-    }
-
-    @Override
-    public boolean assignMedicamentToDiagnosis(String name, LocalDateTime assignDateTime, String description,
-                                               String doctorLogin, String patientLogin, CardType cardType) throws DaoException {
-        boolean result;
-        Connection connection = null;
-        CallableStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_ASSIGN_MEDICAMENT_TO_DIAGNOSIS);
-
-            statement.setString(1, name);
-            statement.setTimestamp(2, Timestamp.valueOf(assignDateTime));
-            statement.setString(3, description);
-            statement.setString(4, doctorLogin);
-            statement.setString(5, patientLogin);
-            statement.setString(6, cardType.name());
-
-            resultSet = statement.executeQuery();
-            result = resultSet.next() && resultSet.getInt(1) != 0;
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("CreateProcedure failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return result;
     }
 
     private Medicament getMedicament(ResultSet resultSet) throws SQLException {
