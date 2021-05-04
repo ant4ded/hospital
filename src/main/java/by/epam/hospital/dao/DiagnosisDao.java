@@ -44,4 +44,8 @@ public interface DiagnosisDao {
 
     boolean assignMedicamentToLastDiagnosis(MedicamentAssignment assignment, String doctorLogin,
                                             String patientLogin, CardType cardType) throws DaoException;
+
+    List<ProcedureAssignment> findAllAssignmentProcedures(int diagnosisId) throws DaoException;
+
+    List<MedicamentAssignment> findAllAssignmentMedications(int diagnosisId) throws DaoException;
 }

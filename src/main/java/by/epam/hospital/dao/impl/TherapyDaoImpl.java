@@ -33,7 +33,7 @@ import java.util.Optional;
 
 public class TherapyDaoImpl implements TherapyDao {
     private static final String SP_CREATE_THERAPY_WITH_DIAGNOSIS =
-            "CALL CreateTherapyWithDiagnosis(?,?,?,?,?,?)";
+            "CALL CreateTherapyWithDiagnosis(?,?,?,?,?,?,?,?)";
     private static final String SP_FIND_CURRENT_PATIENT_THERAPY =
             "CALL FindCurrentPatientTherapy(?,?,?)";
     private static final String SP_FIND_OPEN_THERAPY_BY_DOCTOR_LOGIN =
@@ -56,7 +56,6 @@ public class TherapyDaoImpl implements TherapyDao {
 
     @Override
     public int createTherapyWithDiagnosis(Therapy therapy, Diagnosis diagnosis, CardType cardType) throws DaoException {
-        int therapyId;
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
@@ -70,8 +69,12 @@ public class TherapyDaoImpl implements TherapyDao {
             statement.setString(5, diagnosis.getReason());
             statement.setString(6, cardType.name());
 
+            statement.registerOutParameter(7, Types.INTEGER);
+            statement.registerOutParameter(8, Types.INTEGER);
+
             resultSet = statement.executeQuery();
-            therapyId = resultSet.next() ? resultSet.getInt(1) : 0;
+            therapy.setId(statement.getInt(7));
+            diagnosis.setId(statement.getInt(8));
         } catch (ConnectionException e) {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
@@ -79,7 +82,7 @@ public class TherapyDaoImpl implements TherapyDao {
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
-        return therapyId;
+        return therapy.getId();
     }
 
     @Override

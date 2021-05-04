@@ -6,8 +6,7 @@ import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DiagnosisDao;
 import by.epam.hospital.dao.UserDao;
 import by.epam.hospital.entity.*;
-import by.epam.hospital.entity.table.DiagnosesFieldName;
-import by.epam.hospital.entity.table.IcdFieldName;
+import by.epam.hospital.entity.table.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -44,6 +43,8 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
     private static final String SP_FIND_DIAGNOSIS_WITH_ICD_BY_ID = "CALL FindDiagnosisWithIcdById(?)";
     private static final String SP_ASSIGN_PROCEDURE_TO_DIAGNOSIS = "CALL AssignProcedureToDiagnosis(?,?,?,?,?,?)";
     private static final String SP_ASSIGN_MEDICAMENT_TO_DIAGNOSIS = "CALL AssignMedicamentToDiagnosis(?,?,?,?,?,?)";
+    private static final String SP_FIND_ALL_ASSIGNMENT_PROCEDURES = "CALL FindAllAssignmentProceduresToDiagnosis(?)";
+    private static final String SP_FIND_ALL_ASSIGNMENT_MEDICATIONS = "CALL FindAllAssignmentMedicationsToDiagnosis(?)";
 
     /**
      * {@link UserDao} data access object.
@@ -238,5 +239,72 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return result;
+    }
+
+    @Override
+    public List<ProcedureAssignment> findAllAssignmentProcedures(int diagnosisId) throws DaoException {
+        List<ProcedureAssignment> assignments = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SP_FIND_ALL_ASSIGNMENT_PROCEDURES);
+            statement.setInt(1, diagnosisId);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Procedure procedure = new Procedure();
+                ProcedureAssignment assignment = new ProcedureAssignment();
+                procedure.setId(resultSet.getInt(ProceduresFieldName.ID));
+                procedure.setName(resultSet.getString(ProceduresFieldName.NAME));
+                procedure.setCost(resultSet.getInt(ProceduresFieldName.COST));
+                procedure.setEnabled(resultSet.getBoolean(ProceduresFieldName.IS_ENABLED));
+                assignment.setProcedure(procedure);
+                assignment.setDescription(resultSet.getString(ProceduresAssignmentFieldName.DESCRIPTION));
+                assignment.setTime(resultSet.getTimestamp(ProceduresAssignmentFieldName.DATETIME).toLocalDateTime());
+                assignments.add(assignment);
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("FindOpenDoctorTherapies failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return assignments;
+    }
+
+    @Override
+    public List<MedicamentAssignment> findAllAssignmentMedications(int diagnosisId) throws DaoException {
+        List<MedicamentAssignment> assignments = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SP_FIND_ALL_ASSIGNMENT_MEDICATIONS);
+            statement.setInt(1, diagnosisId);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Medicament medicament = new Medicament();
+                MedicamentAssignment assignment = new MedicamentAssignment();
+                medicament.setId(resultSet.getInt(MedicationsFieldName.ID));
+                medicament.setName(resultSet.getString(MedicationsFieldName.NAME));
+                medicament.setEnabled(resultSet.getBoolean(MedicationsFieldName.IS_ENABLED));
+                assignment.setMedicament(medicament);
+                assignment.setDescription(resultSet.getString(MedicationsAssignmentFieldName.DESCRIPTION));
+                assignment.setTime(resultSet.getTimestamp(MedicationsAssignmentFieldName.DATETIME).toLocalDateTime());
+                assignments.add(assignment);
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("FindOpenDoctorTherapies failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return assignments;
     }
 }
