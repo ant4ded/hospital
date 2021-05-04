@@ -53,7 +53,7 @@ public class MedicamentDaoImpl implements MedicamentDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_FIND_MEDICAMENT_BY_ID);
-            statement.setString(1, String.valueOf(id));
+            statement.setInt(1, id);
 
             resultSet = statement.executeQuery();
             optionalMedicament = Optional.ofNullable(getMedicament(resultSet));
@@ -100,7 +100,7 @@ public class MedicamentDaoImpl implements MedicamentDao {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_UPDATE_MEDICAMENT_ENABLED_STATUS);
 
-            statement.setString(1, String.valueOf(id));
+            statement.setInt(1, id);
             statement.setBoolean(2, isEnabled);
 
             resultSet = statement.executeQuery();

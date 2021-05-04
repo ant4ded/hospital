@@ -32,7 +32,7 @@ public class ProceduresDaoImpl implements ProceduresDao {
             statement = connection.prepareCall(SP_CREATE_PROCEDURE);
 
             statement.setString(1, procedure.getName());
-            statement.setString(2, String.valueOf(procedure.getCost()));
+            statement.setInt(2, procedure.getCost());
 
             resultSet = statement.executeQuery();
             userId = resultSet.next() ? resultSet.getInt(1) : 0;
@@ -78,7 +78,7 @@ public class ProceduresDaoImpl implements ProceduresDao {
         try {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_FIND_PROCEDURE_BY_ID);
-            statement.setString(1, String.valueOf(id));
+            statement.setInt(1, id);
 
             resultSet = statement.executeQuery();
             optionalProcedure = Optional.ofNullable(getProcedure(resultSet));
@@ -102,8 +102,8 @@ public class ProceduresDaoImpl implements ProceduresDao {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_UPDATE_PROCEDURE);
 
-            statement.setString(1, String.valueOf(cost));
-            statement.setString(2, String.valueOf(id));
+            statement.setInt(1, cost);
+            statement.setInt(2, id);
 
             resultSet = statement.executeQuery();
             optionalProcedure = Optional.ofNullable(getProcedure(resultSet));
@@ -127,7 +127,7 @@ public class ProceduresDaoImpl implements ProceduresDao {
             connection = ConnectionPool.getInstance().getConnection();
             statement = connection.prepareCall(SP_UPDATE_PROCEDURE_ENABLED_STATUS);
 
-            statement.setString(1, String.valueOf(id));
+            statement.setInt(1, id);
             statement.setBoolean(2, isEnabled);
 
             resultSet = statement.executeQuery();
