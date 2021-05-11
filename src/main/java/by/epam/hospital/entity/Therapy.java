@@ -1,9 +1,13 @@
 package by.epam.hospital.entity;
 
 
+import by.epam.hospital.service.util.JsonConverter;
+
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Therapy implements Serializable {
@@ -120,14 +124,6 @@ public class Therapy implements Serializable {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Therapy.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("doctor=" + doctor)
-                .add("patient=" + patient)
-                .add("cardType=" + cardType)
-                .add("endTherapy=" + endTherapy)
-                .add("finalDiagnosis=" + finalDiagnosis)
-                .add("diagnoses=" + diagnoses)
-                .toString();
+        return JsonConverter.toJson(this);
     }
 }

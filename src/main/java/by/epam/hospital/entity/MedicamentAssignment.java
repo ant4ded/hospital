@@ -1,8 +1,9 @@
 package by.epam.hospital.entity;
 
+import by.epam.hospital.service.util.JsonConverter;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.StringJoiner;
 
 public class MedicamentAssignment implements Serializable {
     private Medicament medicament;
@@ -64,10 +65,6 @@ public class MedicamentAssignment implements Serializable {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", MedicamentAssignment.class.getSimpleName() + "[", "]")
-                .add("medicament=" + medicament)
-                .add("description='" + description + "'")
-                .add("time=" + time)
-                .toString();
+        return JsonConverter.toJson(this);
     }
 }

@@ -1,8 +1,10 @@
 package by.epam.hospital.entity;
 
-import java.util.StringJoiner;
+import by.epam.hospital.service.util.JsonConverter;
 
-public class Medicament {
+import java.io.Serializable;
+
+public class Medicament implements Serializable {
     private int id;
     private String name;
     private boolean isEnabled;
@@ -63,10 +65,6 @@ public class Medicament {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Medicament.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("name='" + name + "'")
-                .add("isEnabled=" + isEnabled)
-                .toString();
+        return JsonConverter.toJson(this);
     }
 }

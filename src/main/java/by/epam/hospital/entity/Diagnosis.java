@@ -1,8 +1,9 @@
 package by.epam.hospital.entity;
 
+import by.epam.hospital.service.util.JsonConverter;
+
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.StringJoiner;
 
 public class Diagnosis implements Serializable {
     private int id;
@@ -88,12 +89,6 @@ public class Diagnosis implements Serializable {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Diagnosis.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("icd=" + icd)
-                .add("doctor=" + doctor)
-                .add("diagnosisDate=" + diagnosisDate)
-                .add("reason='" + reason + "'")
-                .toString();
+        return JsonConverter.toJson(this);
     }
 }
