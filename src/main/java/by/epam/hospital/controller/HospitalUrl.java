@@ -16,6 +16,12 @@ public class HospitalUrl {
     public static final String PAGE_PROFILE = "/profile";
     public static final String PAGE_PATIENT_THERAPIES = "/patient-therapies";
     public static final String PAGE_DOCTOR_THERAPIES = "/doctor-therapies";
+    public static final String PAGE_MEDICAMENT_CONTROL = "/medicament-control";
+    public static final String PAGE_PROCEDURE_CONTROL = "/procedure-control";
+    public static final String PAGE_ASSIGN_MEDICAMENT = "/assign-medicament";
+    public static final String PAGE_ASSIGNMENT_MEDICATIONS = "/assignment-medications";
+    public static final String PAGE_ASSIGN_PROCEDURE = "/assign-procedure";
+    public static final String PAGE_ASSIGNMENT_PROCEDURES = "/assignment-procedures";
 
     public static final String COMMAND_FIND_USER_DETAILS = "/c-find-user-details";
     public static final String COMMAND_EDIT_USER_DETAILS = "/c-edit-user-details";
@@ -42,6 +48,8 @@ public class HospitalUrl {
     public static final String COMMAND_DOCTOR_FIND_PROCEDURES_PAGING = "/c-d-find-procedures-paging";
     public static final String COMMAND_FIND_ASSIGNMENT_MEDICATIONS = "/c-find-assignment-medications";
     public static final String COMMAND_FIND_ASSIGNMENT_PROCEDURES = "/c-find-assignment-procedures";
+    public static final String COMMAND_ASSIGN_MEDICAMENT = "/c-assign-medicament";
+    public static final String COMMAND_ASSIGN_PROCEDURE = "/c-assign-procedure";
 
     private HospitalUrl() {
     }

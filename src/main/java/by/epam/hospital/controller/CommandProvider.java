@@ -4,6 +4,8 @@ import by.epam.hospital.controller.command.Authorization;
 import by.epam.hospital.controller.command.FirstVisit;
 import by.epam.hospital.controller.command.SignOut;
 import by.epam.hospital.controller.command.admin.head.*;
+import by.epam.hospital.controller.command.admin.head.FindMedicationsPaging;
+import by.epam.hospital.controller.command.admin.head.FindProceduresPaging;
 import by.epam.hospital.controller.command.client.EditUserDetails;
 import by.epam.hospital.controller.command.client.FindUserDetails;
 import by.epam.hospital.controller.command.doctor.*;
@@ -62,11 +64,11 @@ public class CommandProvider {
                 new MedicamentControl(getAdminHeadService(),
                         Logger.getLogger(MedicamentControl.class)));
         map.put(CommandName.ADMIN_FIND_PROCEDURES_PAGING,
-                new MedicamentControl(getAdminHeadService(),
-                        Logger.getLogger(MedicamentControl.class)));
+                new FindProceduresPaging(getAdminHeadService(),
+                        Logger.getLogger(FindProceduresPaging.class)));
         map.put(CommandName.ADMIN_FIND_MEDICATIONS_PAGING,
-                new MedicamentControl(getAdminHeadService(),
-                        Logger.getLogger(MedicamentControl.class)));
+                new FindMedicationsPaging(getAdminHeadService(),
+                        Logger.getLogger(FindMedicationsPaging.class)));
 
         map.put(CommandName.FIND_USER_DETAILS,
                 new FindUserDetails(getClientService(),
@@ -91,17 +93,23 @@ public class CommandProvider {
                 new MakeLastDiagnosisFinal(getDoctorService(),
                         Logger.getLogger(MakeLastDiagnosisFinal.class)));
         map.put(CommandName.DOCTOR_FIND_MEDICATIONS_PAGING,
-                new MakeLastDiagnosisFinal(getDoctorService(),
-                        Logger.getLogger(MakeLastDiagnosisFinal.class)));
+                new by.epam.hospital.controller.command.doctor.FindMedicationsPaging(getDoctorService(),
+                        Logger.getLogger(by.epam.hospital.controller.command.doctor.FindMedicationsPaging.class)));
         map.put(CommandName.DOCTOR_FIND_PROCEDURES_PAGING,
-                new MakeLastDiagnosisFinal(getDoctorService(),
-                        Logger.getLogger(MakeLastDiagnosisFinal.class)));
+                new by.epam.hospital.controller.command.doctor.FindProceduresPaging(getDoctorService(),
+                        Logger.getLogger(by.epam.hospital.controller.command.doctor.FindProceduresPaging.class)));
         map.put(CommandName.FIND_ASSIGNMENT_MEDICATIONS,
-                new MakeLastDiagnosisFinal(getDoctorService(),
-                        Logger.getLogger(MakeLastDiagnosisFinal.class)));
+                new FindAssignmentMedications(getDoctorService(),
+                        Logger.getLogger(FindAssignmentMedications.class)));
         map.put(CommandName.FIND_ASSIGNMENT_PROCEDURES,
-                new MakeLastDiagnosisFinal(getDoctorService(),
-                        Logger.getLogger(MakeLastDiagnosisFinal.class)));
+                new FindAssignmentProcedures(getDoctorService(),
+                        Logger.getLogger(FindAssignmentProcedures.class)));
+        map.put(CommandName.ASSIGN_MEDICAMENT,
+                new AssignMedicament(getDoctorService(),
+                        Logger.getLogger(AssignMedicament.class)));
+        map.put(CommandName.ASSIGN_PROCEDURE,
+                new AssignProcedure(getDoctorService(),
+                        Logger.getLogger(AssignProcedure.class)));
     }
 
     public HttpCommand getCommand(CommandName command) {

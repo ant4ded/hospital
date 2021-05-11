@@ -16,6 +16,7 @@ public class ParameterName {
     public static final String MESSAGE = "message";
     public static final String PAGE_OF_DEPARTURE = "page_of_departure";
     public static final String PAGE_FORWARD = "page_forward";
+    public static final String COMMAND_FORWARD = "command-forward";
 
     public static final String USER_ROLES = "userRoles";
     public static final String ROLE = "role";
@@ -30,9 +31,12 @@ public class ParameterName {
     public static final String PAGE_NUMBER = "page_number";
     public static final String TOTAL_PAGES = "total_pages";
     public static final String PROCEDURE_LIST = "procedure_list";
-    public static final String ASSIGNMENT_MEDICATIONS = "assignment_medications";
-    public static final String ASSIGNMENT_PROCEDURES = "assignment_procedures";
-    public static final String DIAGNOSIS_ID = "diagnosis_id";
+    public static final String MEDICAMENT_LIST = "medicament_list";
+    public static final String ASSIGNMENT_MEDICATIONS_LIST = "assignment_medications_list";
+    public static final String ASSIGNMENT_PROCEDURES_LIST = "assignment_procedures_list";
+
+    public static final String PATIENT = "patient";
+    public static final String DIAGNOSIS = "diagnosis";
 
     private ParameterName() {
     }

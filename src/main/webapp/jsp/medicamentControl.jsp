@@ -1,7 +1,7 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
 <%@page import="by.epam.hospital.entity.table.MedicationsFieldName" %>
-<%@page import="by.epam.hospital.entity.table.MedicationsAssignmentFieldName" %>
+<%@page import="by.epam.hospital.service.ServiceAction" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -44,11 +44,11 @@
                     <h4>Medicament control panel</h4>
                     <p>${requestScope.message}</p>
                     <form method="post"
-                          action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_DOCTOR_FIND_MEDICATIONS_PAGING}">
+                          action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ADMIN_FIND_MEDICATIONS_PAGING}">
                         <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
-                               value="${HospitalUrl.PAGE_ASSIGN_MEDICAMENT}">
+                               value="${HospitalUrl.PAGE_MEDICAMENT_CONTROL}">
                         <input type="hidden" name="${ParameterName.COMMAND}"
-                               value="${CommandName.DOCTOR_FIND_MEDICATIONS_PAGING}">
+                               value="${CommandName.ADMIN_FIND_MEDICATIONS_PAGING}">
                         <div class="form-group form-inline">
                             <div class="form-group col-lg-11 col-md-11 name">
                                 <input type="text" name="${ParameterName.NAME_PART}" required
@@ -90,25 +90,57 @@
                             </div>
                         </c:if>
                     </form>
+                    <div class="form-group form-inline ">
+                        <form method="post" class="col-lg-12 col-md-12 d-flex justify-content-between"
+                              action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MEDICAMENT_CONTROL}">
+                            <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                                   value="${HospitalUrl.PAGE_MEDICAMENT_CONTROL}">
+                            <input type="hidden" name="${ParameterName.COMMAND}"
+                                   value="${CommandName.MEDICAMENT_CONTROL}">
+                            <input type="hidden" name="${ParameterName.ACTION}" value="${ServiceAction.ADD}">
+                            <input type="hidden" name="${ParameterName.NAME_PART}" value="">
+                            <input type="hidden" name="${ParameterName.PAGE_NUMBER}" value="0">
+                            <div class="form-group col-lg-4 col-md-4">
+                                <input type="text" name="${ParameterName.PROCEDURE_OR_MEDICAMENT_NAME}" required
+                                       class="form-control" placeholder="Medicament name"
+                                       onfocus="this.placeholder = ''" onblur="this.placeholder = 'Medicament name'">
+                            </div>
+                            <div class="col-lg-2 col-md-2"></div>
+                            <div class="form-group col-lg-2 col-md-2">
+                                <button type="submit" class="genric-btn primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
                     <c:forEach items="${requestScope.medicament_list}" var="medicament" varStatus="loop">
                         <div class="form-group form-inline">
                             <form method="post" class="col-lg-12 col-md-12 d-flex justify-content-between"
-                                  action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ASSIGN_MEDICAMENT}">
-                                <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"  value="${HospitalUrl.PAGE_ASSIGN_MEDICAMENT}">
-                                <input type="hidden" name="${ParameterName.COMMAND}"            value="${CommandName.ASSIGN_MEDICAMENT}">
-                                <input type="hidden" name="${ParameterName.PATIENT}"            value="<%=request.getParameter(ParameterName.PATIENT)%>">
-                                <input type="hidden" name="${ParameterName.CARD_TYPE}"          value="<%=request.getParameter(ParameterName.CARD_TYPE)%>">
-                                <input type="hidden" name="${MedicationsFieldName.NAME}"        value="${medicament.name}">
+                                  action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_MEDICAMENT_CONTROL}">
+                                <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
+                                       value="${HospitalUrl.PAGE_MEDICAMENT_CONTROL}">
+                                <input type="hidden" name="${ParameterName.COMMAND}"
+                                       value="${CommandName.MEDICAMENT_CONTROL}">
+                                <input type="hidden" name="${ParameterName.ACTION}" value="${ServiceAction.UPDATE}">
+                                <input type="hidden" name="${ParameterName.NAME_PART}" value="${requestScope.name_part}">
+                                <input type="hidden" name="${ParameterName.PAGE_NUMBER}" value="0">
+                                <input type="hidden" name="${ParameterName.PROCEDURE_OR_MEDICAMENT_NAME}" value="${medicament.name}">
                                 <div class="form-group col-lg-4 col-md-4">
-                                    <input type="text" disabled class="form-control" value="${medicament.name}">
+                                    <input type="text" name="${ParameterName.PROCEDURE_OR_MEDICAMENT_NAME}" disabled
+                                           class="form-control" placeholder="Medicament name"
+                                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Medicament name'" value="${medicament.name}">
                                 </div>
-                                <div class="form-group col-lg-4 col-md-4">
-                                    <input type="text" name="${MedicationsAssignmentFieldName.DESCRIPTION}"
-                                           class="form-control" placeholder="Description"
-                                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Description'">
+                                <div class="switch-wrap col-lg-2 col-md-2 d-flex justify-content-between">
+                                    <p>is enabled</p>
+                                    <div class="primary-switch">
+                                        <input type="checkbox" id="${MedicationsFieldName.IS_ENABLED}${loop.index}"
+                                               name="${MedicationsFieldName.IS_ENABLED}"
+                                               value="${medicament.isEnabled()}"
+                                               onclick="switchBooleanValue(${MedicationsFieldName.IS_ENABLED}${loop.index})"
+                                            ${medicament.isEnabled() ? "checked" : ""}>
+                                        <label for="${MedicationsFieldName.IS_ENABLED}${loop.index}"></label>
+                                    </div>
                                 </div>
                                 <div class="form-group col-lg-2 col-md-2">
-                                    <button type="submit" class="genric-btn primary">Add</button>
+                                    <button type="submit" class="genric-btn primary">Update</button>
                                 </div>
                             </form>
                         </div>

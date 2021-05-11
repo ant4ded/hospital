@@ -173,6 +173,16 @@
                                                     ${roleControl}
                                             </a>
                                         </li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ADMIN_FIND_MEDICATIONS_PAGING}?${ParameterName.COMMAND}=${CommandName.ADMIN_FIND_MEDICATIONS_PAGING}">
+                                                Medications
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ADMIN_FIND_PROCEDURES_PAGING}?${ParameterName.COMMAND}=${CommandName.ADMIN_FIND_PROCEDURES_PAGING}">
+                                                Procedures
+                                            </a>
+                                        </li>
                                     </c:if>
                                     <li>
                                         <a href="${HospitalUrl.MAIN_URL}?${ParameterName.COMMAND}=${CommandName.FIND_USER_DETAILS}">

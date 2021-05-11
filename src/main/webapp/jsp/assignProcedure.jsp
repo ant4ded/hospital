@@ -1,7 +1,7 @@
 <%--suppress HtmlFormInputWithoutLabel --%>
 <%@page contentType="text/html;charset=UTF-8" %>
-<%@page import="by.epam.hospital.entity.table.MedicationsFieldName" %>
-<%@page import="by.epam.hospital.entity.table.MedicationsAssignmentFieldName" %>
+<%@page import="by.epam.hospital.entity.table.ProceduresFieldName" %>
+<%@page import="by.epam.hospital.entity.table.ProceduresAssignmentFieldName" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -41,21 +41,21 @@
         <div class="row">
             <div class="col-lg-12 posts-list">
                 <div class="comment-form">
-                    <h4>Medicament control panel</h4>
+                    <h4>Procedure control panel</h4>
                     <p>${requestScope.message}</p>
                     <form method="post"
-                          action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_DOCTOR_FIND_MEDICATIONS_PAGING}">
+                          action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_DOCTOR_FIND_PROCEDURES_PAGING}">
                         <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
-                               value="${HospitalUrl.PAGE_ASSIGN_MEDICAMENT}">
+                               value="${HospitalUrl.PAGE_ASSIGN_PROCEDURE}">
                         <input type="hidden" name="${ParameterName.COMMAND}"
-                               value="${CommandName.DOCTOR_FIND_MEDICATIONS_PAGING}">
+                               value="${CommandName.DOCTOR_FIND_PROCEDURES_PAGING}">
                         <div class="form-group form-inline">
                             <div class="form-group col-lg-11 col-md-11 name">
                                 <input type="text" name="${ParameterName.NAME_PART}" required
-                                       class="form-control" placeholder="Medicament name"
+                                       class="form-control" placeholder="Procedure name"
                                        value="<%=request.getParameter(ParameterName.NAME_PART) == null ?
                                         "" : request.getParameter(ParameterName.NAME_PART)%>"
-                                       onfocus="this.placeholder = ''" onblur="this.placeholder = 'Medicament name'">
+                                       onfocus="this.placeholder = ''" onblur="this.placeholder = 'Procedure name'">
                             </div>
                             <div class="form-group col-lg-1 col-md-1 name">
                                 <button type="submit" class="template-btn">${btnFind}</button>
@@ -90,20 +90,23 @@
                             </div>
                         </c:if>
                     </form>
-                    <c:forEach items="${requestScope.medicament_list}" var="medicament" varStatus="loop">
+                    <c:forEach items="${requestScope.procedure_list}" var="procedure" varStatus="loop">
                         <div class="form-group form-inline">
                             <form method="post" class="col-lg-12 col-md-12 d-flex justify-content-between"
-                                  action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ASSIGN_MEDICAMENT}">
-                                <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"  value="${HospitalUrl.PAGE_ASSIGN_MEDICAMENT}">
-                                <input type="hidden" name="${ParameterName.COMMAND}"            value="${CommandName.ASSIGN_MEDICAMENT}">
+                                  action="${HospitalUrl.MAIN_URL}${HospitalUrl.COMMAND_ASSIGN_PROCEDURE}">
+                                <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"  value="${HospitalUrl.PAGE_ASSIGN_PROCEDURE}">
+                                <input type="hidden" name="${ParameterName.COMMAND}"            value="${CommandName.ASSIGN_PROCEDURE}">
                                 <input type="hidden" name="${ParameterName.PATIENT}"            value="<%=request.getParameter(ParameterName.PATIENT)%>">
                                 <input type="hidden" name="${ParameterName.CARD_TYPE}"          value="<%=request.getParameter(ParameterName.CARD_TYPE)%>">
-                                <input type="hidden" name="${MedicationsFieldName.NAME}"        value="${medicament.name}">
+                                <input type="hidden" name="${ProceduresFieldName.NAME}"        value="${procedure.name}">
                                 <div class="form-group col-lg-4 col-md-4">
-                                    <input type="text" disabled class="form-control" value="${medicament.name}">
+                                    <input type="text" disabled class="form-control" value="${procedure.name}">
                                 </div>
                                 <div class="form-group col-lg-4 col-md-4">
-                                    <input type="text" name="${MedicationsAssignmentFieldName.DESCRIPTION}"
+                                    <input type="number" disabled class="form-control" value="${procedure.cost}">
+                                </div>
+                                <div class="form-group col-lg-4 col-md-4">
+                                    <input type="text" name="${ProceduresAssignmentFieldName.DESCRIPTION}"
                                            class="form-control" placeholder="Description"
                                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Description'">
                                 </div>

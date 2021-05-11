@@ -92,6 +92,60 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>MedicamentControl</servlet-name>
+    <jsp-file>/jsp/medicamentControl.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MedicamentControl</servlet-name>
+    <url-pattern>/medicament-control</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ProcedureControl</servlet-name>
+    <jsp-file>/jsp/procedureControl.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProcedureControl</servlet-name>
+    <url-pattern>/procedure-control</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AssignMedicament</servlet-name>
+    <jsp-file>/jsp/assignMedicament.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AssignMedicament</servlet-name>
+    <url-pattern>/assign-medicament</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AssignmentMedication</servlet-name>
+    <jsp-file>/jsp/assignmentMedications.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AssignmentMedication</servlet-name>
+    <url-pattern>/assignment-medications</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AssignProcedure</servlet-name>
+    <jsp-file>/jsp/assignProcedure.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AssignProcedure</servlet-name>
+    <url-pattern>/assign-procedure</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AssignmentProcedures</servlet-name>
+    <jsp-file>/jsp/assignmentProcedures.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AssignmentProcedures</servlet-name>
+    <url-pattern>/assignment-procedures</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>Error</servlet-name>
     <jsp-file>/jsp/error.jsp</jsp-file>
   </servlet>
@@ -379,22 +433,6 @@
       <param-value>cost</param-value>
     </init-param>
   </filter>
-  <filter>
-    <filter-name>PageNumberFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
-    <init-param>
-      <param-name>parameter_name</param-name>
-      <param-value>page_number</param-value>
-    </init-param>
-  </filter>
-  <filter>
-    <filter-name>DiagnosisIdFilter</filter-name>
-    <filter-class>by.epam.hospital.controller.filter.RequestParametersFilter</filter-class>
-    <init-param>
-      <param-name>parameter_name</param-name>
-      <param-value>diagnosis_id</param-value>
-    </init-param>
-  </filter>
 
   <filter-mapping>
     <filter-name>CommandFilter</filter-name>
@@ -671,17 +709,9 @@
     <filter-name>CommandFilter</filter-name>
     <url-pattern>/c-a-find-medications-paging</url-pattern>
   </filter-mapping>
-  <filter-mapping>
-    <filter-name>PageNumberFilter</filter-name>
-    <url-pattern>/c-a-find-medications-paging</url-pattern>
-  </filter-mapping>
 
   <filter-mapping>
     <filter-name>CommandFilter</filter-name>
-    <url-pattern>/c-a-find-procedures-paging</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>PageNumberFilter</filter-name>
     <url-pattern>/c-a-find-procedures-paging</url-pattern>
   </filter-mapping>
 
@@ -689,17 +719,9 @@
     <filter-name>CommandFilter</filter-name>
     <url-pattern>/c-d-find-medications-paging</url-pattern>
   </filter-mapping>
-  <filter-mapping>
-    <filter-name>PageNumberFilter</filter-name>
-    <url-pattern>/c-d-find-medications-paging</url-pattern>
-  </filter-mapping>
 
   <filter-mapping>
     <filter-name>CommandFilter</filter-name>
-    <url-pattern>/c-d-find-procedures-paging</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>PageNumberFilter</filter-name>
     <url-pattern>/c-d-find-procedures-paging</url-pattern>
   </filter-mapping>
 
@@ -707,17 +729,9 @@
     <filter-name>CommandFilter</filter-name>
     <url-pattern>/c-find-assignment-medications</url-pattern>
   </filter-mapping>
-  <filter-mapping>
-    <filter-name>DiagnosisIdFilter</filter-name>
-    <url-pattern>/c-find-assignment-medications</url-pattern>
-  </filter-mapping>
 
   <filter-mapping>
     <filter-name>CommandFilter</filter-name>
-    <url-pattern>/c-find-assignment-procedures</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>DiagnosisIdFilter</filter-name>
     <url-pattern>/c-find-assignment-procedures</url-pattern>
   </filter-mapping>
   <!--Validation filters declaration end-->

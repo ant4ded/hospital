@@ -38,10 +38,9 @@ public class RequestParametersFilter implements Filter {
             case ParameterName.CARD_TYPE -> !CardType.hasValue(parameterValue);
             case ParameterName.DEPARTMENT -> !Department.hasValue(parameterValue);
             case ParameterName.ROLE -> !Role.hasValue(parameterValue);
-            case ParameterName.PROCEDURE_OR_MEDICAMENT_NAME -> dataValidator
+            case ParameterName.PROCEDURE_OR_MEDICAMENT_NAME -> !dataValidator
                     .isValidProcedureOrMedicamentName(parameterValue);
-            case ParameterName.PAGE_NUMBER, ParameterName.DIAGNOSIS_ID -> dataValidator.isNumber(parameterValue);
-            case ProceduresFieldName.COST -> dataValidator.isValidCost(parameterValue);
+            case ProceduresFieldName.COST -> !dataValidator.isValidCost(parameterValue);
             case UsersDetailsFieldName.GENDER -> !UserDetails.Gender.hasValue(parameterValue);
             case IcdFieldName.CODE -> !dataValidator.isValidIcdCode(parameterValue);
             case UsersFieldName.LOGIN -> !dataValidator.isValidLogin(parameterValue);

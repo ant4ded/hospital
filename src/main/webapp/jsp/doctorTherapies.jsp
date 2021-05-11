@@ -2,6 +2,7 @@
 <%@page contentType="text/html;charset=UTF-8" %>
 <%@page import="by.epam.hospital.entity.Therapy" %>
 <%@page import="by.epam.hospital.entity.table.UsersDetailsFieldName" %>
+<%@page import="by.epam.hospital.service.util.JsonConverter" %>
 <%@page import="java.util.List" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -43,63 +44,94 @@
                 <div class="progress-table-wrap">
                     <div class="progress-table">
                         <div class="table-head">
-                            <div class="serial">#</div>
-                            <div class="user-details">${mainHeadPatient}</div>
-                            <div class="diagnosis-code">${mainHeadIcd}</div>
-                            <div class="diagnosis-title">${mainHeadFinalDiagnosis}</div>
-                            <div class="table-date">${mainHeadEndTherapy}</div>
+                            <div class="serial col-lg-1 col-md-1">#</div>
+                            <div class="user-details col-lg-1 col-md-1">${mainHeadPatient}</div>
+                            <div class="diagnosis-code col-lg-1 col-md-1">${mainHeadIcd}</div>
+                            <div class="diagnosis-title col-lg-2 col-md-2">${mainHeadFinalDiagnosis}</div>
+                            <div class="table-date col-lg-1 col-md-1">${mainHeadEndTherapy}</div>
                         </div>
+                        <div class="table-row-border-solid"></div>
                         <c:forEach items="<%=therapies%>" var="therapy" varStatus="loop">
                             <div class="table-row">
-                                <div class="serial">${loop.index + 1}</div>
-                                <div class="user-details">
-                                        ${therapy.patient.userDetails.firstName}<br>
-                                        ${therapy.patient.userDetails.surname}<br>
-                                        ${therapy.patient.userDetails.lastName}
+                                <div class="align-self-center serial col-lg-1 col-md-1">${loop.index + 1}</div>
+                                <div class="align-self-center user-details col-lg-1 col-md-1">
+                                        ${therapy.patient.userDetails.firstName} ${therapy.patient.userDetails.surname} ${therapy.patient.userDetails.lastName}
                                 </div>
                                 <c:choose>
                                     <c:when test="${therapy.finalDiagnosis.orElse(null) == null &&
                                         therapy.endTherapy.orElse(null) == null}">
-                                        <div class="diagnosis-code">${mainStatus}</div>
-                                        <div class="diagnosis-title">${mainStatusFinalDiagnosis}</div>
-                                        <div class="table-date">${mainStatusTherapy}</div>
+                                        <div class="align-self-center diagnosis-code col-lg-1 col-md-1">${mainStatus}</div>
+                                        <div class="align-self-center diagnosis-title col-lg-2 col-md-2">${mainStatusFinalDiagnosis}</div>
+                                        <div class="align-self-center table-date col-lg-1 col-md-1">${mainStatusTherapy}</div>
+                                    </c:when>
+                                    <c:when test="${therapy.finalDiagnosis.orElse(null) != null &&
+                                        therapy.endTherapy.orElse(null) == null}">
+                                        <div class="align-self-center diagnosis-code col-lg-1 col-md-1">${therapy.finalDiagnosis.get().icd.code}</div>
+                                        <div class="align-self-center diagnosis-title col-lg-2 col-md-2">${therapy.finalDiagnosis.get().icd.title}</div>
+                                        <div class="align-self-center table-date col-lg-1 col-md-1">${mainStatusTherapy}</div>
                                     </c:when>
                                     <c:otherwise>
-                                        <div class="diagnosis-code">${therapy.finalDiagnosis.get().icd.code}</div>
-                                        <div class="diagnosis-title">${therapy.finalDiagnosis.get().icd.title}</div>
-                                        <div class="table-date">${mainStatusTherapy}</div>
+                                        <div class="align-self-center diagnosis-code col-lg-1 col-md-1">${therapy.finalDiagnosis.get().icd.code}</div>
+                                        <div class="align-self-center diagnosis-title col-lg-2 col-md-2">${therapy.finalDiagnosis.get().icd.title}</div>
+                                        <div class="align-self-center table-date col-lg-1 col-md-1">${therapy.endTherapy}</div>
                                     </c:otherwise>
                                 </c:choose>
-                                <div class="table-row-wrapper">
+                            </div>
+                            <div class="table-row-border-solid"></div>
+                            <div class="table-head col-lg-12 col-md-12">
+                                <div class="diagnosis-preliminary">preliminary diagnoses</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="table-row-wrapper col-lg-12 col-md-12">
+                                    <div class="table-row">
+                                        <div class="table-group col-lg-12 col-md-12">
+                                            <div class="table-parameter col-lg-1 col-md-1">${innerHeadDoctor}</div>
+                                            <div class="table-parameter col-lg-1 col-md-1">${innerHeadIcd}</div>
+                                            <div class="table-parameter col-lg-2 col-md-2">${innerHeadDiagnosis}</div>
+                                            <div class="table-parameter col-lg-1 col-md-1">${innerHeadDate}</div>
+                                            <div class="table-parameter col-lg-4 col-md-4">${innerHeadReason}</div>
+                                            <div class="table-parameter col-lg-3 col-md-3"></div>
+                                        </div>
+                                    </div>
+                                    <div class="table-row-border col-lg-9 col-md-9"></div>
                                     <c:forEach items="${therapy.diagnoses}" var="diagnosis" varStatus="loop">
                                         <div class="table-row">
-                                            <div class="table-group">
-                                                <div class="table-parameter">${innerHeadDoctor}</div>
-                                                <div class="table-value">
+                                            <div class="table-group col-lg-12 col-md-12">
+                                                <div class="align-self-center col-lg-1 col-md-1">
                                                         ${diagnosis.doctor.userDetails.firstName} ${diagnosis.doctor.userDetails.surname} ${diagnosis.doctor.userDetails.lastName}
                                                 </div>
-                                            </div>
-                                            <div class="table-group">
-                                                <div class="table-parameter">${innerHeadIcd}</div>
-                                                <div class="table-value">${diagnosis.icd.code}</div>
-                                            </div>
-                                            <div class="table-group">
-                                                <div class="table-parameter">${innerHeadDiagnosis}</div>
-                                                <div class="table-value">${diagnosis.icd.title}</div>
-                                            </div>
-                                            <div class="table-group">
-                                                <div class="table-parameter">${innerHeadDate}</div>
-                                                <div class="table-value">${diagnosis.diagnosisDate}</div>
-                                            </div>
-                                            <div class="table-group">
-                                                <div class="table-parameter">${innerHeadReason}</div>
-                                                <div class="table-value">${diagnosis.reason}</div>
+                                                <div class="align-self-center col-lg-1 col-md-1">${diagnosis.icd.code}</div>
+                                                <div class="align-self-center col-lg-2 col-md-2">${diagnosis.icd.title}</div>
+                                                <div class="align-self-center col-lg-1 col-md-1">${diagnosis.diagnosisDate}</div>
+                                                <div class="align-self-center col-lg-4 col-md-4">${diagnosis.reason}</div>
+                                                <div class="align-self-center col-lg-3 col-md-3 d-flex justify-content-center">
+                                                    <form class="col-lg-6 col-md-6" method="post" action="${HospitalUrl.APP_NAME_URL}${HospitalUrl.COMMAND_FIND_ASSIGNMENT_MEDICATIONS}">
+                                                        <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.FIND_ASSIGNMENT_MEDICATIONS}">
+                                                        <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}" value="${HospitalUrl.PAGE_DOCTOR_THERAPIES}">
+                                                        <input type="hidden" name="${ParameterName.DIAGNOSIS}" value="${JsonConverter.makeJsonValidForHtml(diagnosis.toString())}">
+                                                        <input type="hidden" name="${ParameterName.PATIENT}" value="${JsonConverter.makeJsonValidForHtml(therapy.patient.toString())}">
+                                                        <button type="submit" class="template-btn">
+                                                            Show assigned medications
+                                                        </button>
+                                                    </form>
+<%--                                                    todo diagnosis-3 reason-3 on head also 3 and for buttons 4--%>
+                                                    <form class="col-lg-6 col-md-6" method="post" action="${HospitalUrl.APP_NAME_URL}${HospitalUrl.COMMAND_FIND_ASSIGNMENT_PROCEDURES}">
+                                                        <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.FIND_ASSIGNMENT_PROCEDURES}">
+                                                        <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}" value="${HospitalUrl.PAGE_DOCTOR_THERAPIES}">
+                                                        <input type="hidden" name="${ParameterName.DIAGNOSIS}" value="${JsonConverter.makeJsonValidForHtml(diagnosis.toString())}">
+                                                        <input type="hidden" name="${ParameterName.PATIENT}" value="${JsonConverter.makeJsonValidForHtml(therapy.patient.toString())}">
+                                                        <button type="submit" class="template-btn">
+                                                            Show assigned procedures
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="table-row-border col-lg-9 col-md-9"></div>
                                     </c:forEach>
                                     <div class="table-row">
                                         <div class="table-group">
-                                            <form action="${HospitalUrl.APP_NAME_URL}${HospitalUrl.COMMAND_MAKE_LAST_DIAGNOSIS_FINAL}">
+                                            <form method="post" action="${HospitalUrl.APP_NAME_URL}${HospitalUrl.COMMAND_MAKE_LAST_DIAGNOSIS_FINAL}">
                                                 <input type="hidden" name="${ParameterName.COMMAND}"
                                                        value="${CommandName.MAKE_LAST_DIAGNOSIS_FINAL}">
                                                 <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
@@ -114,11 +146,11 @@
                                                        value="${therapy.patient.userDetails.birthday}">
                                                 <input type="hidden" name="${ParameterName.CARD_TYPE}"
                                                        value="<%=request.getParameter(ParameterName.CARD_TYPE)%>">
-                                                <button type="submit" class="template-btn form-btn">
+                                                <button type="submit" class="template-btn">
                                                         ${btnMakeLastFinal}
                                                 </button>
                                             </form>
-                                            <form action="${HospitalUrl.APP_NAME_URL}${HospitalUrl.COMMAND_CLOSE_THERAPY}">
+                                            <form method="post" action="${HospitalUrl.APP_NAME_URL}${HospitalUrl.COMMAND_CLOSE_THERAPY}">
                                                 <input type="hidden" name="${ParameterName.COMMAND}"
                                                        value="${CommandName.CLOSE_THERAPY}">
                                                 <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}"
@@ -133,14 +165,33 @@
                                                        value="${therapy.patient.userDetails.birthday}">
                                                 <input type="hidden" name="${ParameterName.CARD_TYPE}"
                                                        value="<%=request.getParameter(ParameterName.CARD_TYPE)%>">
-                                                <button type="submit" class="template-btn form-btn">
-                                                    ${btnDischargePatient}
+                                                <button type="submit" class="template-btn">
+                                                        ${btnDischargePatient}
+                                                </button>
+                                            </form>
+                                            <form method="post" action="${HospitalUrl.APP_NAME_URL}${HospitalUrl.COMMAND_DOCTOR_FIND_MEDICATIONS_PAGING}">
+                                                <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.DOCTOR_FIND_MEDICATIONS_PAGING}">
+                                                <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}" value="${HospitalUrl.PAGE_DOCTOR_THERAPIES}">
+                                                <input type="hidden" name="${ParameterName.PATIENT}" value="${JsonConverter.makeJsonValidForHtml(therapy.patient.toString())}">
+                                                <input type="hidden" name="${ParameterName.CARD_TYPE}" value="<%=request.getParameter(ParameterName.CARD_TYPE)%>">
+                                                <button type="submit" class="template-btn">
+                                                    Assign medicament to last diagnosis
+                                                </button>
+                                            </form>
+                                            <form method="post" action="${HospitalUrl.APP_NAME_URL}${HospitalUrl.COMMAND_DOCTOR_FIND_PROCEDURES_PAGING}">
+                                                <input type="hidden" name="${ParameterName.COMMAND}" value="${CommandName.DOCTOR_FIND_PROCEDURES_PAGING}">
+                                                <input type="hidden" name="${ParameterName.PAGE_OF_DEPARTURE}" value="${HospitalUrl.PAGE_DOCTOR_THERAPIES}">
+                                                <input type="hidden" name="${ParameterName.PATIENT}" value="${JsonConverter.makeJsonValidForHtml(therapy.patient.toString())}">
+                                                <input type="hidden" name="${ParameterName.CARD_TYPE}" value="<%=request.getParameter(ParameterName.CARD_TYPE)%>">
+                                                <button type="submit" class="template-btn">
+                                                    Assign procedure to last diagnosis
                                                 </button>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="table-row-border-solid"></div>
                         </c:forEach>
                     </div>
                 </div>

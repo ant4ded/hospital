@@ -1,5 +1,6 @@
 package by.epam.hospital.controller.command.doctor;
 
+import by.epam.hospital.controller.HospitalUrl;
 import by.epam.hospital.controller.HttpCommand;
 import by.epam.hospital.controller.ParameterName;
 import by.epam.hospital.entity.Medicament;
@@ -26,14 +27,16 @@ public class FindMedicationsPaging implements HttpCommand {
     public Map<String, Object> execute(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
         String namePart = request.getParameter(ParameterName.NAME_PART);
-        int pageNumber = Integer.parseInt(request.getParameter(ParameterName.PAGE_NUMBER));
+        int pageNumber = Integer.parseInt(request.getParameter(ParameterName.PAGE_NUMBER) == null ?
+                "0" :
+                request.getParameter(ParameterName.PAGE_NUMBER));
         try {
             PageResult<Medicament> pageResult = service.findAllMedicationsByNamePartPaging(namePart, pageNumber);
+            pageResult.getList().removeIf(medicament -> !medicament.isEnabled());
             result.put(ParameterName.TOTAL_PAGES, pageResult.getTotalPages());
             result.put(ParameterName.PAGE_NUMBER, pageNumber);
-            result.put(ParameterName.PROCEDURE_LIST, pageResult.getList());
-            // TODO: 02.05.2021 page forward
-//            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_DEPARTMENT_CONTROL);
+            result.put(ParameterName.MEDICAMENT_LIST, pageResult.getList());
+            result.put(ParameterName.PAGE_FORWARD, HospitalUrl.PAGE_ASSIGN_MEDICAMENT);
         } catch (ServiceException e) {
             logger.error(e);
             result.put(ParameterName.COMMAND_EXCEPTION, e.getMessage());

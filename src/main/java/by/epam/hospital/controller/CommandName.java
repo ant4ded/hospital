@@ -29,7 +29,9 @@ public enum CommandName {
     DOCTOR_FIND_MEDICATIONS_PAGING,
     DOCTOR_FIND_PROCEDURES_PAGING,
     FIND_ASSIGNMENT_MEDICATIONS,
-    FIND_ASSIGNMENT_PROCEDURES;
+    FIND_ASSIGNMENT_PROCEDURES,
+    ASSIGN_MEDICAMENT,
+    ASSIGN_PROCEDURE;
 
     public static boolean hasValue(String value) {
         if (value != null) {
