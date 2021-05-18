@@ -5,10 +5,8 @@ import by.epam.hospital.connection.ConnectionPool;
 import by.epam.hospital.dao.DaoException;
 import by.epam.hospital.dao.DiagnosisDao;
 import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.entity.Diagnosis;
-import by.epam.hospital.entity.Icd;
-import by.epam.hospital.entity.table.DiagnosesFieldName;
-import by.epam.hospital.entity.table.IcdFieldName;
+import by.epam.hospital.entity.*;
+import by.epam.hospital.entity.table.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,66 +28,44 @@ import java.util.Optional;
  */
 
 public class DiagnosisDaoImpl implements DiagnosisDao {
-    /**
-     * Sql {@code String} object for call stored procedure
-     * {@code CreateAmbulatoryDiagnosis}.
-     * Written for the MySQL dialect.
-     */
-    private static final String SP_CREATE_AMBULATORY_DIAGNOSIS =
-            "CALL CreateAmbulatoryDiagnosis(?,?,?,?,?)";
-    /**
-     * Sql {@code String} object for call stored procedure
-     * {@code CreateStationaryDiagnosis}.
-     * Written for the MySQL dialect.
-     */
-    private static final String SP_CREATE_STATIONARY_DIAGNOSIS =
-            "CALL CreateStationaryDiagnosis(?,?,?,?,?)";
+    private static final String SP_CREATE_DIAGNOSIS = "CALL CreateDiagnosis(?,?,?,?,?,?)";
     /**
      * Sql {@code String} object for call stored procedure
      * {@code FindDiagnosesByTherapyId}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_DIAGNOSES_BY_THERAPY_ID =
-            "CALL FindDiagnosesByTherapyId(?)";
+    private static final String SP_FIND_DIAGNOSES_BY_THERAPY_ID = "CALL FindDiagnosesByTherapyId(?)";
     /**
      * Sql {@code String} object for call stored procedure
      * {@code FindDiagnosisWithIcdById}.
      * Written for the MySQL dialect.
      */
-    private static final String SP_FIND_DIAGNOSIS_WITH_ICD_BY_ID =
-            "CALL FindDiagnosisWithIcdById(?)";
+    private static final String SP_FIND_DIAGNOSIS_WITH_ICD_BY_ID = "CALL FindDiagnosisWithIcdById(?)";
+    private static final String SP_ASSIGN_PROCEDURE_TO_DIAGNOSIS = "CALL AssignProcedureToDiagnosis(?,?,?,?,?,?)";
+    private static final String SP_ASSIGN_MEDICAMENT_TO_DIAGNOSIS = "CALL AssignMedicamentToDiagnosis(?,?,?,?,?,?)";
+    private static final String SP_FIND_ALL_ASSIGNMENT_PROCEDURES = "CALL FindAllAssignmentProceduresToDiagnosis(?)";
+    private static final String SP_FIND_ALL_ASSIGNMENT_MEDICATIONS = "CALL FindAllAssignmentMedicationsToDiagnosis(?)";
 
     /**
      * {@link UserDao} data access object.
      */
     private final UserDao userDao = new UserDaoImpl();
 
-    /**
-     * Create entity {@code Diagnosis} for ambulatory
-     * {@code Therapy} entity in database.
-     *
-     * @param diagnosis    an a {@code Diagnosis} entity.
-     * @param patientLogin {@code String} value of patient
-     *                     {@code User.login} field.
-     * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs or if
-     *                      {@link ConnectionPool} throws
-     *                      {@link ConnectionException}.
-     */
     @Override
-    public int createAmbulatoryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException {
+    public int createDiagnosis(Diagnosis diagnosis, String patientLogin, CardType cardType) throws DaoException {
         int diagnosisId;
         Connection connection = null;
         CallableStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_CREATE_AMBULATORY_DIAGNOSIS);
+            statement = connection.prepareCall(SP_CREATE_DIAGNOSIS);
             statement.setString(1, patientLogin);
             statement.setString(2, diagnosis.getDoctor().getLogin());
             statement.setString(3, diagnosis.getIcd().getCode());
             statement.setDate(4, diagnosis.getDiagnosisDate());
             statement.setString(5, diagnosis.getReason());
+            statement.setString(6, cardType.name());
 
             resultSet = statement.executeQuery();
             diagnosisId = resultSet.next() ? resultSet.getInt(1) : 0;
@@ -97,45 +73,6 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             throw new DaoException("Can not create data source.", e);
         } catch (SQLException e) {
             throw new DaoException("CreateAmbulatoryDiagnosis failed.", e);
-        } finally {
-            ConnectionPool.closeConnection(connection, statement, resultSet);
-        }
-        return diagnosisId;
-    }
-
-    /**
-     * Create entity {@code Diagnosis} for stationary
-     * {@code Therapy} entity in database.
-     *
-     * @param diagnosis    an a {@code Diagnosis} entity.
-     * @param patientLogin {@code String} value of patient
-     *                     {@code User.login} field.
-     * @return auto-generated {@code Diagnosis.id} field.
-     * @throws DaoException if a database access error occurs or if
-     *                      {@link ConnectionPool} throws
-     *                      {@link ConnectionException}.
-     */
-    @Override
-    public int createStationaryDiagnosis(Diagnosis diagnosis, String patientLogin) throws DaoException {
-        int diagnosisId;
-        Connection connection = null;
-        CallableStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = ConnectionPool.getInstance().getConnection();
-            statement = connection.prepareCall(SP_CREATE_STATIONARY_DIAGNOSIS);
-            statement.setString(1, patientLogin);
-            statement.setString(2, diagnosis.getDoctor().getLogin());
-            statement.setString(3, diagnosis.getIcd().getCode());
-            statement.setDate(4, diagnosis.getDiagnosisDate());
-            statement.setString(5, diagnosis.getReason());
-
-            resultSet = statement.executeQuery();
-            diagnosisId = resultSet.next() ? resultSet.getInt(1) : 0;
-        } catch (ConnectionException e) {
-            throw new DaoException("Can not create data source.", e);
-        } catch (SQLException e) {
-            throw new DaoException("CreateStationaryDiagnosis failed.", e);
         } finally {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
@@ -218,6 +155,133 @@ public class DiagnosisDaoImpl implements DiagnosisDao {
             ConnectionPool.closeConnection(connection, statement, resultSet);
         }
         return optionalDiagnosis;
+    }
+
+    @Override
+    public boolean assignProcedureToLastDiagnosis(ProcedureAssignment assignment, String doctorLogin,
+                                                  String patientLogin, CardType cardType) throws DaoException {
+        boolean result;
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_ASSIGN_PROCEDURE_TO_DIAGNOSIS);
+
+            statement.setString(1, assignment.getProcedure().getName());
+            statement.setTimestamp(2, Timestamp.valueOf(assignment.getTime()));
+            statement.setString(3, assignment.getDescription());
+            statement.setString(4, doctorLogin);
+            statement.setString(5, patientLogin);
+            statement.setString(6, cardType.name());
+
+            resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("CreateProcedure failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean assignMedicamentToLastDiagnosis(MedicamentAssignment assignment, String doctorLogin,
+                                                   String patientLogin, CardType cardType) throws DaoException {
+        boolean result;
+        Connection connection = null;
+        CallableStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareCall(SP_ASSIGN_MEDICAMENT_TO_DIAGNOSIS);
+
+            statement.setString(1, assignment.getMedicament().getName());
+            statement.setTimestamp(2, Timestamp.valueOf(assignment.getTime()));
+            statement.setString(3, assignment.getDescription());
+            statement.setString(4, doctorLogin);
+            statement.setString(5, patientLogin);
+            statement.setString(6, cardType.name());
+
+            resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) != 0;
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("CreateProcedure failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return result;
+    }
+
+    @Override
+    public List<ProcedureAssignment> findAllAssignmentProcedures(int diagnosisId) throws DaoException {
+        List<ProcedureAssignment> assignments = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SP_FIND_ALL_ASSIGNMENT_PROCEDURES);
+            statement.setInt(1, diagnosisId);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Procedure procedure = new Procedure();
+                ProcedureAssignment assignment = new ProcedureAssignment();
+                procedure.setId(resultSet.getInt(ProceduresFieldName.ID));
+                procedure.setName(resultSet.getString(ProceduresFieldName.NAME));
+                procedure.setCost(resultSet.getInt(ProceduresFieldName.COST));
+                procedure.setEnabled(resultSet.getBoolean(ProceduresFieldName.IS_ENABLED));
+                assignment.setProcedure(procedure);
+                assignment.setDescription(resultSet.getString(ProceduresAssignmentFieldName.DESCRIPTION));
+                assignment.setTime(resultSet.getTimestamp(ProceduresAssignmentFieldName.DATETIME).toLocalDateTime());
+                assignments.add(assignment);
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("FindOpenDoctorTherapies failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return assignments;
+    }
+
+    @Override
+    public List<MedicamentAssignment> findAllAssignmentMedications(int diagnosisId) throws DaoException {
+        List<MedicamentAssignment> assignments = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+            statement = connection.prepareStatement(SP_FIND_ALL_ASSIGNMENT_MEDICATIONS);
+            statement.setInt(1, diagnosisId);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Medicament medicament = new Medicament();
+                MedicamentAssignment assignment = new MedicamentAssignment();
+                medicament.setId(resultSet.getInt(MedicationsFieldName.ID));
+                medicament.setName(resultSet.getString(MedicationsFieldName.NAME));
+                medicament.setEnabled(resultSet.getBoolean(MedicationsFieldName.IS_ENABLED));
+                assignment.setMedicament(medicament);
+                assignment.setDescription(resultSet.getString(MedicationsAssignmentFieldName.DESCRIPTION));
+                assignment.setTime(resultSet.getTimestamp(MedicationsAssignmentFieldName.DATETIME).toLocalDateTime());
+                assignments.add(assignment);
+            }
+        } catch (ConnectionException e) {
+            throw new DaoException("Can not create data source.", e);
+        } catch (SQLException e) {
+            throw new DaoException("FindOpenDoctorTherapies failed.", e);
+        } finally {
+            ConnectionPool.closeConnection(connection, statement, resultSet);
+        }
+        return assignments;
     }
 
     /**

@@ -1,7 +1,7 @@
 package by.epam.hospital.service;
 
 public enum ServiceAction {
-    ADD, DELETE;
+    ADD, DELETE, UPDATE;
 
     public static boolean hasValue(String value) {
         if (value != null) {

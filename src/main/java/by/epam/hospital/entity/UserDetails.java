@@ -1,8 +1,9 @@
 package by.epam.hospital.entity;
 
+import by.epam.hospital.service.util.JsonConverter;
+
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.StringJoiner;
 
 public class UserDetails implements Serializable {
     private String passportId;
@@ -113,17 +114,7 @@ public class UserDetails implements Serializable {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", UserDetails.class.getSimpleName() + "[", "]")
-                .add("passportId='" + passportId + "'")
-                .add("userId=" + userId)
-                .add("gender=" + gender)
-                .add("firstName='" + firstName + "'")
-                .add("surname='" + surname + "'")
-                .add("lastName='" + lastName + "'")
-                .add("birthday=" + birthday)
-                .add("address='" + address + "'")
-                .add("phone='" + phone + "'")
-                .toString();
+        return JsonConverter.toJson(this);
     }
 
     public enum Gender {

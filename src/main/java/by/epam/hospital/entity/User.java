@@ -1,9 +1,10 @@
 package by.epam.hospital.entity;
 
+import by.epam.hospital.service.util.JsonConverter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 public class User implements Serializable {
     private int id;
@@ -91,12 +92,6 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("login='" + login + "'")
-                .add("password='" + password + "'")
-                .add("roles=" + roles)
-                .add("userDetails=" + userDetails)
-                .toString();
+        return JsonConverter.toJson(this);
     }
 }

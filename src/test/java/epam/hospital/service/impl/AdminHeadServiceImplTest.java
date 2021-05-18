@@ -1,12 +1,7 @@
 package epam.hospital.service.impl;
 
-import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.DepartmentDao;
-import by.epam.hospital.dao.DepartmentStaffDao;
-import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.entity.Department;
-import by.epam.hospital.entity.Role;
-import by.epam.hospital.entity.User;
+import by.epam.hospital.dao.*;
+import by.epam.hospital.entity.*;
 import by.epam.hospital.service.AdminHeadService;
 import by.epam.hospital.service.ServiceAction;
 import by.epam.hospital.service.ServiceException;
@@ -19,10 +14,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class AdminHeadServiceImplTest {
     @Mock
@@ -31,12 +23,16 @@ public class AdminHeadServiceImplTest {
     private DepartmentDao departmentDao;
     @Mock
     private DepartmentStaffDao departmentStaffDao;
+    @Mock
+    private ProceduresDao procedureDao;
+    @Mock
+    private MedicamentDao medicamentDao;
     private AdminHeadService adminHeadService;
 
     @BeforeMethod
     private void setUp() {
         MockitoAnnotations.openMocks(this);
-        adminHeadService = new AdminHeadServiceImpl(userDao, departmentDao, departmentStaffDao);
+        adminHeadService = new AdminHeadServiceImpl(userDao, departmentDao, departmentStaffDao, procedureDao, medicamentDao);
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "findUserRoles")
@@ -331,7 +327,7 @@ public class AdminHeadServiceImplTest {
         Mockito.when(departmentDao.findDepartment(user.getLogin()))
                 .thenReturn(Optional.empty());
         Mockito.when(departmentStaffDao
-                .makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS,user.getLogin(), Role.DOCTOR))
+                .makeMedicalWorkerAndAddToDepartment(Department.INFECTIOUS, user.getLogin(), Role.DOCTOR))
                 .thenReturn(true);
         Assert.assertTrue(adminHeadService
                 .updateDepartmentStaff(Department.INFECTIOUS, ServiceAction.ADD, user.getLogin(), Role.DOCTOR));
@@ -401,5 +397,80 @@ public class AdminHeadServiceImplTest {
     public void findDepartmentsHeads_daoException_serviceException() throws DaoException, ServiceException {
         Mockito.when(departmentDao.findDepartmentsHeads()).thenThrow(DaoException.class);
         adminHeadService.findDepartmentsHeads();
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectProcedure")
+    public void createProcedureOrMedicament_correctProcedure_true(Procedure procedure)
+            throws ServiceException, DaoException {
+        Mockito.when(procedureDao.create(procedure))
+                .thenReturn(1);
+        Assert.assertTrue(adminHeadService.createProcedureOrMedicament(procedure, Procedure.class));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectMedicament")
+    public void createProcedureOrMedicament_correctMedicament_true(Medicament medicament)
+            throws ServiceException, DaoException {
+        Mockito.when(medicamentDao.create(medicament))
+                .thenReturn(1);
+        Assert.assertTrue(adminHeadService.createProcedureOrMedicament(medicament, Medicament.class));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectProcedure")
+    public void updateEnabledStatusOnProcedureOrMedicament_correctProcedure_true(Procedure procedure)
+            throws ServiceException, DaoException {
+        procedure.setId(1);
+        Procedure updated = new Procedure(procedure.getName());
+        updated.setId(procedure.getId());
+        updated.setEnabled(true);
+        Mockito.when(procedureDao.findByName(procedure.getName()))
+                .thenReturn(Optional.of(procedure));
+        Mockito.when(procedureDao.updateEnabledStatus(procedure.getId(), true))
+                .thenReturn(Optional.of(updated));
+        Assert.assertTrue(adminHeadService.updateEnabledStatusOnProcedureOrMedicament(procedure, true,
+                Procedure.class));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectMedicament")
+    public void updateEnabledStatusOnProcedureOrMedicament_correctMedicament_true(Medicament medicament)
+            throws ServiceException, DaoException {
+        medicament.setId(1);
+        Medicament updated = new Medicament(medicament.getName());
+        updated.setId(medicament.getId());
+        updated.setEnabled(true);
+        Mockito.when(medicamentDao.findByName(medicament.getName()))
+                .thenReturn(Optional.of(medicament));
+        Mockito.when(medicamentDao.updateEnabledStatus(medicament.getId(), true))
+                .thenReturn(Optional.of(updated));
+        Assert.assertTrue(adminHeadService.updateEnabledStatusOnProcedureOrMedicament(medicament, true,
+                Medicament.class));
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectProcedure")
+    public void updateProcedureCost_correctMedication_true(Procedure procedure)
+            throws ServiceException, DaoException {
+        int cost = 200;
+        procedure.setId(1);
+        Mockito.when(procedureDao.findByName(procedure.getName())).thenReturn(Optional.of(procedure));
+        procedure.setCost(cost);
+        Mockito.when(procedureDao.updateCost(procedure.getId(), cost)).thenReturn(Optional.of(procedure));
+        Assert.assertTrue(adminHeadService.updateProcedureCost(procedure, cost));
+    }
+
+    @Test
+    public void findAllProceduresByNamePartPaging_existingNamePartAndMedicationsType_listProcedures()
+            throws ServiceException, DaoException {
+        Mockito.when(procedureDao.findAllByNamePartPaging("qwe", 2))
+                .thenReturn(PageResult.from(Collections.singletonList(new Procedure()), 10));
+        Assert.assertFalse(adminHeadService
+                .findAllProceduresByNamePartPaging("qwe", 2).getList().isEmpty());
+    }
+
+    @Test
+    public void findAllMedicationsByNamePartPaging_existingNamePartAndProceduresType_listProcedures()
+            throws ServiceException, DaoException {
+        Mockito.when(medicamentDao.findAllByNamePartPaging("qwe", 2))
+                .thenReturn(PageResult.from(Collections.singletonList(new Medicament()), 10));
+        Assert.assertFalse(adminHeadService
+                .findAllMedicationsByNamePartPaging("qwe", 2).getList().isEmpty());
     }
 }

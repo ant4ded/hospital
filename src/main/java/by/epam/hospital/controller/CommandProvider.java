@@ -4,6 +4,8 @@ import by.epam.hospital.controller.command.Authorization;
 import by.epam.hospital.controller.command.FirstVisit;
 import by.epam.hospital.controller.command.SignOut;
 import by.epam.hospital.controller.command.admin.head.*;
+import by.epam.hospital.controller.command.admin.head.FindMedicationsPaging;
+import by.epam.hospital.controller.command.admin.head.FindProceduresPaging;
 import by.epam.hospital.controller.command.client.EditUserDetails;
 import by.epam.hospital.controller.command.client.FindUserDetails;
 import by.epam.hospital.controller.command.doctor.*;
@@ -55,6 +57,18 @@ public class CommandProvider {
         map.put(CommandName.ROLE_CONTROL,
                 new RoleControl(getAdminHeadService(),
                         Logger.getLogger(RoleControl.class)));
+        map.put(CommandName.PROCEDURE_CONTROL,
+                new ProcedureControl(getAdminHeadService(),
+                        Logger.getLogger(ProcedureControl.class)));
+        map.put(CommandName.MEDICAMENT_CONTROL,
+                new MedicamentControl(getAdminHeadService(),
+                        Logger.getLogger(MedicamentControl.class)));
+        map.put(CommandName.ADMIN_FIND_PROCEDURES_PAGING,
+                new FindProceduresPaging(getAdminHeadService(),
+                        Logger.getLogger(FindProceduresPaging.class)));
+        map.put(CommandName.ADMIN_FIND_MEDICATIONS_PAGING,
+                new FindMedicationsPaging(getAdminHeadService(),
+                        Logger.getLogger(FindMedicationsPaging.class)));
 
         map.put(CommandName.FIND_USER_DETAILS,
                 new FindUserDetails(getClientService(),
@@ -78,6 +92,24 @@ public class CommandProvider {
         map.put(CommandName.MAKE_LAST_DIAGNOSIS_FINAL,
                 new MakeLastDiagnosisFinal(getDoctorService(),
                         Logger.getLogger(MakeLastDiagnosisFinal.class)));
+        map.put(CommandName.DOCTOR_FIND_MEDICATIONS_PAGING,
+                new by.epam.hospital.controller.command.doctor.FindMedicationsPaging(getDoctorService(),
+                        Logger.getLogger(by.epam.hospital.controller.command.doctor.FindMedicationsPaging.class)));
+        map.put(CommandName.DOCTOR_FIND_PROCEDURES_PAGING,
+                new by.epam.hospital.controller.command.doctor.FindProceduresPaging(getDoctorService(),
+                        Logger.getLogger(by.epam.hospital.controller.command.doctor.FindProceduresPaging.class)));
+        map.put(CommandName.FIND_ASSIGNMENT_MEDICATIONS,
+                new FindAssignmentMedications(getDoctorService(),
+                        Logger.getLogger(FindAssignmentMedications.class)));
+        map.put(CommandName.FIND_ASSIGNMENT_PROCEDURES,
+                new FindAssignmentProcedures(getDoctorService(),
+                        Logger.getLogger(FindAssignmentProcedures.class)));
+        map.put(CommandName.ASSIGN_MEDICAMENT,
+                new AssignMedicament(getDoctorService(),
+                        Logger.getLogger(AssignMedicament.class)));
+        map.put(CommandName.ASSIGN_PROCEDURE,
+                new AssignProcedure(getDoctorService(),
+                        Logger.getLogger(AssignProcedure.class)));
     }
 
     public HttpCommand getCommand(CommandName command) {
@@ -85,7 +117,8 @@ public class CommandProvider {
     }
 
     private ClientService getClientService() {
-        return new ClientServiceImpl(new UserDaoImpl(), new UserDetailsDaoImpl());
+        return new ClientServiceImpl(new UserDaoImpl(),
+                new UserDetailsDaoImpl());
     }
 
     private ReceptionistService getReceptionistService() {
@@ -93,11 +126,19 @@ public class CommandProvider {
     }
 
     private AdminHeadService getAdminHeadService() {
-        return new AdminHeadServiceImpl(new UserDaoImpl(), new DepartmentDaoImpl(), new DepartmentStaffDaoImpl());
+        return new AdminHeadServiceImpl(new UserDaoImpl(),
+                new DepartmentDaoImpl(),
+                new DepartmentStaffDaoImpl(),
+                new ProceduresDaoImpl(),
+                new MedicamentDaoImpl());
     }
 
     private DoctorService getDoctorService() {
-        return new DoctorServiceImpl(new IcdDaoImpl(), new UserDaoImpl(),
-                new TherapyDaoImpl(), new DiagnosisDaoImpl());
+        return new DoctorServiceImpl(new IcdDaoImpl(),
+                new UserDaoImpl(),
+                new TherapyDaoImpl(),
+                new DiagnosisDaoImpl(),
+                new ProceduresDaoImpl(),
+                new MedicamentDaoImpl());
     }
 }

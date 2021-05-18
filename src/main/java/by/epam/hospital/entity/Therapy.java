@@ -1,12 +1,13 @@
 package by.epam.hospital.entity;
 
 
+import by.epam.hospital.service.util.JsonConverter;
+
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.StringJoiner;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Therapy implements Serializable {
@@ -14,16 +15,22 @@ public class Therapy implements Serializable {
     private User doctor;
     private User patient;
     private CardType cardType;
-    private transient Optional<Date> endTherapy;
-    private transient Optional<Diagnosis> finalDiagnosis;
-    private List<Diagnosis> diagnoses;
+    private transient Optional<Date> endTherapy = Optional.empty();
+    private transient Optional<Diagnosis> finalDiagnosis = Optional.empty();
+    private List<Diagnosis> diagnoses = Collections.emptyList();
 
     public Therapy() {
-        doctor = new User();
-        patient = new User();
-        diagnoses = new ArrayList<>();
-        endTherapy = Optional.empty();
-        finalDiagnosis = Optional.empty();
+    }
+
+    public Therapy(int id, User doctor, User patient, CardType cardType, Optional<Date> endTherapy,
+                   Optional<Diagnosis> finalDiagnosis, List<Diagnosis> diagnoses) {
+        this.id = id;
+        this.doctor = doctor;
+        this.patient = patient;
+        this.cardType = cardType;
+        this.endTherapy = endTherapy;
+        this.finalDiagnosis = finalDiagnosis;
+        this.diagnoses = diagnoses;
     }
 
     public int getId() {
@@ -117,14 +124,6 @@ public class Therapy implements Serializable {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Therapy.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("doctor=" + doctor)
-                .add("patient=" + patient)
-                .add("cardType=" + cardType)
-                .add("endTherapy=" + endTherapy)
-                .add("finalDiagnosis=" + finalDiagnosis)
-                .add("diagnoses=" + diagnoses)
-                .toString();
+        return JsonConverter.toJson(this);
     }
 }

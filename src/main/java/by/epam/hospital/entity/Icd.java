@@ -1,7 +1,8 @@
 package by.epam.hospital.entity;
 
+import by.epam.hospital.service.util.JsonConverter;
+
 import java.io.Serializable;
-import java.util.StringJoiner;
 
 public class Icd implements Serializable {
     private int id;
@@ -9,10 +10,6 @@ public class Icd implements Serializable {
     private String title;
 
     public Icd() {
-    }
-
-    public Icd(String code) {
-        this.code = code;
     }
 
     public Icd(int id, String code, String title) {
@@ -67,10 +64,6 @@ public class Icd implements Serializable {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Icd.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("code='" + code + "'")
-                .add("title='" + title + "'")
-                .toString();
+        return JsonConverter.toJson(this);
     }
 }

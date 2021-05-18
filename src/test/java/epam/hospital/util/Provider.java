@@ -6,11 +6,11 @@ import org.testng.annotations.DataProvider;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class Provider {
     private static final String STRING_VALUE = "TEST";
+    private static final String SPACE = " ";
 
     @DataProvider
     public Object[][] getCorrectUser() {
@@ -72,5 +72,53 @@ public class Provider {
     private Icd getIcd() {
         return new Icd(1, "0016070",
                 "Bypass Cerebral Ventricle to Nasopharynx with Autologous Tissue Substitute, Open Approach");
+    }
+
+    @DataProvider
+    public Object[][] getCorrectProcedure() {
+        return new Object[][]{{
+                new Procedure(STRING_VALUE, 10, true)
+        }};
+    }
+
+    @DataProvider
+    public Object[][] getCorrectProcedures() {
+        Object[][] objects = new Object[1][10];
+        for (int i = 0; i < 10; i++) {
+            if (i % 2 == 0) {
+                objects[0][i] = new Procedure(i + SPACE + STRING_VALUE + " two ");
+            }
+            if (i % 2 != 0) {
+                objects[0][i] = new Procedure(i + SPACE + STRING_VALUE + " not two ");
+            }
+            if (i % 3 == 0) {
+                objects[0][i] = new Procedure(i + SPACE + STRING_VALUE + " three ");
+            }
+        }
+        return objects;
+    }
+
+    @DataProvider
+    public Object[][] getCorrectMedicament() {
+        return new Object[][]{{
+                new Medicament(STRING_VALUE, true)
+        }};
+    }
+
+    @DataProvider
+    public Object[][] getCorrectMedications() {
+        Object[][] objects = new Object[1][10];
+        for (int i = 0; i < 10; i++) {
+            if (i % 2 == 0) {
+                objects[0][i] = new Medicament(i + SPACE + STRING_VALUE + " two ");
+            }
+            if (i % 2 != 0) {
+                objects[0][i] = new Medicament(i + SPACE + STRING_VALUE + " not two ");
+            }
+            if (i % 3 == 0) {
+                objects[0][i] = new Medicament(i + SPACE + STRING_VALUE + " three ");
+            }
+        }
+        return objects;
     }
 }

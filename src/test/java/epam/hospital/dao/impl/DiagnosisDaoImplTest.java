@@ -1,12 +1,7 @@
 package epam.hospital.dao.impl;
 
-import by.epam.hospital.dao.DaoException;
-import by.epam.hospital.dao.DiagnosisDao;
-import by.epam.hospital.dao.TherapyDao;
-import by.epam.hospital.dao.UserDao;
-import by.epam.hospital.dao.impl.DiagnosisDaoImpl;
-import by.epam.hospital.dao.impl.TherapyDaoImpl;
-import by.epam.hospital.dao.impl.UserDaoImpl;
+import by.epam.hospital.dao.*;
+import by.epam.hospital.dao.impl.*;
 import by.epam.hospital.entity.*;
 import epam.hospital.util.Cleaner;
 import epam.hospital.util.Provider;
@@ -14,23 +9,28 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Test(groups = {"dao", "DiagnosisDaoImplTest"},
-        dependsOnGroups = {"UserDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
+//@Test(groups = {"dao", "DiagnosisDaoImplTest"},
+//        dependsOnGroups = {"UserDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
 public class DiagnosisDaoImplTest {
     private DiagnosisDao diagnosisDao;
     private TherapyDao therapyDao;
     private UserDao userDao;
     private Cleaner cleaner;
+    private ProceduresDao proceduresDao;
+    private MedicamentDao medicamentDao;
 
     @BeforeMethod
     private void setUp() {
         diagnosisDao = new DiagnosisDaoImpl();
         therapyDao = new TherapyDaoImpl();
         userDao = new UserDaoImpl();
+        proceduresDao = new ProceduresDaoImpl();
+        medicamentDao = new MedicamentDaoImpl();
         cleaner = new Cleaner();
     }
 
@@ -48,9 +48,9 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
 
-        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
 
-        int diagnosisId = diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+        int diagnosisId = diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         diagnosis.setId(diagnosisId);
         therapy.setDiagnoses(List.of(diagnosis));
 
@@ -75,12 +75,12 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
 
         String doctorLogin = doctor.getLogin();
         doctor.setLogin("1");
         try {
-            diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         } finally {
             doctor.setLogin(doctorLogin);
             cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
@@ -104,10 +104,10 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
         userDao.deleteUserRole(doctor.getLogin(), Role.DOCTOR);
         try {
-            diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         } finally {
             cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(doctor);
@@ -130,9 +130,9 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(diagnosis.getDoctor());
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
-        therapy.setId(therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
         try {
-            diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin() + "1");
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin() + "1", cardType);
         } finally {
             cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
             cleaner.delete(diagnosis.getDoctor());
@@ -156,7 +156,7 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
 
         try {
-            diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+            diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         } finally {
             cleaner.delete(diagnosis.getDoctor());
             cleaner.delete(patient);
@@ -178,9 +178,9 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
 
-        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
+        therapy.setId(therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType));
 
-        int diagnosisId = diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
+        int diagnosisId = diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
         diagnosis.setId(diagnosisId);
         therapy.setDiagnoses(List.of(diagnosis));
 
@@ -188,109 +188,6 @@ public class DiagnosisDaoImplTest {
         cleaner.delete(doctor);
         cleaner.delete(patient);
         Assert.assertTrue(diagnosisId != 0);
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class, groups = "createDiagnosis")
-    public void createStationaryDiagnosis_nonExistentDoctor_exception(Diagnosis diagnosis, User patient)
-            throws DaoException {
-        User doctor = diagnosis.getDoctor();
-        CardType cardType = CardType.STATIONARY;
-        Therapy therapy = new Therapy();
-        therapy.setDiagnoses(new ArrayList<>());
-        therapy.setDoctor(doctor);
-        therapy.setPatient(patient);
-        therapy.setCardType(cardType);
-        userDao.createClientWithUserDetails(patient);
-        userDao.createClientWithUserDetails(diagnosis.getDoctor());
-        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
-
-        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
-
-        String doctorLogin = doctor.getLogin();
-        doctor.setLogin("1");
-        try {
-            diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
-        } finally {
-            doctor.setLogin(doctorLogin);
-            cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
-            cleaner.delete(doctor);
-            cleaner.delete(patient);
-        }
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class, groups = "createDiagnosis")
-    public void createStationaryDiagnosis_DoctorWithoutDoctorRole_exception(Diagnosis diagnosis, User patient)
-            throws DaoException {
-        User doctor = diagnosis.getDoctor();
-        CardType cardType = CardType.STATIONARY;
-        Therapy therapy = new Therapy();
-        therapy.setDiagnoses(new ArrayList<>());
-        therapy.setDoctor(doctor);
-        therapy.setPatient(patient);
-        therapy.setCardType(cardType);
-        userDao.createClientWithUserDetails(patient);
-        userDao.createClientWithUserDetails(diagnosis.getDoctor());
-        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
-
-        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
-        userDao.deleteUserRole(doctor.getLogin(), Role.DOCTOR);
-        try {
-            diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
-        } finally {
-            cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
-            cleaner.delete(doctor);
-            cleaner.delete(patient);
-        }
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class, groups = "createDiagnosis")
-    public void createStationaryDiagnosis_nonExistentPatient_exception(Diagnosis diagnosis, User patient)
-            throws DaoException {
-        User doctor = diagnosis.getDoctor();
-        CardType cardType = CardType.STATIONARY;
-        Therapy therapy = new Therapy();
-        therapy.setDiagnoses(new ArrayList<>());
-        therapy.setDoctor(doctor);
-        therapy.setPatient(patient);
-        therapy.setCardType(cardType);
-        userDao.createClientWithUserDetails(patient);
-        userDao.createClientWithUserDetails(diagnosis.getDoctor());
-        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
-
-        therapy.setId(therapyDao.createStationaryTherapyWithDiagnosis(therapy, diagnosis));
-        try {
-            diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin() + "1");
-        } finally {
-            cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
-            cleaner.delete(diagnosis.getDoctor());
-            cleaner.delete(patient);
-        }
-    }
-
-    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
-            expectedExceptions = DaoException.class, groups = "createDiagnosis")
-    public void createStationaryDiagnosis_nonExistentTherapy_exception(Diagnosis diagnosis, User patient)
-            throws DaoException {
-        User doctor = diagnosis.getDoctor();
-        CardType cardType = CardType.STATIONARY;
-        Therapy therapy = new Therapy();
-        therapy.setDiagnoses(new ArrayList<>());
-        therapy.setDoctor(doctor);
-        therapy.setPatient(patient);
-        therapy.setCardType(cardType);
-        userDao.createClientWithUserDetails(patient);
-        userDao.createClientWithUserDetails(diagnosis.getDoctor());
-        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
-
-        try {
-            diagnosisDao.createStationaryDiagnosis(diagnosis, patient.getLogin());
-        } finally {
-            cleaner.delete(diagnosis.getDoctor());
-            cleaner.delete(patient);
-        }
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient",
@@ -305,8 +202,8 @@ public class DiagnosisDaoImplTest {
         userDao.createClientWithUserDetails(patient);
         userDao.createClientWithUserDetails(doctor);
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
-        therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
-        int diagnosisId = diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
+        int diagnosisId = diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
 
         Optional<Diagnosis> optionalDiagnosis = diagnosisDao.findById(diagnosisId);
 
@@ -336,8 +233,8 @@ public class DiagnosisDaoImplTest {
         userDao.addUserRole(doctor.getLogin(), Role.DOCTOR);
         userDao.createClientWithUserDetails(patient);
 
-        int therapyId = therapyDao.createAmbulatoryTherapyWithDiagnosis(therapy, diagnosis);
-        diagnosisDao.createAmbulatoryDiagnosis(diagnosis, patient.getLogin());
+        int therapyId = therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
+        diagnosisDao.createDiagnosis(diagnosis, patient.getLogin(), cardType);
 
         List<Diagnosis> diagnoses = diagnosisDao.findByTherapyId(therapyId);
         if (diagnoses.size() != 2) {
@@ -352,5 +249,151 @@ public class DiagnosisDaoImplTest {
     @Test
     public void findByTherapyId_incorrectTherapyId_emptyList() throws DaoException {
         Assert.assertTrue(diagnosisDao.findByTherapyId(0).isEmpty());
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void assignProcedureToDiagnosis_validParameters_true(Diagnosis diagnosis, User patient) throws DaoException {
+        String temp = "temp";
+        String procedure = "procedure";
+        CardType cardType = CardType.STATIONARY;
+        String description = "description";
+        LocalDateTime time = LocalDateTime.now();
+
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        Procedure p = new Procedure(temp + procedure, 200, true);
+        ProcedureAssignment assignment = new ProcedureAssignment(p, description, time);
+
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+        userDao.createClientWithUserDetails(patient);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
+        proceduresDao.create(p);
+
+        boolean result = diagnosisDao.assignProcedureToLastDiagnosis(assignment, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(p);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+        Assert.assertTrue(result);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void assignMedicamentToDiagnosis_validParameters_true(Diagnosis diagnosis, User patient) throws DaoException {
+        String temp = "temp";
+        String medicament = "medicament";
+        CardType cardType = CardType.STATIONARY;
+        String description = "description";
+        LocalDateTime time = LocalDateTime.now();
+
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        Medicament m = new Medicament(temp + medicament, true);
+        MedicamentAssignment assignment = new MedicamentAssignment(m, description, time);
+
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+        userDao.createClientWithUserDetails(patient);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
+        medicamentDao.create(m);
+
+        boolean result = diagnosisDao.assignMedicamentToLastDiagnosis(assignment, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(m);
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+        Assert.assertTrue(result);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void findAllAssignmentProcedures_existentDiagnosisId_listAssignment(Diagnosis diagnosis, User patient) throws DaoException {
+        String name = "tempProcedure";
+        CardType cardType = CardType.STATIONARY;
+        String description = "description";
+        LocalDateTime time = LocalDateTime.now();
+
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        ProcedureAssignment assignment1 =
+                new ProcedureAssignment(new Procedure(name + 1, 100, true), description, time);
+        ProcedureAssignment assignment2 =
+                new ProcedureAssignment(new Procedure(name + 2, 200, true), description, time);
+        ProcedureAssignment assignment3 =
+                new ProcedureAssignment(new Procedure(name + 3, 300, true), description, time);
+
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+        userDao.createClientWithUserDetails(patient);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
+        proceduresDao.create(assignment1.getProcedure());
+        proceduresDao.create(assignment2.getProcedure());
+        proceduresDao.create(assignment3.getProcedure());
+
+        diagnosisDao.assignProcedureToLastDiagnosis(assignment1, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
+        diagnosisDao.assignProcedureToLastDiagnosis(assignment2, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
+        diagnosisDao.assignProcedureToLastDiagnosis(assignment3, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
+
+       List<ProcedureAssignment> diagnoses = diagnosisDao.findAllAssignmentProcedures(diagnosis.getId());
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(assignment1.getProcedure());
+        cleaner.delete(assignment2.getProcedure());
+        cleaner.delete(assignment3.getProcedure());
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+        Assert.assertEquals(diagnoses.size(), 3);
+    }
+
+    @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectDiagnosisAndPatient")
+    public void findAllAssignmentMedications_existentDiagnosisId_listAssignment(Diagnosis diagnosis, User patient) throws DaoException {
+        String name = "tempProcedure";
+        CardType cardType = CardType.STATIONARY;
+        String description = "description";
+        LocalDateTime time = LocalDateTime.now();
+
+        Therapy therapy = new Therapy();
+        therapy.setDoctor(diagnosis.getDoctor());
+        therapy.setPatient(patient);
+        MedicamentAssignment assignment1 =
+                new MedicamentAssignment(new Medicament(name + 1, true), description, time);
+        MedicamentAssignment assignment2 =
+                new MedicamentAssignment(new Medicament(name + 2, true), description, time);
+        MedicamentAssignment assignment3 =
+                new MedicamentAssignment(new Medicament(name + 3, true), description, time);
+
+        userDao.createClientWithUserDetails(diagnosis.getDoctor());
+        userDao.addUserRole(diagnosis.getDoctor().getLogin(), Role.DOCTOR);
+        userDao.createClientWithUserDetails(patient);
+        therapyDao.createTherapyWithDiagnosis(therapy, diagnosis, cardType);
+        medicamentDao.create(assignment1.getMedicament());
+        medicamentDao.create(assignment2.getMedicament());
+        medicamentDao.create(assignment3.getMedicament());
+
+        diagnosisDao.assignMedicamentToLastDiagnosis(assignment1, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
+        diagnosisDao.assignMedicamentToLastDiagnosis(assignment2, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
+        diagnosisDao.assignMedicamentToLastDiagnosis(assignment3, diagnosis.getDoctor().getLogin(),
+                patient.getLogin(), cardType);
+
+        List<MedicamentAssignment> diagnoses = diagnosisDao.findAllAssignmentMedications(diagnosis.getId());
+
+        cleaner.deleteTherapyWithDiagnosis(therapy, cardType);
+        cleaner.delete(assignment1.getMedicament());
+        cleaner.delete(assignment2.getMedicament());
+        cleaner.delete(assignment3.getMedicament());
+        cleaner.delete(diagnosis.getDoctor());
+        cleaner.delete(patient);
+        Assert.assertEquals(diagnoses.size(), 3);
     }
 }

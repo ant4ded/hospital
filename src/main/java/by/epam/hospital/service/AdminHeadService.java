@@ -1,7 +1,6 @@
 package by.epam.hospital.service;
 
-import by.epam.hospital.entity.Department;
-import by.epam.hospital.entity.Role;
+import by.epam.hospital.entity.*;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -20,4 +19,14 @@ public interface AdminHeadService {
     Optional<Department> findDepartmentByUsername(String login) throws ServiceException;
 
     Map<Department, String> findDepartmentsHeads() throws ServiceException;
+
+    boolean createProcedureOrMedicament(Object o, Class<?> type) throws ServiceException;
+
+    boolean updateEnabledStatusOnProcedureOrMedicament(Object o, boolean isEnabled, Class<?> type) throws ServiceException;
+
+    boolean updateProcedureCost(Procedure procedure, int cost) throws ServiceException;
+
+    PageResult<Procedure> findAllProceduresByNamePartPaging(String namePart, int page) throws ServiceException;
+
+    PageResult<Medicament> findAllMedicationsByNamePartPaging(String namePart, int page) throws ServiceException;
 }

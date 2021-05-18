@@ -1,8 +1,9 @@
 package by.epam.hospital.entity;
 
+import by.epam.hospital.service.util.JsonConverter;
+
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.StringJoiner;
 
 public class Diagnosis implements Serializable {
     private int id;
@@ -12,8 +13,14 @@ public class Diagnosis implements Serializable {
     private String reason;
 
     public Diagnosis() {
-        icd = new Icd();
-        doctor = new User();
+    }
+
+    public Diagnosis(int id, Icd icd, User doctor, Date diagnosisDate, String reason) {
+        this.id = id;
+        this.icd = icd;
+        this.doctor = doctor;
+        this.diagnosisDate = diagnosisDate;
+        this.reason = reason;
     }
 
     public int getId() {
@@ -67,7 +74,7 @@ public class Diagnosis implements Serializable {
         if (!icd.equals(diagnosis.icd)) return false;
         if (!doctor.equals(diagnosis.doctor)) return false;
         if (!diagnosisDate.equals(diagnosis.diagnosisDate)) return false;
-        return reason.equals(diagnosis.reason);
+        return reason != null ? reason.equals(diagnosis.reason) : diagnosis.reason == null;
     }
 
     @Override
@@ -76,18 +83,12 @@ public class Diagnosis implements Serializable {
         result = 31 * result + icd.hashCode();
         result = 31 * result + doctor.hashCode();
         result = 31 * result + diagnosisDate.hashCode();
-        result = 31 * result + reason.hashCode();
+        result = 31 * result + (reason != null ? reason.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Diagnosis.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("icd=" + icd)
-                .add("doctor=" + doctor)
-                .add("diagnosisDate=" + diagnosisDate)
-                .add("reason='" + reason + "'")
-                .toString();
+        return JsonConverter.toJson(this);
     }
 }
