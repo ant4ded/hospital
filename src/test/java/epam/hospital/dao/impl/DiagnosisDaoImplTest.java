@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-//@Test(groups = {"dao", "DiagnosisDaoImplTest"},
-//        dependsOnGroups = {"UserDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
+@Test(groups = {"dao", "DiagnosisDaoImplTest"},
+        dependsOnGroups = {"UserDaoImplTest", "TherapyDaoImplTest", "IcdDaoImplTest"})
 public class DiagnosisDaoImplTest {
     private DiagnosisDao diagnosisDao;
     private TherapyDao therapyDao;
