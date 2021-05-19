@@ -121,6 +121,9 @@ public class DoctorServiceImpl implements DoctorService {
             Optional<User> doctor = userDao.findByLogin(doctorLogin);
             Optional<User> patient = userDao.findByLogin(patientLogin);
             Optional<Therapy> therapy = therapyDao.findCurrentPatientTherapy(doctorLogin, patientLogin, cardType);
+            if (therapy.isPresent() && therapy.get().getFinalDiagnosis().isPresent()) {
+                return true;
+            }
             boolean isPresent = doctor.isPresent() && patient.isPresent() && therapy.isPresent();
             if (isPresent && !therapy.get().getDiagnoses().isEmpty() && therapy.get().getFinalDiagnosis().isEmpty()) {
                 result = therapyDao.setFinalDiagnosisToTherapy(doctorLogin, patientLogin, cardType);

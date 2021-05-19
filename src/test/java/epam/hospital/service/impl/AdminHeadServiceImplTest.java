@@ -199,7 +199,7 @@ public class AdminHeadServiceImplTest {
     }
 
     @Test(dataProviderClass = Provider.class, dataProvider = "getCorrectUser", groups = "appointDepartmentHead",
-            dependsOnGroups = {"findDepartmentByUsername", "updateUserRoles"}, enabled = false)
+            dependsOnGroups = {"findDepartmentByUsername", "updateUserRoles"}, enabled = true)
     public void appointDepartmentHead_nonExistentNewHead_false(User user) throws DaoException, ServiceException {
         user.getRoles().add(Role.DOCTOR);
         User previous = new User();
